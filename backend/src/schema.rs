@@ -23,7 +23,16 @@ table! {
     }
 }
 
+table! {
+    books_authors_link (id) {
+        id -> Int4,
+        book -> Int4,
+        author -> Int4,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     authors,
     books,
+    books_authors_link,
 );

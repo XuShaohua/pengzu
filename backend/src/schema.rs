@@ -32,6 +32,14 @@ table! {
 }
 
 table! {
+    books_languages_link (id) {
+        id -> Int4,
+        book -> Int4,
+        lang_code -> Int4,
+    }
+}
+
+table! {
     comments (id) {
         id -> Int4,
         book -> Int4,
@@ -76,6 +84,7 @@ allow_tables_to_appear_in_same_query!(
     authors,
     books,
     books_authors_link,
+    books_languages_link,
     comments,
     data,
     identifiers,

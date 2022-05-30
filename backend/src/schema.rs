@@ -54,10 +54,22 @@ table! {
     }
 }
 
+table! {
+    identifiers (id) {
+        id -> Int4,
+        book -> Int4,
+        scheme -> Text,
+        value -> Text,
+        timestamp -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     authors,
     books,
     books_authors_link,
     comments,
     data,
+    identifiers,
 );

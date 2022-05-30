@@ -65,6 +65,13 @@ table! {
     }
 }
 
+table! {
+    languages (id) {
+        id -> Int4,
+        lang_code -> Text,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     authors,
     books,
@@ -72,4 +79,5 @@ allow_tables_to_appear_in_same_query!(
     comments,
     data,
     identifiers,
+    languages,
 );

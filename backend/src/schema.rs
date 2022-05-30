@@ -40,6 +40,14 @@ table! {
 }
 
 table! {
+    books_publishers_link (id) {
+        id -> Int4,
+        book -> Int4,
+        publisher -> Int4,
+    }
+}
+
+table! {
     comments (id) {
         id -> Int4,
         book -> Int4,
@@ -95,6 +103,7 @@ allow_tables_to_appear_in_same_query!(
     books,
     books_authors_link,
     books_languages_link,
+    books_publishers_link,
     comments,
     data,
     identifiers,

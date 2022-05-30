@@ -80,6 +80,16 @@ table! {
     }
 }
 
+table! {
+    publishers (id) {
+        id -> Int4,
+        name -> Text,
+        sort -> Text,
+        timestamp -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     authors,
     books,
@@ -89,4 +99,5 @@ allow_tables_to_appear_in_same_query!(
     data,
     identifiers,
     languages,
+    publishers,
 );

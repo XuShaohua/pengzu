@@ -2,13 +2,13 @@ table! {
     books (id) {
         id -> Int4,
         title -> Text,
-        sort -> Nullable<Text>,
-        author_sort -> Nullable<Text>,
+        sort -> Text,
+        author_sort -> Text,
         path -> Text,
-        uuid -> Nullable<Text>,
-        has_cover -> Nullable<Bool>,
-        timestamp -> Nullable<Timestamp>,
-        pubdate -> Nullable<Timestamp>,
+        uuid -> Text,
+        has_cover -> Bool,
+        timestamp -> Timestamp,
+        pubdate -> Timestamp,
         last_modified -> Timestamp,
     }
 }

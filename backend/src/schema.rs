@@ -31,8 +31,19 @@ table! {
     }
 }
 
+table! {
+    comments (id) {
+        id -> Int4,
+        book -> Int4,
+        text -> Text,
+        timestamp -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     authors,
     books,
     books_authors_link,
+    comments,
 );

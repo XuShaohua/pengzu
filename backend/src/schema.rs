@@ -41,9 +41,23 @@ table! {
     }
 }
 
+table! {
+    data (id) {
+        id -> Int4,
+        book -> Int4,
+        format -> Text,
+        uncompressed_size -> Int4,
+        name -> Text,
+        sha -> Text,
+        timestamp -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     authors,
     books,
     books_authors_link,
     comments,
+    data,
 );

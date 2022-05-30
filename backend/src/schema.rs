@@ -98,6 +98,16 @@ table! {
     }
 }
 
+table! {
+    ratings (id) {
+        id -> Int4,
+        book -> Int4,
+        rating -> Int4,
+        timestamp -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     authors,
     books,
@@ -109,4 +119,5 @@ allow_tables_to_appear_in_same_query!(
     identifiers,
     languages,
     publishers,
+    ratings,
 );

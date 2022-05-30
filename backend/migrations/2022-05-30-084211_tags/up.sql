@@ -1,17 +1,15 @@
 -- Your SQL goes here
 
--- CREATE TABLE publishers (
+-- CREATE TABLE tags (
 --     id INTEGER PRIMARY KEY,
 --     name TEXT NOT NULL COLLATE NOCASE,
---     sort TEXT COLLATE NOCASE,
 --     UNIQUE (name)
 -- )
 
-CREATE TABLE publishers
+CREATE TABLE tags
 (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    sort TEXT NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (name)

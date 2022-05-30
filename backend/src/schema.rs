@@ -3,7 +3,7 @@ table! {
         id -> Int4,
         name -> Text,
         sort -> Text,
-        timestamp -> Timestamp,
+        created -> Timestamp,
         last_modified -> Timestamp,
     }
 }
@@ -17,7 +17,7 @@ table! {
         path -> Text,
         uuid -> Text,
         has_cover -> Bool,
-        timestamp -> Timestamp,
+        created -> Timestamp,
         pubdate -> Timestamp,
         last_modified -> Timestamp,
     }
@@ -52,7 +52,7 @@ table! {
         id -> Int4,
         book -> Int4,
         text -> Text,
-        timestamp -> Timestamp,
+        created -> Timestamp,
         last_modified -> Timestamp,
     }
 }
@@ -65,7 +65,7 @@ table! {
         uncompressed_size -> Int4,
         name -> Text,
         sha -> Text,
-        timestamp -> Timestamp,
+        created -> Timestamp,
         last_modified -> Timestamp,
     }
 }
@@ -76,7 +76,7 @@ table! {
         book -> Int4,
         scheme -> Text,
         value -> Text,
-        timestamp -> Timestamp,
+        created -> Timestamp,
         last_modified -> Timestamp,
     }
 }
@@ -93,7 +93,7 @@ table! {
         id -> Int4,
         name -> Text,
         sort -> Text,
-        timestamp -> Timestamp,
+        created -> Timestamp,
         last_modified -> Timestamp,
     }
 }
@@ -103,7 +103,16 @@ table! {
         id -> Int4,
         book -> Int4,
         rating -> Int4,
-        timestamp -> Timestamp,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
+    tags (id) {
+        id -> Int4,
+        name -> Text,
+        created -> Timestamp,
         last_modified -> Timestamp,
     }
 }
@@ -120,4 +129,5 @@ allow_tables_to_appear_in_same_query!(
     languages,
     publishers,
     ratings,
+    tags,
 );

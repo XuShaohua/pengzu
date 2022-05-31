@@ -53,6 +53,7 @@ pub fn update_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(
 
 pub fn delete_comment(conn: &PgConnection, book_id: i32) -> Result<(), Error> {
     use crate::schema::comments::dsl::*;
+    let _comment = get_comment(conn, book_id)?;
     diesel::delete(comments.filter(book.eq_all(book_id))).execute(conn)?;
     Ok(())
 }

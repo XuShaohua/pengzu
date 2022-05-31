@@ -2,8 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use diesel::{PgConnection, RunQueryDsl};
-use serde::Deserialize;
+use chrono::NaiveDateTime;
+use diesel::{EqAll, PgConnection, QueryDsl, RunQueryDsl};
+use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
 use crate::schema::comments;
@@ -11,8 +12,17 @@ use crate::schema::comments;
 #[derive(Debug, Deserialize, Insertable)]
 #[table_name = "comments"]
 pub struct NewComment {
-    book: i32,
-    text: String,
+    pub book: i32,
+    pub text: String,
+}
+
+#[derive(Debug, Serialize, Queryable)]
+pub struct Comment {
+    pub id: i32,
+    pub book: i32,
+    pub text: String,
+    pub created: NaiveDateTime,
+    pub last_modified: NaiveDateTime,
 }
 
 pub fn add_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), Error> {
@@ -24,14 +34,25 @@ pub fn add_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), 
     Ok(())
 }
 
-pub fn get_comments() {
-    todo!();
+pub fn get_comment(conn: &PgConnection, book_id: i32) -> Result<Vec<Comment>, Error> {
+    use crate::schema::comments::dsl::*;
+    let resp_comments = comments
+        .filter(book.eq_all(book_id))
+        .limit(1)
+        .load::<Comment>(conn)?;
+    Ok(resp_comments)
 }
 
-pub fn update_comment() {
-    todo!();
+pub fn update_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), Error> {
+    use crate::schema::comments::dsl::*;
+    diesel::update(comments.filter(book.eq_all(new_comment.book)))
+        .set(text.eq_all(new_comment.text.clone()))
+        .execute(conn)?;
+    Ok(())
 }
 
-pub fn delete_comment() {
-    todo!();
+pub fn delete_comment(conn: &PgConnection, book_id: i32) -> Result<(), Error> {
+    use crate::schema::comments::dsl::*;
+    diesel::delete(comments.filter(book.eq_all(book_id))).execute(conn)?;
+    Ok(())
 }

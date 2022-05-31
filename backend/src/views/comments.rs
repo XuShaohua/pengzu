@@ -18,21 +18,20 @@ pub async fn add_comment(
         models::add_comment(&conn, &new_comment)
     })
     .await??;
-
-    Ok(HttpResponse::Ok().finish())
+    Ok(HttpResponse::Ok().body("{}"))
 }
 
 pub async fn get_comment(
     pool: web::Data<DbPool>,
     book_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
-    let resp_comments = web::block(move || {
+    let resp_comment = web::block(move || {
         let conn = pool.get()?;
         models::get_comment(&conn, book_id.into_inner())
     })
     .await??;
 
-    Ok(HttpResponse::Ok().json(resp_comments))
+    Ok(HttpResponse::Ok().json(resp_comment))
 }
 
 pub async fn update_comment(

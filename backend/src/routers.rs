@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use actix_web::{guard, middleware, web, App, HttpServer, Responder};
+use actix_web::{middleware, web, App, HttpServer, Responder};
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
@@ -28,7 +28,6 @@ pub async fn run() -> Result<(), Error> {
             .route("/", web::get().to(index))
             .service(
                 web::resource("/api/comment/{book_id}")
-                    .guard(guard::Header(CONTENT_TYPE, APPLICATION_JSON))
                     .route(web::get().to(comments::get_comment))
                     .route(web::put().to(comments::update_comment))
                     .route(web::delete().to(comments::delete_comment)),

@@ -2,6 +2,8 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use actix_web::http::StatusCode;
+use diesel::result::DatabaseErrorKind;
 use serde::Serialize;
 use std::fmt::{Display, Formatter};
 use std::io;
@@ -10,11 +12,15 @@ use std::io;
 pub enum ErrorKind {
     ConfigError,
 
-    DbError,
+    DbConnError,
+    DbGeneralError,
+    DbUniqueViolationError,
+    DbForeignKeyViolationError,
+    DbNotFoundError,
 
     IoError,
 
-    ActixError,
+    ActixBlockingError,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -48,30 +54,56 @@ impl Error {
 
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Self {
-        Self::from_string(ErrorKind::IoError, format!("IoError {}", err))
+        Self::from_string(ErrorKind::IoError, format!("{}", err))
     }
 }
 
 impl From<r2d2::Error> for Error {
     fn from(err: r2d2::Error) -> Self {
-        Self::from_string(ErrorKind::DbError, format!("DbError r2d2 {}", err))
+        Self::from_string(ErrorKind::DbConnError, format!("r2d2 {}", err))
     }
 }
 
 impl From<diesel::result::Error> for Error {
     fn from(err: diesel::result::Error) -> Self {
-        Self::from_string(
-            ErrorKind::DbError,
-            format!("DbError, diesel result: {:?}", err),
-        )
+        match &err {
+            diesel::result::Error::DatabaseError(kind, _info) => match kind {
+                DatabaseErrorKind::UniqueViolation => {
+                    Self::from_string(ErrorKind::DbUniqueViolationError, format!("{}", err))
+                }
+                DatabaseErrorKind::ForeignKeyViolation => {
+                    Self::from_string(ErrorKind::DbForeignKeyViolationError, format!("{}", err))
+                }
+                _ => Self::from_string(ErrorKind::DbGeneralError, format!("{}", err)),
+            },
+            diesel::result::Error::NotFound => {
+                Self::from_string(ErrorKind::DbNotFoundError, format!("{}", err))
+            }
+            _ => Self::from_string(ErrorKind::DbGeneralError, format!("{}", err)),
+        }
     }
 }
 
 impl From<actix_web::error::BlockingError> for Error {
     fn from(err: actix_web::error::BlockingError) -> Self {
         Self::from_string(
-            ErrorKind::ActixError,
+            ErrorKind::ActixBlockingError,
             format!("Actix blocking error: {:?}", err),
         )
+    }
+}
+
+impl actix_web::error::ResponseError for Error {
+    fn status_code(&self) -> StatusCode {
+        match self.kind {
+            ErrorKind::DbConnError
+            | ErrorKind::DbGeneralError
+            | ErrorKind::ConfigError
+            | ErrorKind::ActixBlockingError => StatusCode::INTERNAL_SERVER_ERROR,
+            ErrorKind::DbForeignKeyViolationError
+            | ErrorKind::DbUniqueViolationError
+            | ErrorKind::IoError => StatusCode::BAD_REQUEST,
+            ErrorKind::DbNotFoundError => StatusCode::NOT_FOUND,
+        }
     }
 }

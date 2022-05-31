@@ -34,13 +34,13 @@ pub fn add_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), 
     Ok(())
 }
 
-pub fn get_comment(conn: &PgConnection, book_id: i32) -> Result<Vec<Comment>, Error> {
+pub fn get_comment(conn: &PgConnection, book_id: i32) -> Result<Comment, Error> {
     use crate::schema::comments::dsl::*;
-    let resp_comments = comments
+    let resp_comment = comments
         .filter(book.eq_all(book_id))
         .limit(1)
-        .load::<Comment>(conn)?;
-    Ok(resp_comments)
+        .first::<Comment>(conn)?;
+    Ok(resp_comment)
 }
 
 pub fn update_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), Error> {

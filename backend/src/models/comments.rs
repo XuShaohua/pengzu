@@ -2,15 +2,16 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use serde::Deserialize;
+use diesel::PgConnection;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
-pub struct AddComment {
+#[derive(Serialize, Deserialize)]
+pub struct Comment {
     book: i32,
     comment: String,
 }
 
-pub fn add_comment(_req: AddComment) {
+pub fn add_comment(conn: &PgConnection, req: &Comment) -> Result<Comment, ()> {
     todo!();
 }
 

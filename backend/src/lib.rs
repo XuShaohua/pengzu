@@ -6,6 +6,7 @@
 extern crate diesel;
 
 mod db;
+mod error;
 mod models;
 pub mod routers;
 mod schema;

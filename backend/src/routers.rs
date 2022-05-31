@@ -13,6 +13,7 @@ async fn index() -> impl Responder {
 
 pub async fn run() -> io::Result<()> {
     dotenv::dotenv().ok();
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
     let pool = get_connection_pool();
 

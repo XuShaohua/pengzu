@@ -2,19 +2,26 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use diesel::PgConnection;
-use serde::{Deserialize, Serialize};
+use diesel::{PgConnection, RunQueryDsl};
+use serde::Deserialize;
 
 use crate::error::Error;
+use crate::schema::comments;
 
-#[derive(Serialize, Deserialize)]
-pub struct Comment {
+#[derive(Debug, Deserialize, Insertable)]
+#[table_name = "comments"]
+pub struct NewComment {
     book: i32,
-    comment: String,
+    text: String,
 }
 
-pub fn add_comment(conn: &PgConnection, req: &Comment) -> Result<Comment, Error> {
-    todo!();
+pub fn add_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), Error> {
+    use crate::schema::comments::dsl::*;
+
+    diesel::insert_into(comments)
+        .values(new_comment)
+        .execute(conn)?;
+    Ok(())
 }
 
 pub fn get_comments() {

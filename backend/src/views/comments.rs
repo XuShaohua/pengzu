@@ -10,15 +10,15 @@ use crate::models::comments as models;
 
 pub async fn add_comment(
     pool: web::Data<DbPool>,
-    form: web::Json<models::Comment>,
+    new_comment: web::Json<models::NewComment>,
 ) -> Result<HttpResponse, Error> {
-    let comment = web::block(move || {
+    let _ret = web::block(move || {
         let conn = pool.get()?;
-        models::add_comment(&conn, &form)
+        models::add_comment(&conn, &new_comment)
     })
     .await?;
 
-    Ok(HttpResponse::Ok().json(comment))
+    Ok(HttpResponse::Ok().finish())
 }
 
 pub async fn get_comments() {

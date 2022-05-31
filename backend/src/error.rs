@@ -54,7 +54,16 @@ impl From<io::Error> for Error {
 
 impl From<r2d2::Error> for Error {
     fn from(err: r2d2::Error) -> Self {
-        Self::from_string(ErrorKind::DbError, format!("DbError {}", err))
+        Self::from_string(ErrorKind::DbError, format!("DbError r2d2 {}", err))
+    }
+}
+
+impl From<diesel::result::Error> for Error {
+    fn from(err: diesel::result::Error) -> Self {
+        Self::from_string(
+            ErrorKind::DbError,
+            format!("DbError, diesel result: {:?}", err),
+        )
     }
 }
 

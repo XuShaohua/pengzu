@@ -9,6 +9,8 @@
     clippy::nursery,
     clippy::pedantic
 )]
+// TODO(Shaohua): Remove this attribute.
+#![allow(dead_code)]
 
 #[macro_use]
 extern crate diesel;

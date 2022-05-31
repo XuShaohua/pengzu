@@ -10,5 +10,5 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: library
     volumes:
-      - ./db:/var/lib/postgresql
-      - ./db/data:/var/lib/postgresql/data
+      - /docker/library:/var/lib/postgresql
+      - /docker/library/data:/var/lib/postgresql/data

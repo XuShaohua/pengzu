@@ -2,6 +2,12 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-pub mod models;
-mod schema;
-pub mod views;
+pub mod authors;
+pub mod books;
+pub mod comments;
+pub mod data;
+pub mod identifiers;
+pub mod languages;
+pub mod publishers;
+pub mod ratings;
+pub mod tags;

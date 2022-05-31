@@ -2,6 +2,16 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-pub mod models;
-mod schema;
-pub mod views;
+pub fn add_rating() {
+    todo!();
+}
+
+pub fn get_ratings() {
+    todo!();
+}
+
+pub fn update_rating() {
+    todo!();
+}
+
+pub fn delete_rating() {}

@@ -5,6 +5,8 @@
 #[macro_use]
 extern crate diesel;
 
-pub mod models;
+mod db;
+mod models;
+pub mod routers;
 mod schema;
-pub mod views;
+mod views;

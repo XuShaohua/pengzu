@@ -16,7 +16,7 @@ pub fn get_connection_pool() -> Result<DbPool, Error> {
             format!("DATABASE_URL is not set in environment, err: {:?}", err),
         )
     })?;
-    let manager = ConnectionManager::<PgConnection>::new(url);
+    let manager = ConnectionManager::<PgConnection>::new(url.clone());
 
     Pool::builder()
         .test_on_check_out(true)

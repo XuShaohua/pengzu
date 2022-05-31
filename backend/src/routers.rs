@@ -3,19 +3,19 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{middleware, web, App, HttpServer, Responder};
-use std::io;
 
 use crate::db::get_connection_pool;
+use crate::error::Error;
 
 async fn index() -> impl Responder {
     "Hello, world"
 }
 
-pub async fn run() -> io::Result<()> {
+pub async fn run() -> Result<(), Error> {
     dotenv::dotenv().ok();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    let pool = get_connection_pool();
+    let pool = get_connection_pool()?;
 
     HttpServer::new(move || {
         App::new()
@@ -26,4 +26,5 @@ pub async fn run() -> io::Result<()> {
     .bind(("127.0.0.1", 8080))?
     .run()
     .await
+    .map_err(Into::into)
 }

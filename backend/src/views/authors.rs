@@ -2,14 +2,14 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-pub fn add_author() {
+pub async fn add_author() {
     todo!();
 }
 
-pub fn get_authors() {
+pub async fn get_authors() {
     todo!();
 }
 
-pub fn update_author() {
+pub async fn update_author() {
     todo!();
 }

@@ -2,12 +2,13 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use actix_web::{web, Error, HttpResponse};
+use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
+use crate::error::Error;
 use crate::models::comments as models;
 
-pub fn add_comment(
+pub async fn add_comment(
     pool: web::Data<DbPool>,
     form: web::Json<models::Comment>,
 ) -> Result<HttpResponse, Error> {
@@ -15,20 +16,19 @@ pub fn add_comment(
         let conn = pool.get()?;
         models::add_comment(&conn, &form)
     })
-    .await?
-    .map_err(actix_web::error::ErrorInternalServerError)?;
+    .await?;
 
     Ok(HttpResponse::Ok().json(comment))
 }
 
-pub fn get_comments() {
+pub async fn get_comments() {
     todo!();
 }
 
-pub fn update_comment() {
+pub async fn update_comment() {
     todo!();
 }
 
-pub fn delete_comment() {
+pub async fn delete_comment() {
     todo!();
 }

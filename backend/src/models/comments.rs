@@ -5,13 +5,15 @@
 use diesel::PgConnection;
 use serde::{Deserialize, Serialize};
 
+use crate::error::Error;
+
 #[derive(Serialize, Deserialize)]
 pub struct Comment {
     book: i32,
     comment: String,
 }
 
-pub fn add_comment(conn: &PgConnection, req: &Comment) -> Result<Comment, ()> {
+pub fn add_comment(conn: &PgConnection, req: &Comment) -> Result<Comment, Error> {
     todo!();
 }
 

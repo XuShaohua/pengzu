@@ -2,22 +2,22 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-pub fn add_identifier() {
+pub async fn add_identifier() {
     todo!();
 }
 
-pub fn get_identifiers() {
+pub async fn get_identifiers() {
     todo!();
 }
 
-pub fn get_all_identifiers() {
+pub async fn get_all_identifiers() {
     todo!();
 }
 
-pub fn update_identifier() {
+pub async fn update_identifier() {
     todo!();
 }
 
-pub fn delete_identifier() {
+pub async fn delete_identifier() {
     todo!();
 }

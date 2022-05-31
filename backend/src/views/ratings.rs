@@ -14,4 +14,6 @@ pub fn update_rating() {
     todo!();
 }
 
-pub fn delete_rating() {}
+pub fn delete_rating() {
+    todo!();
+}

@@ -2,12 +2,18 @@
 name = "backend"
 version = "0.1.0"
 edition = "2021"
+publish = false
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "backend"
+path = "src/bin/main.rs"
 
 [dependencies]
 actix-web = "4.0.1"
 diesel = { version = "1.4.8", features = [ "postgres", "r2d2", ] }
 dotenv = "0.15.0"
-serde = { version = "1.0.137", features = [ "serde_derive" ] }
+env_logger = "0.9.0"
+log = "0.4.17"
+serde = { version = "1.0.137", features = [ "serde_derive", ] }
 serde_json = "1.0.81"
+uuid = { version = "1.1.0", features = [ "serde", "v4", ] }

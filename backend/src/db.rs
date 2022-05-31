@@ -8,8 +8,7 @@ use diesel::r2d2::{ConnectionManager, Pool};
 pub type DbPool = Pool<ConnectionManager<PgConnection>>;
 
 pub fn get_connection_pool() -> DbPool {
-    // TODO(Shaohua): Read from env
-    let url = "";
+    let url = std::env::var("DATABASE_URL").expect("DATABASE_URL is not set in environment");
     let manager = ConnectionManager::<PgConnection>::new(url);
     Pool::builder()
         .test_on_check_out(true)

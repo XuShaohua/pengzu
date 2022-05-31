@@ -67,7 +67,7 @@ table! {
 }
 
 table! {
-    data (id) {
+    files (id) {
         id -> Int4,
         book -> Int4,
         format -> Text,
@@ -134,7 +134,7 @@ allow_tables_to_appear_in_same_query!(
     books_publishers_link,
     books_tags_link,
     comments,
-    data,
+    files,
     identifiers,
     languages,
     publishers,

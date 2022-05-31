@@ -9,7 +9,7 @@
 --     UNIQUE (book, format)
 -- )
 
-CREATE TABLE data
+CREATE TABLE files
 (
     id SERIAL PRIMARY KEY,
     book INTEGER NOT NULL,

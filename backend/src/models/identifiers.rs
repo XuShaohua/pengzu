@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{EqAll, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
@@ -39,7 +39,7 @@ pub fn add_identifier(conn: &PgConnection, new_identifier: &NewIdentifier) -> Re
 pub fn get_identifiers(conn: &PgConnection, book_id: i32) -> Result<Vec<Identifier>, Error> {
     use crate::schema::identifiers::dsl::{book, identifiers};
     identifiers
-        .filter(book.eq_all(book_id))
+        .filter(book.eq(book_id))
         .load::<Identifier>(conn)
         .map_err(Into::into)
 }

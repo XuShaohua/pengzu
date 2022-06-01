@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{EqAll, PgConnection, QueryDsl, RunQueryDsl};
+use diesel::{ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
@@ -36,15 +36,15 @@ pub fn add_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), 
 pub fn get_comment(conn: &PgConnection, book_id: i32) -> Result<Comment, Error> {
     use crate::schema::comments::dsl::{book, comments};
     comments
-        .filter(book.eq_all(book_id))
+        .filter(book.eq(book_id))
         .first::<Comment>(conn)
         .map_err(Into::into)
 }
 
 pub fn update_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), Error> {
     use crate::schema::comments::dsl::{book, comments, text};
-    diesel::update(comments.filter(book.eq_all(new_comment.book)))
-        .set(text.eq_all(new_comment.text.clone()))
+    diesel::update(comments.filter(book.eq(new_comment.book)))
+        .set(text.eq(new_comment.text.clone()))
         .execute(conn)?;
     Ok(())
 }
@@ -52,6 +52,6 @@ pub fn update_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(
 pub fn delete_comment(conn: &PgConnection, book_id: i32) -> Result<(), Error> {
     use crate::schema::comments::dsl::{book, comments};
     let _comment = get_comment(conn, book_id)?;
-    diesel::delete(comments.filter(book.eq_all(book_id))).execute(conn)?;
+    diesel::delete(comments.filter(book.eq(book_id))).execute(conn)?;
     Ok(())
 }

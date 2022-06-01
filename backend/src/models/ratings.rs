@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{EqAll, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
@@ -36,15 +36,15 @@ pub fn add_rating(conn: &PgConnection, new_rating: &NewRating) -> Result<(), Err
 pub fn get_rating(conn: &PgConnection, book_id: i32) -> Result<Rating, Error> {
     use crate::schema::ratings::dsl::{book, ratings};
     ratings
-        .filter(book.eq_all(book_id))
+        .filter(book.eq(book_id))
         .first::<Rating>(conn)
         .map_err(Into::into)
 }
 
 pub fn update_rating(conn: &PgConnection, new_rating: &NewRating) -> Result<(), Error> {
     use crate::schema::ratings::dsl::{book, rating, ratings};
-    diesel::update(ratings.filter(book.eq_all(new_rating.book)))
-        .set(rating.eq_all(new_rating.rating))
+    diesel::update(ratings.filter(book.eq(new_rating.book)))
+        .set(rating.eq(new_rating.rating))
         .execute(conn)?;
     Ok(())
 }
@@ -52,6 +52,6 @@ pub fn update_rating(conn: &PgConnection, new_rating: &NewRating) -> Result<(), 
 pub fn delete_rating(conn: &PgConnection, book_id: i32) -> Result<(), Error> {
     use crate::schema::ratings::dsl::{book, ratings};
     let _rating = get_rating(conn, book_id)?;
-    diesel::delete(ratings.filter(book.eq_all(book_id))).execute(conn)?;
+    diesel::delete(ratings.filter(book.eq(book_id))).execute(conn)?;
     Ok(())
 }

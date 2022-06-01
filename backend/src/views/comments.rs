@@ -17,7 +17,7 @@ pub async fn add_comment(
         models::add_comment(&conn, &new_comment)
     })
     .await??;
-    Ok(HttpResponse::Ok().body("{}"))
+    Ok(HttpResponse::Ok().finish())
 }
 
 pub async fn get_comment(

@@ -67,6 +67,15 @@ table! {
 }
 
 table! {
+    file_formats (id) {
+        id -> Int4,
+        name -> Text,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     files (id) {
         id -> Int4,
         book -> Int4,
@@ -134,6 +143,7 @@ allow_tables_to_appear_in_same_query!(
     books_publishers_link,
     books_tags_link,
     comments,
+    file_formats,
     files,
     identifiers,
     languages,

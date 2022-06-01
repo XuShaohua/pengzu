@@ -1,0 +1,10 @@
+-- Your SQL goes here
+
+CREATE TABLE file_formats
+(
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (name)
+)

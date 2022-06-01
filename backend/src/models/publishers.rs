@@ -40,11 +40,11 @@ pub fn get_publisher(conn: &PgConnection, id: i32) -> Result<Publisher, Error> {
 
 pub fn update_publisher(
     conn: &PgConnection,
-    id: i32,
+    pub_id: i32,
     new_publisher: &NewPublisher,
 ) -> Result<(), Error> {
     use crate::schema::publishers::dsl::{name, publishers, sort};
-    diesel::update(publishers.find(id))
+    diesel::update(publishers.find(pub_id))
         .set((
             name.eq(new_publisher.name.as_str()),
             sort.eq(new_publisher.sort.as_str()),

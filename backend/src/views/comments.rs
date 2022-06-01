@@ -7,7 +7,6 @@ use actix_web::{web, HttpResponse};
 use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::comments as models;
-use crate::models::comments::NewComment;
 
 pub async fn add_comment(
     pool: web::Data<DbPool>,
@@ -37,7 +36,7 @@ pub async fn get_comment(
 pub async fn update_comment(
     pool: web::Data<DbPool>,
     book_id: web::Path<i32>,
-    new_comment: web::Json<NewComment>,
+    new_comment: web::Json<models::NewComment>,
 ) -> Result<HttpResponse, Error> {
     debug_assert_eq!(book_id.into_inner(), new_comment.book);
 

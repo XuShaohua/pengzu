@@ -26,8 +26,7 @@ pub struct Comment {
 }
 
 pub fn add_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), Error> {
-    use crate::schema::comments::dsl::*;
-
+    use crate::schema::comments::dsl::comments;
     diesel::insert_into(comments)
         .values(new_comment)
         .execute(conn)?;
@@ -35,16 +34,15 @@ pub fn add_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), 
 }
 
 pub fn get_comment(conn: &PgConnection, book_id: i32) -> Result<Comment, Error> {
-    use crate::schema::comments::dsl::*;
-    let resp_comment = comments
+    use crate::schema::comments::dsl::{book, comments};
+    comments
         .filter(book.eq_all(book_id))
-        .limit(1)
-        .first::<Comment>(conn)?;
-    Ok(resp_comment)
+        .first::<Comment>(conn)
+        .map_err(Into::into)
 }
 
 pub fn update_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(), Error> {
-    use crate::schema::comments::dsl::*;
+    use crate::schema::comments::dsl::{book, comments, text};
     diesel::update(comments.filter(book.eq_all(new_comment.book)))
         .set(text.eq_all(new_comment.text.clone()))
         .execute(conn)?;
@@ -52,7 +50,7 @@ pub fn update_comment(conn: &PgConnection, new_comment: &NewComment) -> Result<(
 }
 
 pub fn delete_comment(conn: &PgConnection, book_id: i32) -> Result<(), Error> {
-    use crate::schema::comments::dsl::*;
+    use crate::schema::comments::dsl::{book, comments};
     let _comment = get_comment(conn, book_id)?;
     diesel::delete(comments.filter(book.eq_all(book_id))).execute(conn)?;
     Ok(())

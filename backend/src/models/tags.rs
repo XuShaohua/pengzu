@@ -29,7 +29,7 @@ pub fn add_tag(conn: &PgConnection, new_tag: &NewTag) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn get_all_tags(conn: &PgConnection) -> Result<Vec<Tag>, Error> {
+pub fn get_tags(conn: &PgConnection) -> Result<Vec<Tag>, Error> {
     use crate::schema::tags::dsl::tags;
     tags.load::<Tag>(conn).map_err(Into::into)
 }

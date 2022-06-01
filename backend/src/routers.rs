@@ -6,7 +6,7 @@ use actix_web::{middleware, web, App, HttpServer, Responder};
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
-use crate::views::{comments, ratings};
+use crate::views::{comments, ratings, tags};
 
 const CONTENT_TYPE: &str = "content-type";
 const APPLICATION_JSON: &str = "application/json";
@@ -40,6 +40,9 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::put().to(ratings::update_rating))
                     .route(web::delete().to(ratings::delete_rating)),
             )
+            .route("/api/tag", web::post().to(tags::add_tag))
+            .route("/api/tag", web::get().to(tags::get_tags))
+            .route("/api/tag/{tag_id}", web::put().to(tags::update_tag))
     })
     .bind(("127.0.0.1", 8080))?
     .run()

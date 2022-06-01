@@ -38,13 +38,11 @@ pub async fn update_rating(
     new_rating: web::Json<models::NewRating>,
 ) -> Result<HttpResponse, Error> {
     debug_assert_eq!(book_id.into_inner(), new_rating.book);
-
     web::block(move || {
         let conn = pool.get()?;
         models::update_rating(&conn, &new_rating)
     })
     .await??;
-
     Ok(HttpResponse::Ok().finish())
 }
 
@@ -57,6 +55,5 @@ pub async fn delete_rating(
         models::delete_rating(&conn, book_id.into_inner())
     })
     .await??;
-
     Ok(HttpResponse::Ok().finish())
 }

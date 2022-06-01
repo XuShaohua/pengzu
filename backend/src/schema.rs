@@ -89,11 +89,21 @@ table! {
 }
 
 table! {
+    identifier_types (id) {
+        id -> Int4,
+        name -> Text,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     identifiers (id) {
         id -> Int4,
         book -> Int4,
-        scheme -> Text,
+        scheme -> Int4,
         value -> Text,
+        url -> Nullable<Text>,
         created -> Timestamp,
         last_modified -> Timestamp,
     }
@@ -145,6 +155,7 @@ allow_tables_to_appear_in_same_query!(
     comments,
     file_formats,
     files,
+    identifier_types,
     identifiers,
     languages,
     publishers,

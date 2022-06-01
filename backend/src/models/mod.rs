@@ -5,7 +5,9 @@
 pub mod authors;
 pub mod books;
 pub mod comments;
+pub mod file_formats;
 pub mod files;
+pub mod identifier_types;
 pub mod identifiers;
 pub mod languages;
 pub mod publishers;

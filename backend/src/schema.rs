@@ -70,7 +70,7 @@ table! {
     files (id) {
         id -> Int4,
         book -> Int4,
-        format -> Text,
+        format -> Int4,
         uncompressed_size -> Int4,
         name -> Text,
         sha -> Text,

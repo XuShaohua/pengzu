@@ -13,7 +13,7 @@ CREATE TABLE files
 (
     id SERIAL PRIMARY KEY,
     book INTEGER NOT NULL,
-    format TEXT NOT NULL,
+    format INTEGER NOT NULL,
     uncompressed_size INTEGER NOT NULL,
     name TEXT NOT NULL,
     sha TEXT NOT NULL,

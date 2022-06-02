@@ -3,6 +3,7 @@ table! {
         id -> Int4,
         name -> Text,
         sort -> Text,
+        link -> Text,
         created -> Timestamp,
         last_modified -> Timestamp,
     }

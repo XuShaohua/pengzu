@@ -14,6 +14,7 @@ use crate::schema::authors;
 pub struct NewAuthor {
     pub name: String,
     pub sort: String,
+    pub link: String,
 }
 
 #[derive(Debug, Serialize, Queryable)]
@@ -21,6 +22,7 @@ pub struct Author {
     pub id: i32,
     pub name: String,
     pub sort: String,
+    pub link: String,
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,
 }

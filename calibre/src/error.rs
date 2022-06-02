@@ -3,8 +3,9 @@
 // that can be found in the LICENSE file.
 
 use std::fmt;
+use std::io;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ErrorKind {
     ConfigError,
 
@@ -15,7 +16,7 @@ pub enum ErrorKind {
     IoError,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone)]
 pub struct Error {
     kind: ErrorKind,
     message: String,
@@ -33,5 +34,22 @@ impl Error {
     #[must_use]
     pub const fn from_string(kind: ErrorKind, message: String) -> Self {
         Self { kind, message }
+    }
+}
+
+impl From<io::Error> for Error {
+    fn from(err: io::Error) -> Self {
+        Self::from_string(ErrorKind::IoError, format!("{}", err))
+    }
+}
+
+impl From<diesel::result::Error> for Error {
+    fn from(err: diesel::result::Error) -> Self {
+        match &err {
+            diesel::result::Error::NotFound => {
+                Self::from_string(ErrorKind::DbNotFoundError, format!("{}", err))
+            }
+            _ => Self::from_string(ErrorKind::DbGeneralError, format!("{}", err)),
+        }
     }
 }

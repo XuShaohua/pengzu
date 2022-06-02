@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use crate::error::Error;
 use chrono::NaiveDateTime;
 use serde::Serialize;
 
@@ -14,4 +15,8 @@ pub struct ImportLibrary {
     pub worker_pid: Option<i32>,
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,
+}
+
+pub fn add_library(_calibre_path: &str) -> Result<i32, Error> {
+    Ok(0)
 }

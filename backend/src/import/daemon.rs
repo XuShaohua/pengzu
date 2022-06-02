@@ -3,8 +3,10 @@
 // that can be found in the LICENSE file.
 
 use clap::{Arg, Command};
+use tokio::runtime::Runtime;
 
 use crate::error::{Error, ErrorKind};
+use crate::import::models::libraries;
 
 const OPT_RESUME: &str = "resume";
 const OPT_IMPORT: &str = "import";
@@ -42,14 +44,19 @@ fn parse_cmdline() -> Command<'static> {
 }
 
 fn resume_task(_library_id: i32) -> Result<(), Error> {
-    Ok(())
+    let runtime = Runtime::new()?;
+    runtime.block_on(async {
+        println!("hello");
+        Ok(())
+    })
 }
 
 fn stop_task(_library_id: i32) -> Result<(), Error> {
     Ok(())
 }
 
-fn new_task(_calibre_path: &str) -> Result<(), Error> {
+fn new_task(calibre_path: &str) -> Result<(), Error> {
+    let _library_id = libraries::add_library(calibre_path)?;
     Ok(())
 }
 

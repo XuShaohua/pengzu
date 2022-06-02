@@ -4,6 +4,7 @@
 
 pub mod authors;
 pub mod comments;
+pub mod data;
 pub mod identifiers;
 pub mod languages;
 pub mod publishers;

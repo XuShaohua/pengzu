@@ -32,7 +32,7 @@ pub fn add_book_author(conn: &PgConnection, new_book_author: &NewBookAuthor) -> 
     Ok(())
 }
 
-pub fn get_book_author(conn: &PgConnection, book_id: i32) -> Result<Vec<BookAuthor>, Error> {
+pub fn get_book_authors(conn: &PgConnection, book_id: i32) -> Result<Vec<BookAuthor>, Error> {
     use crate::schema::books_authors_link::dsl::{book, books_authors_link};
     books_authors_link
         .filter(book.eq(book_id))

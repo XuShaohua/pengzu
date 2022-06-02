@@ -5,6 +5,7 @@
 pub mod authors;
 pub mod books;
 pub mod books_authors;
+pub mod books_publishers;
 pub mod comments;
 pub mod file_formats;
 pub mod files;

@@ -5,3 +5,4 @@
 pub mod authors;
 pub mod languages;
 pub mod publishers;
+pub mod tags;

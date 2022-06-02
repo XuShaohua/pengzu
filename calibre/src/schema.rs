@@ -1,6 +1,6 @@
 table! {
     authors (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         name -> Text,
         sort -> Nullable<Text>,
         link -> Text,
@@ -9,7 +9,7 @@ table! {
 
 table! {
     books (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         title -> Text,
         sort -> Nullable<Text>,
         timestamp -> Nullable<Timestamp>,
@@ -27,7 +27,7 @@ table! {
 
 table! {
     books_authors_link (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         book -> Integer,
         author -> Integer,
     }
@@ -35,7 +35,7 @@ table! {
 
 table! {
     books_languages_link (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         book -> Integer,
         lang_code -> Integer,
         item_order -> Integer,
@@ -44,7 +44,7 @@ table! {
 
 table! {
     books_publishers_link (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         book -> Integer,
         publisher -> Integer,
     }
@@ -52,7 +52,7 @@ table! {
 
 table! {
     books_ratings_link (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         book -> Integer,
         rating -> Integer,
     }
@@ -60,7 +60,7 @@ table! {
 
 table! {
     books_series_link (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         book -> Integer,
         series -> Integer,
     }
@@ -68,7 +68,7 @@ table! {
 
 table! {
     books_tags_link (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         book -> Integer,
         tag -> Integer,
     }
@@ -76,7 +76,7 @@ table! {
 
 table! {
     comments (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         book -> Integer,
         text -> Text,
     }
@@ -84,7 +84,7 @@ table! {
 
 table! {
     data (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         book -> Integer,
         format -> Text,
         uncompressed_size -> Integer,
@@ -94,7 +94,7 @@ table! {
 
 table! {
     identifiers (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         book -> Integer,
         #[sql_name = "type"]
         type_ -> Text,
@@ -104,14 +104,14 @@ table! {
 
 table! {
     languages (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         lang_code -> Text,
     }
 }
 
 table! {
     publishers (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         name -> Text,
         sort -> Nullable<Text>,
     }
@@ -119,14 +119,14 @@ table! {
 
 table! {
     ratings (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         rating -> Nullable<Integer>,
     }
 }
 
 table! {
     series (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         name -> Text,
         sort -> Nullable<Text>,
     }
@@ -134,7 +134,7 @@ table! {
 
 table! {
     tags (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         name -> Text,
     }
 }

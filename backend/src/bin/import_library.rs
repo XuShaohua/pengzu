@@ -2,6 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-pub mod daemon;
-pub mod models;
-pub mod views;
+use backend::error::Error;
+use backend::import::daemon;
+
+fn main() -> Result<(), Error> {
+    daemon::run_daemon()
+}

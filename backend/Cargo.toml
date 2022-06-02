@@ -4,10 +4,6 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 
-[[bin]]
-name = "backend"
-path = "src/bin/main.rs"
-
 [dependencies]
 actix-web = "4.0.1"
 dotenv = "0.15.0"

@@ -3,4 +3,5 @@
 // that can be found in the LICENSE file.
 
 pub mod authors;
+pub mod languages;
 pub mod publishers;

@@ -1,6 +1,6 @@
 -- Your SQL goes here
 
-CREATE TABLE import_details
+CREATE TABLE import_books
 (
     id SERIAL PRIMARY KEY,
     project INTEGER NOT NULL,

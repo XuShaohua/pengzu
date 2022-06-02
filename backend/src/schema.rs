@@ -113,7 +113,7 @@ table! {
 }
 
 table! {
-    import_details (id) {
+    import_books (id) {
         id -> Int4,
         project -> Int4,
         calibre_book -> Int4,
@@ -127,8 +127,8 @@ table! {
     import_projects (id) {
         id -> Int4,
         calibre_path -> Text,
-        status -> Int4,
         total -> Int4,
+        finished -> Bool,
         worker_pid -> Nullable<Int4>,
         created -> Timestamp,
         last_modified -> Timestamp,
@@ -184,7 +184,7 @@ allow_tables_to_appear_in_same_query!(
     files,
     identifier_types,
     identifiers,
-    import_details,
+    import_books,
     import_projects,
     languages,
     publishers,

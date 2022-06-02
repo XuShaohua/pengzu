@@ -2,5 +2,5 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-pub mod detail;
-pub mod project;
+pub mod books;
+pub mod projects;

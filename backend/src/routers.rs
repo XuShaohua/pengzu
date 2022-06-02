@@ -6,7 +6,7 @@ use actix_web::{middleware, web, App, HttpServer, Responder};
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
-use crate::views::{comments, ratings, tags};
+use crate::views::{books, comments, ratings, tags};
 
 const CONTENT_TYPE: &str = "content-type";
 const APPLICATION_JSON: &str = "application/json";
@@ -26,6 +26,8 @@ pub async fn run() -> Result<(), Error> {
             .wrap(middleware::Logger::default())
             .app_data(web::Data::new(pool.clone()))
             .route("/", web::get().to(index))
+            .route("/api/book", web::post().to(books::add_book))
+            .service(web::resource("/api/book/{book_id}").route(web::get().to(books::get_book)))
             .route("/api/comment", web::post().to(comments::add_comment))
             .service(
                 web::resource("/api/comment/{book_id}")

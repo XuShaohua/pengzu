@@ -29,7 +29,6 @@ pub async fn get_comment(
         models::get_comment(&conn, book_id.into_inner())
     })
     .await??;
-
     Ok(HttpResponse::Ok().json(resp_comment))
 }
 

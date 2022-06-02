@@ -113,7 +113,18 @@ table! {
 }
 
 table! {
-    import_project (id) {
+    import_details (id) {
+        id -> Int4,
+        project -> Int4,
+        calibre_book -> Int4,
+        status -> Int4,
+        book -> Nullable<Int4>,
+        created -> Timestamp,
+    }
+}
+
+table! {
+    import_projects (id) {
         id -> Int4,
         calibre_path -> Text,
         status -> Int4,
@@ -173,7 +184,8 @@ allow_tables_to_appear_in_same_query!(
     files,
     identifier_types,
     identifiers,
-    import_project,
+    import_details,
+    import_projects,
     languages,
     publishers,
     ratings,

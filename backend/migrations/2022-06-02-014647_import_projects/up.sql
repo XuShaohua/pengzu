@@ -1,6 +1,6 @@
 -- Your SQL goes here
 
-CREATE TABLE import_project
+CREATE TABLE import_projects
 (
     id SERIAL PRIMARY KEY,
     calibre_path TEXT NOT NULL,

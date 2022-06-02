@@ -113,6 +113,18 @@ table! {
 }
 
 table! {
+    import_project (id) {
+        id -> Int4,
+        calibre_path -> Text,
+        status -> Int4,
+        total -> Int4,
+        worker_pid -> Nullable<Int4>,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     languages (id) {
         id -> Int4,
         lang_code -> Text,
@@ -161,6 +173,7 @@ allow_tables_to_appear_in_same_query!(
     files,
     identifier_types,
     identifiers,
+    import_project,
     languages,
     publishers,
     ratings,

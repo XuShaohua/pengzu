@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
@@ -20,6 +21,7 @@ pub struct BookAuthor {
     pub id: i32,
     pub book: i32,
     pub author: i32,
+    pub created: NaiveDateTime,
 }
 
 pub fn add_book_author(conn: &PgConnection, new_book_author: &NewBookAuthor) -> Result<(), Error> {

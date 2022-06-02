@@ -12,5 +12,6 @@ CREATE TABLE books_publishers_link
     id SERIAL PRIMARY KEY,
     book INTEGER NOT NULL,
     publisher INTEGER NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (book)
 )

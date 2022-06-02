@@ -28,6 +28,7 @@ table! {
         id -> Int4,
         book -> Int4,
         author -> Int4,
+        created -> Timestamp,
     }
 }
 
@@ -36,6 +37,7 @@ table! {
         id -> Int4,
         book -> Int4,
         lang_code -> Int4,
+        created -> Timestamp,
     }
 }
 
@@ -44,6 +46,7 @@ table! {
         id -> Int4,
         book -> Int4,
         publisher -> Int4,
+        created -> Timestamp,
     }
 }
 
@@ -113,6 +116,7 @@ table! {
     languages (id) {
         id -> Int4,
         lang_code -> Text,
+        created -> Timestamp,
     }
 }
 

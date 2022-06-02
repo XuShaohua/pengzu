@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use chrono::NaiveDateTime;
 use diesel::{Insertable, PgConnection, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
@@ -18,6 +19,7 @@ pub struct NewLanguage {
 pub struct Language {
     pub id: i32,
     pub lang_code: String,
+    pub created: NaiveDateTime,
 }
 
 pub fn add_language(conn: &PgConnection, new_language: &NewLanguage) -> Result<(), Error> {

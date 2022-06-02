@@ -122,7 +122,7 @@ CREATE TABLE publishers
 CREATE TABLE ratings
 (
     id INTEGER PRIMARY KEY NOT NULL,
-    rating INTEGER CHECK (rating > -1 AND rating < 11),
+    rating INTEGER NOT NULL CHECK (rating > -1 AND rating < 11),
     UNIQUE (rating)
 );
 

@@ -120,7 +120,7 @@ table! {
 table! {
     ratings (id) {
         id -> Integer,
-        rating -> Nullable<Integer>,
+        rating -> Integer,
     }
 }
 

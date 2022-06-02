@@ -6,11 +6,18 @@ use chrono::NaiveDateTime;
 
 pub struct ImportBook {
     pub id: i32,
-    pub project: i32,
+    pub library: i32,
     pub calibre_book: i32,
     pub status: u32,
     pub book: Option<i32>,
     pub created: NaiveDateTime,
 }
 
-pub enum ImportBookStatus {}
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ImportBookStatus {
+    Ok = 0,
+    BookNotFoundError = 1,
+    CoverNotFoundError = 2,
+    DuplicateError = 3,
+    OtherErrors = 128,
+}

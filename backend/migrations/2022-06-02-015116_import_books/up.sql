@@ -3,7 +3,7 @@
 CREATE TABLE import_books
 (
     id SERIAL PRIMARY KEY,
-    project INTEGER NOT NULL,
+    library INTEGER NOT NULL,
     calibre_book INTEGER NOT NULL,
     status INTEGER NOT NULL,
     book INTEGER,

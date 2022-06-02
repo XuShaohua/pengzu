@@ -115,7 +115,7 @@ table! {
 table! {
     import_books (id) {
         id -> Int4,
-        project -> Int4,
+        library -> Int4,
         calibre_book -> Int4,
         status -> Int4,
         book -> Nullable<Int4>,
@@ -124,7 +124,7 @@ table! {
 }
 
 table! {
-    import_projects (id) {
+    import_libraries (id) {
         id -> Int4,
         calibre_path -> Text,
         total -> Int4,
@@ -185,7 +185,7 @@ allow_tables_to_appear_in_same_query!(
     identifier_types,
     identifiers,
     import_books,
-    import_projects,
+    import_libraries,
     languages,
     publishers,
     ratings,

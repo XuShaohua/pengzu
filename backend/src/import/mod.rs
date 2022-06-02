@@ -3,4 +3,4 @@
 // that can be found in the LICENSE file.
 
 pub mod books;
-pub mod projects;
+pub mod libraries;

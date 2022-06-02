@@ -1,3 +1,3 @@
 -- This file should undo anything in `up.sql`
 
-DROP TABLE import_projects;
+DROP TABLE import_libraries;

@@ -3,15 +3,14 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::Queryable;
 use serde::Serialize;
 
-#[derive(Debug, Serialize, Queryable)]
-pub struct ImportProject {
+#[derive(Debug, Serialize)]
+pub struct ImportLibrary {
     pub id: i32,
     pub calibre_path: String,
     pub total: i32,
-    pub finished: ok,
+    pub finished: bool,
     pub worker_pid: Option<i32>,
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,

@@ -4,6 +4,7 @@
 
 pub mod authors;
 pub mod books_authors;
+pub mod books_languages;
 pub mod books_ratings;
 pub mod comments;
 pub mod data;

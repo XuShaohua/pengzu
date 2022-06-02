@@ -13,8 +13,7 @@ pub struct BookRating {
 }
 
 pub fn get_book_rating(conn: &SqliteConnection, book_id: i32) -> Result<BookRating, Error> {
-    use crate::schema::books_ratings_link;
-    use crate::schema::ratings;
+    use crate::schema::{books_ratings_link, ratings};
 
     books_ratings_link::dsl::books_ratings_link
         .filter(books_ratings_link::book.eq(book_id))

@@ -13,8 +13,7 @@ pub struct BookAuthor {
 }
 
 pub fn get_book_authors(conn: &SqliteConnection, book_id: i32) -> Result<Vec<BookAuthor>, Error> {
-    use crate::schema::authors;
-    use crate::schema::books_authors_link;
+    use crate::schema::{authors, books_authors_link};
 
     books_authors_link::dsl::books_authors_link
         .filter(books_authors_link::book.eq(book_id))

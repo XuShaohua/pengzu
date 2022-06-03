@@ -5,7 +5,7 @@
 use clap::{Arg, Command};
 use tokio::runtime::Runtime;
 
-use crate::error::{Error, ErrorKind};
+use crate::error::Error;
 use crate::import::models::libraries;
 
 const OPT_RESUME: &str = "resume";
@@ -64,7 +64,8 @@ pub fn run_daemon() -> Result<(), Error> {
     dotenv::dotenv().ok();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    let matches = parse_cmdline().get_matches();
+    let cmd = parse_cmdline();
+    let matches = cmd.get_matches();
 
     if let Some(library_id) = matches.value_of(OPT_RESUME) {
         let library_id = library_id.parse()?;
@@ -78,8 +79,5 @@ pub fn run_daemon() -> Result<(), Error> {
         return new_task(calibre_path);
     }
 
-    Err(Error::new(
-        ErrorKind::ConfigError,
-        "Invalid command line option",
-    ))
+    parse_cmdline().print_help().map_err(Into::into)
 }

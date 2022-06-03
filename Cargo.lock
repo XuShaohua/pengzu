@@ -324,6 +324,7 @@ dependencies = [
 name = "calibre"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "diesel",
  "dotenv",
 ]

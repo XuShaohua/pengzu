@@ -5,6 +5,7 @@
 use calibre::models::authors::get_authors;
 use calibre::models::languages::get_languages;
 use calibre::models::publishers::get_publishers;
+use calibre::models::tags::get_tags;
 use diesel::{PgConnection, SqliteConnection};
 
 use crate::db::get_connection_pool;
@@ -13,6 +14,7 @@ use crate::import::db::get_calibre_db;
 use crate::models::authors::{add_author, NewAuthor};
 use crate::models::languages::{add_language, NewLanguage};
 use crate::models::publishers::{add_publisher, NewPublisher};
+use crate::models::tags::{add_tag, NewTag};
 
 fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
     let limit = 10;
@@ -100,14 +102,31 @@ fn import_publishers(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> 
     Ok(())
 }
 
-fn import_tags(conn: &SqliteConnection) -> Result<(), Error> {
-    use calibre::models::tags::get_tags;
+fn import_tags(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
     let limit = 10;
     let mut offset = 0;
-    let tag_list = get_tags(conn, limit, offset)?;
-    println!("tags: {:#?}", tag_list);
-    offset += tag_list.len() as i64;
-    println!("offset: {}", offset);
+
+    loop {
+        let tag_list = get_tags(sqlite_conn, limit, offset)?;
+        if tag_list.is_empty() {
+            break;
+        }
+        offset += tag_list.len() as i64;
+        log::info!("tags offset: {}", offset);
+
+        for tag in tag_list {
+            let new_tag = NewTag { name: tag.name };
+            if let Err(err) = add_tag(pg_conn, &new_tag) {
+                match err.kind() {
+                    ErrorKind::DbUniqueViolationError => {
+                        log::info!("tag exists: {:?}", new_tag);
+                        continue;
+                    }
+                    _ => return Err(err),
+                }
+            }
+        }
+    }
 
     Ok(())
 }
@@ -120,7 +139,7 @@ pub fn new_task(calibre_path: &str) -> Result<(), Error> {
     import_authors(&sqlite_conn, &pg_conn)?;
     import_languages(&sqlite_conn, &pg_conn)?;
     import_publishers(&sqlite_conn, &pg_conn)?;
-    // import_tags(&sqlite_conn)?;
+    import_tags(&sqlite_conn, &pg_conn)?;
 
     Ok(())
 }

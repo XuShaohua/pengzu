@@ -2,9 +2,9 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-use crate::db;
 use diesel::{PgConnection, SqliteConnection};
 
+use crate::db::get_connection_pool;
 use crate::error::{Error, ErrorKind};
 use crate::import::db::get_calibre_db;
 
@@ -16,12 +16,11 @@ fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Res
     let mut offset = 0;
     loop {
         let author_list = get_authors(sqlite_conn, limit, offset)?;
-        println!("author list: {:#?}", author_list);
         if author_list.is_empty() {
             break;
         }
         offset += author_list.len() as i64;
-        println!("offset: {:?}", offset);
+        log::info!("authors offset: {:?}", offset);
 
         for author in author_list {
             let new_author = NewAuthor {
@@ -45,10 +44,26 @@ fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Res
     Ok(())
 }
 
-fn import_languages(conn: &SqliteConnection) -> Result<(), Error> {
+fn import_languages(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
+    use crate::models::languages::{add_language, NewLanguage};
     use calibre::models::languages::get_languages;
-    let lang_list = get_languages(conn)?;
-    println!("lang list: {:#?}", lang_list);
+
+    let lang_list = get_languages(sqlite_conn)?;
+    log::info!("lang list len: {}", lang_list.len());
+    for lang in lang_list {
+        let new_lang = NewLanguage {
+            lang_code: lang.lang_code,
+        };
+        if let Err(err) = add_language(pg_conn, &new_lang) {
+            match err.kind() {
+                ErrorKind::DbUniqueViolationError => {
+                    log::info!("language exists: {:?}", new_lang);
+                    continue;
+                }
+                _ => return Err(err),
+            }
+        }
+    }
 
     Ok(())
 }
@@ -78,11 +93,11 @@ fn import_tags(conn: &SqliteConnection) -> Result<(), Error> {
 
 pub fn new_task(calibre_path: &str) -> Result<(), Error> {
     let calibre_pool = get_calibre_db(calibre_path)?;
-    let pg_pool = db::get_connection_pool()?;
+    let pg_pool = get_connection_pool()?;
     let sqlite_conn = calibre_pool.get()?;
     let pg_conn = pg_pool.get()?;
     import_authors(&sqlite_conn, &pg_conn)?;
-    // import_languages(&sqlite_conn)?;
+    import_languages(&sqlite_conn, &pg_conn)?;
     // import_publishers(&sqlite_conn)?;
     // import_tags(&sqlite_conn)?;
 

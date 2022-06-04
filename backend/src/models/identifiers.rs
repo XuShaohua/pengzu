@@ -13,7 +13,7 @@ use crate::schema::identifiers;
 #[table_name = "identifiers"]
 pub struct NewIdentifier {
     pub book: i32,
-    pub scheme: i32,
+    pub scheme: String,
     pub url: Option<String>,
 }
 
@@ -21,7 +21,7 @@ pub struct NewIdentifier {
 pub struct Identifier {
     pub id: i32,
     pub book: i32,
-    pub scheme: i32,
+    pub scheme: String,
     pub value: String,
     pub url: Option<String>,
     pub created: NaiveDateTime,

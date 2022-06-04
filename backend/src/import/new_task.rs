@@ -2,16 +2,19 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
+use calibre::models::authors::get_authors;
+use calibre::models::languages::get_languages;
+use calibre::models::publishers::get_publishers;
 use diesel::{PgConnection, SqliteConnection};
 
 use crate::db::get_connection_pool;
 use crate::error::{Error, ErrorKind};
 use crate::import::db::get_calibre_db;
+use crate::models::authors::{add_author, NewAuthor};
+use crate::models::languages::{add_language, NewLanguage};
+use crate::models::publishers::{add_publisher, NewPublisher};
 
 fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
-    use crate::models::authors::{add_author, NewAuthor};
-    use calibre::models::authors::get_authors;
-
     let limit = 10;
     let mut offset = 0;
     loop {
@@ -45,9 +48,6 @@ fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Res
 }
 
 fn import_languages(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
-    use crate::models::languages::{add_language, NewLanguage};
-    use calibre::models::languages::get_languages;
-
     let lang_list = get_languages(sqlite_conn)?;
     log::info!("lang list len: {}", lang_list.len());
     for lang in lang_list {
@@ -68,14 +68,35 @@ fn import_languages(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> R
     Ok(())
 }
 
-fn import_publishers(conn: &SqliteConnection) -> Result<(), Error> {
-    use calibre::models::publishers::get_publishers;
+fn import_publishers(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
     let limit = 10;
     let mut offset = 0;
-    let publisher_list = get_publishers(&conn, limit, offset)?;
-    println!("publishers: {:#?}", publisher_list);
-    offset += publisher_list.len() as i64;
-    println!("offset: {}", offset);
+    loop {
+        let publisher_list = get_publishers(&sqlite_conn, limit, offset)?;
+        if publisher_list.is_empty() {
+            break;
+        }
+        offset += publisher_list.len() as i64;
+        log::info!("publisher offset: {}", offset);
+
+        for publisher in publisher_list {
+            let new_publisher = NewPublisher {
+                sort: publisher.sort.unwrap_or_else(|| publisher.name.clone()),
+                name: publisher.name,
+            };
+
+            if let Err(err) = add_publisher(pg_conn, &new_publisher) {
+                match err.kind() {
+                    ErrorKind::DbUniqueViolationError => {
+                        log::info!("publisher exists: {:?}", new_publisher);
+                        continue;
+                    }
+                    _ => return Err(err),
+                }
+            }
+        }
+    }
+
     Ok(())
 }
 
@@ -98,7 +119,7 @@ pub fn new_task(calibre_path: &str) -> Result<(), Error> {
     let pg_conn = pg_pool.get()?;
     import_authors(&sqlite_conn, &pg_conn)?;
     import_languages(&sqlite_conn, &pg_conn)?;
-    // import_publishers(&sqlite_conn)?;
+    import_publishers(&sqlite_conn, &pg_conn)?;
     // import_tags(&sqlite_conn)?;
 
     Ok(())

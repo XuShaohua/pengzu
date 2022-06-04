@@ -6,7 +6,7 @@ use clap::{Arg, Command};
 use tokio::runtime::Runtime;
 
 use crate::error::Error;
-use crate::import::models::libraries;
+use crate::import::new_task::new_task;
 
 const OPT_RESUME: &str = "resume";
 const OPT_IMPORT: &str = "import";
@@ -52,11 +52,6 @@ fn resume_task(_library_id: i32) -> Result<(), Error> {
 }
 
 fn stop_task(_library_id: i32) -> Result<(), Error> {
-    Ok(())
-}
-
-fn new_task(calibre_path: &str) -> Result<(), Error> {
-    let _library_id = libraries::add_library(calibre_path)?;
     Ok(())
 }
 

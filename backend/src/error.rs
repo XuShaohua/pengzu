@@ -99,6 +99,15 @@ impl From<std::num::ParseIntError> for Error {
     }
 }
 
+impl From<std::ffi::OsString> for Error {
+    fn from(err: std::ffi::OsString) -> Self {
+        Self::from_string(
+            ErrorKind::ConfigError,
+            format!("OsString to String err: {:?}", err),
+        )
+    }
+}
+
 impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {

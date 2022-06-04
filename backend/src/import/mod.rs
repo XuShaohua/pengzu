@@ -4,6 +4,8 @@
 
 mod commands;
 pub mod daemon;
+mod db;
 pub mod models;
+mod new_task;
 mod run;
 pub mod views;

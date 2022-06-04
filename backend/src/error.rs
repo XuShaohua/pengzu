@@ -12,6 +12,8 @@ use std::io;
 pub enum ErrorKind {
     ConfigError,
 
+    CalibreError,
+
     DbConnError,
     DbGeneralError,
     DbUniqueViolationError,
@@ -19,7 +21,6 @@ pub enum ErrorKind {
     DbNotFoundError,
 
     IoError,
-
     ActixBlockingError,
 }
 
@@ -108,12 +109,19 @@ impl From<std::ffi::OsString> for Error {
     }
 }
 
+impl From<calibre::error::Error> for Error {
+    fn from(err: calibre::error::Error) -> Self {
+        Self::from_string(ErrorKind::CalibreError, format!("err: {:?}", err))
+    }
+}
+
 impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {
-            ErrorKind::DbConnError
+            ErrorKind::ConfigError
+            | ErrorKind::CalibreError
+            | ErrorKind::DbConnError
             | ErrorKind::DbGeneralError
-            | ErrorKind::ConfigError
             | ErrorKind::ActixBlockingError => StatusCode::INTERNAL_SERVER_ERROR,
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError

@@ -12,9 +12,14 @@ pub struct Publisher {
     pub sort: Option<String>,
 }
 
-pub fn get_publishers(conn: &SqliteConnection, offset: i64) -> Result<Vec<Publisher>, Error> {
+pub fn get_publishers(
+    conn: &SqliteConnection,
+    limit: i64,
+    offset: i64,
+) -> Result<Vec<Publisher>, Error> {
     use crate::schema::publishers::dsl::publishers;
     publishers
+        .limit(limit)
         .offset(offset)
         .load::<Publisher>(conn)
         .map_err(Into::into)

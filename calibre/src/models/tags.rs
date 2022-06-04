@@ -11,7 +11,10 @@ pub struct Tag {
     pub name: String,
 }
 
-pub fn get_tags(conn: &SqliteConnection, offset: i64) -> Result<Vec<Tag>, Error> {
+pub fn get_tags(conn: &SqliteConnection, limit: i64, offset: i64) -> Result<Vec<Tag>, Error> {
     use crate::schema::tags::dsl::tags;
-    tags.offset(offset).load::<Tag>(conn).map_err(Into::into)
+    tags.limit(limit)
+        .offset(offset)
+        .load::<Tag>(conn)
+        .map_err(Into::into)
 }

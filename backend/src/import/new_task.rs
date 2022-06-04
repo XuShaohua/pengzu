@@ -2,19 +2,45 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-use diesel::SqliteConnection;
+use crate::db;
+use diesel::{PgConnection, SqliteConnection};
 
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
 use crate::import::db::get_calibre_db;
 
-fn import_authors(conn: &SqliteConnection) -> Result<(), Error> {
+fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
+    use crate::models::authors::{add_author, NewAuthor};
     use calibre::models::authors::get_authors;
+
     let limit = 10;
     let mut offset = 0;
-    let author_list = get_authors(conn, limit, offset)?;
-    println!("author list: {:#?}", author_list);
-    offset += author_list.len() as i64;
-    println!("offset: {:?}", offset);
+    loop {
+        let author_list = get_authors(sqlite_conn, limit, offset)?;
+        println!("author list: {:#?}", author_list);
+        if author_list.is_empty() {
+            break;
+        }
+        offset += author_list.len() as i64;
+        println!("offset: {:?}", offset);
+
+        for author in author_list {
+            let new_author = NewAuthor {
+                sort: author.sort.unwrap_or_else(|| author.name.clone()),
+                name: author.name,
+                link: author.link,
+            };
+
+            if let Err(err) = add_author(pg_conn, &new_author) {
+                match err.kind() {
+                    ErrorKind::DbUniqueViolationError => {
+                        log::info!("author exists: {:?}", new_author);
+                        continue;
+                    }
+                    _ => return Err(err),
+                }
+            }
+        }
+    }
 
     Ok(())
 }
@@ -52,12 +78,13 @@ fn import_tags(conn: &SqliteConnection) -> Result<(), Error> {
 
 pub fn new_task(calibre_path: &str) -> Result<(), Error> {
     let calibre_pool = get_calibre_db(calibre_path)?;
-    println!("calibre pool: ");
-    let conn = calibre_pool.get()?;
-    import_authors(&conn)?;
-    import_languages(&conn)?;
-    import_publishers(&conn)?;
-    import_tags(&conn)?;
+    let pg_pool = db::get_connection_pool()?;
+    let sqlite_conn = calibre_pool.get()?;
+    let pg_conn = pg_pool.get()?;
+    import_authors(&sqlite_conn, &pg_conn)?;
+    // import_languages(&sqlite_conn)?;
+    // import_publishers(&sqlite_conn)?;
+    // import_tags(&sqlite_conn)?;
 
     Ok(())
 }

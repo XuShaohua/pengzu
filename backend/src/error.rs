@@ -51,6 +51,16 @@ impl Error {
     pub const fn from_string(kind: ErrorKind, message: String) -> Self {
         Self { kind, message }
     }
+
+    #[must_use]
+    pub const fn kind(&self) -> ErrorKind {
+        self.kind
+    }
+
+    #[must_use]
+    pub fn message(&self) -> &str {
+        &self.message
+    }
 }
 
 impl From<io::Error> for Error {

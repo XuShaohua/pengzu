@@ -12,7 +12,7 @@ CREATE TABLE identifiers
 (
     id SERIAL PRIMARY KEY,
     book INTEGER NOT NULL,
-    scheme TEXT NOT NULL,
+    scheme INTEGER NOT NULL,
     value TEXT NOT NULL,
     url TEXT,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

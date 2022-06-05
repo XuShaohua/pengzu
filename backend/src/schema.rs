@@ -71,10 +71,19 @@ table! {
 }
 
 table! {
+    file_formats (id) {
+        id -> Int4,
+        name -> Text,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     files (id) {
         id -> Int4,
         book -> Int4,
-        format -> Text,
+        format -> Int4,
         uncompressed_size -> Int4,
         name -> Text,
         sha -> Text,
@@ -84,10 +93,19 @@ table! {
 }
 
 table! {
+    identifier_types (id) {
+        id -> Int4,
+        name -> Text,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     identifiers (id) {
         id -> Int4,
         book -> Int4,
-        scheme -> Text,
+        scheme -> Int4,
         value -> Text,
         url -> Nullable<Text>,
         created -> Timestamp,
@@ -163,7 +181,9 @@ allow_tables_to_appear_in_same_query!(
     books_publishers_link,
     books_tags_link,
     comments,
+    file_formats,
     files,
+    identifier_types,
     identifiers,
     import_books,
     import_libraries,

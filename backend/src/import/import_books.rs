@@ -207,6 +207,7 @@ fn copy_book_file(
 ) -> Result<(), Error> {
     let src_path = get_book_file_path(calibre_library_path, calibre_book_path, file_name, format);
     let dest_path = get_book_file_path(library_path, book_path, file_name, format);
+    fs::create_dir_all(&dest_path)?;
     fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
 }
 

@@ -8,6 +8,7 @@ use shell_rs::hashsum::{sha1sum, Options};
 use std::collections::HashMap;
 use std::fs;
 use std::os::unix::fs::MetadataExt;
+use std::path::PathBuf;
 
 use crate::error::Error;
 
@@ -16,13 +17,14 @@ pub fn get_book_file_path(
     book_path: &str,
     file_name: &str,
     format: &str,
-) -> String {
-    vec![
+) -> PathBuf {
+    let p: String = [
         library_path,
         book_path,
         &format!("{}.{}", file_name, format.to_ascii_lowercase()),
     ]
-    .join("/")
+    .join("/");
+    PathBuf::from(p)
 }
 
 pub fn calculate_book_hashes(

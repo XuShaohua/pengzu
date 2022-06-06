@@ -169,20 +169,34 @@ fn import_book(
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
     last_book_id: i32,
-) -> Result<(i32, i32), Error> {
-    log::info!("import_book() calibre path: {}", calibre_path);
-    let calibre_book = get_next_book(sqlite_conn, last_book_id)?;
-    log::info!("book: {:#?}", calibre_book);
-    let new_book = NewBook {
-        title: calibre_book.title.clone(),
-        sort: calibre_book.sort.unwrap_or_else(|| calibre_book.title),
-        author_sort: calibre_book.author_sort.unwrap_or_default(),
-        path: calibre_book.path,
-        uuid: calibre_book.uuid,
-        has_cover: calibre_book.has_cover,
-    };
-    let book_id = add_book(pg_conn, &new_book)?;
-    Ok((calibre_book.id, book_id))
+) -> Result<Option<(i32, i32)>, Error> {
+    log::info!("import_book({}, {})", calibre_path, last_book_id);
+    match get_next_book(sqlite_conn, last_book_id) {
+        Ok(calibre_book) => {
+            log::info!("book: {:#?}", calibre_book);
+            let new_book = NewBook {
+                title: calibre_book.title.clone(),
+                sort: calibre_book.sort.unwrap_or_else(|| calibre_book.title),
+                author_sort: calibre_book.author_sort.unwrap_or_default(),
+                path: calibre_book.path,
+                uuid: calibre_book.uuid,
+                has_cover: calibre_book.has_cover,
+            };
+            let book_id = add_book(pg_conn, &new_book)?;
+            Ok(Some((calibre_book.id, book_id)))
+        }
+        Err(err) => match err.kind() {
+            calibre::error::ErrorKind::DbNotFoundError => {
+                log::info!(
+                    "No more books in calibre library: {}, last book id is: {}",
+                    calibre_path,
+                    last_book_id
+                );
+                Ok(None)
+            }
+            _ => Err(err.into()),
+        },
+    }
 }
 
 pub fn import_books(
@@ -192,16 +206,25 @@ pub fn import_books(
 ) -> Result<(), Error> {
     log::info!("calibre path: {}", calibre_path);
     let mut last_book_id = 0;
-    let (calibre_book_id, book_id) = import_book(calibre_path, sqlite_conn, pg_conn, last_book_id)?;
-    last_book_id = calibre_book_id;
-    log::info!("last book id updated: {}", last_book_id);
 
-    import_files(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-    import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-    import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-    import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-    import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-    import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    loop {
+        match import_book(calibre_path, sqlite_conn, pg_conn, last_book_id) {
+            Ok(Some((calibre_book_id, book_id))) => {
+                last_book_id = calibre_book_id;
+                log::info!("last book id updated: {}", last_book_id);
 
-    Ok(())
+                import_files(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+                import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+                import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+                import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+                import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+                import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+            }
+            Ok(None) => {
+                log::info!("DONE");
+                return Ok(());
+            }
+            Err(err) => return Err(err),
+        }
+    }
 }

@@ -84,7 +84,7 @@ table! {
         id -> Int4,
         book -> Int4,
         format -> Int4,
-        uncompressed_size -> Int4,
+        size -> Int4,
         name -> Text,
         sha -> Text,
         created -> Timestamp,

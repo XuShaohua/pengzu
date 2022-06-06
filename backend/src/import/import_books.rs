@@ -179,7 +179,7 @@ fn import_files(
         let new_file = NewFile {
             book: book_id,
             format: file_format.id,
-            uncompressed_size: calibre_file.uncompressed_size,
+            size: calibre_file.uncompressed_size,
             name: calibre_file.name,
             // TODO(Shaohua): Check file hash.
             sha: "".to_string(),

@@ -14,7 +14,7 @@ use crate::schema::files;
 pub struct NewFile {
     pub book: i32,
     pub format: i32,
-    pub uncompressed_size: i32,
+    pub size: i32,
     pub name: String,
     pub sha: String,
 }
@@ -24,7 +24,7 @@ pub struct File {
     pub id: i32,
     pub book: i32,
     pub format: i32,
-    pub uncompressed_size: i32,
+    pub size: i32,
     pub name: String,
     pub sha: String,
     pub created: NaiveDateTime,

@@ -14,7 +14,7 @@ CREATE TABLE files
     id SERIAL PRIMARY KEY,
     book INTEGER NOT NULL,
     format INTEGER NOT NULL,
-    uncompressed_size INTEGER NOT NULL,
+    size INTEGER NOT NULL,
     name TEXT NOT NULL,
     sha TEXT NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

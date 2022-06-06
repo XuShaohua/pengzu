@@ -185,12 +185,12 @@ pub fn new_task(calibre_path: &str) -> Result<(), Error> {
     let pg_pool = get_connection_pool()?;
     let sqlite_conn = calibre_pool.get()?;
     let pg_conn = pg_pool.get()?;
-    // import_authors(&sqlite_conn, &pg_conn)?;
-    // import_languages(&sqlite_conn, &pg_conn)?;
-    // import_publishers(&sqlite_conn, &pg_conn)?;
-    // import_tags(&sqlite_conn, &pg_conn)?;
-    // import_file_formats(&sqlite_conn, &pg_conn)?;
-    // import_identifier_types(&sqlite_conn, &pg_conn)?;
+    import_authors(&sqlite_conn, &pg_conn)?;
+    import_languages(&sqlite_conn, &pg_conn)?;
+    import_publishers(&sqlite_conn, &pg_conn)?;
+    import_tags(&sqlite_conn, &pg_conn)?;
+    import_file_formats(&sqlite_conn, &pg_conn)?;
+    import_identifier_types(&sqlite_conn, &pg_conn)?;
 
     import_books(calibre_path, &sqlite_conn, &pg_conn)?;
 

@@ -148,6 +148,7 @@ fn import_files(
 ) -> Result<(), Error> {
     log::info!("import_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
+    log::info!("calibre_files len: {}", calibre_files.len());
     for calibre_file in calibre_files {
         let file_format = get_file_format_by_name(pg_conn, &calibre_file.format)?;
         let new_file = NewFile {

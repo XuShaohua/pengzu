@@ -33,9 +33,15 @@ pub fn add_publisher(conn: &PgConnection, new_publisher: &NewPublisher) -> Resul
     Ok(())
 }
 
-pub fn get_publisher(conn: &PgConnection, id: i32) -> Result<Publisher, Error> {
-    use crate::schema::publishers::dsl::publishers;
-    publishers.find(id).first(conn).map_err(Into::into)
+pub fn get_publisher_by_name(
+    conn: &PgConnection,
+    publisher_name: &str,
+) -> Result<Publisher, Error> {
+    use crate::schema::publishers::dsl::{name, publishers};
+    publishers
+        .filter(name.eq(publisher_name))
+        .first(conn)
+        .map_err(Into::into)
 }
 
 pub fn update_publisher(

@@ -4,6 +4,7 @@
 
 use calibre::models::books::get_next_book;
 use calibre::models::books_authors::get_book_authors;
+use calibre::models::books_publishers::get_book_publisher;
 use calibre::models::comments::get_comment;
 use diesel::{PgConnection, SqliteConnection};
 
@@ -11,7 +12,9 @@ use crate::error::Error;
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
+use crate::models::books_publishers::{add_book_publisher, NewBookPublisher};
 use crate::models::comments::{add_comment, NewComment};
+use crate::models::publishers::get_publisher_by_name;
 
 fn import_authors(
     sqlite_conn: &SqliteConnection,
@@ -44,6 +47,21 @@ fn import_comment(
         text: comment.text,
     };
     add_comment(pg_conn, &new_comment)
+}
+
+fn import_publisher(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+    calibre_book_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    let calibre_publisher = get_book_publisher(sqlite_conn, calibre_book_id)?;
+    let publisher = get_publisher_by_name(pg_conn, &calibre_publisher.name)?;
+    let new_publisher = NewBookPublisher {
+        book: book_id,
+        publisher: publisher.id,
+    };
+    add_book_publisher(pg_conn, &new_publisher)
 }
 
 fn import_book(
@@ -80,6 +98,7 @@ pub fn import_books(
 
     import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
 
     Ok(())
 }

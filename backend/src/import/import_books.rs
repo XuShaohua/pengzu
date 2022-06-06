@@ -2,9 +2,11 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use calibre::error::ErrorKind;
 use calibre::models::books::get_next_book;
 use calibre::models::books_authors::get_book_authors;
 use calibre::models::books_publishers::get_book_publisher;
+use calibre::models::books_ratings::get_book_rating;
 use calibre::models::books_tags::get_book_tags;
 use calibre::models::comments::get_comment;
 use calibre::models::data::get_book_data;
@@ -23,6 +25,7 @@ use crate::models::files::{add_file, NewFile};
 use crate::models::identifier_types::get_identifier_type_by_name;
 use crate::models::identifiers::{add_identifier, NewIdentifier};
 use crate::models::publishers::get_publisher_by_name;
+use crate::models::ratings::{add_rating, NewRating};
 use crate::models::tags::get_tag_by_name;
 
 fn import_authors(
@@ -120,6 +123,28 @@ fn import_publisher(
     Ok(())
 }
 
+fn import_rating(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+    calibre_book_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    log::info!("import_rating({}, {})", calibre_book_id, book_id);
+    match get_book_rating(sqlite_conn, calibre_book_id) {
+        Ok(calibre_rating) => {
+            let new_rating = NewRating {
+                book: book_id,
+                rating: calibre_rating.rating,
+            };
+            add_rating(pg_conn, &new_rating)
+        }
+        Err(err) => match err.kind() {
+            ErrorKind::DbNotFoundError => Ok(()),
+            _ => Err(err.into()),
+        },
+    }
+}
+
 fn import_tags(
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
@@ -174,7 +199,7 @@ fn import_book(
     log::info!("import_book({}, {})", calibre_path, last_book_id);
     match get_next_book(sqlite_conn, last_book_id) {
         Ok(calibre_book) => {
-            log::info!("book: {:#?}", calibre_book);
+            log::info!("book: {:?}", calibre_book);
             let new_book = NewBook {
                 title: calibre_book.title.clone(),
                 sort: calibre_book.sort.unwrap_or_else(|| calibre_book.title),
@@ -219,6 +244,7 @@ pub fn import_books(
                 import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+                import_rating(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
             }
             Ok(None) => {

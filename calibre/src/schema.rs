@@ -44,6 +44,15 @@ table! {
 }
 
 table! {
+    books_plugin_data (id) {
+        id -> Integer,
+        book -> Integer,
+        name -> Text,
+        val -> Text,
+    }
+}
+
+table! {
     books_publishers_link (id) {
         id -> Integer,
         book -> Integer,
@@ -145,6 +154,7 @@ allow_tables_to_appear_in_same_query!(
     books,
     books_authors_link,
     books_languages_link,
+    books_plugin_data,
     books_publishers_link,
     books_ratings_link,
     books_series_link,

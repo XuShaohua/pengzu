@@ -3,12 +3,34 @@
 // that can be found in the LICENSE file.
 
 use calibre::models::books::get_next_book;
+use calibre::models::books_authors::get_book_authors;
 use calibre::models::comments::get_comment;
 use diesel::{PgConnection, SqliteConnection};
 
 use crate::error::Error;
+use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, NewBook};
+use crate::models::books_authors::{add_book_author, NewBookAuthor};
 use crate::models::comments::{add_comment, NewComment};
+
+fn import_authors(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+    calibre_book_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    let author_list = get_book_authors(sqlite_conn, calibre_book_id)?;
+    for calibre_author in &author_list {
+        let author = get_author_by_name(pg_conn, &calibre_author.name)?;
+        let new_book_author = NewBookAuthor {
+            book: book_id,
+            author: author.id,
+        };
+        add_book_author(pg_conn, &new_book_author)?;
+    }
+
+    Ok(())
+}
 
 fn import_comment(
     sqlite_conn: &SqliteConnection,
@@ -56,6 +78,7 @@ pub fn import_books(
     last_book_id = calibre_book_id;
     log::info!("last book id updated: {}", last_book_id);
 
+    import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
 
     Ok(())

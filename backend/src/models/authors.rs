@@ -35,6 +35,14 @@ pub fn add_author(conn: &PgConnection, new_author: &NewAuthor) -> Result<(), Err
     Ok(())
 }
 
+pub fn get_author_by_name(conn: &PgConnection, author_name: &str) -> Result<Author, Error> {
+    use crate::schema::authors::dsl::{authors, name};
+    authors
+        .filter(name.eq(author_name))
+        .first::<Author>(conn)
+        .map_err(Into::into)
+}
+
 pub fn update_author(
     conn: &PgConnection,
     author_id: i32,

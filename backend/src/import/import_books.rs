@@ -5,6 +5,7 @@
 use calibre::error::ErrorKind;
 use calibre::models::books::get_next_book;
 use calibre::models::books_authors::get_book_authors;
+use calibre::models::books_languages::get_book_language;
 use calibre::models::books_publishers::get_book_publisher;
 use calibre::models::books_ratings::get_book_rating;
 use calibre::models::books_tags::get_book_tags;
@@ -17,6 +18,7 @@ use crate::error::Error;
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
+use crate::models::books_languages::{add_book_language, NewBookLanguage};
 use crate::models::books_publishers::{add_book_publisher, NewBookPublisher};
 use crate::models::books_tags::{add_book_tag, NewBookTag};
 use crate::models::comments::{add_comment, NewComment};
@@ -24,6 +26,7 @@ use crate::models::file_formats::get_file_format_by_name;
 use crate::models::files::{add_file, NewFile};
 use crate::models::identifier_types::get_identifier_type_by_name;
 use crate::models::identifiers::{add_identifier, NewIdentifier};
+use crate::models::languages::get_language_by_name;
 use crate::models::publishers::get_publisher_by_name;
 use crate::models::ratings::{add_rating, NewRating};
 use crate::models::tags::get_tag_by_name;
@@ -94,6 +97,32 @@ fn import_identifiers(
     }
 
     Ok(())
+}
+
+fn import_language(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+    calibre_book_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    log::info!("import_language({}, {})", calibre_book_id, book_id);
+    match get_book_language(sqlite_conn, calibre_book_id) {
+        Ok(calibre_language) => {
+            let language = get_language_by_name(pg_conn, &calibre_language.lang_code)?;
+            let new_language = NewBookLanguage {
+                book: book_id,
+                lang_code: language.id,
+            };
+            add_book_language(pg_conn, &new_language)
+        }
+        Err(err) => match err.kind() {
+            ErrorKind::DbNotFoundError => {
+                log::info!("language record not found for book: {}", calibre_book_id);
+                Ok(())
+            }
+            _ => Err(err.into()),
+        },
+    }
 }
 
 fn import_publisher(
@@ -243,6 +272,7 @@ pub fn import_books(
                 import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+                import_language(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_rating(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;

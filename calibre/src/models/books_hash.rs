@@ -6,6 +6,6 @@ use diesel::SqliteConnection;
 
 use crate::error::Error;
 
-pub fn get_book_hash(conn: &SqliteConnection, book_id: i32) -> Result<String, Error> {
-    use
+pub fn get_book_hash(_conn: &SqliteConnection, _book_id: i32) -> Result<String, Error> {
+    todo!()
 }

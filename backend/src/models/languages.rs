@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{Insertable, PgConnection, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
@@ -28,6 +28,14 @@ pub fn add_language(conn: &PgConnection, new_language: &NewLanguage) -> Result<(
         .values(new_language)
         .execute(conn)?;
     Ok(())
+}
+
+pub fn get_language_by_name(conn: &PgConnection, language_name: &str) -> Result<Language, Error> {
+    use crate::schema::languages::dsl::{lang_code, languages};
+    languages
+        .filter(lang_code.eq(language_name))
+        .first(conn)
+        .map_err(Into::into)
 }
 
 pub fn get_all_languages(conn: &PgConnection) -> Result<Vec<Language>, Error> {

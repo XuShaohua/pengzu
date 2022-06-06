@@ -7,6 +7,7 @@ use calibre::models::books_authors::get_book_authors;
 use calibre::models::books_publishers::get_book_publisher;
 use calibre::models::books_tags::get_book_tags;
 use calibre::models::comments::get_comment;
+use calibre::models::data::get_book_data;
 use calibre::models::identifiers::get_identifiers;
 use diesel::{PgConnection, SqliteConnection};
 
@@ -17,6 +18,8 @@ use crate::models::books_authors::{add_book_author, NewBookAuthor};
 use crate::models::books_publishers::{add_book_publisher, NewBookPublisher};
 use crate::models::books_tags::{add_book_tag, NewBookTag};
 use crate::models::comments::{add_comment, NewComment};
+use crate::models::file_formats::get_file_format_by_name;
+use crate::models::files::{add_file, NewFile};
 use crate::models::identifier_types::get_identifier_type_by_name;
 use crate::models::identifiers::{add_identifier, NewIdentifier};
 use crate::models::publishers::get_publisher_by_name;
@@ -110,6 +113,29 @@ fn import_tags(
     Ok(())
 }
 
+fn import_files(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+    calibre_book_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
+    for calibre_file in calibre_files {
+        let file_format = get_file_format_by_name(pg_conn, &calibre_file.format)?;
+        let new_file = NewFile {
+            book: book_id,
+            format: file_format.id,
+            uncompressed_size: calibre_file.uncompressed_size,
+            name: calibre_file.name,
+            // TODO(Shaohua): Check file hash.
+            sha: "".to_string(),
+        };
+        add_file(pg_conn, &new_file)?;
+    }
+
+    Ok(())
+}
+
 fn import_book(
     calibre_path: &str,
     sqlite_conn: &SqliteConnection,
@@ -147,6 +173,7 @@ pub fn import_books(
     import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_files(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
 
     Ok(())
 }

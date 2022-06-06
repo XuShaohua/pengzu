@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{Insertable, PgConnection, QueryDsl, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
@@ -29,6 +29,17 @@ pub fn add_file_format(conn: &PgConnection, new_format: &NewFileFormat) -> Resul
         .values(new_format)
         .execute(conn)?;
     Ok(())
+}
+
+pub fn get_file_format_by_name(
+    conn: &PgConnection,
+    format_name: &str,
+) -> Result<FileFormat, Error> {
+    use crate::schema::file_formats::dsl::{file_formats, name};
+    file_formats
+        .filter(name.eq(format_name))
+        .first(conn)
+        .map_err(Into::into)
 }
 
 pub fn get_file_format(conn: &PgConnection, format_id: i32) -> Result<FileFormat, Error> {

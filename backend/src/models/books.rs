@@ -34,12 +34,12 @@ pub struct Book {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<i32, Error> {
+pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<Book, Error> {
     use crate::schema::books::dsl::books;
-    let book = diesel::insert_into(books)
+    diesel::insert_into(books)
         .values(new_book)
-        .get_result::<Book>(conn)?;
-    Ok(book.id)
+        .get_result::<Book>(conn)
+        .map_err(Into::into)
 }
 
 pub fn get_book(conn: &PgConnection, book_id: i32) -> Result<Book, Error> {

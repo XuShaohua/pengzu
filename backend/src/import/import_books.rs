@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use calibre::error::ErrorKind;
-use calibre::models::books::get_next_book;
+use calibre::models::books::{get_next_book, CalibreBook};
 use calibre::models::books_authors::get_book_authors;
 use calibre::models::books_hash::get_book_hash;
 use calibre::models::books_languages::get_book_language;
@@ -14,11 +14,11 @@ use calibre::models::comments::get_comment;
 use calibre::models::data::get_book_data;
 use calibre::models::identifiers::get_identifiers;
 use diesel::{PgConnection, SqliteConnection};
-use std::collections::HashMap;
 
 use crate::error::Error;
+use crate::import::file_util::calculate_book_hashes;
 use crate::models::authors::get_author_by_name;
-use crate::models::books::{add_book, NewBook};
+use crate::models::books::{add_book, Book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
 use crate::models::books_languages::{add_book_language, NewBookLanguage};
 use crate::models::books_publishers::{add_book_publisher, NewBookPublisher};
@@ -197,10 +197,13 @@ fn import_tags(
 }
 
 fn import_files(
+    calibre_path: &str,
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
     calibre_book_id: i32,
+    calibre_book_path: &str,
     book_id: i32,
+    _book_path: &str,
 ) -> Result<(), Error> {
     log::info!("import_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
@@ -214,19 +217,23 @@ fn import_files(
                 calibre_book_id,
                 err
             );
-            HashMap::new()
+            calculate_book_hashes(calibre_path, calibre_book_path, &calibre_files)?
         }
     };
 
     for calibre_file in calibre_files {
         let file_format = get_file_format_by_name(pg_conn, &calibre_file.format)?;
+        let sha = book_hashes
+            .get(&calibre_file.format)
+            .map(|item| item.sha.clone())
+            .unwrap_or_default();
+
         let new_file = NewFile {
             book: book_id,
             format: file_format.id,
             size: calibre_file.uncompressed_size,
             name: calibre_file.name,
-            // TODO(Shaohua): Check file hash.
-            sha: "".to_string(),
+            sha,
         };
         add_file(pg_conn, &new_file)?;
     }
@@ -239,11 +246,12 @@ fn import_book(
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
     last_book_id: i32,
-) -> Result<Option<(i32, i32)>, Error> {
+) -> Result<Option<(CalibreBook, Book)>, Error> {
     log::info!("import_book({}, {})", calibre_path, last_book_id);
     match get_next_book(sqlite_conn, last_book_id) {
         Ok(calibre_book) => {
             log::info!("book: {:?}", calibre_book);
+            let calibre_book_clone = calibre_book.clone();
             let new_book = NewBook {
                 title: calibre_book.title.clone(),
                 sort: calibre_book.sort.unwrap_or_else(|| calibre_book.title),
@@ -252,8 +260,8 @@ fn import_book(
                 uuid: calibre_book.uuid,
                 has_cover: calibre_book.has_cover,
             };
-            let book_id = add_book(pg_conn, &new_book)?;
-            Ok(Some((calibre_book.id, book_id)))
+            let book = add_book(pg_conn, &new_book)?;
+            Ok(Some((calibre_book_clone, book)))
         }
         Err(err) => match err.kind() {
             calibre::error::ErrorKind::DbNotFoundError => {
@@ -279,11 +287,21 @@ pub fn import_books(
 
     loop {
         match import_book(calibre_path, sqlite_conn, pg_conn, last_book_id) {
-            Ok(Some((calibre_book_id, book_id))) => {
+            Ok(Some((calibre_book, book))) => {
+                let calibre_book_id = calibre_book.id;
+                let book_id = book.id;
                 last_book_id = calibre_book_id;
                 log::info!("last book id updated: {}", last_book_id);
 
-                import_files(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+                import_files(
+                    calibre_path,
+                    sqlite_conn,
+                    pg_conn,
+                    calibre_book_id,
+                    &calibre_book.path,
+                    book_id,
+                    &book.path,
+                )?;
                 import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;

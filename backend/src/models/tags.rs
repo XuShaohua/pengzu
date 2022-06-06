@@ -29,6 +29,13 @@ pub fn add_tag(conn: &PgConnection, new_tag: &NewTag) -> Result<(), Error> {
     Ok(())
 }
 
+pub fn get_tag_by_name(conn: &PgConnection, tag_name: &str) -> Result<Tag, Error> {
+    use crate::schema::tags::dsl::{name, tags};
+    tags.filter(name.eq(tag_name))
+        .first(conn)
+        .map_err(Into::into)
+}
+
 pub fn get_tags(conn: &PgConnection) -> Result<Vec<Tag>, Error> {
     use crate::schema::tags::dsl::tags;
     tags.load::<Tag>(conn).map_err(Into::into)

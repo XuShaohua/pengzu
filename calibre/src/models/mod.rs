@@ -8,6 +8,7 @@ pub mod books_authors;
 pub mod books_languages;
 pub mod books_publishers;
 pub mod books_ratings;
+pub mod books_tags;
 pub mod comments;
 pub mod data;
 pub mod file_formats;

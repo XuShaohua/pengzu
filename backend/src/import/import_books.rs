@@ -5,6 +5,7 @@
 use calibre::models::books::get_next_book;
 use calibre::models::books_authors::get_book_authors;
 use calibre::models::books_publishers::get_book_publisher;
+use calibre::models::books_tags::get_book_tags;
 use calibre::models::comments::get_comment;
 use diesel::{PgConnection, SqliteConnection};
 
@@ -13,8 +14,10 @@ use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
 use crate::models::books_publishers::{add_book_publisher, NewBookPublisher};
+use crate::models::books_tags::{add_book_tag, NewBookTag};
 use crate::models::comments::{add_comment, NewComment};
 use crate::models::publishers::get_publisher_by_name;
+use crate::models::tags::get_tag_by_name;
 
 fn import_authors(
     sqlite_conn: &SqliteConnection,
@@ -64,6 +67,25 @@ fn import_publisher(
     add_book_publisher(pg_conn, &new_publisher)
 }
 
+fn import_tags(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+    calibre_book_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    let tag_list = get_book_tags(sqlite_conn, calibre_book_id)?;
+    for calibre_tag in &tag_list {
+        let tag = get_tag_by_name(pg_conn, &calibre_tag.name)?;
+        let new_book_tag = NewBookTag {
+            book: book_id,
+            tag: tag.id,
+        };
+        add_book_tag(pg_conn, &new_book_tag)?;
+    }
+
+    Ok(())
+}
+
 fn import_book(
     calibre_path: &str,
     sqlite_conn: &SqliteConnection,
@@ -99,6 +121,7 @@ pub fn import_books(
     import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
 
     Ok(())
 }

@@ -212,8 +212,8 @@ fn import_files(
     let book_hashes = match get_book_hash(sqlite_conn, calibre_book_id) {
         Ok(book_hashes) => book_hashes,
         Err(err) => {
-            log::error!(
-                "Failed to find book hash from table: {}, err: {}",
+            log::info!(
+                "Book hash not found int table: {}, err: {}",
                 calibre_book_id,
                 err
             );

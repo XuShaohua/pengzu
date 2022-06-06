@@ -20,7 +20,8 @@ pub struct Book {
     pub lccn: Option<String>,
     pub path: String,
     pub flags: i32,
-    pub uuid: Option<String>,
+    pub uuid: String,
+    pub has_cover: bool,
     pub last_modified: NaiveDateTime,
 }
 

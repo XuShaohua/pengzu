@@ -22,8 +22,8 @@ CREATE TABLE books
     lccn TEXT DEFAULT "" COLLATE NOCASE,
     path TEXT NOT NULL DEFAULT "",
     flags INTEGER NOT NULL DEFAULT 1,
-    uuid TEXT,
---     has_cover BOOLEAN NOT NULL DEFAULT 0,
+    uuid TEXT NOT NULL,
+    has_cover BOOLEAN NOT NULL DEFAULT 0,
     last_modified TIMESTAMP NOT NULL DEFAULT "2000-01-01 00:00:00+00:00"
 );
 

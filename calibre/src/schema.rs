@@ -20,7 +20,8 @@ table! {
         lccn -> Nullable<Text>,
         path -> Text,
         flags -> Integer,
-        uuid -> Nullable<Text>,
+        uuid -> Text,
+        has_cover -> Bool,
         last_modified -> Timestamp,
     }
 }

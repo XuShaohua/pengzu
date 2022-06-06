@@ -14,6 +14,7 @@ use crate::schema::identifiers;
 pub struct NewIdentifier {
     pub book: i32,
     pub scheme: i32,
+    pub value: String,
     pub url: Option<String>,
 }
 

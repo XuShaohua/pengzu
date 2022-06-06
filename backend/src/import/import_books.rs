@@ -7,6 +7,7 @@ use calibre::models::books_authors::get_book_authors;
 use calibre::models::books_publishers::get_book_publisher;
 use calibre::models::books_tags::get_book_tags;
 use calibre::models::comments::get_comment;
+use calibre::models::identifiers::get_identifiers;
 use diesel::{PgConnection, SqliteConnection};
 
 use crate::error::Error;
@@ -16,6 +17,8 @@ use crate::models::books_authors::{add_book_author, NewBookAuthor};
 use crate::models::books_publishers::{add_book_publisher, NewBookPublisher};
 use crate::models::books_tags::{add_book_tag, NewBookTag};
 use crate::models::comments::{add_comment, NewComment};
+use crate::models::identifier_types::get_identifier_type_by_name;
+use crate::models::identifiers::{add_identifier, NewIdentifier};
 use crate::models::publishers::get_publisher_by_name;
 use crate::models::tags::get_tag_by_name;
 
@@ -50,6 +53,27 @@ fn import_comment(
         text: comment.text,
     };
     add_comment(pg_conn, &new_comment)
+}
+
+fn import_identifiers(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+    calibre_book_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    let identifier_list = get_identifiers(sqlite_conn, calibre_book_id)?;
+    for calibre_identifier in identifier_list {
+        let identifier_type = get_identifier_type_by_name(pg_conn, &calibre_identifier.type_)?;
+        let new_book_identifier = NewIdentifier {
+            book: book_id,
+            scheme: identifier_type.id,
+            value: calibre_identifier.val,
+            url: None,
+        };
+        add_identifier(pg_conn, &new_book_identifier)?;
+    }
+
+    Ok(())
 }
 
 fn import_publisher(
@@ -120,6 +144,7 @@ pub fn import_books(
 
     import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
 

@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{Insertable, PgConnection, QueryDsl, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
@@ -31,7 +31,18 @@ pub fn add_identifier_type(conn: &PgConnection, new_type: &NewIdentifierType) ->
     Ok(())
 }
 
-pub fn get_file_format(conn: &PgConnection, type_id: i32) -> Result<IdentifierType, Error> {
+pub fn get_identifier_type_by_name(
+    conn: &PgConnection,
+    type_name: &str,
+) -> Result<IdentifierType, Error> {
+    use crate::schema::identifier_types::dsl::{identifier_types, name};
+    identifier_types
+        .filter(name.eq(type_name))
+        .first(conn)
+        .map_err(Into::into)
+}
+
+pub fn get_identifier_type(conn: &PgConnection, type_id: i32) -> Result<IdentifierType, Error> {
     use crate::schema::identifier_types::dsl::identifier_types;
     identifier_types
         .find(type_id)

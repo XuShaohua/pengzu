@@ -121,7 +121,12 @@ impl From<std::ffi::OsString> for Error {
 
 impl From<calibre::error::Error> for Error {
     fn from(err: calibre::error::Error) -> Self {
-        Self::from_string(ErrorKind::CalibreError, format!("err: {:?}", err))
+        match err.kind() {
+            calibre::error::ErrorKind::DbNotFoundError => {
+                Self::from_string(ErrorKind::DbNotFoundError, format!("err: {:?}", err))
+            }
+            _ => Self::from_string(ErrorKind::CalibreError, format!("err: {:?}", err)),
+        }
     }
 }
 

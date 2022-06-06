@@ -328,6 +328,7 @@ dependencies = [
  "chrono",
  "diesel",
  "dotenv",
+ "log",
  "r2d2",
 ]
 

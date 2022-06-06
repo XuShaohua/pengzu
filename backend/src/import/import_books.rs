@@ -31,6 +31,7 @@ fn import_authors(
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
+    log::info!("import_authors({}, {})", calibre_book_id, book_id);
     let author_list = get_book_authors(sqlite_conn, calibre_book_id)?;
     for calibre_author in &author_list {
         let author = get_author_by_name(pg_conn, &calibre_author.name)?;
@@ -50,12 +51,24 @@ fn import_comment(
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
-    let comment = get_comment(sqlite_conn, calibre_book_id)?;
-    let new_comment = NewComment {
-        book: book_id,
-        text: comment.text,
-    };
-    add_comment(pg_conn, &new_comment)
+    log::info!("import_comment({}, {})", calibre_book_id, book_id);
+    match get_comment(sqlite_conn, calibre_book_id) {
+        Ok(comment) => {
+            let new_comment = NewComment {
+                book: book_id,
+                text: comment.text,
+            };
+            add_comment(pg_conn, &new_comment)?;
+        }
+        Err(err) => match err.kind() {
+            calibre::error::ErrorKind::DbNotFoundError => {
+                log::info!("Not comment found for book: {}", calibre_book_id);
+            }
+            _ => return Err(err.into()),
+        },
+    }
+
+    Ok(())
 }
 
 fn import_identifiers(
@@ -64,6 +77,7 @@ fn import_identifiers(
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
+    log::info!("import_identifier({}, {})", calibre_book_id, book_id);
     let identifier_list = get_identifiers(sqlite_conn, calibre_book_id)?;
     for calibre_identifier in identifier_list {
         let identifier_type = get_identifier_type_by_name(pg_conn, &calibre_identifier.type_)?;
@@ -85,6 +99,7 @@ fn import_publisher(
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
+    log::info!("import_publisher({}, {})", calibre_book_id, book_id);
     let calibre_publisher = get_book_publisher(sqlite_conn, calibre_book_id)?;
     let publisher = get_publisher_by_name(pg_conn, &calibre_publisher.name)?;
     let new_publisher = NewBookPublisher {
@@ -100,6 +115,7 @@ fn import_tags(
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
+    log::info!("import_tags({}, {})", calibre_book_id, book_id);
     let tag_list = get_book_tags(sqlite_conn, calibre_book_id)?;
     for calibre_tag in &tag_list {
         let tag = get_tag_by_name(pg_conn, &calibre_tag.name)?;
@@ -119,6 +135,7 @@ fn import_files(
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
+    log::info!("import_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
     for calibre_file in calibre_files {
         let file_format = get_file_format_by_name(pg_conn, &calibre_file.format)?;
@@ -142,7 +159,7 @@ fn import_book(
     pg_conn: &PgConnection,
     last_book_id: i32,
 ) -> Result<(i32, i32), Error> {
-    log::info!("calibre path: {}", calibre_path);
+    log::info!("import_book() calibre path: {}", calibre_path);
     let calibre_book = get_next_book(sqlite_conn, last_book_id)?;
     log::info!("book: {:#?}", calibre_book);
     let new_book = NewBook {
@@ -168,12 +185,12 @@ pub fn import_books(
     last_book_id = calibre_book_id;
     log::info!("last book id updated: {}", last_book_id);
 
+    import_files(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-    import_files(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
 
     Ok(())
 }

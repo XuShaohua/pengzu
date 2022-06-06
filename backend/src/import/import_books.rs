@@ -14,9 +14,10 @@ use calibre::models::comments::get_comment;
 use calibre::models::data::get_book_data;
 use calibre::models::identifiers::get_identifiers;
 use diesel::{PgConnection, SqliteConnection};
+use std::fs;
 
 use crate::error::Error;
-use crate::import::file_util::calculate_book_hashes;
+use crate::import::file_util::{calculate_book_hashes, get_book_file_path};
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, Book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
@@ -196,14 +197,28 @@ fn import_tags(
     Ok(())
 }
 
+fn copy_book_file(
+    calibre_library_path: &str,
+    library_path: &str,
+    calibre_book_path: &str,
+    book_path: &str,
+    file_name: &str,
+    format: &str,
+) -> Result<(), Error> {
+    let src_path = get_book_file_path(calibre_library_path, calibre_book_path, file_name, format);
+    let dest_path = get_book_file_path(library_path, book_path, file_name, format);
+    fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
+}
+
 fn import_files(
-    calibre_path: &str,
+    calibre_library_path: &str,
+    library_path: &str,
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
     calibre_book_id: i32,
     calibre_book_path: &str,
     book_id: i32,
-    _book_path: &str,
+    book_path: &str,
 ) -> Result<(), Error> {
     log::info!("import_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
@@ -217,7 +232,7 @@ fn import_files(
                 calibre_book_id,
                 err
             );
-            calculate_book_hashes(calibre_path, calibre_book_path, &calibre_files)?
+            calculate_book_hashes(calibre_library_path, calibre_book_path, &calibre_files)?
         }
     };
 
@@ -227,6 +242,15 @@ fn import_files(
             .get(&calibre_file.format)
             .map(|item| item.sha.clone())
             .unwrap_or_default();
+
+        copy_book_file(
+            calibre_library_path,
+            library_path,
+            calibre_book_path,
+            book_path,
+            &calibre_file.name,
+            &calibre_file.format,
+        )?;
 
         let new_file = NewFile {
             book: book_id,
@@ -242,16 +266,15 @@ fn import_files(
 }
 
 fn import_book(
-    calibre_path: &str,
+    calibre_library_path: &str,
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
     last_book_id: i32,
 ) -> Result<Option<(CalibreBook, Book)>, Error> {
-    log::info!("import_book({}, {})", calibre_path, last_book_id);
+    log::info!("import_book({}, {})", calibre_library_path, last_book_id);
     match get_next_book(sqlite_conn, last_book_id) {
         Ok(calibre_book) => {
-            log::info!("book: {:?}", calibre_book);
-            let calibre_book_clone = calibre_book.clone();
+            let calibre_book_clone: CalibreBook = calibre_book.clone();
             let new_book = NewBook {
                 title: calibre_book.title.clone(),
                 sort: calibre_book.sort.unwrap_or_else(|| calibre_book.title),
@@ -267,7 +290,7 @@ fn import_book(
             calibre::error::ErrorKind::DbNotFoundError => {
                 log::info!(
                     "No more books in calibre library: {}, last book id is: {}",
-                    calibre_path,
+                    calibre_library_path,
                     last_book_id
                 );
                 Ok(None)
@@ -278,15 +301,16 @@ fn import_book(
 }
 
 pub fn import_books(
-    calibre_path: &str,
+    calibre_library_path: &str,
+    library_path: &str,
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
 ) -> Result<(), Error> {
-    log::info!("calibre path: {}", calibre_path);
+    log::info!("import_books({}, {}", calibre_library_path, library_path);
     let mut last_book_id = 0;
 
     loop {
-        match import_book(calibre_path, sqlite_conn, pg_conn, last_book_id) {
+        match import_book(calibre_library_path, sqlite_conn, pg_conn, last_book_id) {
             Ok(Some((calibre_book, book))) => {
                 let calibre_book_id = calibre_book.id;
                 let book_id = book.id;
@@ -294,7 +318,8 @@ pub fn import_books(
                 log::info!("last book id updated: {}", last_book_id);
 
                 import_files(
-                    calibre_path,
+                    calibre_library_path,
+                    library_path,
                     sqlite_conn,
                     pg_conn,
                     calibre_book_id,

@@ -180,8 +180,8 @@ fn import_identifier_types(
     Ok(())
 }
 
-pub fn new_task(calibre_path: &str) -> Result<(), Error> {
-    let calibre_pool = get_calibre_db(calibre_path)?;
+pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
+    let calibre_pool = get_calibre_db(calibre_library_path)?;
     let pg_pool = get_connection_pool()?;
     let sqlite_conn = calibre_pool.get()?;
     let pg_conn = pg_pool.get()?;
@@ -192,7 +192,9 @@ pub fn new_task(calibre_path: &str) -> Result<(), Error> {
     import_file_formats(&sqlite_conn, &pg_conn)?;
     import_identifier_types(&sqlite_conn, &pg_conn)?;
 
-    import_books(calibre_path, &sqlite_conn, &pg_conn)?;
+    // TODO(Shaohua): Use data directory.
+    let library_path = "/tmp/HelloLibrary";
+    import_books(calibre_library_path, library_path, &sqlite_conn, &pg_conn)?;
 
     Ok(())
 }

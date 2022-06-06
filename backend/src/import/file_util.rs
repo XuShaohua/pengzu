@@ -11,11 +11,16 @@ use std::os::unix::fs::MetadataExt;
 
 use crate::error::Error;
 
-pub fn get_book_file_path(library_path: &str, book_path: &str, format: &Data) -> String {
+pub fn get_book_file_path(
+    library_path: &str,
+    book_path: &str,
+    file_name: &str,
+    format: &str,
+) -> String {
     vec![
         library_path,
         book_path,
-        &format!("{}.{}", format.name, format.format.to_ascii_lowercase()),
+        &format!("{}.{}", file_name, format.to_ascii_lowercase()),
     ]
     .join("/")
 }
@@ -27,7 +32,7 @@ pub fn calculate_book_hashes(
 ) -> Result<FindDuplicateMap, Error> {
     let mut map = HashMap::new();
     for format in formats {
-        let file_path = get_book_file_path(library_path, book_path, format);
+        let file_path = get_book_file_path(library_path, book_path, &format.name, &format.format);
         log::info!("file path: {:?}", file_path);
         let metadata = fs::metadata(&file_path)?;
         let file_size = metadata.blksize() * metadata.blocks();

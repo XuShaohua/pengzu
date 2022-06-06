@@ -10,6 +10,8 @@ pub mod books_publishers;
 pub mod books_ratings;
 pub mod comments;
 pub mod data;
+pub mod file_formats;
+pub mod identifier_types;
 pub mod identifiers;
 pub mod languages;
 pub mod publishers;

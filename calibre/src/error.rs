@@ -53,6 +53,15 @@ impl From<io::Error> for Error {
     }
 }
 
+impl From<serde_json::Error> for Error {
+    fn from(err: serde_json::Error) -> Self {
+        Self::from_string(
+            ErrorKind::DbGeneralError,
+            format!("parse json err: {}", err),
+        )
+    }
+}
+
 impl From<diesel::result::Error> for Error {
     fn from(err: diesel::result::Error) -> Self {
         match &err {

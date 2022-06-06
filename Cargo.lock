@@ -330,6 +330,8 @@ dependencies = [
  "dotenv",
  "log",
  "r2d2",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

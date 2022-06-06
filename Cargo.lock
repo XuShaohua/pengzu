@@ -328,6 +328,7 @@ dependencies = [
  "chrono",
  "diesel",
  "dotenv",
+ "r2d2",
 ]
 
 [[package]]

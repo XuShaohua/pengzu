@@ -5,5 +5,6 @@ edition = "2021"
 
 [dependencies]
 chrono = { version = "0.4.19", features = ["serde"] }
-diesel = { version = "1.4.8", features = ["sqlite", "r2d2"] }
+diesel = { version = "1.4.8", features = ["chrono", "sqlite", "r2d2"] }
 dotenv = "0.15.0"
+r2d2 = "0.8.9"

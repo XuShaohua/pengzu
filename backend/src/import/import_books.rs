@@ -5,6 +5,7 @@
 use calibre::error::ErrorKind;
 use calibre::models::books::get_next_book;
 use calibre::models::books_authors::get_book_authors;
+use calibre::models::books_hash::get_book_hash;
 use calibre::models::books_languages::get_book_language;
 use calibre::models::books_publishers::get_book_publisher;
 use calibre::models::books_ratings::get_book_rating;
@@ -13,6 +14,7 @@ use calibre::models::comments::get_comment;
 use calibre::models::data::get_book_data;
 use calibre::models::identifiers::get_identifiers;
 use diesel::{PgConnection, SqliteConnection};
+use std::collections::HashMap;
 
 use crate::error::Error;
 use crate::models::authors::get_author_by_name;
@@ -203,6 +205,19 @@ fn import_files(
     log::info!("import_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
     log::info!("calibre_files len: {}", calibre_files.len());
+
+    let book_hashes = match get_book_hash(sqlite_conn, calibre_book_id) {
+        Ok(book_hashes) => book_hashes,
+        Err(err) => {
+            log::error!(
+                "Failed to find book hash from table: {}, err: {}",
+                calibre_book_id,
+                err
+            );
+            HashMap::new()
+        }
+    };
+
     for calibre_file in calibre_files {
         let file_format = get_file_format_by_name(pg_conn, &calibre_file.format)?;
         let new_file = NewFile {

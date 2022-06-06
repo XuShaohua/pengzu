@@ -5,6 +5,7 @@
 mod commands;
 pub mod daemon;
 mod db;
+mod file_util;
 mod import_books;
 pub mod models;
 mod new_task;

@@ -16,5 +16,6 @@ log = "0.4.17"
 r2d2 = "0.8.9"
 serde = { version = "1.0.137", features = ["serde_derive"] }
 serde_json = "1.0.81"
+shell-rs = "0.2.5"
 tokio = { version = "1.19.1", features = [ "full", ] }
 uuid = { version = "1.1.1", features = ["serde", "v4"] }

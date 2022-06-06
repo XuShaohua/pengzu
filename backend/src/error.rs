@@ -106,7 +106,7 @@ impl From<actix_web::error::BlockingError> for Error {
 
 impl From<std::num::ParseIntError> for Error {
     fn from(err: std::num::ParseIntError) -> Self {
-        Self::from_string(ErrorKind::ConfigError, format!("{:?}", err))
+        Self::from_string(ErrorKind::ConfigError, format!("{}", err))
     }
 }
 
@@ -123,10 +123,16 @@ impl From<calibre::error::Error> for Error {
     fn from(err: calibre::error::Error) -> Self {
         match err.kind() {
             calibre::error::ErrorKind::DbNotFoundError => {
-                Self::from_string(ErrorKind::DbNotFoundError, format!("err: {:?}", err))
+                Self::from_string(ErrorKind::DbNotFoundError, format!("err: {}", err))
             }
-            _ => Self::from_string(ErrorKind::CalibreError, format!("err: {:?}", err)),
+            _ => Self::from_string(ErrorKind::CalibreError, format!("err: {}", err)),
         }
+    }
+}
+
+impl From<shell_rs::error::Error> for Error {
+    fn from(err: shell_rs::error::Error) -> Self {
+        Self::from_string(ErrorKind::IoError, format!("err: {}", err))
     }
 }
 

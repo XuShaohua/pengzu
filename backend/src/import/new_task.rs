@@ -3,6 +3,8 @@
 // in the LICENSE file.
 
 use calibre::models::authors::get_authors;
+use calibre::models::file_formats::get_file_formats;
+use calibre::models::identifier_types::get_identifier_types;
 use calibre::models::languages::get_languages;
 use calibre::models::publishers::get_publishers;
 use calibre::models::tags::get_tags;
@@ -11,7 +13,10 @@ use diesel::{PgConnection, SqliteConnection};
 use crate::db::get_connection_pool;
 use crate::error::{Error, ErrorKind};
 use crate::import::db::get_calibre_db;
+use crate::import::import_books::import_books;
 use crate::models::authors::{add_author, NewAuthor};
+use crate::models::file_formats::{add_file_format, NewFileFormat};
+use crate::models::identifier_types::{add_identifier_type, NewIdentifierType};
 use crate::models::languages::{add_language, NewLanguage};
 use crate::models::publishers::{add_publisher, NewPublisher};
 use crate::models::tags::{add_tag, NewTag};
@@ -131,6 +136,50 @@ fn import_tags(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result
     Ok(())
 }
 
+fn import_file_formats(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+) -> Result<(), Error> {
+    let format_list = get_file_formats(sqlite_conn)?;
+    for format in format_list {
+        let new_format = NewFileFormat { name: format };
+        if let Err(err) = add_file_format(pg_conn, &new_format) {
+            match err.kind() {
+                ErrorKind::DbUniqueViolationError => {
+                    log::info!("file format exists: {:?}", new_format);
+                    continue;
+                }
+                _ => return Err(err),
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn import_identifier_types(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+) -> Result<(), Error> {
+    let identifier_types = get_identifier_types(sqlite_conn)?;
+    for identifier_type in identifier_types {
+        let new_type = NewIdentifierType {
+            name: identifier_type,
+        };
+        if let Err(err) = add_identifier_type(pg_conn, &new_type) {
+            match err.kind() {
+                ErrorKind::DbUniqueViolationError => {
+                    log::info!("identifier type exists: {:?}", new_type);
+                    continue;
+                }
+                _ => return Err(err),
+            }
+        }
+    }
+
+    Ok(())
+}
+
 pub fn new_task(calibre_path: &str) -> Result<(), Error> {
     let calibre_pool = get_calibre_db(calibre_path)?;
     let pg_pool = get_connection_pool()?;
@@ -140,6 +189,10 @@ pub fn new_task(calibre_path: &str) -> Result<(), Error> {
     import_languages(&sqlite_conn, &pg_conn)?;
     import_publishers(&sqlite_conn, &pg_conn)?;
     import_tags(&sqlite_conn, &pg_conn)?;
+    import_file_formats(&sqlite_conn, &pg_conn)?;
+    import_identifier_types(&sqlite_conn, &pg_conn)?;
+
+    import_books(calibre_path, &sqlite_conn, &pg_conn)?;
 
     Ok(())
 }

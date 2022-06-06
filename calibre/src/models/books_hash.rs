@@ -2,10 +2,10 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use diesel::Queryable;
+use diesel::SqliteConnection;
 
-#[derive(Debug, Queryable)]
-pub struct Rating {
-    pub id: i32,
-    pub rating: i32,
+use crate::error::Error;
+
+pub fn get_book_hash(conn: &SqliteConnection, book_id: i32) -> Result<String, Error> {
+    use
 }

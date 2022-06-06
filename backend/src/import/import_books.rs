@@ -100,13 +100,24 @@ fn import_publisher(
     book_id: i32,
 ) -> Result<(), Error> {
     log::info!("import_publisher({}, {})", calibre_book_id, book_id);
-    let calibre_publisher = get_book_publisher(sqlite_conn, calibre_book_id)?;
-    let publisher = get_publisher_by_name(pg_conn, &calibre_publisher.name)?;
-    let new_publisher = NewBookPublisher {
-        book: book_id,
-        publisher: publisher.id,
-    };
-    add_book_publisher(pg_conn, &new_publisher)
+    match get_book_publisher(sqlite_conn, calibre_book_id) {
+        Ok(calibre_publisher) => {
+            let publisher = get_publisher_by_name(pg_conn, &calibre_publisher.name)?;
+            let new_publisher = NewBookPublisher {
+                book: book_id,
+                publisher: publisher.id,
+            };
+            add_book_publisher(pg_conn, &new_publisher)?;
+        }
+        Err(err) => match err.kind() {
+            calibre::error::ErrorKind::DbNotFoundError => {
+                log::info!("Not publisher found for book: {}", calibre_book_id);
+            }
+            _ => return Err(err.into()),
+        },
+    }
+
+    Ok(())
 }
 
 fn import_tags(

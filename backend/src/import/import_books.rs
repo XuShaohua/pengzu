@@ -17,7 +17,7 @@ use diesel::{PgConnection, SqliteConnection};
 use std::fs;
 
 use crate::error::Error;
-use crate::import::file_util::{calculate_book_hashes, get_book_file_path};
+use crate::import::file_util::{calculate_book_hashes, get_book_file_path, get_book_metadata_path};
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, Book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
@@ -211,6 +211,41 @@ fn copy_book_file(
     fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
 }
 
+fn copy_book_metadata(
+    calibre_library_path: &str,
+    library_path: &str,
+    calibre_book_path: &str,
+    book_path: &str,
+    file_name: &str,
+) -> Result<(), Error> {
+    let src_path = get_book_metadata_path(calibre_library_path, calibre_book_path, file_name);
+    let dest_path = get_book_metadata_path(library_path, book_path, file_name);
+    fs::create_dir_all(&dest_path)?;
+    fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
+}
+
+fn copy_book_metadata_and_cover(
+    calibre_library_path: &str,
+    library_path: &str,
+    calibre_book_path: &str,
+    book_path: &str,
+) -> Result<(), Error> {
+    copy_book_metadata(
+        calibre_library_path,
+        library_path,
+        calibre_book_path,
+        book_path,
+        "cover.jpg",
+    )?;
+    copy_book_metadata(
+        calibre_library_path,
+        library_path,
+        calibre_book_path,
+        book_path,
+        "metadata.opf",
+    )
+}
+
 fn import_files(
     calibre_library_path: &str,
     library_path: &str,
@@ -236,6 +271,13 @@ fn import_files(
             calculate_book_hashes(calibre_library_path, calibre_book_path, &calibre_files)?
         }
     };
+
+    copy_book_metadata_and_cover(
+        calibre_library_path,
+        library_path,
+        calibre_book_path,
+        book_path,
+    )?;
 
     for calibre_file in calibre_files {
         let file_format = get_file_format_by_name(pg_conn, &calibre_file.format)?;

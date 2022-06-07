@@ -27,6 +27,11 @@ pub fn get_book_file_path(
     PathBuf::from(p)
 }
 
+pub fn get_book_metadata_path(library_path: &str, book_path: &str, file_name: &str) -> PathBuf {
+    let p: String = [library_path, book_path, file_name].join("/");
+    PathBuf::from(p)
+}
+
 pub fn calculate_book_hashes(
     library_path: &str,
     book_path: &str,

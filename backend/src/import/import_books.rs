@@ -205,9 +205,10 @@ fn copy_book_file(
     file_name: &str,
     format: &str,
 ) -> Result<(), Error> {
+    log::info!("copy_book_file({}/{}.{})", book_path, file_name, format);
     let src_path = get_book_file_path(calibre_library_path, calibre_book_path, file_name, format);
     let dest_path = get_book_file_path(library_path, book_path, file_name, format);
-    fs::create_dir_all(&dest_path)?;
+    fs::create_dir_all(dest_path.parent().unwrap())?;
     fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
 }
 
@@ -218,9 +219,10 @@ fn copy_book_metadata(
     book_path: &str,
     file_name: &str,
 ) -> Result<(), Error> {
+    log::info!("copy_metadata({}/{})", book_path, file_name);
     let src_path = get_book_metadata_path(calibre_library_path, calibre_book_path, file_name);
     let dest_path = get_book_metadata_path(library_path, book_path, file_name);
-    fs::create_dir_all(&dest_path)?;
+    fs::create_dir_all(dest_path.parent().unwrap())?;
     fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
 }
 
@@ -230,6 +232,7 @@ fn copy_book_metadata_and_cover(
     calibre_book_path: &str,
     book_path: &str,
 ) -> Result<(), Error> {
+    log::info!("copy_book_metadata_and_cover({})", book_path);
     copy_book_metadata(
         calibre_library_path,
         library_path,
@@ -272,12 +275,14 @@ fn import_files(
         }
     };
 
-    copy_book_metadata_and_cover(
+    if let Err(err) = copy_book_metadata_and_cover(
         calibre_library_path,
         library_path,
         calibre_book_path,
         book_path,
-    )?;
+    ) {
+        log::warn!("Failed to copy metadata: {:?}", err);
+    }
 
     for calibre_file in calibre_files {
         let file_format = get_file_format_by_name(pg_conn, &calibre_file.format)?;

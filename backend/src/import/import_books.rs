@@ -17,6 +17,8 @@ use std::fs;
 
 use crate::error::{Error, ErrorKind};
 use crate::import::file_util::{calculate_book_hashes, get_book_file_path, get_book_metadata_path};
+use crate::import::models::books::NewImportBook;
+use crate::import::models::libraries::ImportLibrary;
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, Book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
@@ -426,24 +428,28 @@ fn import_book_detail(
 }
 
 pub fn import_books(
-    calibre_library_path: &str,
-    library_path: &str,
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
+    import_library: &ImportLibrary,
     option: &ImportBookOptions,
+    mut last_book_id: i32,
 ) -> Result<(), Error> {
-    log::info!("import_books({}, {}", calibre_library_path, library_path);
-    let mut last_book_id = 0;
+    log::info!("import_books({:?})", &import_library);
 
     loop {
-        match import_book(calibre_library_path, sqlite_conn, pg_conn, last_book_id) {
+        match import_book(
+            &import_library.calibre_library_path,
+            sqlite_conn,
+            pg_conn,
+            last_book_id,
+        ) {
             Ok(Some((calibre_book, book))) => {
                 last_book_id = calibre_book.id;
                 log::info!("last book id updated: {}", last_book_id);
 
-                if let Err(err) = import_book_detail(
-                    calibre_library_path,
-                    library_path,
+                let ok = if let Err(err) = import_book_detail(
+                    &import_library.calibre_library_path,
+                    &import_library.library_path,
                     sqlite_conn,
                     pg_conn,
                     &calibre_book,
@@ -451,9 +457,17 @@ pub fn import_books(
                     option,
                 ) {
                     log::warn!("Failed to import book: {:?}, err: {:?}", &calibre_book, err);
-                    // Insert into db.
+                    false
                 } else {
-                }
+                    true
+                };
+
+                let new_book = NewImportBook {
+                    library: 0,
+                    calibre_book: calibre_book.id,
+                    ok,
+                    book: Some(book.id),
+                };
             }
             Ok(None) => {
                 log::info!("DONE");

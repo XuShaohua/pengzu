@@ -33,3 +33,8 @@ pub fn get_next_book(conn: &SqliteConnection, book_id: i32) -> Result<CalibreBoo
         .first::<CalibreBook>(conn)
         .map_err(Into::into)
 }
+
+pub fn get_total_books(conn: &SqliteConnection) -> Result<i64, Error> {
+    use crate::schema::books::dsl::books;
+    books.count().get_result(conn).map_err(Into::into)
+}

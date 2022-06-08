@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 use calibre::models::authors::get_authors;
+use calibre::models::books::get_total_books;
 use calibre::models::file_formats::get_file_formats;
 use calibre::models::identifier_types::get_identifier_types;
 use calibre::models::languages::get_languages;
@@ -14,6 +15,7 @@ use crate::db::get_connection_pool;
 use crate::error::{Error, ErrorKind};
 use crate::import::db::get_calibre_db;
 use crate::import::import_books::{import_books, ImportBookOptions};
+use crate::import::models::libraries::{add_import_library, NewImportLibrary};
 use crate::models::authors::{add_author, NewAuthor};
 use crate::models::file_formats::{add_file_format, NewFileFormat};
 use crate::models::identifier_types::{add_identifier_type, NewIdentifierType};
@@ -193,17 +195,26 @@ pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
     import_identifier_types(&sqlite_conn, &pg_conn)?;
 
     // TODO(Shaohua): Use data directory.
-    let library_path = "/tmp/HelloLibrary";
+    let library_path = "/tmp/HelloLibrary".to_string();
     let options = ImportBookOptions {
         move_files: true,
         allow_duplication: true,
     };
-    import_books(
-        calibre_library_path,
+    let total_books = get_total_books(&sqlite_conn)?;
+    let new_library = NewImportLibrary {
+        calibre_library_path: calibre_library_path.to_string(),
         library_path,
+        total: total_books as i32,
+        finished: false,
+    };
+    let import_library = add_import_library(&pg_conn, &new_library)?;
+    let last_book_id = 0;
+    import_books(
         &sqlite_conn,
         &pg_conn,
+        &import_library,
         &options,
+        last_book_id,
     )?;
 
     Ok(())

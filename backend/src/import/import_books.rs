@@ -18,7 +18,7 @@ use std::fs;
 use crate::error::{Error, ErrorKind};
 use crate::import::file_util::{calculate_book_hashes, get_book_file_path, get_book_metadata_path};
 use crate::import::models::books::{add_import_book, NewImportBook};
-use crate::import::models::libraries::ImportLibrary;
+use crate::import::models::libraries::{update_import_library, ImportLibrary};
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, Book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
@@ -473,8 +473,8 @@ pub fn import_books(
                 }
             }
             Ok(None) => {
-                log::info!("DONE");
-                return Ok(());
+                log::info!("All books are imported: {:?}", import_library);
+                return update_import_library(pg_conn, import_library.id, true);
             }
             Err(err) => return Err(err),
         }

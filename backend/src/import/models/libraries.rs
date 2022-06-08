@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{Insertable, PgConnection, Queryable, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::Serialize;
 
 use crate::error::Error;
@@ -38,5 +38,18 @@ pub fn add_import_library(
     diesel::insert_into(import_libraries)
         .values(new_library)
         .get_result::<ImportLibrary>(conn)
+        .map_err(Into::into)
+}
+
+pub fn update_import_library(
+    conn: &PgConnection,
+    id_val: i32,
+    finished_val: bool,
+) -> Result<(), Error> {
+    use crate::schema::import_libraries::dsl::{finished, import_libraries};
+    diesel::update(import_libraries.find(id_val))
+        .set(finished.eq(finished_val))
+        .execute(conn)
+        .map(drop)
         .map_err(Into::into)
 }

@@ -17,6 +17,7 @@ use std::fs;
 
 use crate::error::{Error, ErrorKind};
 use crate::import::file_util::{calculate_book_hashes, get_book_file_path, get_book_metadata_path};
+use crate::import::models::books::ImportBookStatus;
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, Book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
@@ -392,6 +393,40 @@ fn import_book(
     }
 }
 
+fn import_book_detail(
+    calibre_library_path: &str,
+    library_path: &str,
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+    calibre_book: &CalibreBook,
+    book: &Book,
+) -> Result<(), Error> {
+    let calibre_book_id = calibre_book.id;
+    let book_id = book.id;
+    last_book_id = calibre_book_id;
+    log::info!("last book id updated: {}", last_book_id);
+
+    import_files(
+        calibre_library_path,
+        library_path,
+        sqlite_conn,
+        pg_conn,
+        calibre_book_id,
+        &calibre_book.path,
+        book_id,
+        &book.path,
+        option.move_files,
+    )?;
+    import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_language(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_rating(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    Ok(())
+}
+
 pub fn import_books(
     calibre_library_path: &str,
     library_path: &str,
@@ -405,29 +440,18 @@ pub fn import_books(
     loop {
         match import_book(calibre_library_path, sqlite_conn, pg_conn, last_book_id) {
             Ok(Some((calibre_book, book))) => {
-                let calibre_book_id = calibre_book.id;
-                let book_id = book.id;
-                last_book_id = calibre_book_id;
-                log::info!("last book id updated: {}", last_book_id);
-
-                import_files(
+                if let Err(err) = import_book_detail(
                     calibre_library_path,
                     library_path,
                     sqlite_conn,
                     pg_conn,
-                    calibre_book_id,
-                    &calibre_book.path,
-                    book_id,
-                    &book.path,
-                    option.move_files,
-                )?;
-                import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-                import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-                import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-                import_language(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-                import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-                import_rating(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
-                import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+                    &calibre_book,
+                    &book,
+                ) {
+                    log::warn!("Failed to import book: {:?}, err: {:?}", &calibre_book, err);
+                    // Insert into db.
+                } else {
+                }
             }
             Ok(None) => {
                 log::info!("DONE");

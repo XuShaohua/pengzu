@@ -17,7 +17,7 @@ use std::fs;
 
 use crate::error::{Error, ErrorKind};
 use crate::import::file_util::{calculate_book_hashes, get_book_file_path, get_book_metadata_path};
-use crate::import::models::books::NewImportBook;
+use crate::import::models::books::{add_import_book, NewImportBook};
 use crate::import::models::libraries::ImportLibrary;
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, Book, NewBook};
@@ -468,6 +468,9 @@ pub fn import_books(
                     ok,
                     book: Some(book.id),
                 };
+                if let Err(err) = add_import_book(pg_conn, &new_book) {
+                    log::error!("Failed to add import-book {:?}, err: {}", new_book, err);
+                }
             }
             Ok(None) => {
                 log::info!("DONE");

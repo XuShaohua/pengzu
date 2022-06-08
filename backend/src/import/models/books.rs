@@ -2,11 +2,15 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::error::Error;
-use crate::import::import_books::import_books;
 use chrono::NaiveDateTime;
-use diesel::{PgConnection, RunQueryDsl};
+use diesel::{Insertable, PgConnection, Queryable, RunQueryDsl};
+use serde::Serialize;
 
+use crate::error::Error;
+use crate::schema::import_books;
+
+#[derive(Debug, Serialize, Insertable)]
+#[table_name = "import_books"]
 pub struct NewImportBook {
     pub library: i32,
     pub calibre_book: i32,
@@ -14,6 +18,7 @@ pub struct NewImportBook {
     pub book: Option<i32>,
 }
 
+#[derive(Debug, Queryable)]
 pub struct ImportBook {
     pub id: i32,
     pub library: i32,

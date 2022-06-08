@@ -17,7 +17,6 @@ use std::fs;
 
 use crate::error::{Error, ErrorKind};
 use crate::import::file_util::{calculate_book_hashes, get_book_file_path, get_book_metadata_path};
-use crate::import::models::books::ImportBookStatus;
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, Book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
@@ -400,11 +399,10 @@ fn import_book_detail(
     pg_conn: &PgConnection,
     calibre_book: &CalibreBook,
     book: &Book,
+    option: &ImportBookOptions,
 ) -> Result<(), Error> {
     let calibre_book_id = calibre_book.id;
     let book_id = book.id;
-    last_book_id = calibre_book_id;
-    log::info!("last book id updated: {}", last_book_id);
 
     import_files(
         calibre_library_path,
@@ -440,6 +438,9 @@ pub fn import_books(
     loop {
         match import_book(calibre_library_path, sqlite_conn, pg_conn, last_book_id) {
             Ok(Some((calibre_book, book))) => {
+                last_book_id = calibre_book.id;
+                log::info!("last book id updated: {}", last_book_id);
+
                 if let Err(err) = import_book_detail(
                     calibre_library_path,
                     library_path,
@@ -447,6 +448,7 @@ pub fn import_books(
                     pg_conn,
                     &calibre_book,
                     &book,
+                    option,
                 ) {
                     log::warn!("Failed to import book: {:?}, err: {:?}", &calibre_book, err);
                     // Insert into db.

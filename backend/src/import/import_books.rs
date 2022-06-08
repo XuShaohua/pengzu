@@ -2,7 +2,6 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use calibre::error::ErrorKind;
 use calibre::models::books::{get_next_book, CalibreBook};
 use calibre::models::books_authors::get_book_authors;
 use calibre::models::books_hash::get_book_hash;
@@ -16,7 +15,7 @@ use calibre::models::identifiers::get_identifiers;
 use diesel::{PgConnection, SqliteConnection};
 use std::fs;
 
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
 use crate::import::file_util::{calculate_book_hashes, get_book_file_path, get_book_metadata_path};
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, Book, NewBook};
@@ -134,7 +133,7 @@ fn import_language(
             add_book_language(pg_conn, &new_language)
         }
         Err(err) => match err.kind() {
-            ErrorKind::DbNotFoundError => {
+            calibre::error::ErrorKind::DbNotFoundError => {
                 log::info!("language record not found for book: {}", calibre_book_id);
                 Ok(())
             }
@@ -186,7 +185,7 @@ fn import_rating(
             add_rating(pg_conn, &new_rating)
         }
         Err(err) => match err.kind() {
-            ErrorKind::DbNotFoundError => Ok(()),
+            calibre::error::ErrorKind::DbNotFoundError => Ok(()),
             _ => Err(err.into()),
         },
     }
@@ -224,7 +223,13 @@ fn copy_book_file(
     log::info!("copy_book_file({}/{}.{})", book_path, file_name, format);
     let src_path = get_book_file_path(calibre_library_path, calibre_book_path, file_name, format);
     let dest_path = get_book_file_path(library_path, book_path, file_name, format);
-    fs::create_dir_all(dest_path.parent().unwrap())?;
+    let parent_dir = dest_path.parent().ok_or_else(|| {
+        Error::from_string(
+            ErrorKind::IoError,
+            format!("Failed to get parent dir: {:?}", &dest_path),
+        )
+    })?;
+    fs::create_dir_all(parent_dir)?;
     if move_files {
         fs::rename(src_path, dest_path).map_err(Into::into)
     } else {
@@ -243,7 +248,13 @@ fn copy_book_metadata(
     log::info!("copy_metadata({}/{})", book_path, file_name);
     let src_path = get_book_metadata_path(calibre_library_path, calibre_book_path, file_name);
     let dest_path = get_book_metadata_path(library_path, book_path, file_name);
-    fs::create_dir_all(dest_path.parent().unwrap())?;
+    let parent_dir = dest_path.parent().ok_or_else(|| {
+        Error::from_string(
+            ErrorKind::IoError,
+            format!("Failed to get parent dir: {:?}", &dest_path),
+        )
+    })?;
+    fs::create_dir_all(parent_dir)?;
     if move_files {
         fs::rename(src_path, dest_path)
             .map(drop)
@@ -261,20 +272,20 @@ fn copy_book_metadata_and_cover(
     move_files: bool,
 ) -> Result<(), Error> {
     log::info!("copy_book_metadata_and_cover({})", book_path);
+    let _ = copy_book_metadata(
+        calibre_library_path,
+        library_path,
+        calibre_book_path,
+        book_path,
+        "metadata.opf",
+        move_files,
+    );
     copy_book_metadata(
         calibre_library_path,
         library_path,
         calibre_book_path,
         book_path,
         "cover.jpg",
-        move_files,
-    )?;
-    copy_book_metadata(
-        calibre_library_path,
-        library_path,
-        calibre_book_path,
-        book_path,
-        "metadata.opf",
         move_files,
     )
 }

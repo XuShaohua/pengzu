@@ -13,6 +13,7 @@ use calibre::models::comments::get_comment;
 use calibre::models::data::get_book_data;
 use calibre::models::identifiers::get_identifiers;
 use diesel::{PgConnection, SqliteConnection};
+use serde::Serialize;
 use std::fs;
 
 use crate::error::{Error, ErrorKind};
@@ -35,14 +36,14 @@ use crate::models::publishers::get_publisher_by_name;
 use crate::models::ratings::{add_rating, NewRating};
 use crate::models::tags::get_tag_by_name;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
 pub enum ImportBookFileAction {
     Copy = 1,
     Move = 2,
     DoNothing = 3,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct ImportBookOptions {
     pub file_action: ImportBookFileAction,
     pub allow_duplication: bool,
@@ -227,11 +228,11 @@ fn copy_book_file(
     book_path: &str,
     file_name: &str,
     format: &str,
-    file_actioin: ImportBookFileAction,
+    file_action: ImportBookFileAction,
 ) -> Result<(), Error> {
     log::info!("copy_book_file({}/{}.{})", book_path, file_name, format);
 
-    let move_files = match file_actioin {
+    let move_files = match file_action {
         ImportBookFileAction::Copy => false,
         ImportBookFileAction::Move => true,
         ImportBookFileAction::DoNothing => return Ok(()),

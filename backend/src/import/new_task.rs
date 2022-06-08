@@ -200,12 +200,14 @@ pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
         file_action: ImportBookFileAction::DoNothing,
         allow_duplication: true,
     };
+    let options_str = serde_json::to_string(&options)?;
     let total_books = get_total_books(&sqlite_conn)?;
     let new_library = NewImportLibrary {
         calibre_library_path: calibre_library_path.to_string(),
         library_path,
         total: total_books as i32,
         finished: false,
+        options: options_str,
     };
     let import_library = add_import_library(&pg_conn, &new_library)?;
     let last_book_id = 0;

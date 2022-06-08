@@ -21,6 +21,7 @@ pub enum ErrorKind {
     DbNotFoundError,
 
     IoError,
+    JsonError,
     ActixBlockingError,
 }
 
@@ -136,6 +137,12 @@ impl From<shell_rs::error::Error> for Error {
     }
 }
 
+impl From<serde_json::Error> for Error {
+    fn from(err: serde_json::Error) -> Self {
+        Self::from_string(ErrorKind::JsonError, format!("{}", err))
+    }
+}
+
 impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {
@@ -143,6 +150,7 @@ impl actix_web::error::ResponseError for Error {
             | ErrorKind::CalibreError
             | ErrorKind::DbConnError
             | ErrorKind::DbGeneralError
+            | ErrorKind::JsonError
             | ErrorKind::ActixBlockingError => StatusCode::INTERNAL_SERVER_ERROR,
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError

@@ -3,7 +3,8 @@
 CREATE TABLE import_libraries
 (
     id SERIAL PRIMARY KEY,
-    calibre_path TEXT NOT NULL,
+    calibre_library_path TEXT NOT NULL,
+    library_path TEXT NOT NULL,
     total INTEGER NOT NULL,
     finished BOOLEAN NOT NULL,
     worker_pid INTEGER,

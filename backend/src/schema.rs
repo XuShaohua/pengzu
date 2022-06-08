@@ -127,7 +127,8 @@ table! {
 table! {
     import_libraries (id) {
         id -> Int4,
-        calibre_path -> Text,
+        calibre_library_path -> Text,
+        library_path -> Text,
         total -> Int4,
         finished -> Bool,
         worker_pid -> Nullable<Int4>,

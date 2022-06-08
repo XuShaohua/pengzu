@@ -9,7 +9,8 @@ use serde::Serialize;
 #[derive(Debug, Serialize)]
 pub struct ImportLibrary {
     pub id: i32,
-    pub calibre_path: String,
+    pub calibre_library_path: String,
+    pub library_path: String,
     pub total: i32,
     pub finished: bool,
     pub worker_pid: Option<i32>,
@@ -17,6 +18,6 @@ pub struct ImportLibrary {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_library(_calibre_path: &str) -> Result<i32, Error> {
+pub fn add_library(_calibre_library_path: &str) -> Result<i32, Error> {
     Ok(0)
 }

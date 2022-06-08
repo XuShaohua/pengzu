@@ -14,7 +14,7 @@ use diesel::{PgConnection, SqliteConnection};
 use crate::db::get_connection_pool;
 use crate::error::{Error, ErrorKind};
 use crate::import::db::get_calibre_db;
-use crate::import::import_books::{import_books, ImportBookOptions};
+use crate::import::import_books::{import_books, ImportBookFileAction, ImportBookOptions};
 use crate::import::models::libraries::{add_import_library, NewImportLibrary};
 use crate::models::authors::{add_author, NewAuthor};
 use crate::models::file_formats::{add_file_format, NewFileFormat};
@@ -197,7 +197,7 @@ pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
     // TODO(Shaohua): Use data directory.
     let library_path = "/tmp/HelloLibrary".to_string();
     let options = ImportBookOptions {
-        move_files: false,
+        file_action: ImportBookFileAction::DoNothing,
         allow_duplication: true,
     };
     let total_books = get_total_books(&sqlite_conn)?;

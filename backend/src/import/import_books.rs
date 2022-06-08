@@ -34,6 +34,21 @@ use crate::models::publishers::get_publisher_by_name;
 use crate::models::ratings::{add_rating, NewRating};
 use crate::models::tags::get_tag_by_name;
 
+#[derive(Debug, Clone)]
+pub struct ImportBookOptions {
+    pub move_files: bool,
+    pub allow_duplication: bool,
+}
+
+impl Default for ImportBookOptions {
+    fn default() -> Self {
+        Self {
+            move_files: true,
+            allow_duplication: false,
+        }
+    }
+}
+
 fn import_authors(
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
@@ -204,12 +219,17 @@ fn copy_book_file(
     book_path: &str,
     file_name: &str,
     format: &str,
+    move_files: bool,
 ) -> Result<(), Error> {
     log::info!("copy_book_file({}/{}.{})", book_path, file_name, format);
     let src_path = get_book_file_path(calibre_library_path, calibre_book_path, file_name, format);
     let dest_path = get_book_file_path(library_path, book_path, file_name, format);
     fs::create_dir_all(dest_path.parent().unwrap())?;
-    fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
+    if move_files {
+        fs::rename(src_path, dest_path).map_err(Into::into)
+    } else {
+        fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
+    }
 }
 
 fn copy_book_metadata(
@@ -218,12 +238,19 @@ fn copy_book_metadata(
     calibre_book_path: &str,
     book_path: &str,
     file_name: &str,
+    move_files: bool,
 ) -> Result<(), Error> {
     log::info!("copy_metadata({}/{})", book_path, file_name);
     let src_path = get_book_metadata_path(calibre_library_path, calibre_book_path, file_name);
     let dest_path = get_book_metadata_path(library_path, book_path, file_name);
     fs::create_dir_all(dest_path.parent().unwrap())?;
-    fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
+    if move_files {
+        fs::rename(src_path, dest_path)
+            .map(drop)
+            .map_err(Into::into)
+    } else {
+        fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
+    }
 }
 
 fn copy_book_metadata_and_cover(
@@ -231,6 +258,7 @@ fn copy_book_metadata_and_cover(
     library_path: &str,
     calibre_book_path: &str,
     book_path: &str,
+    move_files: bool,
 ) -> Result<(), Error> {
     log::info!("copy_book_metadata_and_cover({})", book_path);
     copy_book_metadata(
@@ -239,6 +267,7 @@ fn copy_book_metadata_and_cover(
         calibre_book_path,
         book_path,
         "cover.jpg",
+        move_files,
     )?;
     copy_book_metadata(
         calibre_library_path,
@@ -246,6 +275,7 @@ fn copy_book_metadata_and_cover(
         calibre_book_path,
         book_path,
         "metadata.opf",
+        move_files,
     )
 }
 
@@ -258,6 +288,7 @@ fn import_files(
     calibre_book_path: &str,
     book_id: i32,
     book_path: &str,
+    move_files: bool,
 ) -> Result<(), Error> {
     log::info!("import_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
@@ -280,6 +311,7 @@ fn import_files(
         library_path,
         calibre_book_path,
         book_path,
+        move_files,
     ) {
         log::warn!("Failed to copy metadata: {:?}", err);
     }
@@ -298,6 +330,7 @@ fn import_files(
             book_path,
             &calibre_file.name,
             &calibre_file.format,
+            move_files,
         )?;
 
         let new_file = NewFile {
@@ -353,6 +386,7 @@ pub fn import_books(
     library_path: &str,
     sqlite_conn: &SqliteConnection,
     pg_conn: &PgConnection,
+    option: &ImportBookOptions,
 ) -> Result<(), Error> {
     log::info!("import_books({}, {}", calibre_library_path, library_path);
     let mut last_book_id = 0;
@@ -374,6 +408,7 @@ pub fn import_books(
                     &calibre_book.path,
                     book_id,
                     &book.path,
+                    option.move_files,
                 )?;
                 import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
                 import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;

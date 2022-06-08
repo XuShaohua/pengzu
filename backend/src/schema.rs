@@ -118,7 +118,7 @@ table! {
         id -> Int4,
         library -> Int4,
         calibre_book -> Int4,
-        status -> Int4,
+        ok -> Bool,
         book -> Nullable<Int4>,
         created -> Timestamp,
     }

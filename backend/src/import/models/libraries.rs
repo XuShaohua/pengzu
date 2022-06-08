@@ -16,6 +16,7 @@ pub struct NewImportLibrary {
     pub library_path: String,
     pub total: i32,
     pub finished: bool,
+    pub options: String,
 }
 
 #[derive(Debug, Queryable)]
@@ -25,6 +26,7 @@ pub struct ImportLibrary {
     pub library_path: String,
     pub total: i32,
     pub finished: bool,
+    pub options: String,
     pub worker_pid: Option<i32>,
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,

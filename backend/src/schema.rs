@@ -131,6 +131,7 @@ table! {
         library_path -> Text,
         total -> Int4,
         finished -> Bool,
+        options -> Text,
         worker_pid -> Nullable<Int4>,
         created -> Timestamp,
         last_modified -> Timestamp,

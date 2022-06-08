@@ -463,7 +463,7 @@ pub fn import_books(
                 };
 
                 let new_book = NewImportBook {
-                    library: 0,
+                    library: import_library.id,
                     calibre_book: calibre_book.id,
                     ok,
                     book: Some(book.id),

@@ -197,7 +197,7 @@ pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
     // TODO(Shaohua): Use data directory.
     let library_path = "/tmp/HelloLibrary".to_string();
     let options = ImportBookOptions {
-        move_files: true,
+        move_files: false,
         allow_duplication: true,
     };
     let total_books = get_total_books(&sqlite_conn)?;

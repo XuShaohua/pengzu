@@ -61,6 +61,19 @@ table! {
 }
 
 table! {
+    categories (id) {
+        id -> Int4,
+        serial_number -> Text,
+        name -> Text,
+        url -> Text,
+        description -> Nullable<Text>,
+        parent -> Int4,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     comments (id) {
         id -> Int4,
         book -> Int4,
@@ -182,6 +195,7 @@ allow_tables_to_appear_in_same_query!(
     books_languages_link,
     books_publishers_link,
     books_tags_link,
+    categories,
     comments,
     file_formats,
     files,

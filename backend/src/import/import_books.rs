@@ -281,27 +281,19 @@ fn copy_book_metadata(
     }
 }
 
-fn copy_book_metadata_and_cover(
+fn copy_book_cover(
     calibre_library_path: &str,
     library_path: &str,
     calibre_book_path: &str,
     book_path: &str,
     file_action: ImportBookFileAction,
 ) -> Result<(), Error> {
-    log::info!("copy_book_metadata_and_cover({})", book_path);
+    log::info!("copy_book_cover({})", book_path);
     let move_files = match file_action {
         ImportBookFileAction::Copy => false,
         ImportBookFileAction::Move => true,
         ImportBookFileAction::DoNothing => return Ok(()),
     };
-    let _ = copy_book_metadata(
-        calibre_library_path,
-        library_path,
-        calibre_book_path,
-        book_path,
-        "metadata.opf",
-        move_files,
-    );
     copy_book_metadata(
         calibre_library_path,
         library_path,
@@ -339,7 +331,7 @@ fn import_files(
         }
     };
 
-    if let Err(err) = copy_book_metadata_and_cover(
+    if let Err(err) = copy_book_cover(
         calibre_library_path,
         library_path,
         calibre_book_path,

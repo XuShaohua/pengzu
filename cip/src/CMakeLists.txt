@@ -13,6 +13,7 @@ set(LINK_LIBS
     PkgConfig::PopplerQt5
     PkgConfig::LibMobi
     Qt5::Gui
+    libepub
     )
 
 set(SOURCE_FILES

@@ -7,6 +7,8 @@
 
 #include <QObject>
 
+#include "third_party/libepub/epub.h"
+
 class EpubReader : public QObject {
  Q_OBJECT
  public:
@@ -14,7 +16,16 @@ class EpubReader : public QObject {
 
   ~EpubReader() override;
 
+  bool load(const QString& filepath);
+
+  int numPages() const;
+
+  bool readPage(int number, QString& text);
+
  private:
+  void cleanup();
+
+  epub* epub_{nullptr};
 };
 
 #endif  // CIP_CIP_SRC_FORMATS_EPUB_READER_H_

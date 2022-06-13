@@ -7,20 +7,27 @@
 
 #include "formats/pdf_reader.h"
 #include "formats/mobi_reader.h"
+#include "formats/epub_reader.h"
 
 int main(int argc, char** argv) {
   QGuiApplication app(argc, argv);
 
   const auto filename = QGuiApplication::arguments().at(1);
-  MobiReader reader;
+  EpubReader reader;
   if (reader.load(filename)) {
     const auto pages = reader.numPages();
     qDebug() << "page num:" << pages;
-    QString text;
-    const bool ok = reader.readPage(1, text);
-    qDebug() << "ok:" << ok;
-    qDebug() << "text:\n" << text;
   }
+
+//  MobiReader reader;
+//  if (reader.load(filename)) {
+//    const auto pages = reader.numPages();
+//    qDebug() << "page num:" << pages;
+//    QString text;
+//    const bool ok = reader.readPage(1, text);
+//    qDebug() << "ok:" << ok;
+//    qDebug() << "text:\n" << text;
+//  }
 
 //  PdfReader reader;
 //  if (reader.load(filename)) {

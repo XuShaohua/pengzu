@@ -11,6 +11,10 @@ MobiReader::MobiReader(QObject* parent) : QObject(parent) {
 }
 
 MobiReader::~MobiReader() {
+  if (rawml_ != nullptr) {
+    mobi_free_rawml(rawml_);
+  }
+
   if (mobi_ != nullptr) {
     mobi_free(mobi_);
     mobi_ = nullptr;
@@ -30,32 +34,35 @@ bool MobiReader::load(const QString& filepath) {
     return false;
   }
 
+  rawml_ = mobi_init_rawml(mobi_);
+  if (rawml_ == nullptr) {
+    qWarning() << "Failed to init rawml:" << filepath;
+    return false;
+  }
+
   return true;
 }
 
 int MobiReader::numPages() const {
-  if (mobi_ == nullptr) {
+  if (mobi_ == nullptr || rawml_ == nullptr) {
     return -1;
   }
 
-  MOBIRawml* rawml = mobi_init_rawml(mobi_);
-  const MOBI_RET ret = mobi_parse_rawml(rawml, mobi_);
+  const MOBI_RET ret = mobi_parse_rawml(rawml_, mobi_);
   if (ret != MOBI_SUCCESS) {
     qWarning() << "Failed to parse rawml in mobi file, ret:" << ret;
-    mobi_free_rawml(rawml);
     return -1;
   }
 
   size_t uid = -1;
   while (true) {
     uid += 1;
-    MOBIPart* part = mobi_get_part_by_uid(rawml, uid);
+    MOBIPart* part = mobi_get_part_by_uid(rawml_, uid);
     if (part == nullptr) {
       break;
     }
   }
 
-  mobi_free_rawml(rawml);
   return static_cast<int>(uid);
 }
 

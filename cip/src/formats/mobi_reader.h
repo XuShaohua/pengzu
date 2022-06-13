@@ -23,6 +23,7 @@ class MobiReader : public QObject {
 
  private:
   MOBIData* mobi_{nullptr};
+  MOBIRawml* rawml_{nullptr};
 };
 
 #endif  // CIP_CIP_SRC_MOBI_MOBI_READER_H_

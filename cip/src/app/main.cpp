@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 #include <QGuiApplication>
+#include <QDebug>
 
 #include "formats/pdf_reader.h"
 #include "formats/mobi_reader.h"
@@ -13,10 +14,12 @@ int main(int argc, char** argv) {
   const auto filename = QGuiApplication::arguments().at(1);
   MobiReader reader;
   if (reader.load(filename)) {
-    reader.numPages();
+    const auto pages = reader.numPages();
+    qDebug() << "page num:" << pages;
 //    QString text;
 //    const bool ok = reader.readPage(0, text);
   }
+  
 //  PdfReader reader;
 //  if (reader.load(filename)) {
 //    QString text;

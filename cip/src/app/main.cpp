@@ -5,16 +5,23 @@
 #include <QGuiApplication>
 
 #include "formats/pdf_reader.h"
+#include "formats/mobi_reader.h"
 
 int main(int argc, char** argv) {
   QGuiApplication app(argc, argv);
 
   const auto filename = QGuiApplication::arguments().at(1);
-  PdfReader reader;
+  MobiReader reader;
   if (reader.load(filename)) {
-    QString text;
-    const bool _ok = reader.readPage(4, text);
+    reader.numPages();
+//    QString text;
+//    const bool ok = reader.readPage(0, text);
   }
+//  PdfReader reader;
+//  if (reader.load(filename)) {
+//    QString text;
+//    const bool _ok = reader.readPage(4, text);
+//  }
 
   return QGuiApplication::exec();
 }

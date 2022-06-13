@@ -7,11 +7,22 @@
 
 #include <QObject>
 
+#include <mobi.h>
+
 class MobiReader : public QObject {
   Q_OBJECT
  public:
   explicit MobiReader(QObject* parent = nullptr);
+  ~MobiReader() override;
 
+  bool load(const QString& filepath);
+
+  int numPages() const;
+
+  bool readPage(int number, QString& text);
+
+ private:
+  MOBIData* mobi_{nullptr};
 };
 
 #endif  // CIP_CIP_SRC_MOBI_MOBI_READER_H_

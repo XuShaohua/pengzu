@@ -34,6 +34,16 @@ table! {
 }
 
 table! {
+    books_categories_link (id) {
+        id -> Int4,
+        book -> Int4,
+        category -> Int4,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     books_languages_link (id) {
         id -> Int4,
         book -> Int4,
@@ -193,6 +203,7 @@ allow_tables_to_appear_in_same_query!(
     authors,
     books,
     books_authors_link,
+    books_categories_link,
     books_languages_link,
     books_publishers_link,
     books_tags_link,

@@ -4,7 +4,7 @@
 
 #include <QGuiApplication>
 
-#include "pdf/pdf_reader.h"
+#include "formats/pdf_reader.h"
 
 int main(int argc, char** argv) {
   QGuiApplication app(argc, argv);

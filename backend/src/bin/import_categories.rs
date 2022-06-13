@@ -34,7 +34,13 @@ fn insert_into_db(pg_conn: &PgConnection, documents: &[Document]) -> Result<(), 
         return Ok(());
     }
     let parent_index = documents.first().unwrap().get_str("parent_index")?;
-    let parent = models::get_category_by_serial_number(pg_conn, parent_index)?;
+    let parent_id = if parent_index == "0" {
+        0
+    } else {
+        let parent = models::get_category_by_serial_number(pg_conn, parent_index)?;
+        parent.id
+    };
+
     for document in documents {
         let new_category = models::NewCategory {
             order_index: document.get_i32("order")?,
@@ -42,7 +48,7 @@ fn insert_into_db(pg_conn: &PgConnection, documents: &[Document]) -> Result<(), 
             name: document.get_str("name")?,
             url: document.get_str("url")?,
             description: None,
-            parent: parent.id,
+            parent: parent_id,
         };
         models::add_category(pg_conn, &new_category)?;
     }
@@ -61,9 +67,11 @@ async fn main() -> Result<(), Error> {
     let db = client.database(db_name);
     let collection_name = "clcindex_category_clcindex";
     let collection = db.collection::<Document>(collection_name);
+    println!("collection: {:?}", collection);
 
     let db_pool = get_connection_pool()?;
     let pg_conn = db_pool.get()?;
+    println!("pg conn is ok");
 
     let mut todo_list = Vec::new();
     let mut root_list = query_children(&collection, "0").await?;

@@ -63,11 +63,12 @@ table! {
 table! {
     categories (id) {
         id -> Int4,
+        order_index -> Int4,
         serial_number -> Text,
         name -> Text,
         url -> Text,
         description -> Nullable<Text>,
-        parent -> Int4,
+        parent_serial_number -> Int4,
         created -> Timestamp,
         last_modified -> Timestamp,
     }

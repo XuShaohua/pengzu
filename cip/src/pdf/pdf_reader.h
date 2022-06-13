@@ -17,7 +17,9 @@ class PdfReader : public QObject {
 
   bool load(const QString& filepath);
 
-  bool readPage(int number);
+  int numPages() const;
+
+  bool readPage(int number, QString& text);
 
  private:
   Poppler::Document* document_{nullptr};

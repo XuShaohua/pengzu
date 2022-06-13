@@ -24,7 +24,14 @@ bool PdfReader::load(const QString& filepath) {
   return true;
 }
 
-bool PdfReader::readPage(int number) {
+int PdfReader::numPages() const {
+  if (document_ == nullptr) {
+    return -1;
+  }
+  return document_->numPages();
+}
+
+bool PdfReader::readPage(int number, QString& text) {
   Poppler::Page* page = document_->page(number);
   if (page == nullptr) {
     qWarning() << "Failed to read page at: " << number;
@@ -32,9 +39,9 @@ bool PdfReader::readPage(int number) {
   }
   const auto size = page->pageSizeF();
   const QRectF rect{0.0, 0.0, size.width(), size.height()};
-  const QString text = page->text(rect);
-  qDebug() << "text of page:" << number << "is:\n" << text;
-
+  text = page->text(rect);
+  qDebug() << "text of page:" << number << "is:";
+  qDebug() << qPrintable(text);
   delete page;
   return true;
 }

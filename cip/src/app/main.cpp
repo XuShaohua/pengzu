@@ -12,7 +12,8 @@ int main(int argc, char** argv) {
   const auto filename = QGuiApplication::arguments().at(1);
   PdfReader reader;
   if (reader.load(filename)) {
-    reader.readPage(4);
+    QString text;
+    const bool _ok = reader.readPage(4, text);
   }
 
   return QGuiApplication::exec();

@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-actix-web = "4.0.1"
+actix-web = "4.1.0"
 calibre = { path = "../calibre" }
 chrono = { version = "0.4.19", features = ["serde"] }
 clap = "3.1.18"
@@ -18,4 +18,4 @@ serde = { version = "1.0.137", features = ["serde_derive"] }
 serde_json = "1.0.81"
 shell-rs = "0.2.5"
 tokio = { version = "1.19.2", features = [ "full", ] }
-uuid = { version = "1.1.1", features = ["serde", "v4"] }
+uuid = { version = "1.1.2", features = ["serde", "v4"] }

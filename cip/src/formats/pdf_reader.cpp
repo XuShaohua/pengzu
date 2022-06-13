@@ -15,6 +15,9 @@ PdfReader::~PdfReader() {
 }
 
 bool PdfReader::load(const QString& filepath) {
+  if (document_ != nullptr) {
+    delete document_;
+  }
   document_ = Poppler::Document::load(filepath);
   if (document_ == nullptr || document_->isLocked() || document_->isEncrypted()) {
     delete document_;

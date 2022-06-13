@@ -22,6 +22,8 @@ class MobiReader : public QObject {
   bool readPage(int number, QString& text);
 
  private:
+  void cleanup();
+
   MOBIData* mobi_{nullptr};
   MOBIRawml* rawml_{nullptr};
 };

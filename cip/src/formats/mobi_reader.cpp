@@ -11,8 +11,13 @@ MobiReader::MobiReader(QObject* parent) : QObject(parent) {
 }
 
 MobiReader::~MobiReader() {
+  this->cleanup();
+}
+
+void MobiReader::cleanup() {
   if (rawml_ != nullptr) {
     mobi_free_rawml(rawml_);
+    rawml_ = nullptr;
   }
 
   if (mobi_ != nullptr) {
@@ -22,6 +27,7 @@ MobiReader::~MobiReader() {
 }
 
 bool MobiReader::load(const QString& filepath) {
+  this->cleanup();
   mobi_ = mobi_init();
   if (mobi_ == nullptr) {
     qWarning() << "Failed to init mobi instance";

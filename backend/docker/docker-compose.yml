@@ -1,6 +1,6 @@
 version: "3.0"
 services:
-  redis:
+  library_db:
     image: postgres:14.3
     restart: always
     ports:

@@ -18,14 +18,16 @@ class EpubReader : public QObject {
 
   bool load(const QString& filepath);
 
-  int numPages() const;
+  int numPages();
 
   bool readPage(int number, QString& text);
 
  private:
   void cleanup();
+  bool initIterator();
 
   epub* epub_{nullptr};
+  eiterator* it_{nullptr};
 };
 
 #endif  // CIP_CIP_SRC_FORMATS_EPUB_READER_H_

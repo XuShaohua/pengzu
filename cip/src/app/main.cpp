@@ -17,6 +17,10 @@ int main(int argc, char** argv) {
   if (reader.load(filename)) {
     const auto pages = reader.numPages();
     qDebug() << "page num:" << pages;
+    QString text;
+    const bool ok = reader.readPage(1, text);
+    qDebug() << "ok:" << ok;
+    qDebug() << "text:\n" << text;
   }
 
 //  MobiReader reader;

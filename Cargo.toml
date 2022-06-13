@@ -3,5 +3,6 @@
 members = [
   "backend",
   "calibre",
+  "categories",
   "frontend",
 ]

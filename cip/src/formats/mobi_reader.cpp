@@ -67,5 +67,35 @@ int MobiReader::numPages() const {
 }
 
 bool MobiReader::readPage(int number, QString& text) {
-  return false;
+  if (mobi_ == nullptr || rawml_ == nullptr) {
+    qWarning() << "mobi file not load yet!";
+    return -1;
+  }
+
+  const MOBI_RET ret = mobi_parse_rawml(rawml_, mobi_);
+  if (ret != MOBI_SUCCESS) {
+    qWarning() << "Failed to parse rawml in mobi file, ret:" << ret;
+    return -1;
+  }
+
+  int uid = -1;
+  MOBIPart* part = nullptr;
+  while (uid < number) {
+    uid += 1;
+    qDebug() << "uid:" << uid << ", number:" << number;
+    part = mobi_get_part_by_uid(rawml_, uid);
+    if (part == nullptr) {
+      break;
+    }
+  }
+
+  if (part == nullptr) {
+    qWarning() << "part is null";
+    return false;
+  }
+
+  const char* data = reinterpret_cast<char*>(part->data);
+  text = data;
+
+  return true;
 }

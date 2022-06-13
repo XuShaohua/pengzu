@@ -23,6 +23,7 @@ pub enum ErrorKind {
     IoError,
     JsonError,
     ActixBlockingError,
+    MongoDbError,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -143,6 +144,12 @@ impl From<serde_json::Error> for Error {
     }
 }
 
+impl From<mongodb::error::Error> for Error {
+    fn from(err: mongodb::error::Error) -> Self {
+        Self::from_string(ErrorKind::MongoDbError, format!("{:?}", err))
+    }
+}
+
 impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {
@@ -151,7 +158,8 @@ impl actix_web::error::ResponseError for Error {
             | ErrorKind::DbConnError
             | ErrorKind::DbGeneralError
             | ErrorKind::JsonError
-            | ErrorKind::ActixBlockingError => StatusCode::INTERNAL_SERVER_ERROR,
+            | ErrorKind::ActixBlockingError
+            | ErrorKind::MongoDbError => StatusCode::INTERNAL_SERVER_ERROR,
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError
             | ErrorKind::IoError => StatusCode::BAD_REQUEST,

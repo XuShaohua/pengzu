@@ -274,6 +274,7 @@ dependencies = [
  "dotenv",
  "env_logger",
  "log",
+ "mongodb",
  "r2d2",
  "serde",
  "serde_json",
@@ -401,13 +402,6 @@ dependencies = [
  "r2d2",
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "categories"
-version = "0.1.0"
-dependencies = [
- "mongodb",
 ]
 
 [[package]]

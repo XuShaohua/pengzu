@@ -7,12 +7,20 @@
 
 #include <QObject>
 
+#include <poppler-qt5.h>
+
 class PdfReader : public QObject {
   Q_OBJECT
  public:
   explicit PdfReader(QObject* parent = nullptr);
+  ~PdfReader() override;
 
   bool load(const QString& filepath);
+
+  bool readPage(int number);
+
+ private:
+  Poppler::Document* document_{nullptr};
 };
 
 #endif  // CIP_CIP_SRC_PDF_PDF_READER_H_

@@ -14,6 +14,8 @@ set(LINK_LIBS
     )
 
 set(SOURCE_FILES
+    formats/epub_reader.cpp
+    formats/epub_reader.h
     formats/mobi_reader.cpp
     formats/mobi_reader.h
     formats/pdf_reader.cpp

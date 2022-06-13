@@ -8,7 +8,7 @@ CREATE TABLE categories
     name TEXT NOT NULL,
     url TEXT NOT NULL,
     description TEXT,
-    parent_serial_number INTEGER NOT NULL DEFAULT 0,
+    parent INTEGER NOT NULL DEFAULT 0,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )

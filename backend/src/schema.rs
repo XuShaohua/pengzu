@@ -78,7 +78,7 @@ table! {
         name -> Text,
         url -> Text,
         description -> Nullable<Text>,
-        parent_serial_number -> Int4,
+        parent -> Int4,
         created -> Timestamp,
         last_modified -> Timestamp,
     }

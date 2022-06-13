@@ -24,6 +24,7 @@ pub enum ErrorKind {
     JsonError,
     ActixBlockingError,
     MongoDbError,
+    MongoDbValueAccessError,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -150,6 +151,12 @@ impl From<mongodb::error::Error> for Error {
     }
 }
 
+impl From<mongodb::bson::document::ValueAccessError> for Error {
+    fn from(err: mongodb::bson::document::ValueAccessError) -> Self {
+        Self::from_string(ErrorKind::MongoDbValueAccessError, format!("{:?}", err))
+    }
+}
+
 impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {
@@ -159,7 +166,8 @@ impl actix_web::error::ResponseError for Error {
             | ErrorKind::DbGeneralError
             | ErrorKind::JsonError
             | ErrorKind::ActixBlockingError
-            | ErrorKind::MongoDbError => StatusCode::INTERNAL_SERVER_ERROR,
+            | ErrorKind::MongoDbError
+            | ErrorKind::MongoDbValueAccessError => StatusCode::INTERNAL_SERVER_ERROR,
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError
             | ErrorKind::IoError => StatusCode::BAD_REQUEST,

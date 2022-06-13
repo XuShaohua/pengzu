@@ -11,12 +11,12 @@ use crate::schema::categories;
 
 #[derive(Debug, Deserialize, Insertable)]
 #[table_name = "categories"]
-pub struct NewCategory {
+pub struct NewCategory<'a> {
     pub order_index: i32,
-    pub serial_number: String,
-    pub name: String,
-    pub url: String,
-    pub description: Option<String>,
+    pub serial_number: &'a str,
+    pub name: &'a str,
+    pub url: &'a str,
+    pub description: Option<&'a str>,
     pub parent: i32,
 }
 
@@ -39,4 +39,15 @@ pub fn add_category(conn: &PgConnection, new_category: &NewCategory) -> Result<(
         .values(new_category)
         .execute(conn)?;
     Ok(())
+}
+
+pub fn get_category_by_serial_number(
+    conn: &PgConnection,
+    serial_number_val: &str,
+) -> Result<Category, Error> {
+    use crate::schema::categories::dsl::{categories, serial_number};
+    categories
+        .filter(serial_number.eq(serial_number_val))
+        .first(conn)
+        .map_err(Into::into)
 }

@@ -120,6 +120,8 @@ table! {
     identifier_types (id) {
         id -> Int4,
         name -> Text,
+        url_template -> Text,
+        description -> Text,
         created -> Timestamp,
         last_modified -> Timestamp,
     }

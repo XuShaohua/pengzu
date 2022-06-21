@@ -19,9 +19,9 @@ bool ParsePdfFile(const QString& filepath) {
   QString text;
   bool ok;
 
-  // First 5 pages.
+  // First 10 pages.
   int front_page = 0;
-  for (front_page = 0; front_page < 5 && front_page < pages; ++front_page) {
+  for (front_page = 0; front_page < 10 && front_page < pages; ++front_page) {
     ok = reader.readPage(front_page, text);
     if (ok && IsPlainCipPage(text)) {
       return ParsePdfMetadata(filepath, text);

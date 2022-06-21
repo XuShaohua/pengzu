@@ -20,21 +20,23 @@ bool ParsePdfFile(const QString& filepath) {
   bool ok;
 
   // First 5 pages.
-  for (int page = 0; page < 5 && page < pages; ++page) {
-    ok = reader.readPage(page, text);
+  int front_page = 0;
+  for (front_page = 0; front_page < 5 && front_page < pages; ++front_page) {
+    ok = reader.readPage(front_page, text);
     if (ok && IsPlainCipPage(text)) {
       return ParsePdfMetadata(filepath, text);
     }
   }
 
   // Last 5 pages.
-  for (int page = pages - 5; page < pages; ++page) {
-    ok = reader.readPage(page, text);
+  for (int back_page = qMax(pages - 5, front_page); back_page < pages; ++back_page) {
+    ok = reader.readPage(back_page, text);
     if (ok && IsPlainCipPage(text)) {
       return ParsePdfMetadata(filepath, text);
     }
   }
 
+  qWarning() << "No cip page found in:" << filepath;
   return false;
 }
 

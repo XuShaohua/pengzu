@@ -9,4 +9,6 @@
 
 bool ParseEpubFile(const QString& filepath);
 
+bool ParseEpubMetadata(const QString& filepath, const QString& text);
+
 #endif  // CIP_CIP_SRC_FORMATS_EPUB_PARSER_H_

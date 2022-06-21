@@ -7,18 +7,41 @@
 #include <QDebug>
 
 #include "formats/epub_reader.h"
+#include "formats/util.h"
 
 bool ParseEpubFile(const QString& filepath) {
   EpubReader reader;
-  if (reader.load(filepath)) {
-    const auto pages = reader.numPages();
-    qDebug() << "page num:" << pages;
-    QString text;
-    const bool ok = reader.readPage(1, text);
-    qDebug() << "ok:" << ok;
-    qDebug() << "text:\n" << text;
-    return true;
+  if (!reader.load(filepath)) {
+    qWarning() << "Failed to open epub file:" << filepath;
+    return false;
   }
 
+  const int pages = reader.numPages();
+  QString text;
+  bool ok;
+
+  // First 5 pages.
+  int front_page = 0;
+  for (front_page = 0; front_page < 5 && front_page < pages; ++front_page) {
+    ok = reader.readPage(front_page, text);
+    if (ok && IsPlainCipPage(text)) {
+      return ParseEpubMetadata(filepath, text);
+    }
+  }
+
+  // Last 5 pages.
+  for (int back_page = qMax(pages - 5, front_page); back_page < pages; ++back_page) {
+    ok = reader.readPage(back_page, text);
+    if (ok && IsPlainCipPage(text)) {
+      return ParseEpubMetadata(filepath, text);
+    }
+  }
+
+  qWarning() << "No cip page found in:" << filepath;
   return false;
+}
+
+bool ParseEpubMetadata(const QString& filepath, const QString& text) {
+  qDebug() << qPrintable(text);
+  return true;
 }

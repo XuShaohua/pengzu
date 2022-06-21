@@ -11,15 +11,24 @@ PdfReader::PdfReader(QObject* parent) : QObject(parent) {
 }
 
 PdfReader::~PdfReader() {
-  delete document_;
+  if (document_ != nullptr) {
+    delete document_;
+    document_ = nullptr;
+  }
 }
 
 bool PdfReader::load(const QString& filepath) {
   if (document_ != nullptr) {
     delete document_;
+    document_ = nullptr;
   }
   document_ = Poppler::Document::load(filepath);
-  if (document_ == nullptr || document_->isLocked() || document_->isEncrypted()) {
+  if (document_ == nullptr) {
+    qWarning() << "Failed to load pdf file with poppler:" << filepath;
+    return false;
+  }
+  if (document_->isLocked() || document_->isEncrypted()) {
+    qWarning() << "pdf file is locked:" << filepath;
     delete document_;
     return false;
   }
@@ -35,6 +44,7 @@ int PdfReader::numPages() const {
 }
 
 bool PdfReader::readPage(int number, QString& text) {
+  Q_ASSERT(document_ != nullptr);
   Poppler::Page* page = document_->page(number);
   if (page == nullptr) {
     qWarning() << "Failed to read page at: " << number;

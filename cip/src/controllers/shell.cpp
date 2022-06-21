@@ -96,7 +96,6 @@ bool ParseEbookFile(const QString& filepath) {
     return false;
   }
   const QString extension_name = info.suffix().toLower();
-  qDebug() <<  filepath << ", ext:" << extension_name;
   if (extension_name == "pdf") {
     return ParsePdfFile(filepath);
   }

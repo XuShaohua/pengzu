@@ -88,7 +88,6 @@ bool MobiReader::readPage(int number, QString& text) {
   MOBIPart* part = nullptr;
   while (uid < number) {
     uid += 1;
-    qDebug() << "uid:" << uid << ", number:" << number;
     part = mobi_get_part_by_uid(rawml_, uid);
     if (part == nullptr) {
       break;

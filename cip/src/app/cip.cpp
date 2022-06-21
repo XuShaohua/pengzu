@@ -4,12 +4,14 @@
 
 #include <QCoreApplication>
 
+#include "config/config.h"
 #include "controllers/shell.h"
 
 int main(int argc, char** argv) {
   QCoreApplication app(argc, argv);
   QCoreApplication::setApplicationName("cip-parser");
-  QCoreApplication::setApplicationVersion(CIP_VERSION);
+  const auto version = QString("v%1-%2").arg(kAppVersion, kAppBuildId);
+  QCoreApplication::setApplicationVersion(version);
 
   const bool ok = ParseCmdlineOption(QCoreApplication::arguments());
   return ok ? 0 : 1;

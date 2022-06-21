@@ -7,6 +7,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(PopplerQt5 REQUIRED IMPORTED_TARGET poppler-qt5)
 pkg_check_modules(LibMobi REQUIRED IMPORTED_TARGET libmobi)
 
+add_subdirectory(config)
 add_subdirectory(third_party/libepub)
 
 set(LINK_LIBS
@@ -43,5 +44,7 @@ add_executable(cip
 target_link_libraries(cip
     ${LINK_LIBS}
     )
-target_include_directories(cip PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-add_compile_definitions(CIP_VERSION="${PROJECT_VERSION}")
+target_include_directories(cip
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+    )

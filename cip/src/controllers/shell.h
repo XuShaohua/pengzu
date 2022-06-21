@@ -9,10 +9,12 @@
 
 bool ParseCmdlineOption(const QStringList& args);
 
+bool ParseEbookFile(const QString& filepath);
+
 bool ParsePdfFile(const QString& filepath);
 
-bool ParseMObiFile(const QString& filepath);
+bool ParseMobiFile(const QString& filepath);
 
-bool ParseEPubFile(const QString& filepath);
+bool ParseEpubFile(const QString& filepath);
 
 #endif  // CIP_CIP_SRC_CONTROLLERS_SHELL_H_

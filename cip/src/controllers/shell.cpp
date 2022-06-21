@@ -7,6 +7,7 @@
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QDebug>
+#include <QFileInfo>
 
 #include "formats/epub_reader.h"
 #include "formats/mobi_reader.h"
@@ -30,7 +31,39 @@ bool ParseCmdlineOption(const QStringList& args) {
     parser.showHelp(1);
   }
 
-  return true;
+  bool ok = true;
+  for (const QString& filepath: positionalArgs) {
+    if (!ParseEbookFile(filepath)) {
+      qWarning() << "Failed to parse file:" << filepath;
+      ok = false;
+    }
+  }
+
+  return ok;
+}
+
+bool ParseEbookFile(const QString& filepath) {
+  QFileInfo info(filepath);
+  if (!info.exists()) {
+    qWarning() << "File not found:" << filepath;
+    return false;
+  }
+  const QString extension_name = info.suffix().toLower();
+  qDebug() <<  filepath << ", ext:" << extension_name;
+  if (extension_name == "pdf") {
+    return ParsePdfFile(filepath);
+  }
+  if (extension_name == "epub") {
+    return ParseEpubFile(filepath);
+  }
+  if (extension_name == "mobi" ||
+      extension_name == "azw" ||
+      extension_name == "azw3") {
+    return ParseMobiFile(filepath);
+  }
+
+  qWarning() << "Unsupported file:" << filepath;
+  return false;
 }
 
 bool ParsePdfFile(const QString& filepath) {
@@ -44,7 +77,7 @@ bool ParsePdfFile(const QString& filepath) {
   return false;
 }
 
-bool ParseMObiFile(const QString& filepath) {
+bool ParseMobiFile(const QString& filepath) {
   MobiReader reader;
   if (reader.load(filepath)) {
     const auto pages = reader.numPages();
@@ -59,7 +92,7 @@ bool ParseMObiFile(const QString& filepath) {
   return false;
 }
 
-bool ParseEPubFile(const QString& filepath) {
+bool ParseEpubFile(const QString& filepath) {
   EpubReader reader;
   if (reader.load(filepath)) {
     const auto pages = reader.numPages();

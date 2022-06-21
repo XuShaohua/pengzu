@@ -95,6 +95,80 @@ table! {
 }
 
 table! {
+    douban_authors (id) {
+        id -> Int4,
+        name -> Text,
+        sort -> Text,
+        url -> Text,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
+    douban_books (id) {
+        id -> Int4,
+        subject_id -> Int4,
+        title -> Text,
+        url -> Text,
+        small_cover -> Text,
+        isbn -> Text,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
+    douban_books_authors_link (id) {
+        id -> Int4,
+        book -> Int4,
+        author -> Int4,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
+    douban_books_detail (id) {
+        id -> Int4,
+        book_id -> Int4,
+        original_title -> Nullable<Text>,
+        large_cover -> Text,
+        toc -> Nullable<Text>,
+        intro -> Nullable<Text>,
+        publisher -> Nullable<Int4>,
+        rating_number -> Nullable<Float4>,
+        rating_people -> Nullable<Int4>,
+        price -> Nullable<Text>,
+        page -> Nullable<Int4>,
+        pubdate -> Timestamp,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
+    douban_books_recommends_link (id) {
+        id -> Int4,
+        book -> Int4,
+        recommend_book -> Int4,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
+    douban_publishers (id) {
+        id -> Int4,
+        name -> Text,
+        sort -> Text,
+        url -> Text,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     file_formats (id) {
         id -> Int4,
         name -> Text,
@@ -120,6 +194,8 @@ table! {
     identifier_types (id) {
         id -> Int4,
         name -> Text,
+        url_template -> Text,
+        description -> Text,
         created -> Timestamp,
         last_modified -> Timestamp,
     }
@@ -209,6 +285,12 @@ allow_tables_to_appear_in_same_query!(
     books_tags_link,
     categories,
     comments,
+    douban_authors,
+    douban_books,
+    douban_books_authors_link,
+    douban_books_detail,
+    douban_books_recommends_link,
+    douban_publishers,
     file_formats,
     files,
     identifier_types,

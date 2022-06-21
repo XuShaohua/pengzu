@@ -1,0 +1,13 @@
+-- Your SQL goes here
+
+CREATE TABLE douban_books
+(
+    id SERIAL PRIMARY KEY NOT NULL,
+    subject_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    url TEXT NOT NULL,
+    small_cover TEXT NOT NULL,
+    isbn TEXT NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+)

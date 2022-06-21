@@ -1,11 +1,11 @@
 -- Your SQL goes here
 
-CREATE TABLE identifier_types
+CREATE TABLE douban_authors
 (
-    id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
-    url_template TEXT NOT NULL,
-    description TEXT NOT NULL,
+    sort TEXT NOT NULL,
+    url TEXT NOT NULL DEFAULT '',
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (name)

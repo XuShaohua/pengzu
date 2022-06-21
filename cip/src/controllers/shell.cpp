@@ -7,6 +7,8 @@
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QDebug>
+#include <QDir>
+#include <QDirIterator>
 #include <QFileInfo>
 
 #include "formats/epub_parser.h"
@@ -15,10 +17,13 @@
 
 bool ParseCmdlineOption(const QStringList& args) {
   QCommandLineParser parser;
+  parser.setApplicationDescription("Parse CIP metadata from ebook files");
   const auto help_option = parser.addHelpOption();
   const auto version_option = parser.addVersionOption();
-  parser.setApplicationDescription("Parse CIP metadata from ebook files");
-  parser.addPositionalArgument("filepath", "Path to ebook file");
+  const QCommandLineOption dir_option({"d", "dir"}, "Read directory recursively");
+  parser.addOption(dir_option);
+  parser.addPositionalArgument("path", "Path to ebook file or directory");
+
   parser.process(args);
   if (parser.isSet(version_option)) {
     parser.showVersion();
@@ -32,20 +37,62 @@ bool ParseCmdlineOption(const QStringList& args) {
   }
 
   bool ok = true;
-  for (const QString& filepath: positionalArgs) {
-    if (!ParseEbookFile(filepath)) {
-      qWarning() << "Failed to parse file:" << filepath;
-      ok = false;
+  if (parser.isSet(dir_option)) {
+    for (const QString& path: positionalArgs) {
+      if (!ParseEbookDirectory(path)) {
+        qWarning() << "Failed to parse files in directory:" << path;
+        ok = false;
+      }
+    }
+  } else {
+    for (const QString& filepath: positionalArgs) {
+      if (!ParseEbookFile(filepath)) {
+        qWarning() << "Failed to parse file:" << filepath;
+        ok = false;
+      }
     }
   }
 
   return ok;
 }
 
+bool ParseEbookDirectory(const QString& path) {
+  const QFileInfo dir_info(path);
+  if (!dir_info.isDir()) {
+    qWarning() << "Not a directory:" << path;
+    return false;
+  }
+  if (!dir_info.isReadable() || !dir_info.isExecutable()) {
+    qWarning() << "Directory not accessible:" << path;
+    return false;
+  }
+
+  QDirIterator it(path, QDirIterator::Subdirectories);
+  qDebug() << Q_FUNC_INFO << path;
+  while (it.hasNext()) {
+    const QString filepath = it.next();
+    const QFileInfo info(filepath);
+    if (info.isFile()) {
+      qDebug() << filepath;
+      ParseEbookFile(filepath);
+    }
+  }
+
+  return true;
+}
+
 bool ParseEbookFile(const QString& filepath) {
   QFileInfo info(filepath);
   if (!info.exists()) {
     qWarning() << "File not found:" << filepath;
+    return false;
+  }
+  if (!info.isFile()) {
+    qWarning() << "Not a generic file:" << filepath;
+    return false;
+  }
+  if (!info.isReadable()) {
+    qWarning() << "File not readable:" << filepath;
     return false;
   }
   const QString extension_name = info.suffix().toLower();

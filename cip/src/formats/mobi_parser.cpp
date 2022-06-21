@@ -42,6 +42,8 @@ bool ParseMobiFile(const QString& filepath) {
 }
 
 bool ParseMobiMetadata(const QString& filepath, const QString& text) {
-  qDebug() << qPrintable(text);
+  Q_UNUSED(filepath);
+  Q_UNUSED(text);
+//  qDebug() << qPrintable(text);
   return true;
 }

@@ -9,7 +9,7 @@
 int main(int argc, char** argv) {
   QCoreApplication app(argc, argv);
   QCoreApplication::setApplicationName("cip-parser");
-  QCoreApplication::setApplicationVersion("1.0.0");
+  QCoreApplication::setApplicationVersion(CIP_VERSION);
 
   const bool ok = ParseCmdlineOption(QCoreApplication::arguments());
   return ok ? 0 : 1;

@@ -37,10 +37,11 @@ set(SOURCE_FILES
     )
 
 add_executable(cip
-    app/main.cpp
+    app/cip.cpp
     ${SOURCE_FILES}
     )
 target_link_libraries(cip
     ${LINK_LIBS}
     )
 target_include_directories(cip PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+add_compile_definitions(CIP_VERSION="${PROJECT_VERSION}")

@@ -17,6 +17,8 @@ set(LINK_LIBS
     )
 
 set(SOURCE_FILES
+    controllers/shell.cpp
+    controllers/shell.h
     formats/epub_reader.cpp
     formats/epub_reader.h
     formats/mobi_reader.cpp

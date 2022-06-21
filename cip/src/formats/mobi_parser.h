@@ -9,4 +9,6 @@
 
 bool ParseMobiFile(const QString& filepath);
 
+bool ParseMobiMetadata(const QString& filepath, const QString& text);
+
 #endif  // CIP_CIP_SRC_FORMATS_MOBI_PARSER_H_

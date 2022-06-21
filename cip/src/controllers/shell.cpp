@@ -9,8 +9,8 @@
 #include <QDebug>
 #include <QFileInfo>
 
-#include "formats/epub_reader.h"
-#include "formats/mobi_reader.h"
+#include "formats/epub_parser.h"
+#include "formats/mobi_parser.h"
 #include "formats/pdf_parser.h"
 
 bool ParseCmdlineOption(const QStringList& args) {
@@ -63,36 +63,5 @@ bool ParseEbookFile(const QString& filepath) {
   }
 
   qWarning() << "Unsupported file:" << filepath;
-  return false;
-}
-
-
-bool ParseMobiFile(const QString& filepath) {
-  MobiReader reader;
-  if (reader.load(filepath)) {
-    const auto pages = reader.numPages();
-    qDebug() << "page num:" << pages;
-    QString text;
-    const bool ok = reader.readPage(1, text);
-    qDebug() << "ok:" << ok;
-    qDebug() << "text:\n" << text;
-    return true;
-  }
-
-  return false;
-}
-
-bool ParseEpubFile(const QString& filepath) {
-  EpubReader reader;
-  if (reader.load(filepath)) {
-    const auto pages = reader.numPages();
-    qDebug() << "page num:" << pages;
-    QString text;
-    const bool ok = reader.readPage(1, text);
-    qDebug() << "ok:" << ok;
-    qDebug() << "text:\n" << text;
-    return true;
-  }
-
   return false;
 }

@@ -19,13 +19,22 @@ set(LINK_LIBS
 set(SOURCE_FILES
     controllers/shell.cpp
     controllers/shell.h
+    
+    formats/epub_parser.cpp
+    formats/epub_parser.h
     formats/epub_reader.cpp
     formats/epub_reader.h
+    formats/mobi_parser.cpp
+    formats/mobi_parser.h
     formats/mobi_reader.cpp
     formats/mobi_reader.h
+    formats/pdf_parser.cpp
+    formats/pdf_parser.h
     formats/pdf_reader.cpp
     formats/pdf_reader.h
-    formats/pdf_parser.cpp formats/pdf_parser.h formats/util.cpp formats/util.h)
+    formats/util.cpp
+    formats/util.h
+    )
 
 add_executable(cip
     app/main.cpp

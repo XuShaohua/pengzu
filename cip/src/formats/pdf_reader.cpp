@@ -43,8 +43,6 @@ bool PdfReader::readPage(int number, QString& text) {
   const auto size = page->pageSizeF();
   const QRectF rect{0.0, 0.0, size.width(), size.height()};
   text = page->text(rect);
-  qDebug() << "text of page:" << number << "is:";
-  qDebug() << qPrintable(text);
   delete page;
   return true;
 }

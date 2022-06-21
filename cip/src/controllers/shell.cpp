@@ -11,7 +11,7 @@
 
 #include "formats/epub_reader.h"
 #include "formats/mobi_reader.h"
-#include "formats/pdf_reader.h"
+#include "formats/pdf_parser.h"
 
 bool ParseCmdlineOption(const QStringList& args) {
   QCommandLineParser parser;
@@ -66,16 +66,6 @@ bool ParseEbookFile(const QString& filepath) {
   return false;
 }
 
-bool ParsePdfFile(const QString& filepath) {
-  PdfReader reader;
-  if (reader.load(filepath)) {
-    QString text;
-    const bool ok = reader.readPage(4, text);
-    return ok;
-  }
-
-  return false;
-}
 
 bool ParseMobiFile(const QString& filepath) {
   MobiReader reader;

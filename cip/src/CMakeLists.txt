@@ -25,7 +25,7 @@ set(SOURCE_FILES
     formats/mobi_reader.h
     formats/pdf_reader.cpp
     formats/pdf_reader.h
-    )
+    formats/pdf_parser.cpp formats/pdf_parser.h formats/util.cpp formats/util.h)
 
 add_executable(cip
     app/main.cpp

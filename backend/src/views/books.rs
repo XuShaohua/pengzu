@@ -20,13 +20,23 @@ pub async fn add_book(
     Ok(HttpResponse::Ok().finish())
 }
 
-pub async fn get_book(
+pub async fn get_books(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+    let page = 1;
+    let resp_book = web::block(move || {
+        let conn = pool.get()?;
+        models::get_books(&conn, page)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp_book))
+}
+
+pub async fn get_book_detail(
     pool: web::Data<DbPool>,
     book_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     let resp_book = web::block(move || {
         let conn = pool.get()?;
-        models::get_book(&conn, book_id.into_inner())
+        models::get_book_detail(&conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_book))

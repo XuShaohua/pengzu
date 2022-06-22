@@ -27,7 +27,8 @@ pub async fn run() -> Result<(), Error> {
             .app_data(web::Data::new(pool.clone()))
             .route("/", web::get().to(index))
             .route("/api/book", web::post().to(books::add_book))
-            .service(web::resource("/api/book/{book_id}").route(web::get().to(books::get_book)))
+            .route("/api/book", web::get().to(books::get_books))
+            .route("/api/book/{book_id}", web::get().to(books::get_book_detail))
             .route("/api/comment", web::post().to(comments::add_comment))
             .service(
                 web::resource("/api/comment/{book_id}")
@@ -46,7 +47,7 @@ pub async fn run() -> Result<(), Error> {
             .route("/api/tag", web::get().to(tags::get_tags))
             .route("/api/tag/{tag_id}", web::put().to(tags::update_tag))
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("127.0.0.1", 3000))?
     .run()
     .await
     .map_err(Into::into)

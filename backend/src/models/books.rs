@@ -38,7 +38,21 @@ pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<Book, Error> 
         .map_err(Into::into)
 }
 
-pub fn get_book(conn: &PgConnection, book_id: i32) -> Result<Book, Error> {
+pub fn get_books(conn: &PgConnection, mut page_id: i32) -> Result<Vec<Book>, Error> {
+    use crate::schema::books::dsl::books;
+    if page_id < 0 {
+        page_id = 0;
+    }
+    let each_page = 20_i64;
+    let offset = page_id as i64 * each_page;
+    books
+        .limit(each_page)
+        .offset(offset)
+        .load(conn)
+        .map_err(Into::into)
+}
+
+pub fn get_book_detail(conn: &PgConnection, book_id: i32) -> Result<Book, Error> {
     use crate::schema::books::dsl::books;
     books.find(book_id).first::<Book>(conn).map_err(Into::into)
 }

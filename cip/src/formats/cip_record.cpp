@@ -142,7 +142,6 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
   } else {
     author = line.mid(index + 1).trimmed();
   }
-  qDebug() << "author line:" << author;
   {
     QString name;
     bool is_country = false;
@@ -192,7 +191,7 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
       break;
     }
   }
-  QRegularExpression price_pattern("([0-9.]+\\s*元)");
+  QRegularExpression price_pattern("([0-9. ]+\\s*元)");
   auto price_match = price_pattern.match(line);
   if (price_pattern.isValid()) {
     record.price = price_match.captured(1).trimmed();

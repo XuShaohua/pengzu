@@ -135,5 +135,22 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
   }
   qDebug() << "authors:" << record.authors;
 
+  // price
+  while (true) {
+    if (stream.atEnd()) {
+      return true;
+    }
+    line = stream.readLine();
+    if (line.contains("元")) {
+      break;
+    }
+  }
+  QRegularExpression price_pattern("([0-9.]+\\s*元)");
+  auto price_match = price_pattern.match(line);
+  if (price_pattern.isValid()) {
+    record.price = price_match.captured(1).trimmed();
+    qDebug() << "price: " << record.price;
+  }
+
   return true;
 }

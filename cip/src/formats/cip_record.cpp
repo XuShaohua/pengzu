@@ -83,8 +83,12 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
   // category id
   if (line.contains("iii") || line.contains("①") ||
       line.contains("Ⅲ") || line.contains("iV")) {
-    record.category_id = line.split("①").last().trimmed();
-    qDebug() << "category id:" << record.category_id;
+    QRegularExpression pattern(".*([A-Z][0-9. \\-]+)\\s*$");
+    auto match = pattern.match(line);
+    if (match.isValid()) {
+      record.category_id = match.captured(1).trimmed().replace(" ", "");
+      qDebug() << "category id:" << record.category_id;
+    }
     line = stream.readLine();
   }
 

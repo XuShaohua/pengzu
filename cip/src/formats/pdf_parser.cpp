@@ -48,5 +48,11 @@ bool ParsePdfFile(const QString& filepath) {
 bool ParsePdfMetadata(const QString& filepath, const QString& text) {
   Q_UNUSED(filepath);
   qDebug() << qPrintable(text);
+
+  CipRecord record;
+  if (!ParseCipFromText(text, record)) {
+    qWarning() << "Failed to parse cip record in:" << filepath;
+    return false;
+  }
   return true;
 }

@@ -12,6 +12,7 @@ bool IsPlainCipPage(const QString& text);
 
 struct CipRecord {
   QString title{};
+  QString original_title{};
   QStringList authors{};
   QString publisher{};
   QString pubdate{};

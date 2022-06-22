@@ -54,5 +54,11 @@ bool ParseMobiMetadata(const QString& filepath, const QString& html) {
     return false;
   }
   qDebug() << qPrintable(text);
+
+  CipRecord record;
+  if (!ParseCipFromText(text, record)) {
+    qWarning() << "Failed to parse cip record in:" << filepath;
+    return false;
+  }
   return true;
 }

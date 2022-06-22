@@ -20,7 +20,7 @@ pub struct IdentifierType {
     pub id: i32,
     pub name: String,
     pub url_template: String,
-    pub description: String,
+    pub description: Option<String>,
     pub crated: NaiveDateTime,
     pub last_modified: NaiveDateTime,
 }

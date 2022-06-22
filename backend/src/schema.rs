@@ -222,7 +222,7 @@ table! {
         id -> Int4,
         name -> Text,
         url_template -> Text,
-        description -> Text,
+        description -> Nullable<Text>,
         created -> Timestamp,
         last_modified -> Timestamp,
     }

@@ -44,6 +44,16 @@ table! {
 }
 
 table! {
+    books_cips_link (id) {
+        id -> Int4,
+        book -> Int4,
+        cip -> Int4,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     books_languages_link (id) {
         id -> Int4,
         book -> Int4,
@@ -79,6 +89,33 @@ table! {
         url -> Text,
         description -> Nullable<Text>,
         parent -> Int4,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
+    cips (id) {
+        id -> Int4,
+        cip -> Int4,
+        isbn13 -> Int4,
+        title -> Text,
+        original_title -> Nullable<Text>,
+        category_id -> Text,
+        publisher -> Int4,
+        pubdate -> Text,
+        price -> Nullable<Text>,
+        intro -> Nullable<Text>,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
+    cips_authors_link (id) {
+        id -> Int4,
+        cip -> Int4,
+        author -> Int4,
         created -> Timestamp,
         last_modified -> Timestamp,
     }
@@ -194,8 +231,6 @@ table! {
     identifier_types (id) {
         id -> Int4,
         name -> Text,
-        url_template -> Text,
-        description -> Text,
         created -> Timestamp,
         last_modified -> Timestamp,
     }
@@ -280,10 +315,13 @@ allow_tables_to_appear_in_same_query!(
     books,
     books_authors_link,
     books_categories_link,
+    books_cips_link,
     books_languages_link,
     books_publishers_link,
     books_tags_link,
     categories,
+    cips,
+    cips_authors_link,
     comments,
     douban_authors,
     douban_books,

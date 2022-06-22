@@ -68,51 +68,66 @@ bool ParseEbookDirectory(const QString& path) {
   }
 
   QDirIterator it(path, QDirIterator::Subdirectories);
+  int ok_count = 0;
+  int error_count = 0;
   while (it.hasNext()) {
     const QString filepath = it.next();
     const QFileInfo info(filepath);
     if (info.isFile()) {
-      ParseEbookFile(filepath);
+      switch (ParseEbookFile(filepath)) {
+        case ParseFileResult::Ok: {
+          ok_count += 1;
+          break;
+        }
+        case ParseFileResult::Failed: {
+          error_count += 1;
+          break;
+        }
+        default: {
+          // Ignore other errors
+        }
+      }
     }
   }
 
+  qDebug() << "[Result] ok:" << ok_count << ", errors:" << error_count;
   return true;
 }
 
-bool ParseEbookFile(const QString& filepath) {
+ParseFileResult ParseEbookFile(const QString& filepath) {
   QFileInfo info(filepath);
   if (!info.exists()) {
     qWarning() << "File not found:" << filepath;
-    return false;
+    return ParseFileResult::Failed;
   }
   if (!info.isFile()) {
     qWarning() << "Not a generic file:" << filepath;
-    return false;
+    return ParseFileResult::Failed;
   }
   if (!info.isReadable()) {
     qWarning() << "File not readable:" << filepath;
-    return false;
+    return ParseFileResult::Failed;
   }
   const QString extension_name = info.suffix().toLower();
   if (extension_name == "pdf") {
-    return ParsePdfFile(filepath);
+    return ParsePdfFile(filepath) ? ParseFileResult::Ok : ParseFileResult::Failed;
   }
   if (extension_name == "epub") {
-    return ParseEpubFile(filepath);
+    return ParseEpubFile(filepath) ? ParseFileResult::Ok : ParseFileResult::Failed;
   }
   if (extension_name == "mobi" ||
       extension_name == "azw" ||
       extension_name == "azw3") {
-    return ParseMobiFile(filepath);
+    return ParseMobiFile(filepath) ? ParseFileResult::Ok : ParseFileResult::Failed;
   }
   if (extension_name == "jpg" ||
       extension_name == "opf" ||
       extension_name == "json" ||
       extension_name == "db") {
     // Ignore known files.
-    return true;
+    return ParseFileResult::Ignored;
   }
 
   qWarning() << "Unsupported file:" << filepath;
-  return false;
+  return ParseFileResult::Unsupported;
 }

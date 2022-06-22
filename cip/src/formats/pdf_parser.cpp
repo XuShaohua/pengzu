@@ -10,7 +10,6 @@
 #include "formats/util.h"
 
 bool ParsePdfFile(const QString& filepath) {
-  qDebug() << filepath;
   PdfReader reader;
   if (!reader.load(filepath)) {
     qWarning() << "Failed to open pdf file:" << filepath;

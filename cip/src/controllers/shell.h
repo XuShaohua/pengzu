@@ -11,6 +11,13 @@ bool ParseCmdlineOption(const QStringList& args);
 
 bool ParseEbookDirectory(const QString& path);
 
-bool ParseEbookFile(const QString& filepath);
+enum ParseFileResult : uint8_t {
+  Ok = 0,
+  Failed = 1,
+  Ignored = 2,
+  Unsupported = 3,
+};
+
+ParseFileResult ParseEbookFile(const QString& filepath);
 
 #endif  // CIP_CIP_SRC_CONTROLLERS_SHELL_H_

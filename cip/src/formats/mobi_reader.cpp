@@ -100,7 +100,7 @@ bool MobiReader::readPage(int number, QString& text) {
   }
 
   const char* data = reinterpret_cast<char*>(part->data);
-  text = data;
+  text = QString::fromLocal8Bit(data, static_cast<int>(part->size));
 
   return true;
 }

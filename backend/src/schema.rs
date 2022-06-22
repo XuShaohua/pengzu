@@ -296,7 +296,9 @@ table! {
 table! {
     tags (id) {
         id -> Int4,
+        order_index -> Int4,
         name -> Text,
+        parent -> Int4,
         created -> Timestamp,
         last_modified -> Timestamp,
     }

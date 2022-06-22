@@ -18,7 +18,9 @@ pub struct NewTag {
 #[derive(Debug, Serialize, Queryable)]
 pub struct Tag {
     pub id: i32,
+    pub order_index: i32,
     pub name: String,
+    pub parent: i32,
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,
 }

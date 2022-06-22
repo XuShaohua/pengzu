@@ -9,4 +9,6 @@
 
 bool IsPlainCipPage(const QString& text);
 
+bool HtmlToText(const QString& html, QString& text);
+
 #endif  // CIP_CIP_SRC_FORMATS_UTIL_H_

@@ -41,9 +41,14 @@ bool ParseEpubFile(const QString& filepath) {
   return false;
 }
 
-bool ParseEpubMetadata(const QString& filepath, const QString& text) {
+bool ParseEpubMetadata(const QString& filepath, const QString& html) {
   Q_UNUSED(filepath);
-  Q_UNUSED(text);
-//  qDebug() << qPrintable(text);
+  QString text;
+  if (!HtmlToText(html, text)) {
+    qWarning() << "Html2Text() failed!" << filepath;
+    return false;
+  }
+
+  qDebug() << qPrintable(text);
   return true;
 }

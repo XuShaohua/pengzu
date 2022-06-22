@@ -41,9 +41,13 @@ bool ParseMobiFile(const QString& filepath) {
   return false;
 }
 
-bool ParseMobiMetadata(const QString& filepath, const QString& text) {
+bool ParseMobiMetadata(const QString& filepath, const QString& html) {
   Q_UNUSED(filepath);
-  Q_UNUSED(text);
+  QString text;
+  if (!HtmlToText(html, text)) {
+    qWarning() << "Html2Text() failed!" << filepath;
+    return false;
+  }
   qDebug() << qPrintable(text);
   return true;
 }

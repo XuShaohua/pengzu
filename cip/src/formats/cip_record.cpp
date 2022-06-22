@@ -81,7 +81,12 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
     }
     line = stream.readLine();
   }
-  record.isbn = line.remove("ISBN").replace("-", "").replace("–", "").replace(" ", "").trimmed();
+  record.isbn = line.remove("ISBN")
+      .replace("-", "")
+      .replace("–", "")
+      .replace("－", "")
+      .replace(" ", "")
+      .trimmed();
   qDebug() << "isbn:" << record.isbn;
 
   // category id

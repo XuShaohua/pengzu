@@ -1,5 +1,5 @@
 
-find_package(Qt5 5.12 COMPONENTS Core Gui Svg REQUIRED)
+find_package(Qt5 5.12 COMPONENTS Core REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -13,7 +13,7 @@ add_subdirectory(third_party/libepub)
 set(LINK_LIBS
     PkgConfig::PopplerQt5
     PkgConfig::LibMobi
-    Qt5::Gui
+    Qt5::Core
     libepub
     )
 

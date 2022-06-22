@@ -20,7 +20,9 @@ set(LINK_LIBS
 set(SOURCE_FILES
     controllers/shell.cpp
     controllers/shell.h
-    
+
+    formats/cip_record.cpp
+    formats/cip_record.h
     formats/epub_parser.cpp
     formats/epub_parser.h
     formats/epub_reader.cpp

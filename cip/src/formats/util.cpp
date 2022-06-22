@@ -5,13 +5,8 @@
 #include "formats/util.h"
 
 #include <QDebug>
-#include <QFile>
 #include <QProcess>
 #include <QTemporaryFile>
-
-bool IsPlainCipPage(const QString& text) {
-  return text.contains("图书在版编目") && text.contains("中国版本图书馆");
-}
 
 bool HtmlToText(const QString& html, QString& text) {
   QTemporaryFile temporary_file;

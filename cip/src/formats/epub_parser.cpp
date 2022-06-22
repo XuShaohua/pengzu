@@ -6,6 +6,7 @@
 
 #include <QDebug>
 
+#include "formats/cip_record.h"
 #include "formats/epub_reader.h"
 #include "formats/util.h"
 
@@ -52,6 +53,7 @@ bool ParseEpubMetadata(const QString& filepath, const QString& html) {
     qWarning() << "Html2Text() failed!" << filepath;
     return false;
   }
+  qDebug() << qPrintable(text);
 
   return true;
 }

@@ -46,9 +46,13 @@ bool ParseCmdlineOption(const QStringList& args) {
     }
   } else {
     for (const QString& filepath: positionalArgs) {
-      if (!ParseEbookFile(filepath)) {
-        qWarning() << "Failed to parse file:" << filepath;
-        ok = false;
+      switch (ParseEbookFile(filepath)) {
+        case ParseFileResult::Failed: {
+          qWarning() << "Failed to parse file:" << filepath;
+          ok = false;
+          break;
+        }
+        default: {}
       }
     }
   }

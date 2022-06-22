@@ -6,6 +6,7 @@
 
 #include <QDebug>
 
+#include "formats/cip_record.h"
 #include "formats/pdf_reader.h"
 #include "formats/util.h"
 
@@ -46,7 +47,6 @@ bool ParsePdfFile(const QString& filepath) {
 
 bool ParsePdfMetadata(const QString& filepath, const QString& text) {
   Q_UNUSED(filepath);
-  Q_UNUSED(text);
-//  qDebug() << qPrintable(text);
+  qDebug() << qPrintable(text);
   return true;
 }

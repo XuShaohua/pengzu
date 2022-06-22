@@ -47,12 +47,12 @@ bool ParseMobiFile(const QString& filepath) {
 }
 
 bool ParseMobiMetadata(const QString& filepath, const QString& html) {
-  Q_UNUSED(filepath);
   QString text;
   if (!HtmlToText(html, text)) {
     qWarning() << "Html2Text() failed!" << filepath;
     return false;
   }
+  qDebug() << filepath;
   qDebug() << qPrintable(text);
 
   CipRecord record;

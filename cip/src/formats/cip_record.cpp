@@ -119,7 +119,13 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
   if (index == -1) {
     index = line.indexOf(":");
   }
+  if (index == -1) {
+    index = line.indexOf("/");
+  }
   end_index = line.lastIndexOf("著");
+  if (end_index == -1) {
+    end_index = line.indexOf("作");
+  }
   if (end_index > index) {
     const QString author = line.mid(index + 1, end_index - index - 1).trimmed();
     record.authors.append(author);

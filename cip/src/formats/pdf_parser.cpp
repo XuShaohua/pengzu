@@ -46,7 +46,7 @@ bool ParsePdfFile(const QString& filepath) {
 }
 
 bool ParsePdfMetadata(const QString& filepath, const QString& text) {
-  Q_UNUSED(filepath);
+  qDebug() << filepath;
   qDebug() << qPrintable(text);
 
   CipRecord record;

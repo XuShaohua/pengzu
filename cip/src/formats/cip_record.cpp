@@ -120,8 +120,12 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
   // author
   while (true) {
     QString no_space_line = line.trimmed().replace(" ", "").replace("　", "");
-    if (no_space_line.endsWith("著") || no_space_line.startsWith("作者")
-        || no_space_line.startsWith("著作") || no_space_line.startsWith("著者")) {
+    if (no_space_line.endsWith("著")
+        || no_space_line.endsWith("主编")
+        || no_space_line.startsWith("作者")
+        || no_space_line.startsWith("著作")
+        || no_space_line.contains("编著")
+        || no_space_line.startsWith("著者")) {
       break;
     }
     if (stream.atEnd()) {
@@ -138,6 +142,9 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
     index = line.indexOf("/");
   }
   end_index = line.lastIndexOf("著");
+  if (end_index == -1) {
+    end_index = line.lastIndexOf("主编");
+  }
   if (end_index == -1) {
     end_index = line.replace(" ", "").indexOf("作者");
   }

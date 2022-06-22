@@ -113,9 +113,15 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
   }
 
   // author
-  while (!line.contains("著")) {
+  while (true) {
+    QString no_space_line = line.trimmed().replace(" ", "").replace("　", "");
+    if (no_space_line.endsWith("著") || no_space_line.startsWith("作者")
+        || no_space_line.startsWith("著作") || no_space_line.startsWith("著者")) {
+      break;
+    }
     if (stream.atEnd()) {
-      return true;
+      qWarning() << "Invalid author in cip";
+      return false;
     }
     line = stream.readLine();
   }
@@ -128,14 +134,51 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
   }
   end_index = line.lastIndexOf("著");
   if (end_index == -1) {
-    end_index = line.indexOf("作");
+    end_index = line.replace(" ", "").indexOf("作者");
   }
+  QString author;
   if (end_index > index) {
-    const QString author = line.mid(index + 1, end_index - index - 1).trimmed();
-    record.authors.append(author);
+    author = line.mid(index + 1, end_index - index - 1).trimmed();
   } else {
-    const QString author = line.mid(index + 1).trimmed();
-    record.authors.append(author);
+    author = line.mid(index + 1).trimmed();
+  }
+  qDebug() << "author line:" << author;
+  {
+    QString name;
+    bool is_country = false;
+    bool got_author = false;
+    for (const QChar& chr: author) {
+      if (chr == '[' || chr == "［" || chr == "〔") {
+        is_country = true;
+        name.append('[');
+        continue;
+      }
+
+      if (chr == ']' || chr == "］" || chr == "〕") {
+        name.append(']');
+        is_country = false;
+        continue;
+      }
+      if (chr.isSpace()) {
+        if (is_country) {
+          // Ignore space in country code.
+        } else if (got_author) {
+          record.authors.append(name);
+          name.clear();
+          got_author = false;
+          is_country = false;
+        }
+        continue;
+      }
+      name.append(chr);
+      if (!is_country) {
+        got_author = true;
+      }
+    }
+
+    if (!name.isEmpty()) {
+      record.authors.append(name);
+    }
   }
   qDebug() << "authors:" << record.authors;
 

@@ -8,14 +8,14 @@ publish = false
 actix-web = "4.1.0"
 calibre = { path = "../calibre" }
 chrono = { version = "0.4.19", features = ["serde"] }
-clap = "3.2.5"
+clap = "3.2.6"
 diesel = { version = "1.4.8", features = ["chrono", "postgres", "r2d2"] }
 dotenv = "0.15.0"
 env_logger = "0.9.0"
 futures = "0.3.21"
 log = "0.4.17"
 mongodb = "2.2.2"
-r2d2 = "0.8.9"
+r2d2 = "0.8.10"
 serde = { version = "1.0.137", features = ["serde_derive"] }
 serde_json = "1.0.81"
 shell-rs = "0.2.5"

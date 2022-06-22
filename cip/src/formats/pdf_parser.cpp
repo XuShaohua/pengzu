@@ -10,12 +10,17 @@
 #include "formats/util.h"
 
 bool ParsePdfFile(const QString& filepath) {
+  qDebug() << filepath;
   PdfReader reader;
   if (!reader.load(filepath)) {
     qWarning() << "Failed to open pdf file:" << filepath;
     return false;
   }
   const int pages = reader.numPages();
+  if (pages < 0) {
+    qWarning() << "Invalid page number in pdf file:" << filepath << pages;
+    return false;
+  }
   QString text;
   bool ok;
 

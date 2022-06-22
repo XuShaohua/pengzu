@@ -29,7 +29,6 @@ bool PdfReader::load(const QString& filepath) {
   }
   if (document_->isLocked() || document_->isEncrypted()) {
     qWarning() << "pdf file is locked:" << filepath;
-    delete document_;
     return false;
   }
 

@@ -17,6 +17,10 @@ bool ParseEpubFile(const QString& filepath) {
   }
 
   const int pages = reader.numPages();
+  if (pages < 0) {
+    qWarning() << "Invalid page number in epub file:" << filepath << pages;
+    return false;
+  }
   QString text;
   bool ok;
 

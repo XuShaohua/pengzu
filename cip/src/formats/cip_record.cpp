@@ -46,25 +46,25 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
   }
   record.title = line.left(index).trimmed();
   qDebug() << "title:" << record.title;
+
+  // publisher and pubdate
+  // go next line.
+  if (!line.contains("-") && !line.contains("—")) {
+    line = stream.readLine();
+  }
   index = line.lastIndexOf("：");
   if (index == -1) {
     index = line.lastIndexOf(":");
   }
-  if (index != -1) {
-    // publisher and pubdate
-    int index_date = line.lastIndexOf("，");
-    if (index_date == -1) {
-      index_date = line.lastIndexOf(", ");
-    }
-    record.publisher = line.mid(index + 1, index_date - index - 1).trimmed();
-    qDebug() << "publisher:" << record.publisher;
-    record.pubdate = line.right(line.length() - index_date - 1).trimmed();
-    qDebug() << "pubdate:" << record.pubdate;
-    line = stream.readLine();
-  } else {
-    qWarning() << "Invalid cip title:" << line;
-    return false;
+  int index_date = line.lastIndexOf("，");
+  if (index_date == -1) {
+    index_date = line.lastIndexOf(", ");
   }
+  record.publisher = line.mid(index + 1, index_date - index - 1).trimmed();
+  qDebug() << "publisher:" << record.publisher;
+  record.pubdate = line.right(line.length() - index_date - 1).trimmed();
+  qDebug() << "pubdate:" << record.pubdate;
+  line = stream.readLine();
 
   // original title
   if (line.contains("书名原文：")) {
@@ -74,11 +74,15 @@ bool ParseCipFromText(const QString& text, CipRecord& record) {
   }
 
   // ISBN
-  if (line.contains("ISBN")) {
-    record.isbn = line.remove("ISBN").replace("-", "").replace(" ", "").trimmed();
-    qDebug() << "isbn:" << record.isbn;
+  while (!line.contains("ISBN")) {
+    if (stream.atEnd()) {
+      qWarning() << "Invalid isbn";
+      return false;
+    }
     line = stream.readLine();
   }
+  record.isbn = line.remove("ISBN").replace("-", "").replace("–", "").replace(" ", "").trimmed();
+  qDebug() << "isbn:" << record.isbn;
 
   // category id
   if (line.contains("iii") || line.contains("①") ||

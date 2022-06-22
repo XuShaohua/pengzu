@@ -32,6 +32,7 @@ bool HtmlToText(const QString& html, QString& text) {
     return false;
   }
   const QByteArray bytes = process.readAllStandardOutput();
-  text = QString::fromLocal8Bit(bytes);
+  // Take first 2k bytes.
+  text = QString::fromLocal8Bit(bytes).left(2048);
   return true;
 }

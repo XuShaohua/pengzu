@@ -21,8 +21,6 @@ CREATE TABLE books
 (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL DEFAULT 'Unknown',
-    sort TEXT NOT NULL DEFAULT '',
-    author_sort TEXT NOT NULL DEFAULT '',
     path TEXT NOT NULL DEFAULT '',
     uuid TEXT NOT NULL,
     has_cover BOOLEAN NOT NULL DEFAULT FALSE,

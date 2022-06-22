@@ -13,14 +13,12 @@ use crate::schema::publishers;
 #[table_name = "publishers"]
 pub struct NewPublisher {
     pub name: String,
-    pub sort: String,
 }
 
 #[derive(Debug, Serialize, Queryable)]
 pub struct Publisher {
     pub id: i32,
     pub name: String,
-    pub sort: String,
     pub crated: NaiveDateTime,
     pub last_modified: NaiveDateTime,
 }
@@ -49,12 +47,9 @@ pub fn update_publisher(
     pub_id: i32,
     new_publisher: &NewPublisher,
 ) -> Result<(), Error> {
-    use crate::schema::publishers::dsl::{name, publishers, sort};
+    use crate::schema::publishers::dsl::{name, publishers};
     diesel::update(publishers.find(pub_id))
-        .set((
-            name.eq(new_publisher.name.as_str()),
-            sort.eq(new_publisher.sort.as_str()),
-        ))
+        .set(name.eq(new_publisher.name.as_str()))
         .execute(conn)?;
     Ok(())
 }

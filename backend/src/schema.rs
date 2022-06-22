@@ -2,7 +2,6 @@ table! {
     authors (id) {
         id -> Int4,
         name -> Text,
-        sort -> Text,
         link -> Text,
         created -> Timestamp,
         last_modified -> Timestamp,
@@ -13,8 +12,6 @@ table! {
     books (id) {
         id -> Int4,
         title -> Text,
-        sort -> Text,
-        author_sort -> Text,
         path -> Text,
         uuid -> Text,
         has_cover -> Bool,
@@ -125,7 +122,6 @@ table! {
     douban_authors (id) {
         id -> Int4,
         name -> Text,
-        sort -> Text,
         url -> Text,
         created -> Timestamp,
         last_modified -> Timestamp,
@@ -188,7 +184,6 @@ table! {
     douban_publishers (id) {
         id -> Int4,
         name -> Text,
-        sort -> Text,
         url -> Text,
         created -> Timestamp,
         last_modified -> Timestamp,
@@ -277,7 +272,6 @@ table! {
     publishers (id) {
         id -> Int4,
         name -> Text,
-        sort -> Text,
         created -> Timestamp,
         last_modified -> Timestamp,
     }

@@ -13,7 +13,6 @@ use crate::schema::authors;
 #[table_name = "authors"]
 pub struct NewAuthor {
     pub name: String,
-    pub sort: String,
     pub link: String,
 }
 
@@ -21,7 +20,6 @@ pub struct NewAuthor {
 pub struct Author {
     pub id: i32,
     pub name: String,
-    pub sort: String,
     pub link: String,
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,
@@ -48,12 +46,9 @@ pub fn update_author(
     author_id: i32,
     new_author: &NewAuthor,
 ) -> Result<(), Error> {
-    use crate::schema::authors::dsl::{authors, name, sort};
+    use crate::schema::authors::dsl::{authors, name};
     diesel::update(authors.find(author_id))
-        .set((
-            name.eq(new_author.name.as_str()),
-            sort.eq(new_author.sort.as_str()),
-        ))
+        .set(name.eq(new_author.name.as_str()))
         .execute(conn)?;
     Ok(())
 }

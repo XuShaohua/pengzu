@@ -13,8 +13,6 @@ use crate::schema::books;
 #[table_name = "books"]
 pub struct NewBook {
     pub title: String,
-    pub sort: String,
-    pub author_sort: String,
     pub path: String,
     pub uuid: String,
     pub has_cover: bool,
@@ -24,8 +22,6 @@ pub struct NewBook {
 pub struct Book {
     pub id: i32,
     pub title: String,
-    pub sort: String,
-    pub author_sort: String,
     pub path: String,
     pub uuid: String,
     pub has_cover: bool,

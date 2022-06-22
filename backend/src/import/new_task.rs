@@ -36,7 +36,6 @@ fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Res
 
         for author in author_list {
             let new_author = NewAuthor {
-                sort: author.sort.unwrap_or_else(|| author.name.clone()),
                 name: author.name,
                 link: author.link,
             };
@@ -90,7 +89,6 @@ fn import_publishers(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> 
 
         for publisher in publisher_list {
             let new_publisher = NewPublisher {
-                sort: publisher.sort.unwrap_or_else(|| publisher.name.clone()),
                 name: publisher.name,
             };
 

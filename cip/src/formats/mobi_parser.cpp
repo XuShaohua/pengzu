@@ -48,6 +48,5 @@ bool ParseMobiMetadata(const QString& filepath, const QString& html) {
     qWarning() << "Html2Text() failed!" << filepath;
     return false;
   }
-  qDebug() << qPrintable(text);
   return true;
 }

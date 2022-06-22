@@ -68,12 +68,10 @@ bool ParseEbookDirectory(const QString& path) {
   }
 
   QDirIterator it(path, QDirIterator::Subdirectories);
-  qDebug() << Q_FUNC_INFO << path;
   while (it.hasNext()) {
     const QString filepath = it.next();
     const QFileInfo info(filepath);
     if (info.isFile()) {
-      qDebug() << filepath;
       ParseEbookFile(filepath);
     }
   }
@@ -106,6 +104,13 @@ bool ParseEbookFile(const QString& filepath) {
       extension_name == "azw" ||
       extension_name == "azw3") {
     return ParseMobiFile(filepath);
+  }
+  if (extension_name == "jpg" ||
+      extension_name == "opf" ||
+      extension_name == "json" ||
+      extension_name == "db") {
+    // Ignore known files.
+    return true;
   }
 
   qWarning() << "Unsupported file:" << filepath;

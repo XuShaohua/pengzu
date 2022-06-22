@@ -49,6 +49,5 @@ bool ParseEpubMetadata(const QString& filepath, const QString& html) {
     return false;
   }
 
-  qDebug() << qPrintable(text);
   return true;
 }

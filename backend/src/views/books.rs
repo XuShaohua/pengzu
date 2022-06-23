@@ -20,11 +20,14 @@ pub async fn add_book(
     Ok(HttpResponse::Ok().finish())
 }
 
-pub async fn get_books(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
-    let page = 1;
+pub async fn get_books(
+    pool: web::Data<DbPool>,
+    query: web::Query<models::GetBooksQuery>,
+) -> Result<HttpResponse, Error> {
+    log::info!("query: {:?}", query);
     let resp_book = web::block(move || {
         let conn = pool.get()?;
-        models::get_books(&conn, page)
+        models::get_books(&conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_book))

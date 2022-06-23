@@ -9,15 +9,6 @@ use serde::{Deserialize, Serialize};
 use crate::error::Error;
 use crate::schema::books;
 
-#[derive(Debug, Deserialize, Insertable)]
-#[table_name = "books"]
-pub struct NewBook {
-    pub title: String,
-    pub path: String,
-    pub uuid: String,
-    pub has_cover: bool,
-}
-
 #[derive(Debug, Serialize, Queryable)]
 pub struct Book {
     pub id: i32,
@@ -30,6 +21,15 @@ pub struct Book {
     pub last_modified: NaiveDateTime,
 }
 
+#[derive(Debug, Deserialize, Insertable)]
+#[table_name = "books"]
+pub struct NewBook {
+    pub title: String,
+    pub path: String,
+    pub uuid: String,
+    pub has_cover: bool,
+}
+
 pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<Book, Error> {
     use crate::schema::books::dsl::books;
     diesel::insert_into(books)
@@ -38,13 +38,26 @@ pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<Book, Error> 
         .map_err(Into::into)
 }
 
-pub fn get_books(conn: &PgConnection, mut page_id: i32) -> Result<Vec<Book>, Error> {
+#[derive(Debug, Clone, Deserialize)]
+pub struct GetBooksQuery {
+    pub page: Option<i64>,
+    pub sort: Option<String>,
+}
+
+pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<Vec<Book>, Error> {
     use crate::schema::books::dsl::books;
-    if page_id < 0 {
-        page_id = 0;
-    }
+
+    let page_id = if let Some(page) = query.page {
+        if page < 0 {
+            0
+        } else {
+            page
+        }
+    } else {
+        0
+    };
     let each_page = 20_i64;
-    let offset = page_id as i64 * each_page;
+    let offset = page_id * each_page;
     books
         .limit(each_page)
         .offset(offset)

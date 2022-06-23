@@ -7,6 +7,7 @@ use diesel::{Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
+use crate::models::file_data;
 use crate::schema::books;
 
 #[derive(Debug, Serialize, Queryable)]
@@ -44,7 +45,32 @@ pub struct GetBooksQuery {
     pub sort: Option<String>,
 }
 
-pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<Vec<Book>, Error> {
+#[derive(Debug, Clone, Serialize)]
+pub struct BookResp {
+    pub id: i32,
+    pub title: String,
+    pub uuid: String,
+    pub has_cover: bool,
+    pub small_cover: Option<String>,
+    pub large_cover: Option<String>,
+    pub created: NaiveDateTime,
+    pub pubdate: NaiveDateTime,
+}
+
+fn book_to_book_resp(book: Book) -> BookResp {
+    BookResp {
+        id: book.id,
+        title: book.title,
+        uuid: book.uuid,
+        has_cover: book.has_cover,
+        small_cover: file_data::get_small_cover(&book.path, book.has_cover),
+        large_cover: file_data::get_large_cover(&book.path, book.has_cover),
+        created: book.created,
+        pubdate: book.pubdate,
+    }
+}
+
+pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<Vec<BookResp>, Error> {
     use crate::schema::books::dsl::books;
 
     let page_id = if let Some(page) = query.page {
@@ -58,11 +84,9 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<Vec<Book>
     };
     let each_page = 20_i64;
     let offset = page_id * each_page;
-    books
-        .limit(each_page)
-        .offset(offset)
-        .load(conn)
-        .map_err(Into::into)
+    let list = books.limit(each_page).offset(offset).load::<Book>(conn)?;
+    let resp_list = list.map(book_to_book_resp);
+    Ok(resp_list)
 }
 
 pub fn get_book_detail(conn: &PgConnection, book_id: i32) -> Result<Book, Error> {

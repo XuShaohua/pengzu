@@ -6,6 +6,7 @@ use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
+use super::common_page;
 use crate::error::Error;
 use crate::schema::publishers;
 
@@ -29,6 +30,45 @@ pub fn add_publisher(conn: &PgConnection, new_publisher: &NewPublisher) -> Resul
         .values(new_publisher)
         .execute(conn)?;
     Ok(())
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct GetPublishersQuery {
+    #[serde(default = "common_page::default_page_id")]
+    pub page: i64,
+}
+
+#[derive(Debug, Serialize)]
+pub struct GetPublishersResp {
+    pub page: common_page::Page,
+    pub list: Vec<Publisher>,
+}
+
+pub fn get_publishers(
+    conn: &PgConnection,
+    query: &GetPublishersQuery,
+) -> Result<GetPublishersResp, Error> {
+    use crate::schema::publishers::dsl::publishers;
+
+    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
+    let each_page = 50;
+    let offset = page_id * each_page;
+
+    let list = publishers
+        .limit(each_page)
+        .offset(offset)
+        .load::<Publisher>(conn)?;
+
+    let total = publishers.count().first(conn)?;
+
+    Ok(GetPublishersResp {
+        page: common_page::Page {
+            page_num: page_id + 1,
+            each_page,
+            total,
+        },
+        list,
+    })
 }
 
 pub fn get_publisher_by_name(

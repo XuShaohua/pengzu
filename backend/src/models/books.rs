@@ -81,14 +81,9 @@ impl GetBooksOrder {
     }
 }
 
-#[must_use]
-const fn default_page_id() -> i64 {
-    0
-}
-
 #[derive(Debug, Clone, Deserialize)]
 pub struct GetBooksQuery {
-    #[serde(default = "default_page_id")]
+    #[serde(default = "common_page::default_page_id")]
     pub page: i64,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
@@ -124,11 +119,10 @@ fn book_to_book_resp(book: Book) -> BookResp {
 }
 
 pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
-    log::info!("query: {:?}", query);
     use crate::schema::books::dsl::books;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 20_i64;
+    let each_page = 20;
     let offset = page_id * each_page;
     let order_column = query.order.get_column();
 

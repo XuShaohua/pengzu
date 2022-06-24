@@ -6,6 +6,7 @@ use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
+use super::common_page;
 use crate::error::Error;
 use crate::schema::authors;
 
@@ -31,6 +32,44 @@ pub fn add_author(conn: &PgConnection, new_author: &NewAuthor) -> Result<(), Err
         .values(new_author)
         .execute(conn)?;
     Ok(())
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct GetAuthorsQuery {
+    #[serde(default = "common_page::default_page_id")]
+    pub page: i64,
+}
+
+#[derive(Debug, Serialize)]
+pub struct GetAuthorsResp {
+    pub page: common_page::Page,
+    pub list: Vec<Author>,
+}
+
+pub fn get_authors(conn: &PgConnection, query: &GetAuthorsQuery) -> Result<GetAuthorsResp, Error> {
+    log::info!("query: {:?}", query);
+
+    use crate::schema::authors::dsl::authors;
+
+    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
+    let each_page = 50;
+    let offset = page_id * each_page;
+
+    let list = authors
+        .limit(each_page)
+        .offset(offset)
+        .load::<Author>(conn)?;
+
+    let total = authors.count().first(conn)?;
+
+    Ok(GetAuthorsResp {
+        page: common_page::Page {
+            page_num: page_id + 1,
+            each_page,
+            total,
+        },
+        list,
+    })
 }
 
 pub fn get_author_by_name(conn: &PgConnection, author_name: &str) -> Result<Author, Error> {

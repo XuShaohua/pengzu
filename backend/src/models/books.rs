@@ -60,6 +60,27 @@ impl Default for GetBooksOrder {
     }
 }
 
+impl GetBooksOrder {
+    #[must_use]
+    pub fn get_column(
+        self,
+    ) -> Box<dyn diesel::BoxableExpression<books::dsl::books, diesel::pg::Pg, SqlType = ()>> {
+        use crate::schema::books::dsl;
+        match self {
+            Self::IdAsc => Box::new(dsl::id.asc()),
+            Self::IdDesc => Box::new(dsl::id.desc()),
+            Self::TitleAsc => Box::new(dsl::title.asc()),
+            Self::TitleDesc => Box::new(dsl::title.desc()),
+            Self::CreatedAsc => Box::new(dsl::created.asc()),
+            Self::CreatedDesc => Box::new(dsl::created.desc()),
+            Self::LastModifiedAsc => Box::new(dsl::last_modified.asc()),
+            Self::LastModifiedDesc => Box::new(dsl::last_modified.desc()),
+            Self::PubdateAsc => Box::new(dsl::pubdate.asc()),
+            Self::PubdateDesc => Box::new(dsl::pubdate.desc()),
+        }
+    }
+}
+
 #[must_use]
 const fn default_page_id() -> i64 {
     0
@@ -103,27 +124,13 @@ fn book_to_book_resp(book: Book) -> BookResp {
 }
 
 pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
-    use crate::schema::books::dsl::{self, books};
-
     log::info!("query: {:?}", query);
+    use crate::schema::books::dsl::books;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let each_page = 20_i64;
     let offset = page_id * each_page;
-
-    let order_column: Box<dyn diesel::BoxableExpression<books, diesel::pg::Pg, SqlType = ()>> =
-        match query.order {
-            GetBooksOrder::IdAsc => Box::new(dsl::id.asc()),
-            GetBooksOrder::IdDesc => Box::new(dsl::id.desc()),
-            GetBooksOrder::TitleAsc => Box::new(dsl::title.asc()),
-            GetBooksOrder::TitleDesc => Box::new(dsl::title.desc()),
-            GetBooksOrder::CreatedAsc => Box::new(dsl::created.asc()),
-            GetBooksOrder::CreatedDesc => Box::new(dsl::created.desc()),
-            GetBooksOrder::LastModifiedAsc => Box::new(dsl::last_modified.asc()),
-            GetBooksOrder::LastModifiedDesc => Box::new(dsl::last_modified.desc()),
-            GetBooksOrder::PubdateAsc => Box::new(dsl::pubdate.asc()),
-            GetBooksOrder::PubdateDesc => Box::new(dsl::pubdate.desc()),
-        };
+    let order_column = query.order.get_column();
 
     let book_list = books
         .order_by(order_column)
@@ -133,6 +140,7 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
     let book_list = book_list.into_iter().map(book_to_book_resp).collect();
 
     let total = books.count().first(conn)?;
+
     Ok(GetBooksResp {
         page: common_page::Page {
             page_num: page_id + 1,

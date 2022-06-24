@@ -7,7 +7,7 @@ use diesel::{Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
-use crate::models::file_data;
+use crate::models::{common_page, file_data};
 use crate::schema::books;
 
 #[derive(Debug, Serialize, Queryable)]
@@ -49,7 +49,6 @@ pub struct GetBooksQuery {
 pub struct BookResp {
     pub id: i32,
     pub title: String,
-    pub uuid: String,
     pub has_cover: bool,
     pub small_cover: Option<String>,
     pub large_cover: Option<String>,
@@ -57,11 +56,16 @@ pub struct BookResp {
     pub pubdate: NaiveDateTime,
 }
 
+#[derive(Debug, Clone, Serialize)]
+pub struct GetBooksResp {
+    pub page: common_page::Page,
+    pub list: Vec<BookResp>,
+}
+
 fn book_to_book_resp(book: Book) -> BookResp {
     BookResp {
         id: book.id,
         title: book.title,
-        uuid: book.uuid,
         has_cover: book.has_cover,
         small_cover: file_data::get_small_cover(&book.path, book.has_cover),
         large_cover: file_data::get_large_cover(&book.path, book.has_cover),
@@ -70,26 +74,32 @@ fn book_to_book_resp(book: Book) -> BookResp {
     }
 }
 
-pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<Vec<BookResp>, Error> {
+pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
     use crate::schema::books::dsl::books;
 
     let page_id = if let Some(page) = query.page {
-        if page < 0 {
+        if page < 1 {
             0
         } else {
-            page
+            page - 1
         }
     } else {
         0
     };
     let each_page = 20_i64;
     let offset = page_id * each_page;
-    books
-        .limit(each_page)
-        .offset(offset)
-        .load::<Book>(conn)
-        .map(|list| list.into_iter().map(book_to_book_resp).collect())
-        .map_err(Into::into)
+    let book_list = books.limit(each_page).offset(offset).load::<Book>(conn)?;
+    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
+
+    let total = books.count().first(conn)?;
+    Ok(GetBooksResp {
+        page: common_page::Page {
+            page_num: page_id,
+            each_page,
+            total,
+        },
+        list: book_list,
+    })
 }
 
 pub fn get_book_detail(conn: &PgConnection, book_id: i32) -> Result<Book, Error> {

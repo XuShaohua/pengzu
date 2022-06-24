@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
@@ -40,20 +40,23 @@ pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<Book, Error> 
 }
 
 #[derive(Debug, Clone, Copy, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum GetBooksOrder {
-    Id,
-    IdInc,
-    Created,
-    CreatedInc,
-    LastModified,
-    LastModifiedInc,
-    Pubdate,
-    PubdateInc,
+    IdDesc,
+    IdAsc,
+    TitleDesc,
+    TitleAsc,
+    CreatedDesc,
+    CreatedAsc,
+    LastModifiedDesc,
+    LastModifiedAsc,
+    PubdateDesc,
+    PubdateAsc,
 }
 
 impl Default for GetBooksOrder {
     fn default() -> Self {
-        Self::Pubdate
+        Self::PubdateDesc
     }
 }
 
@@ -100,14 +103,33 @@ fn book_to_book_resp(book: Book) -> BookResp {
 }
 
 pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
-    use crate::schema::books::dsl::books;
+    use crate::schema::books::dsl::{self, books};
 
     log::info!("query: {:?}", query);
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let each_page = 20_i64;
     let offset = page_id * each_page;
-    let book_list = books.limit(each_page).offset(offset).load::<Book>(conn)?;
+
+    let order_column: Box<dyn diesel::BoxableExpression<books, diesel::pg::Pg, SqlType = ()>> =
+        match query.order {
+            GetBooksOrder::IdAsc => Box::new(dsl::id.asc()),
+            GetBooksOrder::IdDesc => Box::new(dsl::id.desc()),
+            GetBooksOrder::TitleAsc => Box::new(dsl::title.asc()),
+            GetBooksOrder::TitleDesc => Box::new(dsl::title.desc()),
+            GetBooksOrder::CreatedAsc => Box::new(dsl::created.asc()),
+            GetBooksOrder::CreatedDesc => Box::new(dsl::created.desc()),
+            GetBooksOrder::LastModifiedAsc => Box::new(dsl::last_modified.asc()),
+            GetBooksOrder::LastModifiedDesc => Box::new(dsl::last_modified.desc()),
+            GetBooksOrder::PubdateAsc => Box::new(dsl::pubdate.asc()),
+            GetBooksOrder::PubdateDesc => Box::new(dsl::pubdate.desc()),
+        };
+
+    let book_list = books
+        .order_by(order_column)
+        .limit(each_page)
+        .offset(offset)
+        .load::<Book>(conn)?;
     let book_list = book_list.into_iter().map(book_to_book_resp).collect();
 
     let total = books.count().first(conn)?;

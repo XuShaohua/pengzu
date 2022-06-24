@@ -84,9 +84,12 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<Vec<BookR
     };
     let each_page = 20_i64;
     let offset = page_id * each_page;
-    let list = books.limit(each_page).offset(offset).load::<Book>(conn)?;
-    let resp_list = list.map(book_to_book_resp);
-    Ok(resp_list)
+    books
+        .limit(each_page)
+        .offset(offset)
+        .load::<Book>(conn)
+        .map(|list| list.into_iter().map(book_to_book_resp).collect())
+        .map_err(Into::into)
 }
 
 pub fn get_book_detail(conn: &PgConnection, book_id: i32) -> Result<Book, Error> {

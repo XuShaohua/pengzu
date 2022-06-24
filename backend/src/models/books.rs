@@ -39,10 +39,35 @@ pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<Book, Error> 
         .map_err(Into::into)
 }
 
+#[derive(Debug, Clone, Copy, Deserialize)]
+pub enum GetBooksOrder {
+    Id,
+    IdInc,
+    Created,
+    CreatedInc,
+    LastModified,
+    LastModifiedInc,
+    Pubdate,
+    PubdateInc,
+}
+
+impl Default for GetBooksOrder {
+    fn default() -> Self {
+        Self::Pubdate
+    }
+}
+
+#[must_use]
+const fn default_page_id() -> i64 {
+    0
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct GetBooksQuery {
-    pub page: Option<i64>,
-    pub sort: Option<String>,
+    #[serde(default = "default_page_id")]
+    pub page: i64,
+    #[serde(default = "GetBooksOrder::default")]
+    pub order: GetBooksOrder,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -77,15 +102,9 @@ fn book_to_book_resp(book: Book) -> BookResp {
 pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
     use crate::schema::books::dsl::books;
 
-    let page_id = if let Some(page) = query.page {
-        if page < 1 {
-            0
-        } else {
-            page - 1
-        }
-    } else {
-        0
-    };
+    log::info!("query: {:?}", query);
+
+    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let each_page = 20_i64;
     let offset = page_id * each_page;
     let book_list = books.limit(each_page).offset(offset).load::<Book>(conn)?;
@@ -94,7 +113,7 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
     let total = books.count().first(conn)?;
     Ok(GetBooksResp {
         page: common_page::Page {
-            page_num: page_id,
+            page_num: page_id + 1,
             each_page,
             total,
         },

@@ -69,3 +69,15 @@ pub async fn get_books_by_publisher(
     .await??;
     Ok(HttpResponse::Ok().json(resp))
 }
+
+pub async fn get_books_by_tag(
+    pool: web::Data<DbPool>,
+    tag_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let conn = pool.get()?;
+        models::get_books_by_tag(&conn, tag_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}

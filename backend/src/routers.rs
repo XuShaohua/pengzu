@@ -56,6 +56,10 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::delete().to(ratings::delete_rating)),
             )
             .route("/api/tag", web::post().to(tags::add_tag))
+            .route(
+                "/api/tag/stored/{tag_id}",
+                web::get().to(books::get_books_by_tag),
+            )
             .route("/api/tag", web::get().to(tags::get_tags))
             .route("/api/tag/{tag_id}", web::put().to(tags::update_tag))
     })

@@ -41,13 +41,6 @@ pub fn add_author(conn: &PgConnection, new_author: &NewAuthor) -> Result<(), Err
 pub struct GetAuthorsQuery {
     #[serde(default = "common_page::default_page_id")]
     pub page: i64,
-    #[serde(default = "default_has_book")]
-    pub has_book: bool,
-}
-
-#[must_use]
-pub const fn default_has_book() -> bool {
-    true
 }
 
 #[derive(Debug, Serialize, Queryable)]
@@ -73,43 +66,20 @@ pub fn get_authors(conn: &PgConnection, query: &GetAuthorsQuery) -> Result<GetAu
     let each_page = 100;
     let offset = page_id * each_page;
 
-    let list = if query.has_book {
-        authors::table
-            .inner_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
-            .group_by(authors::id)
-            .select((
-                authors::id,
-                authors::name,
-                authors::link,
-                diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_authors_link.id)"),
-            ))
-            .limit(each_page)
-            .offset(offset)
-            .load::<AuthorAndBooks>(conn)?
-    } else {
-        let list = authors::table
-            .limit(each_page)
-            .offset(offset)
-            .load::<Author>(conn)?;
-        list.into_iter()
-            .map(|author| AuthorAndBooks {
-                id: author.id,
-                name: author.name,
-                link: author.link,
-                count: 0,
-            })
-            .collect()
-    };
+    let list = authors::table
+        .left_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
+        .group_by(authors::id)
+        .select((
+            authors::id,
+            authors::name,
+            authors::link,
+            diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_authors_link.id)"),
+        ))
+        .limit(each_page)
+        .offset(offset)
+        .load::<AuthorAndBooks>(conn)?;
 
-    let total = if query.has_book {
-        books_authors_link::table
-            .select(diesel::dsl::sql::<diesel::sql_types::BigInt>(
-                "count(distinct(books_authors_link.author))",
-            ))
-            .first(conn)?
-    } else {
-        authors::table.count().first(conn)?
-    };
+    let total = authors::table.count().first(conn)?;
 
     Ok(GetAuthorsResp {
         page: common_page::Page {

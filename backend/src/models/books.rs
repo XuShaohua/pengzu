@@ -165,3 +165,22 @@ pub fn get_books_by_author(conn: &PgConnection, author_id: i32) -> Result<Vec<Bo
     let book_list = book_list.into_iter().map(book_to_book_resp).collect();
     Ok(book_list)
 }
+
+pub fn get_books_by_publisher(
+    conn: &PgConnection,
+    publisher_id: i32,
+) -> Result<Vec<BookResp>, Error> {
+    use crate::schema::books_publishers_link;
+    // TODO(Shaohua): Add pagination
+
+    let book_ids = books_publishers_link::table
+        .filter(books_publishers_link::publisher.eq(publisher_id))
+        .select(books_publishers_link::book)
+        .load::<i32>(conn)?;
+
+    let book_list = books::table
+        .filter(books::id.eq(any(book_ids)))
+        .load::<Book>(conn)?;
+    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
+    Ok(book_list)
+}

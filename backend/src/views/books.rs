@@ -45,3 +45,27 @@ pub async fn get_book_detail(
     .await??;
     Ok(HttpResponse::Ok().json(resp_book))
 }
+
+pub async fn get_books_by_author(
+    pool: web::Data<DbPool>,
+    author_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let conn = pool.get()?;
+        models::get_books_by_author(&conn, author_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}
+
+pub async fn get_books_by_publisher(
+    pool: web::Data<DbPool>,
+    publisher_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let conn = pool.get()?;
+        models::get_books_by_publisher(&conn, publisher_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}

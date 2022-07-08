@@ -29,7 +29,7 @@ pub async fn run() -> Result<(), Error> {
             .route("/api/author", web::post().to(authors::add_author))
             .route(
                 "/api/author/stored/{author_id}",
-                web::get().to(authors::get_books_by_author),
+                web::get().to(books::get_books_by_author),
             )
             .route("/api/author", web::get().to(authors::get_authors))
             .route("/api/book", web::post().to(books::add_book))
@@ -43,6 +43,10 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::delete().to(comments::delete_comment)),
             )
             .route("/api/publisher", web::post().to(publishers::add_publisher))
+            .route(
+                "/api/publisher/stored/{publisher_id}",
+                web::get().to(books::get_books_by_publisher),
+            )
             .route("/api/publisher", web::get().to(publishers::get_publishers))
             .route("/api/rating", web::post().to(ratings::add_rating))
             .service(

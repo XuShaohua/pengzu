@@ -27,6 +27,10 @@ pub async fn run() -> Result<(), Error> {
             .app_data(web::Data::new(pool.clone()))
             .route("/", web::get().to(index))
             .route("/api/author", web::post().to(authors::add_author))
+            .route(
+                "/api/author/stored/{author_id}",
+                web::get().to(authors::get_books_by_author),
+            )
             .route("/api/author", web::get().to(authors::get_authors))
             .route("/api/book", web::post().to(books::add_book))
             .route("/api/book", web::get().to(books::get_books))

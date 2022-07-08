@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
+use diesel::dsl::any;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
@@ -148,4 +149,19 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
 pub fn get_book_detail(conn: &PgConnection, book_id: i32) -> Result<Book, Error> {
     use crate::schema::books::dsl::books;
     books.find(book_id).first::<Book>(conn).map_err(Into::into)
+}
+
+pub fn get_books_by_author(conn: &PgConnection, author_id: i32) -> Result<Vec<BookResp>, Error> {
+    use crate::schema::books_authors_link;
+
+    let book_ids = books_authors_link::table
+        .filter(books_authors_link::author.eq(author_id))
+        .select(books_authors_link::book)
+        .load::<i32>(conn)?;
+
+    let book_list = books::table
+        .filter(books::id.eq(any(book_ids)))
+        .load::<Book>(conn)?;
+    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
+    Ok(book_list)
 }

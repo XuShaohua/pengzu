@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct Page {
@@ -14,4 +14,10 @@ pub struct Page {
 #[must_use]
 pub const fn default_page_id() -> i64 {
     0
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct PageQuery {
+    #[serde(default = "default_page_id")]
+    pub page: i64,
 }

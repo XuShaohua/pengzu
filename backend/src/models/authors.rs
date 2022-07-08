@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use super::common_page;
 use crate::error::Error;
+use crate::models::common_page::PageQuery;
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -37,12 +38,6 @@ pub fn add_author(conn: &PgConnection, new_author: &NewAuthor) -> Result<(), Err
     Ok(())
 }
 
-#[derive(Debug, Clone, Deserialize)]
-pub struct GetAuthorsQuery {
-    #[serde(default = "common_page::default_page_id")]
-    pub page: i64,
-}
-
 #[derive(Debug, Serialize, Queryable)]
 pub struct AuthorAndBook {
     pub id: i32,
@@ -57,7 +52,7 @@ pub struct GetAuthorsResp {
     pub list: Vec<AuthorAndBook>,
 }
 
-pub fn get_authors(conn: &PgConnection, query: &GetAuthorsQuery) -> Result<GetAuthorsResp, Error> {
+pub fn get_authors(conn: &PgConnection, query: &PageQuery) -> Result<GetAuthorsResp, Error> {
     use crate::schema::books_authors_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };

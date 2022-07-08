@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use super::common_page;
 use crate::error::Error;
+use crate::models::common_page::PageQuery;
 use crate::schema::publishers;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -35,12 +36,6 @@ pub fn add_publisher(conn: &PgConnection, new_publisher: &NewPublisher) -> Resul
     Ok(())
 }
 
-#[derive(Debug, Clone, Deserialize)]
-pub struct GetPublishersQuery {
-    #[serde(default = "common_page::default_page_id")]
-    pub page: i64,
-}
-
 #[derive(Debug, Serialize, Queryable)]
 pub struct PublisherAndBook {
     pub id: i32,
@@ -54,10 +49,7 @@ pub struct GetPublishersResp {
     pub list: Vec<PublisherAndBook>,
 }
 
-pub fn get_publishers(
-    conn: &PgConnection,
-    query: &GetPublishersQuery,
-) -> Result<GetPublishersResp, Error> {
+pub fn get_publishers(conn: &PgConnection, query: &PageQuery) -> Result<GetPublishersResp, Error> {
     use crate::schema::books_publishers_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };

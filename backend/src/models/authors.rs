@@ -9,9 +9,8 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 
-use super::common_page;
+use super::common_page::{Page, PageQuery};
 use crate::error::Error;
-use crate::models::common_page::PageQuery;
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -48,7 +47,7 @@ pub struct AuthorAndBook {
 
 #[derive(Debug, Serialize)]
 pub struct GetAuthorsResp {
-    pub page: common_page::Page,
+    pub page: Page,
     pub list: Vec<AuthorAndBook>,
 }
 
@@ -75,7 +74,7 @@ pub fn get_authors(conn: &PgConnection, query: &PageQuery) -> Result<GetAuthorsR
     let total = authors::table.count().first(conn)?;
 
     Ok(GetAuthorsResp {
-        page: common_page::Page {
+        page: Page {
             page_num: page_id + 1,
             each_page,
             total,

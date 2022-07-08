@@ -10,7 +10,7 @@ use crate::models::{authors, common_page};
 
 pub async fn add_author(
     pool: web::Data<DbPool>,
-    new_author: web::Json<model::NewAuthor>,
+    new_author: web::Json<authors::NewAuthor>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let conn = pool.get()?;

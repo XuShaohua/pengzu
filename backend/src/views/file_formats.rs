@@ -9,13 +9,13 @@ use crate::error::Error;
 use crate::models::common_page;
 use crate::models::file_formats;
 
-pub async fn get_authors(
+pub async fn get_formats(
     pool: web::Data<DbPool>,
     query: web::Query<common_page::PageQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        file_formats::get_authors(&conn, &query)
+        file_formats::get_formats(&conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

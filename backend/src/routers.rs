@@ -42,6 +42,10 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::put().to(comments::update_comment))
                     .route(web::delete().to(comments::delete_comment)),
             )
+            .route(
+                "/api/formats/stored/{format_id}",
+                web::get().to(books::get_books_by_format),
+            )
             .route("/api/publisher", web::post().to(publishers::add_publisher))
             .route(
                 "/api/publisher/stored/{publisher_id}",

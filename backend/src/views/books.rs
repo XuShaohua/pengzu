@@ -58,6 +58,18 @@ pub async fn get_books_by_author(
     Ok(HttpResponse::Ok().json(resp))
 }
 
+pub async fn get_books_by_format(
+    pool: web::Data<DbPool>,
+    format_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let conn = pool.get()?;
+        models::get_books_by_format(&conn, format_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}
+
 pub async fn get_books_by_publisher(
     pool: web::Data<DbPool>,
     publisher_id: web::Path<i32>,

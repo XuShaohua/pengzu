@@ -166,6 +166,21 @@ pub fn get_books_by_author(conn: &PgConnection, author_id: i32) -> Result<Vec<Bo
     Ok(book_list)
 }
 
+pub fn get_books_by_format(conn: &PgConnection, format_id: i32) -> Result<Vec<BookResp>, Error> {
+    use crate::schema::files;
+
+    let book_ids = files::table
+        .filter(files::format.eq(format_id))
+        .select(files::book)
+        .load::<i32>(conn)?;
+
+    let book_list = books::table
+        .filter(books::id.eq(any(book_ids)))
+        .load::<Book>(conn)?;
+    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
+    Ok(book_list)
+}
+
 pub fn get_books_by_publisher(
     conn: &PgConnection,
     publisher_id: i32,

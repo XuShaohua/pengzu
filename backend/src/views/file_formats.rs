@@ -6,19 +6,8 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::{authors, common_page};
-
-pub async fn add_author(
-    pool: web::Data<DbPool>,
-    new_author: web::Json<model::NewAuthor>,
-) -> Result<HttpResponse, Error> {
-    web::block(move || {
-        let conn = pool.get()?;
-        authors::add_author(&conn, &new_author)
-    })
-    .await??;
-    Ok(HttpResponse::Ok().finish())
-}
+use crate::models::common_page;
+use crate::models::file_formats;
 
 pub async fn get_authors(
     pool: web::Data<DbPool>,
@@ -26,7 +15,7 @@ pub async fn get_authors(
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        authors::get_authors(&conn, &query)
+        file_formats::get_authors(&conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

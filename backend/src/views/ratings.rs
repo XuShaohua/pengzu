@@ -6,15 +6,15 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::ratings as models;
+use crate::models::ratings;
 
 pub async fn add_rating(
     pool: web::Data<DbPool>,
-    new_rating: web::Json<models::NewRating>,
+    new_rating: web::Json<ratings::NewRating>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let conn = pool.get()?;
-        models::add_rating(&conn, &new_rating)
+        ratings::add_rating(&conn, &new_rating)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -26,7 +26,7 @@ pub async fn get_ratings(
 ) -> Result<HttpResponse, Error> {
     let resp_rating = web::block(move || {
         let conn = pool.get()?;
-        models::get_rating(&conn, book_id.into_inner())
+        ratings::get_rating(&conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_rating))
@@ -35,12 +35,12 @@ pub async fn get_ratings(
 pub async fn update_rating(
     pool: web::Data<DbPool>,
     book_id: web::Path<i32>,
-    new_rating: web::Json<models::NewRating>,
+    new_rating: web::Json<ratings::NewRating>,
 ) -> Result<HttpResponse, Error> {
     debug_assert_eq!(book_id.into_inner(), new_rating.book);
     web::block(move || {
         let conn = pool.get()?;
-        models::update_rating(&conn, &new_rating)
+        ratings::update_rating(&conn, &new_rating)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -52,7 +52,7 @@ pub async fn delete_rating(
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let conn = pool.get()?;
-        models::delete_rating(&conn, book_id.into_inner())
+        ratings::delete_rating(&conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().finish())

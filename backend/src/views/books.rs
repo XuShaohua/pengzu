@@ -6,15 +6,15 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::books as models;
+use crate::models::books;
 
 pub async fn add_book(
     pool: web::Data<DbPool>,
-    new_book: web::Json<models::NewBook>,
+    new_book: web::Json<books::NewBook>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let conn = pool.get()?;
-        models::add_book(&conn, &new_book)
+        books::add_book(&conn, &new_book)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -22,12 +22,12 @@ pub async fn add_book(
 
 pub async fn get_books(
     pool: web::Data<DbPool>,
-    query: web::Query<models::GetBooksQuery>,
+    query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     log::info!("query: {:?}", query);
     let resp = web::block(move || {
         let conn = pool.get()?;
-        models::get_books(&conn, &query)
+        books::get_books(&conn, &query)
     })
     .await??;
 
@@ -40,7 +40,7 @@ pub async fn get_book_detail(
 ) -> Result<HttpResponse, Error> {
     let resp_book = web::block(move || {
         let conn = pool.get()?;
-        models::get_book_detail(&conn, book_id.into_inner())
+        books::get_book_detail(&conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_book))
@@ -52,7 +52,7 @@ pub async fn get_books_by_author(
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        models::get_books_by_author(&conn, author_id.into_inner())
+        books::get_books_by_author(&conn, author_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -64,7 +64,7 @@ pub async fn get_books_by_format(
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        models::get_books_by_format(&conn, format_id.into_inner())
+        books::get_books_by_format(&conn, format_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -76,7 +76,7 @@ pub async fn get_books_by_publisher(
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        models::get_books_by_publisher(&conn, publisher_id.into_inner())
+        books::get_books_by_publisher(&conn, publisher_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -88,7 +88,7 @@ pub async fn get_books_by_tag(
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        models::get_books_by_tag(&conn, tag_id.into_inner())
+        books::get_books_by_tag(&conn, tag_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

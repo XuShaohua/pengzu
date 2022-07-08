@@ -6,15 +6,15 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::{common_page, tags as models};
+use crate::models::{common_page, tags};
 
 pub async fn add_tag(
     pool: web::Data<DbPool>,
-    new_tag: web::Json<models::NewTag>,
+    new_tag: web::Json<tags::NewTag>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let conn = pool.get()?;
-        models::add_tag(&conn, &new_tag)
+        tags::add_tag(&conn, &new_tag)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -26,7 +26,7 @@ pub async fn get_tags(
 ) -> Result<HttpResponse, Error> {
     let resp_tags = web::block(move || {
         let conn = pool.get()?;
-        models::get_tags(&conn, &query)
+        tags::get_tags(&conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_tags))
@@ -35,11 +35,11 @@ pub async fn get_tags(
 pub async fn update_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
-    new_tag: web::Json<models::NewTag>,
+    new_tag: web::Json<tags::NewTag>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let conn = pool.get()?;
-        models::update_tag(&conn, tag_id.into_inner(), &new_tag)
+        tags::update_tag(&conn, tag_id.into_inner(), &new_tag)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())

@@ -6,15 +6,15 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::files as models;
+use crate::models::files;
 
 pub async fn add_file(
     pool: web::Data<DbPool>,
-    new_file: web::Json<models::NewFile>,
+    new_file: web::Json<files::NewFile>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let conn = pool.get()?;
-        models::add_file(&conn, &new_file)
+        files::add_file(&conn, &new_file)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -26,7 +26,7 @@ pub async fn get_book_files(
 ) -> Result<HttpResponse, Error> {
     let resp_files = web::block(move || {
         let conn = pool.get()?;
-        models::get_book_files(&conn, book_id.into_inner())
+        files::get_book_files(&conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_files))

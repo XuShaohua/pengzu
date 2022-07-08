@@ -3,7 +3,10 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{
+    ExpressionMethods, GroupByDsl, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable,
+    RunQueryDsl,
+};
 use serde::{Deserialize, Serialize};
 
 use super::common_page;
@@ -38,28 +41,44 @@ pub struct GetPublishersQuery {
     pub page: i64,
 }
 
+#[derive(Debug, Serialize, Queryable)]
+pub struct PublisherAndBook {
+    pub id: i32,
+    pub name: String,
+    pub count: i64,
+}
+
 #[derive(Debug, Serialize)]
 pub struct GetPublishersResp {
     pub page: common_page::Page,
-    pub list: Vec<Publisher>,
+    pub list: Vec<PublisherAndBook>,
 }
 
 pub fn get_publishers(
     conn: &PgConnection,
     query: &GetPublishersQuery,
 ) -> Result<GetPublishersResp, Error> {
-    use crate::schema::publishers::dsl::publishers;
+    use crate::schema::books_publishers_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let each_page = 50;
     let offset = page_id * each_page;
 
-    let list = publishers
+    let list = publishers::table
+        .left_join(
+            books_publishers_link::table.on(books_publishers_link::publisher.eq(publishers::id)),
+        )
+        .group_by(publishers::id)
+        .select((
+            publishers::id,
+            publishers::name,
+            diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_publishers_link.id)"),
+        ))
         .limit(each_page)
         .offset(offset)
-        .load::<Publisher>(conn)?;
+        .load::<PublisherAndBook>(conn)?;
 
-    let total = publishers.count().first(conn)?;
+    let total = publishers::dsl::publishers.count().first(conn)?;
 
     Ok(GetPublishersResp {
         page: common_page::Page {

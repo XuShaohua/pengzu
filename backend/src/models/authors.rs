@@ -44,7 +44,7 @@ pub struct GetAuthorsQuery {
 }
 
 #[derive(Debug, Serialize, Queryable)]
-pub struct AuthorAndBooks {
+pub struct AuthorAndBook {
     pub id: i32,
     pub name: String,
     pub link: String,
@@ -54,12 +54,10 @@ pub struct AuthorAndBooks {
 #[derive(Debug, Serialize)]
 pub struct GetAuthorsResp {
     pub page: common_page::Page,
-    pub list: Vec<AuthorAndBooks>,
+    pub list: Vec<AuthorAndBook>,
 }
 
 pub fn get_authors(conn: &PgConnection, query: &GetAuthorsQuery) -> Result<GetAuthorsResp, Error> {
-    log::info!("query: {:?}", query);
-
     use crate::schema::books_authors_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -77,7 +75,7 @@ pub fn get_authors(conn: &PgConnection, query: &GetAuthorsQuery) -> Result<GetAu
         ))
         .limit(each_page)
         .offset(offset)
-        .load::<AuthorAndBooks>(conn)?;
+        .load::<AuthorAndBook>(conn)?;
 
     let total = authors::table.count().first(conn)?;
 

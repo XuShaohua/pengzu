@@ -6,7 +6,7 @@ use actix_web::{middleware, web, App, HttpServer, Responder};
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
-use crate::views::{authors, books, comments, file_formats, publishers, ratings, tags};
+use crate::views::{authors, books, comments, file_formats, publishers, ratings, series, tags};
 
 const CONTENT_TYPE: &str = "content-type";
 const APPLICATION_JSON: &str = "application/json";
@@ -26,15 +26,18 @@ pub async fn run() -> Result<(), Error> {
             .wrap(middleware::Logger::default())
             .app_data(web::Data::new(pool.clone()))
             .route("/", web::get().to(index))
+            // For /api/author
             .route("/api/author", web::post().to(authors::add_author))
             .route(
                 "/api/author/stored/{author_id}",
                 web::get().to(books::get_books_by_author),
             )
             .route("/api/author", web::get().to(authors::get_authors))
+            // For /api/book
             .route("/api/book", web::post().to(books::add_book))
             .route("/api/book", web::get().to(books::get_books))
             .route("/api/book/{book_id}", web::get().to(books::get_book_detail))
+            // For /api/comment
             .route("/api/comment", web::post().to(comments::add_comment))
             .service(
                 web::resource("/api/comment/{book_id}")
@@ -42,17 +45,20 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::put().to(comments::update_comment))
                     .route(web::delete().to(comments::delete_comment)),
             )
+            // For /api/formats
             .route(
                 "/api/formats/stored/{format_id}",
                 web::get().to(books::get_books_by_format),
             )
             .route("/api/formats", web::get().to(file_formats::get_formats))
+            // For /api/publisher
             .route("/api/publisher", web::post().to(publishers::add_publisher))
             .route(
                 "/api/publisher/stored/{publisher_id}",
                 web::get().to(books::get_books_by_publisher),
             )
             .route("/api/publisher", web::get().to(publishers::get_publishers))
+            // For /api/rating
             .route("/api/rating", web::post().to(ratings::add_rating))
             .service(
                 web::resource("/api/rating/{book_id}")
@@ -60,6 +66,14 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::put().to(ratings::update_rating))
                     .route(web::delete().to(ratings::delete_rating)),
             )
+            // For /api/series
+            .route("/api/series", web::post().to(series::add_series))
+            .route(
+                "/api/series/stored/{series_id}",
+                web::get().to(books::get_books_by_series),
+            )
+            .route("/api/series", web::get().to(series::get_series))
+            // For /api/tag
             .route("/api/tag", web::post().to(tags::add_tag))
             .route(
                 "/api/tag/stored/{tag_id}",

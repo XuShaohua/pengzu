@@ -200,6 +200,21 @@ pub fn get_books_by_publisher(
     Ok(book_list)
 }
 
+pub fn get_books_by_series(conn: &PgConnection, series_id: i32) -> Result<Vec<BookResp>, Error> {
+    use crate::schema::books_series_link;
+
+    let book_ids = books_series_link::table
+        .filter(books_series_link::series.eq(series_id))
+        .select(books_series_link::book)
+        .load::<i32>(conn)?;
+
+    let book_list = books::table
+        .filter(books::id.eq(any(book_ids)))
+        .load::<Book>(conn)?;
+    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
+    Ok(book_list)
+}
+
 pub fn get_books_by_tag(conn: &PgConnection, tag_id: i32) -> Result<Vec<BookResp>, Error> {
     use crate::schema::books_tags_link;
 

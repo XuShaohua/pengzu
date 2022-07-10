@@ -59,6 +59,16 @@ table! {
 }
 
 table! {
+    books_series_link (id) {
+        id -> Int4,
+        book -> Int4,
+        series -> Int4,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     books_tags_link (id) {
         id -> Int4,
         book -> Int4,
@@ -314,6 +324,7 @@ allow_tables_to_appear_in_same_query!(
     books_categories_link,
     books_languages_link,
     books_publishers_link,
+    books_series_link,
     books_tags_link,
     categories,
     cips,

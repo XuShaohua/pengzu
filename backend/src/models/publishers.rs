@@ -9,9 +9,8 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 
-use super::common_page;
 use crate::error::Error;
-use crate::models::common_page::PageQuery;
+use crate::models::common_page::{Page, PageQuery};
 use crate::schema::publishers;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -45,7 +44,7 @@ pub struct PublisherAndBook {
 
 #[derive(Debug, Serialize)]
 pub struct GetPublishersResp {
-    pub page: common_page::Page,
+    pub page: Page,
     pub list: Vec<PublisherAndBook>,
 }
 
@@ -73,7 +72,7 @@ pub fn get_publishers(conn: &PgConnection, query: &PageQuery) -> Result<GetPubli
     let total = publishers::dsl::publishers.count().first(conn)?;
 
     Ok(GetPublishersResp {
-        page: common_page::Page {
+        page: Page {
             page_num: page_id + 1,
             each_page,
             total,

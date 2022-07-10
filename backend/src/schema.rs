@@ -288,6 +288,15 @@ table! {
 }
 
 table! {
+    series (id) {
+        id -> Int4,
+        name -> Text,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     tags (id) {
         id -> Int4,
         order_index -> Int4,
@@ -325,5 +334,6 @@ allow_tables_to_appear_in_same_query!(
     languages,
     publishers,
     ratings,
+    series,
     tags,
 );

@@ -23,7 +23,7 @@ impl Component for BooksComponent {
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <div>
-            {"books"}
+                {"books"}
             </div>
         }
     }

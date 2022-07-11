@@ -28,14 +28,14 @@ impl Component for LeftPanelComponent {
             <div class="left-panel">
                 <ul>
                     <li><Link<Route> to={Route::Home}>{"Books"}</Link<Route>></li>
-                    <li><Link<Route> to={Route::Authors}>{"Authors"}</Link<Route>></li>
-                    <li><Link<Route> to={Route::Categories}>{"Categories"}</Link<Route>></li>
-                    <li><Link<Route> to={Route::Tags}>{"Tags"}</Link<Route>></li>
-                    <li><Link<Route> to={Route::Publishers}>{"Publishers"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Author}>{"Authors"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Category}>{"Categories"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Tag}>{"Tags"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Publisher}>{"Publishers"}</Link<Route>></li>
                     <li><Link<Route> to={Route::Series}>{"Series"}</Link<Route>></li>
                     <li><Link<Route> to={Route::Discover}>{"Discover"}</Link<Route>></li>
-                    <li><Link<Route> to={Route::FileFormats}>{"File Formats"}</Link<Route>></li>
-                    <li><Link<Route> to={Route::Ratings}>{"Ratings"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::FileFormat}>{"File Formats"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Rating}>{"Ratings"}</Link<Route>></li>
                 </ul>
             </div>
         }

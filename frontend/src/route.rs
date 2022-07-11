@@ -16,24 +16,24 @@ use crate::components::{
 pub enum Route {
     #[at("/")]
     Home,
-    #[at("/books")]
-    Books,
-    #[at("/authors")]
-    Authors,
-    #[at("/categories")]
-    Categories,
-    #[at("/tags")]
-    Tags,
-    #[at("/publishers")]
-    Publishers,
+    #[at("/book")]
+    Book,
+    #[at("/author")]
+    Author,
+    #[at("/category")]
+    Category,
+    #[at("/tag")]
+    Tag,
+    #[at("/publisher")]
+    Publisher,
     #[at("/series")]
     Series,
     #[at("/discover")]
     Discover,
-    #[at("/file-formats")]
-    FileFormats,
-    #[at("/ratings")]
-    Ratings,
+    #[at("/file-format")]
+    FileFormat,
+    #[at("/rating")]
+    Rating,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -41,15 +41,15 @@ pub enum Route {
 
 pub fn switch_route(routes: &Route) -> Html {
     match routes {
-        Route::Books | Route::Home => html! { <BooksComponent /> },
-        Route::Authors => html! { <AuthorsComponent /> },
-        Route::Categories => html! { <CategoriesComponent /> },
-        Route::Tags => html! { <TagsComponent /> },
-        Route::Publishers => html! { <PublishersComponent /> },
+        Route::Book | Route::Home => html! { <BooksComponent /> },
+        Route::Author => html! { <AuthorsComponent /> },
+        Route::Category => html! { <CategoriesComponent /> },
+        Route::Tag => html! { <TagsComponent /> },
+        Route::Publisher => html! { <PublishersComponent /> },
         Route::Series => html! { <SeriesComponent /> },
         Route::Discover => html! { <DiscoverComponent /> },
-        Route::FileFormats => html! { <FileFormatsComponent /> },
-        Route::Ratings => html! { <RatingsComponent /> },
+        Route::FileFormat => html! { <FileFormatsComponent /> },
+        Route::Rating => html! { <RatingsComponent /> },
         Route::NotFound => html! { <NotFoundComponent /> },
     }
 }

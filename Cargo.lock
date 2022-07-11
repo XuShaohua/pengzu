@@ -712,8 +712,10 @@ dependencies = [
 name = "frontend"
 version = "0.1.0"
 dependencies = [
+ "gloo-utils",
  "log",
  "wasm-bindgen",
+ "wasm-bindgen-futures",
  "wasm-logger",
  "web-sys",
  "yew",

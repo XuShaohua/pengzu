@@ -62,10 +62,11 @@ pub async fn get_books_by_author(
 pub async fn get_books_by_format(
     pool: web::Data<DbPool>,
     format_id: web::Path<i32>,
+    query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        books::get_books_by_format(&conn, format_id.into_inner())
+        books::get_books_by_format(&conn, format_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -74,10 +75,11 @@ pub async fn get_books_by_format(
 pub async fn get_books_by_publisher(
     pool: web::Data<DbPool>,
     publisher_id: web::Path<i32>,
+    query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        books::get_books_by_publisher(&conn, publisher_id.into_inner())
+        books::get_books_by_publisher(&conn, publisher_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -86,10 +88,11 @@ pub async fn get_books_by_publisher(
 pub async fn get_books_by_series(
     pool: web::Data<DbPool>,
     series_id: web::Path<i32>,
+    query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        books::get_books_by_series(&conn, series_id.into_inner())
+        books::get_books_by_series(&conn, series_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -98,10 +101,11 @@ pub async fn get_books_by_series(
 pub async fn get_books_by_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
+    query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        books::get_books_by_tag(&conn, tag_id.into_inner())
+        books::get_books_by_tag(&conn, tag_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

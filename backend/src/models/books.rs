@@ -152,18 +152,11 @@ pub fn get_book_detail(conn: &PgConnection, book_id: i32) -> Result<Book, Error>
     books.find(book_id).first::<Book>(conn).map_err(Into::into)
 }
 
-pub fn get_books_by_author(
+fn get_books_by_ids(
     conn: &PgConnection,
-    author_id: i32,
     query: &GetBooksQuery,
+    book_ids: &[i32],
 ) -> Result<GetBooksResp, Error> {
-    use crate::schema::books_authors_link;
-
-    let book_ids = books_authors_link::table
-        .filter(books_authors_link::author.eq(author_id))
-        .select(books_authors_link::book)
-        .load::<i32>(conn)?;
-
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let offset = page_id * EACH_PAGE;
     let order_column = query.order.get_column();
@@ -187,7 +180,26 @@ pub fn get_books_by_author(
     })
 }
 
-pub fn get_books_by_format(conn: &PgConnection, format_id: i32) -> Result<Vec<BookResp>, Error> {
+pub fn get_books_by_author(
+    conn: &PgConnection,
+    author_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
+    use crate::schema::books_authors_link;
+
+    let book_ids = books_authors_link::table
+        .filter(books_authors_link::author.eq(author_id))
+        .select(books_authors_link::book)
+        .load::<i32>(conn)?;
+
+    get_books_by_ids(conn, query, &book_ids)
+}
+
+pub fn get_books_by_format(
+    conn: &PgConnection,
+    format_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
     use crate::schema::files;
 
     let book_ids = files::table
@@ -195,33 +207,29 @@ pub fn get_books_by_format(conn: &PgConnection, format_id: i32) -> Result<Vec<Bo
         .select(files::book)
         .load::<i32>(conn)?;
 
-    let book_list = books::table
-        .filter(books::id.eq(any(book_ids)))
-        .load::<Book>(conn)?;
-    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
-    Ok(book_list)
+    get_books_by_ids(conn, query, &book_ids)
 }
 
 pub fn get_books_by_publisher(
     conn: &PgConnection,
     publisher_id: i32,
-) -> Result<Vec<BookResp>, Error> {
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
     use crate::schema::books_publishers_link;
-    // TODO(Shaohua): Add pagination
 
     let book_ids = books_publishers_link::table
         .filter(books_publishers_link::publisher.eq(publisher_id))
         .select(books_publishers_link::book)
         .load::<i32>(conn)?;
 
-    let book_list = books::table
-        .filter(books::id.eq(any(book_ids)))
-        .load::<Book>(conn)?;
-    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
-    Ok(book_list)
+    get_books_by_ids(conn, query, &book_ids)
 }
 
-pub fn get_books_by_series(conn: &PgConnection, series_id: i32) -> Result<Vec<BookResp>, Error> {
+pub fn get_books_by_series(
+    conn: &PgConnection,
+    series_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
     use crate::schema::books_series_link;
 
     let book_ids = books_series_link::table
@@ -229,14 +237,14 @@ pub fn get_books_by_series(conn: &PgConnection, series_id: i32) -> Result<Vec<Bo
         .select(books_series_link::book)
         .load::<i32>(conn)?;
 
-    let book_list = books::table
-        .filter(books::id.eq(any(book_ids)))
-        .load::<Book>(conn)?;
-    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
-    Ok(book_list)
+    get_books_by_ids(conn, query, &book_ids)
 }
 
-pub fn get_books_by_tag(conn: &PgConnection, tag_id: i32) -> Result<Vec<BookResp>, Error> {
+pub fn get_books_by_tag(
+    conn: &PgConnection,
+    tag_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
     use crate::schema::books_tags_link;
 
     let book_ids = books_tags_link::table
@@ -244,9 +252,5 @@ pub fn get_books_by_tag(conn: &PgConnection, tag_id: i32) -> Result<Vec<BookResp
         .select(books_tags_link::book)
         .load::<i32>(conn)?;
 
-    let book_list = books::table
-        .filter(books::id.eq(any(book_ids)))
-        .load::<Book>(conn)?;
-    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
-    Ok(book_list)
+    get_books_by_ids(conn, query, &book_ids)
 }

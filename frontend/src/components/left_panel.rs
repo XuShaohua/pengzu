@@ -3,6 +3,9 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_router::prelude::*;
+
+use crate::route::Route;
 
 pub enum Msg {}
 
@@ -24,15 +27,15 @@ impl Component for LeftPanelComponent {
         html! {
             <div class="left-panel">
                 <ul>
-                    <li><a href="/">{"Books"}</a></li>
-                    <li><a href="/authors">{"Authors"}</a></li>
-                    <li><a href="/categories">{"Categories"}</a></li>
-                    <li><a href="/tags">{"Tags"}</a></li>
-                    <li><a href="/publishers">{"Publishers"}</a></li>
-                    <li><a href="/series">{"Series"}</a></li>
-                    <li><a href="/discover">{"Discover"}</a></li>
-                    <li><a href="/file-formats">{"File Formats"}</a></li>
-                    <li><a href="/ratings">{"Ratings"}</a></li>
+                    <li><Link<Route> to={Route::Home}>{"Books"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Authors}>{"Authors"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Categories}>{"Categories"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Tags}>{"Tags"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Publishers}>{"Publishers"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Series}>{"Series"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Discover}>{"Discover"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::FileFormats}>{"File Formats"}</Link<Route>></li>
+                    <li><Link<Route> to={Route::Ratings}>{"Ratings"}</Link<Route>></li>
                 </ul>
             </div>
         }

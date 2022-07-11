@@ -4,6 +4,8 @@
 
 use yew::{html, Component, Context, Html};
 
+use crate::components::left_panel::LeftPanelComponent;
+
 pub enum Msg {}
 
 pub struct AppComponent {}
@@ -23,6 +25,7 @@ impl Component for AppComponent {
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <div>
+                <LeftPanelComponent />
             </div>
         }
     }

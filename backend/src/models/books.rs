@@ -6,9 +6,11 @@ use chrono::NaiveDateTime;
 use diesel::dsl::any;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
+use shared_models::books::{BookResp, GetBooksResp};
+use shared_models::page::{default_page_id, Page};
 
 use crate::error::Error;
-use crate::models::{common_page, file_data};
+use crate::models::file_data;
 use crate::schema::books;
 
 const EACH_PAGE: i64 = 50;
@@ -86,27 +88,10 @@ impl GetBooksOrder {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct GetBooksQuery {
-    #[serde(default = "common_page::default_page_id")]
+    #[serde(default = "default_page_id")]
     pub page: i64,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct BookResp {
-    pub id: i32,
-    pub title: String,
-    pub has_cover: bool,
-    pub small_cover: Option<String>,
-    pub large_cover: Option<String>,
-    pub created: NaiveDateTime,
-    pub pubdate: NaiveDateTime,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct GetBooksResp {
-    pub page: common_page::Page,
-    pub list: Vec<BookResp>,
 }
 
 fn book_to_book_resp(book: Book) -> BookResp {
@@ -138,7 +123,7 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
     let total = books.count().first(conn)?;
 
     Ok(GetBooksResp {
-        page: common_page::Page {
+        page: Page {
             page_num: page_id + 1,
             each_page: EACH_PAGE,
             total,
@@ -171,7 +156,7 @@ fn get_books_by_ids(
     let book_list = book_list.into_iter().map(book_to_book_resp).collect();
 
     Ok(GetBooksResp {
-        page: common_page::Page {
+        page: Page {
             page_num: page_id + 1,
             each_page: EACH_PAGE,
             total,

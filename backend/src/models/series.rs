@@ -8,9 +8,9 @@ use diesel::{
     RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared_models::page::{Page, PageQuery};
 
 use crate::error::Error;
-use crate::models::common_page::{Page, PageQuery};
 use crate::schema::series;
 
 #[derive(Debug, Deserialize, Insertable)]

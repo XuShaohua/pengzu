@@ -279,6 +279,7 @@ dependencies = [
  "r2d2",
  "serde",
  "serde_json",
+ "shared_models",
  "shell-rs",
  "tokio",
  "uuid 1.1.2",
@@ -1848,6 +1849,14 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest 0.10.3",
+]
+
+[[package]]
+name = "shared_models"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "serde",
 ]
 
 [[package]]

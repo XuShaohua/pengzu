@@ -3,10 +3,11 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{web, HttpResponse};
+use shared_models::page::PageQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::{authors, common_page};
+use crate::models::authors;
 
 pub async fn add_author(
     pool: web::Data<DbPool>,
@@ -22,7 +23,7 @@ pub async fn add_author(
 
 pub async fn get_authors(
     pool: web::Data<DbPool>,
-    query: web::Query<common_page::PageQuery>,
+    query: web::Query<PageQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;

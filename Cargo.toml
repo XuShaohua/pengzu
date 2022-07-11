@@ -4,4 +4,5 @@ members = [
   "backend",
   "calibre",
   "frontend",
+  "shared_models",
 ]

@@ -10,7 +10,6 @@ pub mod books_publishers;
 pub mod books_tags;
 pub mod categories;
 pub mod comments;
-pub mod common_page;
 mod file_data;
 pub mod file_formats;
 pub mod files;

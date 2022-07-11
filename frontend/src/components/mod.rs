@@ -10,6 +10,7 @@ pub mod file_formats;
 pub mod footer;
 pub mod header;
 pub mod left_panel;
+pub mod models;
 pub mod not_found;
 pub mod publishers;
 pub mod ratings;

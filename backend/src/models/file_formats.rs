@@ -7,9 +7,9 @@ use diesel::{
     ExpressionMethods, GroupByDsl, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared_models::page::{Page, PageQuery};
 
 use crate::error::Error;
-use crate::models::common_page::{Page, PageQuery};
 use crate::schema::file_formats;
 
 #[derive(Debug, Deserialize, Insertable)]

@@ -1,4 +1,39 @@
 
 .left-panel {
+  float: left;
+  width: 16.67%;
+  position: relative;
+  padding-right: 15px;
+  padding-left: 15px;
+  min-height: 1px;
+}
 
+.left-panel ul {
+  list-style: none;
+}
+
+.left-panel li a {
+  color: #444;
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+}
+
+.left-panel li a:hover {
+  background: rgba(153, 153, 153, 0.4);
+  border-radius: 5px;
+  outline: 0;
+}
+
+.content-area {
+  float: left;
+  width: 83.33%;
+  position: relative;
+  padding-right: 15px;
+  padding-left: 15px;
+  min-height: 1px;
+}
+
+footer {
+  clear: both;
 }

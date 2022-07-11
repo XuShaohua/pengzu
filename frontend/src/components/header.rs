@@ -2,17 +2,13 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use yew::{html, Component, Context, Html};
-
-use crate::components::footer::FooterComponent;
-use crate::components::header::HeaderComponent;
-use crate::components::left_panel::LeftPanelComponent;
+use yew::prelude::*;
 
 pub enum Msg {}
 
-pub struct AppComponent {}
+pub struct HeaderComponent {}
 
-impl Component for AppComponent {
+impl Component for HeaderComponent {
     type Message = Msg;
     type Properties = ();
 
@@ -27,11 +23,7 @@ impl Component for AppComponent {
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <div>
-                <HeaderComponent />
-                <div>
-                    <LeftPanelComponent />
-                </div>
-                <FooterComponent />
+            {"Online Library"}
             </div>
         }
     }

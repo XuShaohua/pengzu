@@ -24,15 +24,15 @@ impl Component for LeftPanelComponent {
         html! {
             <div class="left-panel">
                 <ul>
-                    <li>{"Books"}</li>
-                    <li>{"Authors"}</li>
-                    <li>{"Categories"}</li>
-                    <li>{"Tags"}</li>
-                    <li>{"Publishers"}</li>
-                    <li>{"Series"}</li>
-                    <li>{"Discover"}</li>
-                    <li>{"File Formats"}</li>
-                    <li>{"Ratings"}</li>
+                    <li><a href="/">{"Books"}</a></li>
+                    <li><a href="/authors">{"Authors"}</a></li>
+                    <li><a href="/categories">{"Categories"}</a></li>
+                    <li><a href="/tags">{"Tags"}</a></li>
+                    <li><a href="/publishers">{"Publishers"}</a></li>
+                    <li><a href="/series">{"Series"}</a></li>
+                    <li><a href="/discover">{"Discover"}</a></li>
+                    <li><a href="/file-formats">{"File Formats"}</a></li>
+                    <li><a href="/ratings">{"Ratings"}</a></li>
                 </ul>
             </div>
         }

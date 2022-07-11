@@ -11,6 +11,8 @@ use crate::error::Error;
 use crate::models::{common_page, file_data};
 use crate::schema::books;
 
+const EACH_PAGE: i64 = 50;
+
 #[derive(Debug, Serialize, Queryable)]
 pub struct Book {
     pub id: i32,
@@ -123,13 +125,12 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
     use crate::schema::books::dsl::books;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 20;
-    let offset = page_id * each_page;
+    let offset = page_id * EACH_PAGE;
     let order_column = query.order.get_column();
 
     let book_list = books
         .order_by(order_column)
-        .limit(each_page)
+        .limit(EACH_PAGE)
         .offset(offset)
         .load::<Book>(conn)?;
     let book_list = book_list.into_iter().map(book_to_book_resp).collect();
@@ -139,7 +140,7 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
     Ok(GetBooksResp {
         page: common_page::Page {
             page_num: page_id + 1,
-            each_page,
+            each_page: EACH_PAGE,
             total,
         },
         list: book_list,
@@ -151,7 +152,11 @@ pub fn get_book_detail(conn: &PgConnection, book_id: i32) -> Result<Book, Error>
     books.find(book_id).first::<Book>(conn).map_err(Into::into)
 }
 
-pub fn get_books_by_author(conn: &PgConnection, author_id: i32) -> Result<Vec<BookResp>, Error> {
+pub fn get_books_by_author(
+    conn: &PgConnection,
+    author_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
     use crate::schema::books_authors_link;
 
     let book_ids = books_authors_link::table
@@ -159,11 +164,27 @@ pub fn get_books_by_author(conn: &PgConnection, author_id: i32) -> Result<Vec<Bo
         .select(books_authors_link::book)
         .load::<i32>(conn)?;
 
+    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
+    let offset = page_id * EACH_PAGE;
+    let order_column = query.order.get_column();
+    let total = book_ids.len() as i64;
+
     let book_list = books::table
         .filter(books::id.eq(any(book_ids)))
+        .order_by(order_column)
+        .limit(EACH_PAGE)
+        .offset(offset)
         .load::<Book>(conn)?;
     let book_list = book_list.into_iter().map(book_to_book_resp).collect();
-    Ok(book_list)
+
+    Ok(GetBooksResp {
+        page: common_page::Page {
+            page_num: page_id + 1,
+            each_page: EACH_PAGE,
+            total,
+        },
+        list: book_list,
+    })
 }
 
 pub fn get_books_by_format(conn: &PgConnection, format_id: i32) -> Result<Vec<BookResp>, Error> {

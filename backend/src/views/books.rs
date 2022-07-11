@@ -49,10 +49,11 @@ pub async fn get_book_detail(
 pub async fn get_books_by_author(
     pool: web::Data<DbPool>,
     author_id: web::Path<i32>,
+    query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let conn = pool.get()?;
-        books::get_books_by_author(&conn, author_id.into_inner())
+        books::get_books_by_author(&conn, author_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

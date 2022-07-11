@@ -2,6 +2,8 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared_models::books::{BookResp, GetBooksResp};
+use shared_models::page::Page;
 use std::error;
 use std::fmt;
 use wasm_bindgen::{JsCast, JsValue};
@@ -28,8 +30,6 @@ impl From<JsValue> for FetchError {
 
 #[derive(Debug, PartialEq)]
 pub enum FetchState {
-    NotFetching,
-    Fetching,
     Success(String),
     Failed(FetchError),
 }
@@ -45,7 +45,8 @@ async fn fetch_books(url: &str) -> Result<String, FetchError> {
     let resp: Response = resp_value.dyn_into().unwrap();
 
     let text = JsFuture::from(resp.text()?).await?;
-    Ok(text.as_string().unwrap())
+    let text = text.as_string().unwrap();
+    Ok(text)
 }
 
 #[derive(PartialEq)]
@@ -55,7 +56,8 @@ pub enum Msg {
 }
 
 pub struct BooksComponent {
-    books: FetchState,
+    books: Vec<BookResp>,
+    page: Option<Page>,
 }
 
 impl Component for BooksComponent {
@@ -64,7 +66,8 @@ impl Component for BooksComponent {
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {
-            books: FetchState::NotFetching,
+            books: Vec::new(),
+            page: None,
         }
     }
 
@@ -74,17 +77,25 @@ impl Component for BooksComponent {
             Msg::Fetch => {
                 ctx.link().send_future(async {
                     match fetch_books(url).await {
-                        Ok(md) => Msg::SetFetchState(FetchState::Success(md)),
+                        Ok(text) => Msg::SetFetchState(FetchState::Success(text)),
                         Err(err) => Msg::SetFetchState(FetchState::Failed(err)),
                     }
                 });
-                ctx.link()
-                    .send_message(Msg::SetFetchState(FetchState::Fetching));
-
                 false
             }
             Msg::SetFetchState(state) => {
-                self.books = state;
+                match state {
+                    FetchState::Success(text) => {
+                        let obj: GetBooksResp =
+                            serde_json::from_str(&text).expect("Invalid response");
+                        log::info!("obj: {:#?}", obj);
+                        self.page = Some(obj.page);
+                        self.books.extend(obj.list);
+                    }
+                    FetchState::Failed(err) => {
+                        log::warn!("failed to fetch books: {:?}", err);
+                    }
+                }
                 true
             }
         }

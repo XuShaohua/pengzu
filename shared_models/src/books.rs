@@ -3,11 +3,11 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::page::Page;
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BookResp {
     pub id: i32,
     pub title: String,
@@ -18,7 +18,7 @@ pub struct BookResp {
     pub pubdate: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetBooksResp {
     pub page: Page,
     pub list: Vec<BookResp>,

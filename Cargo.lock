@@ -715,6 +715,8 @@ version = "0.1.0"
 dependencies = [
  "gloo-utils",
  "log",
+ "serde_json",
+ "shared_models",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-logger",

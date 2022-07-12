@@ -16,7 +16,7 @@ pub enum Msg {
 }
 
 pub struct AuthorsComponent {
-    books: Vec<AuthorAndBook>,
+    authors: Vec<AuthorAndBook>,
     page: Option<Page>,
 }
 
@@ -26,7 +26,7 @@ impl Component for AuthorsComponent {
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {
-            books: vec![],
+            authors: vec![],
             page: None,
         }
     }
@@ -45,7 +45,7 @@ impl Component for AuthorsComponent {
             Msg::FetchSuccess(obj) => {
                 log::info!("obj: {:#?}", obj);
                 self.page = Some(obj.page);
-                self.books.extend(obj.list);
+                self.authors.extend(obj.list);
                 true
             }
             Msg::FetchFailed(err) => {

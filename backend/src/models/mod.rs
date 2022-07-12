@@ -16,6 +16,7 @@ pub mod files;
 pub mod identifier_types;
 pub mod identifiers;
 pub mod languages;
+pub mod page;
 pub mod publishers;
 pub mod ratings;
 pub mod series;

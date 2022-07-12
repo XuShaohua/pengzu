@@ -6,9 +6,8 @@ use chrono::NaiveDateTime;
 use diesel::dsl::any;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
-use shared_models::books::{BookResp, GetBooksResp};
-use shared_models::page::{default_page_id, Page};
 
+use super::page::{default_page_id, Page};
 use crate::error::Error;
 use crate::models::file_data;
 use crate::schema::books;
@@ -92,6 +91,23 @@ pub struct GetBooksQuery {
     pub page: i64,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct BookResp {
+    pub id: i32,
+    pub title: String,
+    pub has_cover: bool,
+    pub small_cover: Option<String>,
+    pub large_cover: Option<String>,
+    pub created: NaiveDateTime,
+    pub pubdate: NaiveDateTime,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct GetBooksResp {
+    pub page: Page,
+    pub list: Vec<BookResp>,
 }
 
 fn book_to_book_resp(book: Book) -> BookResp {

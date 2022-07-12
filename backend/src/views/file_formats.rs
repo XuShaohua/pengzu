@@ -3,11 +3,11 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{web, HttpResponse};
-use shared_models::page::PageQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::file_formats;
+use crate::models::page::PageQuery;
 
 pub async fn get_formats(
     pool: web::Data<DbPool>,

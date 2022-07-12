@@ -47,10 +47,10 @@ pub async fn run() -> Result<(), Error> {
             )
             // For /api/formats
             .route(
-                "/api/formats/stored/{format_id}",
+                "/api/format/stored/{format_id}",
                 web::get().to(books::get_books_by_format),
             )
-            .route("/api/formats", web::get().to(file_formats::get_formats))
+            .route("/api/format", web::get().to(file_formats::get_formats))
             // For /api/publisher
             .route("/api/publisher", web::post().to(publishers::add_publisher))
             .route(

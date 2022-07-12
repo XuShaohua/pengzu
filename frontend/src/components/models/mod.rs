@@ -6,6 +6,7 @@ pub mod authors;
 pub mod books;
 pub mod error;
 pub(super) mod fetch;
+pub mod file_formats;
 pub mod page;
 pub mod publishers;
 pub mod tags;

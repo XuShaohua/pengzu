@@ -2,12 +2,11 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use shared_models::books::{BookResp, GetBooksResp};
-use shared_models::page::Page;
 use yew::prelude::*;
 
-use super::models::books::fetch_books;
-use super::models::error::FetchError;
+use crate::components::models::books::{fetch_books, BookResp, GetBooksResp};
+use crate::components::models::error::FetchError;
+use crate::components::models::page::Page;
 
 #[derive(PartialEq)]
 pub enum Msg {

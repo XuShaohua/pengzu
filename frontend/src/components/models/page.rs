@@ -2,5 +2,11 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-pub mod books;
-pub mod page;
+use serde::Deserialize;
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct Page {
+    pub page_num: i64,
+    pub each_page: i64,
+    pub total: i64,
+}

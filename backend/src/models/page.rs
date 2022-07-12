@@ -4,7 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct Page {
     pub page_num: i64,
     pub each_page: i64,
@@ -16,7 +16,7 @@ pub const fn default_page_id() -> i64 {
     0
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct PageQuery {
     #[serde(default = "default_page_id")]
     pub page: i64,

@@ -93,7 +93,7 @@ pub struct GetBooksQuery {
     pub order: GetBooksOrder,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize)]
 pub struct BookResp {
     pub id: i32,
     pub title: String,
@@ -104,7 +104,7 @@ pub struct BookResp {
     pub pubdate: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize)]
 pub struct GetBooksResp {
     pub page: Page,
     pub list: Vec<BookResp>,

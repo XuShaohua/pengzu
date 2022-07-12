@@ -2,37 +2,18 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use serde::Deserialize;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
+use super::books::GetBooksResp;
 use super::error::FetchError;
-use super::page::Page;
 
-#[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct BookResp {
-    pub id: i32,
-    pub title: String,
-    pub has_cover: bool,
-    pub small_cover: Option<String>,
-    pub large_cover: Option<String>,
-    pub created: NaiveDateTime,
-    pub pubdate: NaiveDateTime,
-}
-
-#[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct GetBooksResp {
-    pub page: Page,
-    pub list: Vec<BookResp>,
-}
-
-pub async fn fetch_books() -> Result<GetBooksResp, FetchError> {
+pub async fn fetch_authors() -> Result<GetBooksResp, FetchError> {
     let mut opts = RequestInit::new();
     opts.method("GET");
     opts.mode(RequestMode::Cors);
-    let url = "/api/book";
+    let url = "/api/author";
     let request = Request::new_with_str_and_init(url, &opts)?;
 
     let window = gloo_utils::window();

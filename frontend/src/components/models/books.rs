@@ -29,6 +29,6 @@ pub struct GetBooksResp {
 pub async fn fetch_books() -> Result<GetBooksResp, FetchError> {
     let url = "/api/book";
     let text = fetch(url).await?;
-    let obj: GetBooksResp = serde_json::from_str(&text).expect("Invalid response");
+    let obj: GetBooksResp = serde_json::from_str(&text)?;
     Ok(obj)
 }

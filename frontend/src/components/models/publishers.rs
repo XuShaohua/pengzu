@@ -24,6 +24,6 @@ pub struct GetPublishersResp {
 pub async fn fetch_publishers() -> Result<GetPublishersResp, FetchError> {
     let url = "/api/publisher";
     let text = fetch(url).await?;
-    let obj: GetPublishersResp = serde_json::from_str(&text).expect("Invalid response");
+    let obj: GetPublishersResp = serde_json::from_str(&text)?;
     Ok(obj)
 }

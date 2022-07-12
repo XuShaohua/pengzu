@@ -4,40 +4,34 @@
 
 use yew::prelude::*;
 
-use crate::components::models::authors::{fetch_authors, AuthorAndBook, GetAuthorsResp};
+use crate::components::models::books::{fetch_books_by_author, BookResp, GetBooksResp};
 use crate::components::models::error::FetchError;
 use crate::components::models::page::Page;
 
 #[derive(PartialEq)]
 pub enum Msg {
     Fetch,
-    FetchSuccess(GetAuthorsResp),
+    FetchSuccess(GetBooksResp),
     FetchFailed(FetchError),
 }
 
-pub struct AuthorsComponent {
-    authors: Vec<AuthorAndBook>,
+#[derive(Debug, Clone, PartialEq, Properties)]
+pub struct Prop {
+    pub author_id: i32,
+}
+
+pub struct BooksOfAuthorComponent {
+    books: Vec<BookResp>,
     page: Option<Page>,
 }
 
-fn generate_author_element(author: &AuthorAndBook) -> Html {
-    html! {
-        <li class="author-item">
-            <span class="badge">{ author.count }</span>
-            <a href={ format!("/author/stored/{}", author.id) } target="_blank" title={ author.name.clone() }>
-                { author.name.clone() }
-            </a>
-        </li>
-    }
-}
-
-impl Component for AuthorsComponent {
+impl Component for BooksOfAuthorComponent {
     type Message = Msg;
-    type Properties = ();
+    type Properties = Prop;
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {
-            authors: vec![],
+            books: Vec::new(),
             page: None,
         }
     }
@@ -45,8 +39,9 @@ impl Component for AuthorsComponent {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Fetch => {
-                ctx.link().send_future(async {
-                    match fetch_authors().await {
+                let author_id = ctx.props().author_id;
+                ctx.link().send_future(async move {
+                    match fetch_books_by_author(author_id).await {
                         Ok(obj) => Msg::FetchSuccess(obj),
                         Err(err) => Msg::FetchFailed(err),
                     }
@@ -56,11 +51,11 @@ impl Component for AuthorsComponent {
             Msg::FetchSuccess(obj) => {
                 log::info!("obj: {:#?}", obj);
                 self.page = Some(obj.page);
-                self.authors.extend(obj.list);
+                self.books.extend(obj.list);
                 true
             }
             Msg::FetchFailed(err) => {
-                log::warn!("failed to fetch authors: {:?}", err);
+                log::warn!("failed to fetch something: {:?}", err);
                 true
             }
         }
@@ -69,19 +64,9 @@ impl Component for AuthorsComponent {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let fetch = ctx.link().callback(|_| Msg::Fetch);
 
-        let author_elements = self
-            .authors
-            .iter()
-            .map(generate_author_element)
-            .collect::<Html>();
-
         html! {
             <>
-                <button onclick={fetch}>{"Fetch authors"}</button>
-
-                <ul class="author-list">
-                    { author_elements }
-                </ul>
+                <button onclick={fetch}>{"Fetch books"}</button>
             </>
         }
     }

@@ -20,6 +20,17 @@ pub struct AuthorsComponent {
     page: Option<Page>,
 }
 
+fn generate_author_element(author: &AuthorAndBook) -> Html {
+    html! {
+        <li class="author-item">
+            <span class="badge">{ author.count }</span>
+            <a href={ format!("/author/{}", author.id) } target="_blank" title={ author.name.clone() }>
+                { author.name.clone() }
+            </a>
+        </li>
+    }
+}
+
 impl Component for AuthorsComponent {
     type Message = Msg;
     type Properties = ();
@@ -58,10 +69,20 @@ impl Component for AuthorsComponent {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let fetch = ctx.link().callback(|_| Msg::Fetch);
 
+        let author_elements = self
+            .authors
+            .iter()
+            .map(generate_author_element)
+            .collect::<Html>();
+
         html! {
-            <div class="content">
+            <>
                 <button onclick={fetch}>{"Fetch authors"}</button>
-            </div>
+
+                <ul class="author-list">
+                    { author_elements }
+                </ul>
+            </>
         }
     }
 }

@@ -41,6 +41,10 @@ a, .danger, .book-remove, .editable-empty, .editable-empty:hover {
   border-color: #e7e7e7;
 }
 
+footer {
+  clear: both;
+}
+
 .clearfix::after,
 .clearfix::before,
 .container-fluid::after,
@@ -99,6 +103,8 @@ a, .danger, .book-remove, .editable-empty, .editable-empty:hover {
   outline: 0;
 }
 
+/** Books page **/
+
 .book-list {
 
 }
@@ -150,6 +156,26 @@ a, .danger, .book-remove, .editable-empty, .editable-empty:hover {
   margin: 0;
 }
 
-footer {
-  clear: both;
+/** author page **/
+.author-list {
+  list-style: none;
+}
+
+.author-item {
+
+}
+
+.badge {
+  display: inline-block;
+  min-width: 10px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-color: #777;
+  border-radius: 10px;
 }

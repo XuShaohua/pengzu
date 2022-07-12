@@ -2,11 +2,15 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use actix_files::NamedFile;
 use actix_web::{web, HttpResponse};
+use serde::Deserialize;
+use std::path;
 
 use crate::db::DbPool;
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
 use crate::models::files;
+use crate::settings;
 
 pub async fn add_file(
     pool: web::Data<DbPool>,
@@ -30,4 +34,27 @@ pub async fn get_book_files(
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_files))
+}
+
+#[derive(Debug, Deserialize)]
+pub struct FileQuery {
+    pub path: path::PathBuf,
+}
+
+pub async fn get_file_by_path(
+    _pool: web::Data<DbPool>,
+    query: web::Query<FileQuery>,
+) -> Result<NamedFile, Error> {
+    log::info!("filepath: {:?}", query.path);
+    let root_dir = settings::get_library_root_dir()?;
+    let filepath = root_dir.join(&query.path);
+    log::info!("real path: {:?}", filepath);
+    if !filepath.starts_with(root_dir) {
+        return Err(Error::from_string(
+            ErrorKind::IoError,
+            format!("Invalid filepath: {:?}", query),
+        ));
+    }
+    let file = NamedFile::open(filepath)?;
+    Ok(file.use_last_modified(true))
 }

@@ -6,7 +6,9 @@ use actix_web::{middleware, web, App, HttpServer, Responder};
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
-use crate::views::{authors, books, comments, file_formats, publishers, ratings, series, tags};
+use crate::views::{
+    authors, books, comments, file_formats, files, publishers, ratings, series, tags,
+};
 
 const CONTENT_TYPE: &str = "content-type";
 const APPLICATION_JSON: &str = "application/json";
@@ -45,6 +47,8 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::put().to(comments::update_comment))
                     .route(web::delete().to(comments::delete_comment)),
             )
+            // For /api/file
+            .route("/api/file", web::get().to(files::get_file_by_path))
             // For /api/formats
             .route(
                 "/api/format/stored/{format_id}",

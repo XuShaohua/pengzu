@@ -21,4 +21,5 @@ pub mod import;
 pub mod models;
 pub mod routers;
 mod schema;
+mod settings;
 mod views;

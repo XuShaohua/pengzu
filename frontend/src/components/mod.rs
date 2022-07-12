@@ -10,6 +10,7 @@ pub mod discover;
 pub mod file_formats;
 pub mod footer;
 pub mod header;
+mod inner;
 pub mod left_panel;
 pub mod models;
 pub mod not_found;

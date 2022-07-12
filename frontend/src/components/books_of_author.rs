@@ -4,6 +4,7 @@
 
 use yew::prelude::*;
 
+use crate::components::inner::book_list::BookListComponent;
 use crate::components::models::books::{fetch_books_by_author, BookResp, GetBooksResp};
 use crate::components::models::error::FetchError;
 use crate::components::models::page::Page;
@@ -55,7 +56,7 @@ impl Component for BooksOfAuthorComponent {
                 true
             }
             Msg::FetchFailed(err) => {
-                log::warn!("failed to fetch something: {:?}", err);
+                log::warn!("failed to fetch books: {:?}", err);
                 true
             }
         }
@@ -66,7 +67,8 @@ impl Component for BooksOfAuthorComponent {
 
         html! {
             <>
-                <button onclick={fetch}>{"Fetch books"}</button>
+                <button onclick={fetch}>{"Fetch books by author"}</button>
+                <BookListComponent books={self.books.clone()} />
             </>
         }
     }

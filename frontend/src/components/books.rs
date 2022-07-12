@@ -4,6 +4,7 @@
 
 use yew::prelude::*;
 
+use crate::components::inner::book_list::BookListComponent;
 use crate::components::models::books::{fetch_books, BookResp, GetBooksResp};
 use crate::components::models::error::FetchError;
 use crate::components::models::page::Page;
@@ -18,47 +19,6 @@ pub enum Msg {
 pub struct BooksComponent {
     books: Vec<BookResp>,
     page: Option<Page>,
-}
-
-fn generate_book_element(book: &BookResp) -> Html {
-    let generate_cover_element = |small_cover: &Option<String>| -> String {
-        if let Some(cover) = small_cover {
-            format!("/api/file?path={}", cover)
-        } else {
-            "#".to_string()
-        }
-    };
-
-    html! {
-        <div class="book-fluid" key={book.id}>
-            <div class="book-cover">
-                <a href={ format!("/book/{}", book.id) } target="_blank">
-                <img src={ generate_cover_element(&book.small_cover) } alt={book.title.clone()} />
-                </a>
-            </div>
-            <div class="book-meta">
-                <a href={ format!("/book/{}", book.id) } target="_blank">
-                <span class="book-title" title={book.title.clone()}>
-                    {book.title.clone()}
-                </span>
-                </a>
-
-                <div class="book-authors">
-                {
-                    book.authors.iter().map(|author| {
-                        html!{
-                        <a href={ format!("/author/{:?}", author.id) } target="_blank">
-                            <span class="book-author" title={ author.name.clone() }>
-                            { author.name.clone() }
-                            </span>
-                        </a>
-                        }
-                    }).collect::<Html>()
-                }
-                </div>
-            </div>
-        </div>
-    }
 }
 
 impl Component for BooksComponent {
@@ -98,19 +58,12 @@ impl Component for BooksComponent {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let fetch = ctx.link().callback(|_| Msg::Fetch);
-        let book_elements = self
-            .books
-            .iter()
-            .map(generate_book_element)
-            .collect::<Html>();
 
         html! {
             <>
                 <button onclick={fetch}>{"Fetch books"}</button>
 
-                <div class="book-list">
-                    { book_elements }
-                </div>
+                <BookListComponent books={self.books.clone()} />
             </>
         }
     }

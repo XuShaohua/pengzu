@@ -36,7 +36,7 @@ impl Component for BooksComponent {
             Msg::Fetch => {
                 ctx.link().send_future(async {
                     match fetch_books().await {
-                        Ok(text) => Msg::FetchSuccess(text),
+                        Ok(obj) => Msg::FetchSuccess(obj),
                         Err(err) => Msg::FetchFailed(err),
                     }
                 });

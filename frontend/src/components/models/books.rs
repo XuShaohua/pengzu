@@ -10,6 +10,13 @@ use super::error::FetchError;
 use super::page::Page;
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
+pub struct AuthorAndBookId {
+    pub id: i32,
+    pub name: String,
+    pub book: i32,
+}
+
+#[derive(Debug, Clone, Deserialize, PartialEq)]
 pub struct BookResp {
     pub id: i32,
     pub title: String,
@@ -18,6 +25,8 @@ pub struct BookResp {
     pub large_cover: Option<String>,
     pub created: NaiveDateTime,
     pub pubdate: NaiveDateTime,
+
+    pub authors: Vec<AuthorAndBookId>,
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]

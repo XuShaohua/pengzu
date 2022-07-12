@@ -20,6 +20,39 @@ pub struct BooksComponent {
     page: Option<Page>,
 }
 
+fn generate_book_element(book: &BookResp) -> Html {
+    html! {
+        <div class="book-fluid" key={book.id}>
+            <div class="book-cover">
+                <a href="#">
+                <img src="#" alt={book.title.clone()} />
+                </a>
+            </div>
+            <div class="book-meta">
+                <a href="#">
+                <span class="book-title" title={book.title.clone()}>
+                    {book.title.clone()}
+                </span>
+                </a>
+
+                <div class="book-authors">
+                {
+                    book.authors.iter().map(|author| {
+                        html!{
+                        <a href={ format!("/author/{:?}", author.id) } target="_blank">
+                            <span class="book-author" title={ author.name.clone() }>
+                            { author.name.clone() }
+                            </span>
+                        </a>
+                        }
+                    }).collect::<Html>()
+                }
+                </div>
+            </div>
+        </div>
+    }
+}
+
 impl Component for BooksComponent {
     type Message = Msg;
     type Properties = ();
@@ -57,31 +90,10 @@ impl Component for BooksComponent {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let fetch = ctx.link().callback(|_| Msg::Fetch);
-        let books_elements = self
+        let book_elements = self
             .books
             .iter()
-            .map(|book| {
-                html! {
-                    <div class="book-fluid" key={book.id}>
-                        <div class="book-cover">
-                            <a href="#">
-                            <img src="#" alt={book.title.clone()} />
-                            </a>
-                        </div>
-                        <div class="book-meta">
-                            <a href="#">
-                            <span class="book-title" title={book.title.clone()}>
-                                {book.title.clone()}
-                            </span>
-                            </a>
-
-                            <p class="author">
-                                {"author list"}
-                            </p>
-                        </div>
-                    </div>
-                }
-            })
+            .map(generate_book_element)
             .collect::<Html>();
 
         html! {
@@ -89,7 +101,7 @@ impl Component for BooksComponent {
                 <button onclick={fetch}>{"Fetch books"}</button>
 
                 <div class="book-list">
-                    { books_elements }
+                    { book_elements }
                 </div>
             </div>
         }

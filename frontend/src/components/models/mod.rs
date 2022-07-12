@@ -8,3 +8,4 @@ pub mod error;
 pub(super) mod fetch;
 pub mod page;
 pub mod publishers;
+pub mod tags;

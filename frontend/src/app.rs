@@ -31,9 +31,13 @@ impl Component for AppComponent {
             <>
                 <BrowserRouter>
                     <HeaderComponent />
-                    <div>
-                        <LeftPanelComponent />
-                        <Switch<Route> render={Switch::render(switch_route)} />
+                    <div class="container-fluid">
+                        <div class="row-fluid">
+                            <LeftPanelComponent />
+                            <div class="content-area">
+                                <Switch<Route> render={Switch::render(switch_route)} />
+                            </div>
+                        </div>
                     </div>
                     <FooterComponent />
                 </BrowserRouter>

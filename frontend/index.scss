@@ -36,13 +36,50 @@ a, .danger, .book-remove, .editable-empty, .editable-empty:hover {
 
 /** Details **/
 
-.left-panel {
+.navbar {
+  background-color: #f8f8f8;
+  border-color: #e7e7e7;
+}
+
+.clearfix::after,
+.clearfix::before,
+.container-fluid::after,
+.container-fluid::before,
+.container::after,
+.container::before,
+.modal-footer::after,
+.modal-footer::before,
+.modal-header::after,
+.modal-header::before,
+.navbar::after,
+.navbar::before,
+.pager::after,
+.pager::before {
+  display: table;
+  content: " ";
+}
+
+.container-fluid {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.left-panel, .content-area {
   float: left;
-  width: 16.67%;
   position: relative;
   padding-right: 15px;
   padding-left: 15px;
   min-height: 1px;
+}
+
+.left-panel {
+  width: 16.67%;
+}
+
+.content-area {
+  width: 83.33%;
 }
 
 .left-panel ul {
@@ -62,15 +99,6 @@ a, .danger, .book-remove, .editable-empty, .editable-empty:hover {
   outline: 0;
 }
 
-.content-area {
-  float: left;
-  width: 83.33%;
-  position: relative;
-  padding-right: 15px;
-  padding-left: 15px;
-  min-height: 1px;
-}
-
 .book-list {
 
 }
@@ -84,6 +112,29 @@ a, .danger, .book-remove, .editable-empty, .editable-empty:hover {
   padding-right: 15px;
   float: left;
   width: 16.67%;
+}
+
+.book-fluid img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+}
+
+.book-cover {
+  height: 225px;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.book-cover span img {
+  border: 1px solid #fff;
+  position: relative;
+  height: 100%;
+  box-sizing: border-box;
+  -webkit-box-shadow: 0 5px 8px -6px #777;
+  -moz-box-shadow: 0 5px 8px -6px #777;
+  box-shadow: 0 5px 8px -6px #777;
 }
 
 .book-title {

@@ -21,15 +21,23 @@ pub struct BooksComponent {
 }
 
 fn generate_book_element(book: &BookResp) -> Html {
+    let generate_cover_element = |small_cover: &Option<String>| -> String {
+        if let Some(cover) = small_cover {
+            format!("/api/file?path={}", cover)
+        } else {
+            "#".to_string()
+        }
+    };
+
     html! {
         <div class="book-fluid" key={book.id}>
             <div class="book-cover">
-                <a href="#">
-                <img src="#" alt={book.title.clone()} />
+                <a href={ format!("/book/{}", book.id) } target="_blank">
+                <img src={ generate_cover_element(&book.small_cover) } alt={book.title.clone()} />
                 </a>
             </div>
             <div class="book-meta">
-                <a href="#">
+                <a href={ format!("/book/{}", book.id) } target="_blank">
                 <span class="book-title" title={book.title.clone()}>
                     {book.title.clone()}
                 </span>
@@ -97,13 +105,13 @@ impl Component for BooksComponent {
             .collect::<Html>();
 
         html! {
-            <div class="content">
+            <>
                 <button onclick={fetch}>{"Fetch books"}</button>
 
                 <div class="book-list">
                     { book_elements }
                 </div>
-            </div>
+            </>
         }
     }
 }

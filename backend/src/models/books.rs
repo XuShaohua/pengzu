@@ -4,7 +4,9 @@
 
 use chrono::NaiveDateTime;
 use diesel::dsl::any;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+};
 use serde::{Deserialize, Serialize};
 
 use super::page::{default_page_id, Page};
@@ -93,6 +95,13 @@ pub struct GetBooksQuery {
     pub order: GetBooksOrder,
 }
 
+#[derive(Debug, Clone, Serialize, Queryable)]
+pub struct AuthorAndBookId {
+    pub id: i32,
+    pub name: String,
+    pub book: i32,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct BookResp {
     pub id: i32,
@@ -102,6 +111,8 @@ pub struct BookResp {
     pub large_cover: Option<String>,
     pub created: NaiveDateTime,
     pub pubdate: NaiveDateTime,
+
+    pub authors: Vec<AuthorAndBookId>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -110,16 +121,48 @@ pub struct GetBooksResp {
     pub list: Vec<BookResp>,
 }
 
-fn book_to_book_resp(book: Book) -> BookResp {
-    BookResp {
-        id: book.id,
-        title: book.title,
-        has_cover: book.has_cover,
-        small_cover: file_data::get_small_cover(&book.path, book.has_cover),
-        large_cover: file_data::get_large_cover(&book.path, book.has_cover),
-        created: book.created,
-        pubdate: book.pubdate,
+fn merge_books_and_authors(
+    book_list: Vec<Book>,
+    author_list: Vec<AuthorAndBookId>,
+) -> Vec<BookResp> {
+    let mut list = Vec::with_capacity(book_list.len());
+
+    for book in book_list.into_iter() {
+        let authors = author_list
+            .iter()
+            .filter(|author| author.book == book.id)
+            .map(Clone::clone)
+            .collect();
+        list.push(BookResp {
+            id: book.id,
+            title: book.title,
+            has_cover: book.has_cover,
+            small_cover: file_data::get_small_cover(&book.path, book.has_cover),
+            large_cover: file_data::get_large_cover(&book.path, book.has_cover),
+            created: book.created,
+            pubdate: book.pubdate,
+            authors,
+        })
     }
+
+    list
+}
+
+fn get_authors_by_book_id(
+    conn: &PgConnection,
+    book_list: &[Book],
+) -> Result<Vec<AuthorAndBookId>, Error> {
+    use crate::schema::authors;
+    use crate::schema::books_authors_link;
+
+    let book_ids: Vec<i32> = book_list.iter().map(|book| book.id).collect();
+
+    authors::table
+        .inner_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
+        .filter(books_authors_link::book.eq(any(book_ids)))
+        .select((authors::id, authors::name, books_authors_link::book))
+        .load::<AuthorAndBookId>(conn)
+        .map_err(Into::into)
 }
 
 pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
@@ -134,7 +177,8 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
         .limit(EACH_PAGE)
         .offset(offset)
         .load::<Book>(conn)?;
-    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
+    let author_list = get_authors_by_book_id(conn, &book_list)?;
+    let list = merge_books_and_authors(book_list, author_list);
 
     let total = books.count().first(conn)?;
 
@@ -144,7 +188,7 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
             each_page: EACH_PAGE,
             total,
         },
-        list: book_list,
+        list,
     })
 }
 
@@ -169,7 +213,8 @@ fn get_books_by_ids(
         .limit(EACH_PAGE)
         .offset(offset)
         .load::<Book>(conn)?;
-    let book_list = book_list.into_iter().map(book_to_book_resp).collect();
+    let author_list = get_authors_by_book_id(conn, &book_list)?;
+    let list = merge_books_and_authors(book_list, author_list);
 
     Ok(GetBooksResp {
         page: Page {
@@ -177,7 +222,7 @@ fn get_books_by_ids(
             each_page: EACH_PAGE,
             total,
         },
-        list: book_list,
+        list,
     })
 }
 

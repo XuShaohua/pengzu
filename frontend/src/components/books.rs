@@ -4,55 +4,16 @@
 
 use shared_models::books::{BookResp, GetBooksResp};
 use shared_models::page::Page;
-use std::error;
-use std::fmt;
-use wasm_bindgen::{JsCast, JsValue};
-use wasm_bindgen_futures::JsFuture;
-use web_sys::{Request, RequestInit, RequestMode, Response};
 use yew::prelude::*;
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct FetchError {
-    err: JsValue,
-}
-impl fmt::Display for FetchError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Debug::fmt(&self.err, f)
-    }
-}
-impl error::Error for FetchError {}
-
-impl From<JsValue> for FetchError {
-    fn from(value: JsValue) -> Self {
-        Self { err: value }
-    }
-}
-
-#[derive(Debug, PartialEq)]
-pub enum FetchState {
-    Success(String),
-    Failed(FetchError),
-}
-
-async fn fetch_books(url: &str) -> Result<String, FetchError> {
-    let mut opts = RequestInit::new();
-    opts.method("GET");
-    opts.mode(RequestMode::Cors);
-    let request = Request::new_with_str_and_init(url, &opts)?;
-
-    let window = gloo_utils::window();
-    let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
-    let resp: Response = resp_value.dyn_into().unwrap();
-
-    let text = JsFuture::from(resp.text()?).await?;
-    let text = text.as_string().unwrap();
-    Ok(text)
-}
+use super::models::books::fetch_books;
+use super::models::error::FetchError;
 
 #[derive(PartialEq)]
 pub enum Msg {
     Fetch,
-    SetFetchState(FetchState),
+    FetchSuccess(GetBooksResp),
+    FetchFailed(FetchError),
 }
 
 pub struct BooksComponent {
@@ -72,30 +33,24 @@ impl Component for BooksComponent {
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        let url = "/api/book";
         match msg {
             Msg::Fetch => {
                 ctx.link().send_future(async {
-                    match fetch_books(url).await {
-                        Ok(text) => Msg::SetFetchState(FetchState::Success(text)),
-                        Err(err) => Msg::SetFetchState(FetchState::Failed(err)),
+                    match fetch_books().await {
+                        Ok(text) => Msg::FetchSuccess(text),
+                        Err(err) => Msg::FetchFailed(err),
                     }
                 });
                 false
             }
-            Msg::SetFetchState(state) => {
-                match state {
-                    FetchState::Success(text) => {
-                        let obj: GetBooksResp =
-                            serde_json::from_str(&text).expect("Invalid response");
-                        log::info!("obj: {:#?}", obj);
-                        self.page = Some(obj.page);
-                        self.books.extend(obj.list);
-                    }
-                    FetchState::Failed(err) => {
-                        log::warn!("failed to fetch books: {:?}", err);
-                    }
-                }
+            Msg::FetchSuccess(obj) => {
+                log::info!("obj: {:#?}", obj);
+                self.page = Some(obj.page);
+                self.books.extend(obj.list);
+                true
+            }
+            Msg::FetchFailed(err) => {
+                log::warn!("failed to fetch books: {:?}", err);
                 true
             }
         }

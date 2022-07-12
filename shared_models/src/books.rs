@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::page::Page;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct BookResp {
     pub id: i32,
     pub title: String,
@@ -18,7 +18,7 @@ pub struct BookResp {
     pub pubdate: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct GetBooksResp {
     pub page: Page,
     pub list: Vec<BookResp>,

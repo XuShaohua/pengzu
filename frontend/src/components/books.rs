@@ -57,10 +57,40 @@ impl Component for BooksComponent {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let fetch = ctx.link().callback(|_| Msg::Fetch);
+        let books_elements = self
+            .books
+            .iter()
+            .map(|book| {
+                html! {
+                    <div class="book-fluid" key={book.id}>
+                        <div class="book-cover">
+                            <a href="#">
+                            <img src="#" alt={book.title.clone()} />
+                            </a>
+                        </div>
+                        <div class="book-meta">
+                            <a href="#">
+                            <span class="book-title" title={book.title.clone()}>
+                                {book.title.clone()}
+                            </span>
+                            </a>
+
+                            <p class="author">
+                                {"author list"}
+                            </p>
+                        </div>
+                    </div>
+                }
+            })
+            .collect::<Html>();
 
         html! {
-            <div>
+            <div class="content">
                 <button onclick={fetch}>{"Fetch books"}</button>
+
+                <div class="book-list">
+                    { books_elements }
+                </div>
             </div>
         }
     }

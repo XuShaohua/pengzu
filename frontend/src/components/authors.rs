@@ -59,7 +59,7 @@ impl Component for AuthorsComponent {
         let fetch = ctx.link().callback(|_| Msg::Fetch);
 
         html! {
-            <div>
+            <div class="content">
                 <button onclick={fetch}>{"Fetch authors"}</button>
             </div>
         }

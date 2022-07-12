@@ -30,7 +30,7 @@ pub enum Route {
     Series,
     #[at("/discover")]
     Discover,
-    #[at("/file-format")]
+    #[at("/format")]
     FileFormat,
     #[at("/rating")]
     Rating,

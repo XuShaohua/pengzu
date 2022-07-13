@@ -19,6 +19,17 @@ pub struct TagsComponent {
     page: Option<Page>,
 }
 
+fn generate_tag_element(tag: &TagAndBook) -> Html {
+    html! {
+        <li class="tag-item">
+            <span class="badge">{ tag.count }</span>
+            <a href={ format!("/tag/books/{}", tag.id) } target="_blank" title={ tag.name.clone() }>
+                { tag.name.clone() }
+            </a>
+        </li>
+    }
+}
+
 impl Component for TagsComponent {
     type Message = Msg;
     type Properties = ();
@@ -57,10 +68,16 @@ impl Component for TagsComponent {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let fetch = ctx.link().callback(|_| Msg::Fetch);
 
+        let tag_elements = self.tags.iter().map(generate_tag_element).collect::<Html>();
+
         html! {
-            <div>
+            <>
                 <button onclick={fetch}>{"Fetch tags"}</button>
-            </div>
+
+                <ul class="tag-list">
+                    { tag_elements }
+                </ul>
+            </>
         }
     }
 }

@@ -18,4 +18,5 @@ pub mod identifier_types;
 pub mod identifiers;
 pub mod languages;
 pub mod publishers;
+pub mod series;
 pub mod tags;

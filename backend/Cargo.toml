@@ -19,6 +19,6 @@ mongodb = "2.2.2"
 r2d2 = "0.8.10"
 serde = { version = "1.0.139", features = ["serde_derive"] }
 serde_json = "1.0.82"
-shell-rs = "0.2.5"
+shell-rs = "0.2.6"
 tokio = { version = "1.19.2", features = [ "full", ] }
 uuid = { version = "1.1.2", features = ["serde", "v4"] }

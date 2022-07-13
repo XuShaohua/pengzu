@@ -98,7 +98,7 @@ fn import_comment(
         }
         Err(err) => match err.kind() {
             calibre::error::ErrorKind::DbNotFoundError => {
-                log::info!("Not comment found for book: {}", calibre_book_id);
+                log::info!("No comment found for book: {}", calibre_book_id);
             }
             _ => return Err(err.into()),
         },
@@ -173,7 +173,7 @@ fn import_publisher(
         }
         Err(err) => match err.kind() {
             calibre::error::ErrorKind::DbNotFoundError => {
-                log::info!("Not publisher found for book: {}", calibre_book_id);
+                log::info!("No publisher found for book: {}", calibre_book_id);
             }
             _ => return Err(err.into()),
         },
@@ -200,7 +200,7 @@ fn import_series(
         }
         Err(err) => match err.kind() {
             calibre::error::ErrorKind::DbNotFoundError => {
-                log::info!("Not series found for book: {}", calibre_book_id);
+                log::info!("No series found for book: {}", calibre_book_id);
             }
             _ => return Err(err.into()),
         },

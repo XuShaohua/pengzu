@@ -55,3 +55,10 @@ pub async fn fetch_books_by_publisher(publisher_id: i32) -> Result<GetBooksResp,
     let obj: GetBooksResp = serde_json::from_str(&text)?;
     Ok(obj)
 }
+
+pub async fn fetch_books_by_tag(tag_id: i32) -> Result<GetBooksResp, FetchError> {
+    let url = format!("/api/tag/stored/{}", tag_id);
+    let text = fetch(&url).await?;
+    let obj: GetBooksResp = serde_json::from_str(&text)?;
+    Ok(obj)
+}

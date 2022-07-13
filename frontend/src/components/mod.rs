@@ -6,6 +6,7 @@ pub mod authors;
 pub mod books;
 pub mod books_of_author;
 pub mod books_of_publisher;
+pub mod books_of_tag;
 pub mod categories;
 pub mod discover;
 pub mod file_formats;

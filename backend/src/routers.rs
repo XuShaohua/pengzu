@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use actix_web::{middleware, web, App, HttpServer, Responder};
+use actix_web::{middleware, web, App, HttpServer};
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
@@ -12,10 +12,6 @@ use crate::views::{
 
 const CONTENT_TYPE: &str = "content-type";
 const APPLICATION_JSON: &str = "application/json";
-
-async fn index() -> impl Responder {
-    "Hello, world"
-}
 
 pub async fn run() -> Result<(), Error> {
     dotenv::dotenv().ok();
@@ -27,7 +23,6 @@ pub async fn run() -> Result<(), Error> {
         App::new()
             .wrap(middleware::Logger::default())
             .app_data(web::Data::new(pool.clone()))
-            .route("/", web::get().to(index))
             // For /api/author
             .route("/api/author", web::post().to(authors::add_author))
             .route(

@@ -121,13 +121,10 @@ pub struct GetBooksResp {
     pub list: Vec<BookResp>,
 }
 
-fn merge_books_and_authors(
-    book_list: Vec<Book>,
-    author_list: Vec<AuthorAndBookId>,
-) -> Vec<BookResp> {
+fn merge_books_and_authors(book_list: Vec<Book>, author_list: &[AuthorAndBookId]) -> Vec<BookResp> {
     let mut list = Vec::with_capacity(book_list.len());
 
-    for book in book_list.into_iter() {
+    for book in book_list {
         let authors = author_list
             .iter()
             .filter(|author| author.book == book.id)
@@ -178,7 +175,7 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
         .offset(offset)
         .load::<Book>(conn)?;
     let author_list = get_authors_by_book_id(conn, &book_list)?;
-    let list = merge_books_and_authors(book_list, author_list);
+    let list = merge_books_and_authors(book_list, &author_list);
 
     let total = books.count().first(conn)?;
 
@@ -214,7 +211,7 @@ fn get_books_by_ids(
         .offset(offset)
         .load::<Book>(conn)?;
     let author_list = get_authors_by_book_id(conn, &book_list)?;
-    let list = merge_books_and_authors(book_list, author_list);
+    let list = merge_books_and_authors(book_list, &author_list);
 
     Ok(GetBooksResp {
         page: Page {

@@ -14,7 +14,7 @@ pub type DbPool = Pool<ConnectionManager<PgConnection>>;
 /// # Errors
 ///
 /// Returns error if:
-/// - No DATABASE_URL is set in current environment.
+/// - No `DATABASE_URL` is set in current environment.
 /// - Failed to connect to database.
 pub fn get_connection_pool() -> Result<DbPool, Error> {
     let url = std::env::var("DATABASE_URL").map_err(|err| {

@@ -43,6 +43,7 @@ pub fn calculate_book_hashes(
         log::info!("file path: {:?}", file_path);
         let metadata = fs::metadata(&file_path)?;
         let file_size = metadata.blksize() * metadata.blocks();
+        #[allow(clippy::cast_possible_truncation)]
         let file_size = file_size as i32;
         let file_hash = sha1sum(&file_path, &Options::default())?;
 

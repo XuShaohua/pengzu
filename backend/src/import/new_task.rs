@@ -80,7 +80,7 @@ fn import_publishers(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> 
     let limit = 10;
     let mut offset = 0;
     loop {
-        let publisher_list = get_publishers(&sqlite_conn, limit, offset)?;
+        let publisher_list = get_publishers(sqlite_conn, limit, offset)?;
         if publisher_list.is_empty() {
             break;
         }
@@ -199,11 +199,12 @@ pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
         allow_duplication: true,
     };
     let options_str = serde_json::to_string(&options)?;
-    let total_books = get_total_books(&sqlite_conn)?;
+    #[allow(clippy::cast_possible_truncation)]
+    let total_books = get_total_books(&sqlite_conn)? as i32;
     let new_library = NewImportLibrary {
         calibre_library_path: calibre_library_path.to_string(),
         library_path,
-        total: total_books as i32,
+        total: total_books,
         finished: false,
         options: options_str,
     };

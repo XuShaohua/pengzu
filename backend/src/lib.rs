@@ -10,7 +10,9 @@
     clippy::pedantic
 )]
 // TODO(Shaohua): Remove this attribute.
-#![allow(dead_code)]
+#![allow(dead_code, clippy::module_name_repetitions, clippy::missing_errors_doc)]
+// Caused by diesel::Insertable trait
+#![allow(clippy::extra_unused_lifetimes)]
 
 #[macro_use]
 extern crate diesel;

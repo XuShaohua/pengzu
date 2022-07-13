@@ -52,7 +52,7 @@ fn resume_task(_library_id: i32) -> Result<(), Error> {
 }
 
 fn stop_task(_library_id: i32) -> Result<(), Error> {
-    Ok(())
+    todo!()
 }
 
 pub fn run_daemon() -> Result<(), Error> {

@@ -71,6 +71,18 @@ pub async fn fetch_books_by_publisher(publisher_id: i32) -> Result<GetBooksResp,
     Ok(obj)
 }
 
+/// Get book list of specific series `series_id`.
+///
+/// # Errors
+///
+/// Returns error if server fails.
+pub async fn fetch_books_by_series(series_id: i32) -> Result<GetBooksResp, FetchError> {
+    let url = format!("/api/series/books/{}", series_id);
+    let text = fetch(&url).await?;
+    let obj: GetBooksResp = serde_json::from_str(&text)?;
+    Ok(obj)
+}
+
 /// Get book list of specific tag `tag_id`.
 ///
 /// # Errors

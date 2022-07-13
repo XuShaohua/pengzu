@@ -7,9 +7,9 @@ use yew_router::prelude::*;
 
 use crate::components::{
     authors::AuthorsComponent, books::BooksComponent, books_of_author::BooksOfAuthorComponent,
-    books_of_publisher::BooksOfPublisherComponent, books_of_tag::BooksOfTagComponent,
-    categories::CategoriesComponent, discover::DiscoverComponent,
-    file_formats::FileFormatsComponent, not_found::NotFoundComponent,
+    books_of_publisher::BooksOfPublisherComponent, books_of_series::BooksOfSeriesComponent,
+    books_of_tag::BooksOfTagComponent, categories::CategoriesComponent,
+    discover::DiscoverComponent, file_formats::FileFormatsComponent, not_found::NotFoundComponent,
     publishers::PublishersComponent, ratings::RatingsComponent, series::SeriesComponent,
     tags::TagsComponent,
 };
@@ -34,6 +34,8 @@ pub enum Route {
     BooksOfPublisher { publisher_id: i32 },
     #[at("/publisher")]
     Publisher,
+    #[at("/series/books/:series_id")]
+    BooksOfSeries { series_id: i32 },
     #[at("/series")]
     Series,
     #[at("/discover")]
@@ -62,6 +64,9 @@ pub fn switch_route(routes: &Route) -> Html {
             html! { <BooksOfPublisherComponent publisher_id={ *publisher_id } /> }
         }
         Route::Publisher => html! { <PublishersComponent /> },
+        Route::BooksOfSeries { series_id } => {
+            html! { <BooksOfSeriesComponent series_id={ * series_id } /> }
+        }
         Route::Series => html! { <SeriesComponent /> },
         Route::Discover => html! { <DiscoverComponent /> },
         Route::FileFormat => html! { <FileFormatsComponent /> },

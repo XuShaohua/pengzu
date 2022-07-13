@@ -31,7 +31,7 @@ pub async fn run() -> Result<(), Error> {
             // For /api/author
             .route("/api/author", web::post().to(authors::add_author))
             .route(
-                "/api/author/stored/{author_id}",
+                "/api/author/books/{author_id}",
                 web::get().to(books::get_books_by_author),
             )
             .route("/api/author", web::get().to(authors::get_authors))
@@ -51,14 +51,14 @@ pub async fn run() -> Result<(), Error> {
             .route("/api/file", web::get().to(files::get_file_by_path))
             // For /api/formats
             .route(
-                "/api/format/stored/{format_id}",
+                "/api/format/books/{format_id}",
                 web::get().to(books::get_books_by_format),
             )
             .route("/api/format", web::get().to(file_formats::get_formats))
             // For /api/publisher
             .route("/api/publisher", web::post().to(publishers::add_publisher))
             .route(
-                "/api/publisher/stored/{publisher_id}",
+                "/api/publisher/books/{publisher_id}",
                 web::get().to(books::get_books_by_publisher),
             )
             .route("/api/publisher", web::get().to(publishers::get_publishers))
@@ -73,14 +73,14 @@ pub async fn run() -> Result<(), Error> {
             // For /api/series
             .route("/api/series", web::post().to(series::add_series))
             .route(
-                "/api/series/stored/{series_id}",
+                "/api/series/books/{series_id}",
                 web::get().to(books::get_books_by_series),
             )
             .route("/api/series", web::get().to(series::get_series))
             // For /api/tag
             .route("/api/tag", web::post().to(tags::add_tag))
             .route(
-                "/api/tag/stored/{tag_id}",
+                "/api/tag/books/{tag_id}",
                 web::get().to(books::get_books_by_tag),
             )
             .route("/api/tag", web::get().to(tags::get_tags))

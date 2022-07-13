@@ -43,21 +43,21 @@ pub async fn fetch_books() -> Result<GetBooksResp, FetchError> {
 }
 
 pub async fn fetch_books_by_author(author_id: i32) -> Result<GetBooksResp, FetchError> {
-    let url = format!("/api/author/stored/{}", author_id);
+    let url = format!("/api/author/books/{}", author_id);
     let text = fetch(&url).await?;
     let obj: GetBooksResp = serde_json::from_str(&text)?;
     Ok(obj)
 }
 
 pub async fn fetch_books_by_publisher(publisher_id: i32) -> Result<GetBooksResp, FetchError> {
-    let url = format!("/api/publisher/stored/{}", publisher_id);
+    let url = format!("/api/publisher/books/{}", publisher_id);
     let text = fetch(&url).await?;
     let obj: GetBooksResp = serde_json::from_str(&text)?;
     Ok(obj)
 }
 
 pub async fn fetch_books_by_tag(tag_id: i32) -> Result<GetBooksResp, FetchError> {
-    let url = format!("/api/tag/stored/{}", tag_id);
+    let url = format!("/api/tag/books/{}", tag_id);
     let text = fetch(&url).await?;
     let obj: GetBooksResp = serde_json::from_str(&text)?;
     Ok(obj)

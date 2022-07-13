@@ -64,7 +64,6 @@ table! {
         book -> Int4,
         series -> Int4,
         created -> Timestamp,
-        last_modified -> Timestamp,
     }
 }
 

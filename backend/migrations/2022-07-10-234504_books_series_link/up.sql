@@ -6,6 +6,5 @@ CREATE TABLE books_series_link
     book INTEGER NOT NULL,
     series INTEGER NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (book, series)
 )

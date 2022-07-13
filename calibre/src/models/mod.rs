@@ -9,6 +9,7 @@ pub mod books_hash;
 pub mod books_languages;
 pub mod books_publishers;
 pub mod books_ratings;
+pub mod books_series;
 pub mod books_tags;
 pub mod comments;
 pub mod data;

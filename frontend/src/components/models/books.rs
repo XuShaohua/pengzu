@@ -35,6 +35,11 @@ pub struct GetBooksResp {
     pub list: Vec<BookResp>,
 }
 
+/// Get book list.
+///
+/// # Errors
+///
+/// Returns error if server fails.
 pub async fn fetch_books() -> Result<GetBooksResp, FetchError> {
     let url = "/api/book";
     let text = fetch(url).await?;
@@ -42,6 +47,11 @@ pub async fn fetch_books() -> Result<GetBooksResp, FetchError> {
     Ok(obj)
 }
 
+/// Get book list of specific author `author_id`.
+///
+/// # Errors
+///
+/// Returns error if server fails.
 pub async fn fetch_books_by_author(author_id: i32) -> Result<GetBooksResp, FetchError> {
     let url = format!("/api/author/books/{}", author_id);
     let text = fetch(&url).await?;
@@ -49,6 +59,11 @@ pub async fn fetch_books_by_author(author_id: i32) -> Result<GetBooksResp, Fetch
     Ok(obj)
 }
 
+/// Get book list of specific publisher `publisher_id`.
+///
+/// # Errors
+///
+/// Returns error if server fails.
 pub async fn fetch_books_by_publisher(publisher_id: i32) -> Result<GetBooksResp, FetchError> {
     let url = format!("/api/publisher/books/{}", publisher_id);
     let text = fetch(&url).await?;
@@ -56,6 +71,11 @@ pub async fn fetch_books_by_publisher(publisher_id: i32) -> Result<GetBooksResp,
     Ok(obj)
 }
 
+/// Get book list of specific tag `tag_id`.
+///
+/// # Errors
+///
+/// Returns error if server fails.
 pub async fn fetch_books_by_tag(tag_id: i32) -> Result<GetBooksResp, FetchError> {
     let url = format!("/api/tag/books/{}", tag_id);
     let text = fetch(&url).await?;

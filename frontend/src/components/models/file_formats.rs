@@ -21,6 +21,11 @@ pub struct GetFileFormatsResp {
     pub list: Vec<FileFormatAndBook>,
 }
 
+/// Get file format lit.
+///
+/// # Error
+///
+/// Returns error if server fails.
 pub async fn fetch_file_formats() -> Result<GetFileFormatsResp, FetchError> {
     let url = "/api/format";
     let text = fetch(url).await?;

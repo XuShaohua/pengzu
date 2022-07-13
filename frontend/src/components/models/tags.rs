@@ -23,6 +23,11 @@ pub struct GetTagsResp {
     pub list: Vec<TagAndBook>,
 }
 
+/// Returns tag list.
+///
+/// # Errors
+///
+/// Returns error if server fails.
 pub async fn fetch_tags() -> Result<GetTagsResp, FetchError> {
     let url = "/api/tag";
     let text = fetch(url).await?;

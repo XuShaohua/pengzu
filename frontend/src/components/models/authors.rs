@@ -22,7 +22,13 @@ pub struct GetAuthorsResp {
     pub list: Vec<AuthorAndBook>,
 }
 
+/// Get author list
+///
+/// # Errors
+///
+/// Returns error if server failed.
 pub async fn fetch_authors() -> Result<GetAuthorsResp, FetchError> {
+    // TODO(Shaohua): Add query.
     let url = "/api/author";
     let text = fetch(url).await?;
     let obj: GetAuthorsResp = serde_json::from_str(&text)?;

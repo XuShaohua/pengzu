@@ -47,6 +47,7 @@ pub enum Route {
     NotFound,
 }
 
+#[must_use]
 pub fn switch_route(routes: &Route) -> Html {
     match routes {
         Route::Book | Route::Home => html! { <BooksComponent /> },

@@ -8,6 +8,15 @@ use web_sys::{Request, RequestInit, RequestMode, Response};
 
 use crate::components::models::error::{ErrorKind, FetchError};
 
+/// Wrap fetch() api in browser.
+///
+/// Response body is returned as string.
+///
+/// Note that response status code is not check currently.
+///
+/// # Errors
+///
+/// Returns error if failed to construct request or failed to read response body.
 pub async fn fetch(url: &str) -> Result<String, FetchError> {
     let mut opts = RequestInit::new();
     opts.method("GET");

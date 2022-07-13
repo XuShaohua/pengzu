@@ -21,6 +21,11 @@ pub struct GetPublishersResp {
     pub list: Vec<PublisherAndBook>,
 }
 
+/// Get publisher list.
+///
+/// # Error
+///
+/// Returns error if server fails.
 pub async fn fetch_publishers() -> Result<GetPublishersResp, FetchError> {
     let url = "/api/publisher";
     let text = fetch(url).await?;

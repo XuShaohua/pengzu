@@ -9,4 +9,5 @@ pub(super) mod fetch;
 pub mod file_formats;
 pub mod page;
 pub mod publishers;
+pub mod series;
 pub mod tags;

@@ -8,6 +8,7 @@ use calibre::models::books_hash::get_book_hash;
 use calibre::models::books_languages::get_book_language;
 use calibre::models::books_publishers::get_book_publisher;
 use calibre::models::books_ratings::get_book_rating;
+use calibre::models::books_series::get_book_series;
 use calibre::models::books_tags::get_book_tags;
 use calibre::models::comments::get_comment;
 use calibre::models::data::get_book_data;
@@ -25,6 +26,7 @@ use crate::models::books::{add_book, Book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
 use crate::models::books_languages::{add_book_language, NewBookLanguage};
 use crate::models::books_publishers::{add_book_publisher, NewBookPublisher};
+use crate::models::books_series::{add_book_series, NewBookSeries};
 use crate::models::books_tags::{add_book_tag, NewBookTag};
 use crate::models::comments::{add_comment, NewComment};
 use crate::models::file_formats::get_file_format_by_name;
@@ -34,6 +36,7 @@ use crate::models::identifiers::{add_identifier, NewIdentifier};
 use crate::models::languages::get_language_by_name;
 use crate::models::publishers::get_publisher_by_name;
 use crate::models::ratings::{add_rating, NewRating};
+use crate::models::series::get_series_by_name;
 use crate::models::tags::get_tag_by_name;
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize)]
@@ -171,6 +174,33 @@ fn import_publisher(
         Err(err) => match err.kind() {
             calibre::error::ErrorKind::DbNotFoundError => {
                 log::info!("Not publisher found for book: {}", calibre_book_id);
+            }
+            _ => return Err(err.into()),
+        },
+    }
+
+    Ok(())
+}
+
+fn import_series(
+    sqlite_conn: &SqliteConnection,
+    pg_conn: &PgConnection,
+    calibre_book_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    log::info!("import_series({}, {})", calibre_book_id, book_id);
+    match get_book_series(sqlite_conn, calibre_book_id) {
+        Ok(calibre_series) => {
+            let series = get_series_by_name(pg_conn, &calibre_series.name)?;
+            let new_series = NewBookSeries {
+                book: book_id,
+                series: series.id,
+            };
+            add_book_series(pg_conn, &new_series)?;
+        }
+        Err(err) => match err.kind() {
+            calibre::error::ErrorKind::DbNotFoundError => {
+                log::info!("Not series found for book: {}", calibre_book_id);
             }
             _ => return Err(err.into()),
         },
@@ -399,6 +429,7 @@ fn import_book_detail(
     import_identifiers(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_language(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_publisher(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
+    import_series(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_rating(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_tags(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     Ok(())

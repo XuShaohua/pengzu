@@ -79,6 +79,14 @@ pub fn get_series(conn: &PgConnection, query: &PageQuery) -> Result<GetSeriesRes
     })
 }
 
+pub fn get_series_by_name(conn: &PgConnection, series_name: &str) -> Result<Series, Error> {
+    use crate::schema::series::dsl::{name, series};
+    series
+        .filter(name.eq(series_name))
+        .first(conn)
+        .map_err(Into::into)
+}
+
 pub fn update_series(
     conn: &PgConnection,
     pub_id: i32,

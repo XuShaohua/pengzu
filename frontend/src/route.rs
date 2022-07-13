@@ -7,8 +7,8 @@ use yew_router::prelude::*;
 
 use crate::components::{
     authors::AuthorsComponent, books::BooksComponent, books_of_author::BooksOfAuthorComponent,
-    categories::CategoriesComponent, discover::DiscoverComponent,
-    file_formats::FileFormatsComponent, not_found::NotFoundComponent,
+    books_of_publisher::BooksOfPublisherComponent, categories::CategoriesComponent,
+    discover::DiscoverComponent, file_formats::FileFormatsComponent, not_found::NotFoundComponent,
     publishers::PublishersComponent, ratings::RatingsComponent, series::SeriesComponent,
     tags::TagsComponent,
 };
@@ -27,6 +27,8 @@ pub enum Route {
     Category,
     #[at("/tag")]
     Tag,
+    #[at("/publisher/books/:publisher_id")]
+    BooksOfPublisher { publisher_id: i32 },
     #[at("/publisher")]
     Publisher,
     #[at("/series")]
@@ -46,11 +48,14 @@ pub fn switch_route(routes: &Route) -> Html {
     match routes {
         Route::Book | Route::Home => html! { <BooksComponent /> },
         Route::BooksOfAuthor { author_id } => {
-            html! { <BooksOfAuthorComponent author_id={*author_id} /> }
+            html! { <BooksOfAuthorComponent author_id={ *author_id } /> }
         }
         Route::Author => html! { <AuthorsComponent /> },
         Route::Category => html! { <CategoriesComponent /> },
         Route::Tag => html! { <TagsComponent /> },
+        Route::BooksOfPublisher { publisher_id } => {
+            html! { <BooksOfPublisherComponent publisher_id={ *publisher_id } /> }
+        }
         Route::Publisher => html! { <PublishersComponent /> },
         Route::Series => html! { <SeriesComponent /> },
         Route::Discover => html! { <DiscoverComponent /> },

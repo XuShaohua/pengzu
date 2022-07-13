@@ -21,6 +21,17 @@ pub struct PublishersComponent {
     page: Option<Page>,
 }
 
+fn generate_publisher_element(publisher: &PublisherAndBook) -> Html {
+    html! {
+        <li class="publisher-item">
+            <span class="badge">{ publisher.count }</span>
+            <a href={ format!("/publisher/books/{}", publisher.id) } target="_blank" title={ publisher.name.clone() }>
+                { publisher.name.clone() }
+            </a>
+        </li>
+    }
+}
+
 impl Component for PublishersComponent {
     type Message = Msg;
     type Properties = ();
@@ -59,10 +70,20 @@ impl Component for PublishersComponent {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let fetch = ctx.link().callback(|_| Msg::Fetch);
 
+        let publisher_elements = self
+            .publishers
+            .iter()
+            .map(generate_publisher_element)
+            .collect::<Html>();
+
         html! {
-            <div>
+            <>
                 <button onclick={fetch}>{"Fetch publishers"}</button>
-            </div>
+
+                <ul class="publisher-list">
+                    { publisher_elements }
+                </ul>
+            </>
         }
     }
 }

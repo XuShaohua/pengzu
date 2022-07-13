@@ -43,7 +43,7 @@ fn generate_book_element(book: &BookResp) -> Html {
                 {
                     book.authors.iter().map(|author| {
                         html!{
-                        <a href={ format!("/author/{:?}", author.id) } target="_blank">
+                        <a href={ format!("/author/books/{:?}", author.id) } target="_blank">
                             <span class="book-author" title={ author.name.clone() }>
                             { author.name.clone() }
                             </span>

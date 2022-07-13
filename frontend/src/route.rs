@@ -19,7 +19,7 @@ pub enum Route {
     Home,
     #[at("/book")]
     Book,
-    #[at("/author/stored/:author_id")]
+    #[at("/author/books/:author_id")]
     BooksOfAuthor { author_id: i32 },
     #[at("/author")]
     Author,

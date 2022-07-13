@@ -24,7 +24,7 @@ fn generate_author_element(author: &AuthorAndBook) -> Html {
     html! {
         <li class="author-item">
             <span class="badge">{ author.count }</span>
-            <a href={ format!("/author/stored/{}", author.id) } target="_blank" title={ author.name.clone() }>
+            <a href={ format!("/author/books/{}", author.id) } target="_blank" title={ author.name.clone() }>
                 { author.name.clone() }
             </a>
         </li>

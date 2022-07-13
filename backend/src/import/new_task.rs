@@ -8,6 +8,7 @@ use calibre::models::file_formats::get_file_formats;
 use calibre::models::identifier_types::get_identifier_types;
 use calibre::models::languages::get_languages;
 use calibre::models::publishers::get_publishers;
+use calibre::models::series::get_series;
 use calibre::models::tags::get_tags;
 use diesel::{PgConnection, SqliteConnection};
 
@@ -21,6 +22,7 @@ use crate::models::file_formats::{add_file_format, NewFileFormat};
 use crate::models::identifier_types::{add_identifier_type, NewIdentifierType};
 use crate::models::languages::{add_language, NewLanguage};
 use crate::models::publishers::{add_publisher, NewPublisher};
+use crate::models::series::{add_series, NewSeries};
 use crate::models::tags::{add_tag, NewTag};
 
 fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
@@ -96,6 +98,35 @@ fn import_publishers(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> 
                 match err.kind() {
                     ErrorKind::DbUniqueViolationError => {
                         log::info!("publisher exists: {:?}", new_publisher);
+                        continue;
+                    }
+                    _ => return Err(err),
+                }
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn import_series(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
+    let limit = 10;
+    let mut offset = 0;
+    loop {
+        let series_list = get_series(sqlite_conn, limit, offset)?;
+        if series_list.is_empty() {
+            break;
+        }
+        offset += series_list.len() as i64;
+        log::info!("series offset: {}", offset);
+
+        for series in series_list {
+            let new_series = NewSeries { name: series.name };
+
+            if let Err(err) = add_series(pg_conn, &new_series) {
+                match err.kind() {
+                    ErrorKind::DbUniqueViolationError => {
+                        log::info!("series exists: {:?}", new_series);
                         continue;
                     }
                     _ => return Err(err),
@@ -188,6 +219,7 @@ pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
     import_authors(&sqlite_conn, &pg_conn)?;
     import_languages(&sqlite_conn, &pg_conn)?;
     import_publishers(&sqlite_conn, &pg_conn)?;
+    import_series(&sqlite_conn, &pg_conn)?;
     import_tags(&sqlite_conn, &pg_conn)?;
     import_file_formats(&sqlite_conn, &pg_conn)?;
     import_identifier_types(&sqlite_conn, &pg_conn)?;

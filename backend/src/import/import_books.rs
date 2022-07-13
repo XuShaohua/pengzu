@@ -169,17 +169,16 @@ fn import_publisher(
                 book: book_id,
                 publisher: publisher.id,
             };
-            add_book_publisher(pg_conn, &new_publisher)?;
+            add_book_publisher(pg_conn, &new_publisher)
         }
         Err(err) => match err.kind() {
             calibre::error::ErrorKind::DbNotFoundError => {
                 log::info!("No publisher found for book: {}", calibre_book_id);
+                Ok(())
             }
-            _ => return Err(err.into()),
+            _ => Err(err.into()),
         },
     }
-
-    Ok(())
 }
 
 fn import_series(
@@ -191,22 +190,22 @@ fn import_series(
     log::info!("import_series({}, {})", calibre_book_id, book_id);
     match get_book_series(sqlite_conn, calibre_book_id) {
         Ok(calibre_series) => {
+            log::info!("calibre series: {:?}", calibre_series);
             let series = get_series_by_name(pg_conn, &calibre_series.name)?;
             let new_series = NewBookSeries {
                 book: book_id,
                 series: series.id,
             };
-            add_book_series(pg_conn, &new_series)?;
+            add_book_series(pg_conn, &new_series)
         }
         Err(err) => match err.kind() {
             calibre::error::ErrorKind::DbNotFoundError => {
                 log::info!("No series found for book: {}", calibre_book_id);
+                Ok(())
             }
-            _ => return Err(err.into()),
+            _ => Err(err.into()),
         },
     }
-
-    Ok(())
 }
 
 fn import_rating(

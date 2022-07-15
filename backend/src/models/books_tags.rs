@@ -3,10 +3,13 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
+use crate::models::tags::Tag;
 use crate::schema::books_tags_link;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -32,11 +35,20 @@ pub fn add_book_tag(conn: &PgConnection, new_book_tag: &NewBookTag) -> Result<()
     Ok(())
 }
 
-pub fn get_book_tags(conn: &PgConnection, book_id: i32) -> Result<Vec<BookTag>, Error> {
-    use crate::schema::books_tags_link::dsl::{book, books_tags_link};
-    books_tags_link
-        .filter(book.eq(book_id))
-        .load::<BookTag>(conn)
+pub fn get_tags_by_book(conn: &PgConnection, book_id: i32) -> Result<Vec<Tag>, Error> {
+    use crate::schema::tags;
+    tags::table
+        .inner_join(books_tags_link::table.on(books_tags_link::tag.eq(tags::id)))
+        .filter(books_tags_link::book.eq(book_id))
+        .select((
+            tags::id,
+            tags::order_index,
+            tags::name,
+            tags::parent,
+            tags::created,
+            tags::last_modified,
+        ))
+        .load::<Tag>(conn)
         .map_err(Into::into)
 }
 

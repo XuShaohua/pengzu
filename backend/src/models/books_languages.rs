@@ -3,10 +3,13 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+};
 use serde::{Deserialize, Serialize};
 
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
+use crate::models::languages::Language;
 use crate::schema::books_languages_link;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -48,4 +51,25 @@ pub fn delete_book_language(conn: &PgConnection, book_id: i32) -> Result<(), Err
     let _lang = get_book_language(conn, book_id)?;
     diesel::delete(books_languages_link.filter(book.eq(book_id))).execute(conn)?;
     Ok(())
+}
+
+pub fn get_language_by_book(conn: &PgConnection, book_id: i32) -> Result<Option<Language>, Error> {
+    use crate::schema::languages;
+
+    let language: Result<Language, Error> = languages::table
+        .inner_join(
+            books_languages_link::table.on(books_languages_link::lang_code.eq(languages::id)),
+        )
+        .filter(books_languages_link::book.eq(book_id))
+        .select((languages::id, languages::lang_code, languages::created))
+        .first::<Language>(conn)
+        .map_err(Into::into);
+
+    match language {
+        Ok(language) => Ok(Some(language)),
+        Err(err) => match err.kind() {
+            ErrorKind::DbNotFoundError => Ok(None),
+            _ => Err(err),
+        },
+    }
 }

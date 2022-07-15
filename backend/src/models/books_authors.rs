@@ -3,10 +3,13 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
+use crate::models::authors::Author;
 use crate::schema::books_authors_link;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -32,11 +35,20 @@ pub fn add_book_author(conn: &PgConnection, new_book_author: &NewBookAuthor) -> 
     Ok(())
 }
 
-pub fn get_book_authors(conn: &PgConnection, book_id: i32) -> Result<Vec<BookAuthor>, Error> {
-    use crate::schema::books_authors_link::dsl::{book, books_authors_link};
-    books_authors_link
-        .filter(book.eq(book_id))
-        .load::<BookAuthor>(conn)
+pub fn get_authors_by_book(conn: &PgConnection, book_id: i32) -> Result<Vec<Author>, Error> {
+    use crate::schema::authors;
+
+    authors::table
+        .inner_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
+        .filter(books_authors_link::book.eq(book_id))
+        .select((
+            authors::id,
+            authors::name,
+            authors::link,
+            authors::created,
+            authors::last_modified,
+        ))
+        .load::<Author>(conn)
         .map_err(Into::into)
 }
 

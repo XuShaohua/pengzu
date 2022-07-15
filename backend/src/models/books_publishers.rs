@@ -3,10 +3,13 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+};
 use serde::{Deserialize, Serialize};
 
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
+use crate::models::publishers::Publisher;
 use crate::schema::books_publishers_link;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -50,4 +53,33 @@ pub fn delete_book_publisher(conn: &PgConnection, book_id: i32) -> Result<(), Er
         .filter(book.eq(book_id))
         .execute(conn)?;
     Ok(())
+}
+
+pub fn get_publisher_by_book(
+    conn: &PgConnection,
+    book_id: i32,
+) -> Result<Option<Publisher>, Error> {
+    use crate::schema::publishers;
+
+    let publisher: Result<Publisher, Error> = publishers::table
+        .inner_join(
+            books_publishers_link::table.on(books_publishers_link::publisher.eq(publishers::id)),
+        )
+        .filter(books_publishers_link::book.eq(book_id))
+        .select((
+            publishers::id,
+            publishers::name,
+            publishers::created,
+            publishers::last_modified,
+        ))
+        .first::<Publisher>(conn)
+        .map_err(Into::into);
+
+    match publisher {
+        Ok(publisher) => Ok(Some(publisher)),
+        Err(err) => match err.kind() {
+            ErrorKind::DbNotFoundError => Ok(None),
+            _ => Err(err),
+        },
+    }
 }

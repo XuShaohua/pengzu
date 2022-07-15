@@ -193,11 +193,6 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
     })
 }
 
-pub fn get_book_detail(conn: &PgConnection, book_id: i32) -> Result<Book, Error> {
-    use crate::schema::books::dsl::books;
-    books.find(book_id).first::<Book>(conn).map_err(Into::into)
-}
-
 fn get_books_by_ids(
     conn: &PgConnection,
     query: &GetBooksQuery,

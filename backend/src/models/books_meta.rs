@@ -33,7 +33,7 @@ pub struct BookMetadata {
     pub rating: Option<Rating>,
 }
 
-pub fn get_book_meta(conn: &PgConnection, book_id: i32) -> Result<BookMetadata, Error> {
+pub fn get_book_metadata(conn: &PgConnection, book_id: i32) -> Result<BookMetadata, Error> {
     let book = get_book_by_id(conn, book_id)?;
     let authors = get_authors_by_book(conn, book_id)?;
     let tags = get_tags_by_book(conn, book_id)?;

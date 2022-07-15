@@ -6,7 +6,7 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::books;
+use crate::models::{books, books_meta};
 
 pub async fn add_book(
     pool: web::Data<DbPool>,
@@ -40,7 +40,7 @@ pub async fn get_book_detail(
 ) -> Result<HttpResponse, Error> {
     let resp_book = web::block(move || {
         let conn = pool.get()?;
-        books::get_book_detail(&conn, book_id.into_inner())
+        books_meta::get_book_metadata(&conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_book))

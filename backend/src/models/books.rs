@@ -28,6 +28,17 @@ pub struct Book {
     pub last_modified: NaiveDateTime,
 }
 
+#[derive(Debug, Clone, Serialize, Queryable)]
+pub struct BookWithCover {
+    pub id: i32,
+    pub title: String,
+    pub has_cover: bool,
+    pub small_cover: Option<String>,
+    pub large_cover: Option<String>,
+    pub created: NaiveDateTime,
+    pub pubdate: NaiveDateTime,
+}
+
 #[derive(Debug, Deserialize, Insertable)]
 #[table_name = "books"]
 pub struct NewBook {
@@ -108,14 +119,7 @@ pub struct AuthorAndBookId {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct BookResp {
-    pub id: i32,
-    pub title: String,
-    pub has_cover: bool,
-    pub small_cover: Option<String>,
-    pub large_cover: Option<String>,
-    pub created: NaiveDateTime,
-    pub pubdate: NaiveDateTime,
-
+    pub book: BookWithCover,
     pub authors: Vec<AuthorAndBookId>,
 }
 
@@ -123,6 +127,18 @@ pub struct BookResp {
 pub struct GetBooksResp {
     pub page: Page,
     pub list: Vec<BookResp>,
+}
+
+pub fn book_to_book_cover(book: Book) -> BookWithCover {
+    BookWithCover {
+        id: book.id,
+        title: book.title,
+        has_cover: book.has_cover,
+        small_cover: file_data::get_small_cover(&book.path, book.has_cover),
+        large_cover: file_data::get_large_cover(&book.path, book.has_cover),
+        created: book.created,
+        pubdate: book.pubdate,
+    }
 }
 
 fn merge_books_and_authors(book_list: Vec<Book>, author_list: &[AuthorAndBookId]) -> Vec<BookResp> {
@@ -135,13 +151,7 @@ fn merge_books_and_authors(book_list: Vec<Book>, author_list: &[AuthorAndBookId]
             .map(Clone::clone)
             .collect();
         list.push(BookResp {
-            id: book.id,
-            title: book.title,
-            has_cover: book.has_cover,
-            small_cover: file_data::get_small_cover(&book.path, book.has_cover),
-            large_cover: file_data::get_large_cover(&book.path, book.has_cover),
-            created: book.created,
-            pubdate: book.pubdate,
+            book: book_to_book_cover(book),
             authors,
         })
     }

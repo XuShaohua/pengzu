@@ -17,7 +17,7 @@ pub struct AuthorAndBookId {
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct BookResp {
+pub struct BookWithCover {
     pub id: i32,
     pub title: String,
     pub has_cover: bool,
@@ -25,7 +25,11 @@ pub struct BookResp {
     pub large_cover: Option<String>,
     pub created: NaiveDateTime,
     pub pubdate: NaiveDateTime,
+}
 
+#[derive(Debug, Clone, Deserialize, PartialEq)]
+pub struct BookResp {
+    pub book: BookWithCover,
     pub authors: Vec<AuthorAndBookId>,
 }
 

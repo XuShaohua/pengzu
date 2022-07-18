@@ -16,7 +16,7 @@ pub struct Prop {
 
 pub struct BookListComponent {}
 
-fn generate_book_element(book: &BookResp) -> Html {
+fn generate_book_element(book_resp: &BookResp) -> Html {
     let generate_cover_element = |small_cover: &Option<String>| -> String {
         if let Some(cover) = small_cover {
             format!("/api/file?path={}", cover)
@@ -24,6 +24,8 @@ fn generate_book_element(book: &BookResp) -> Html {
             "#".to_string()
         }
     };
+
+    let book = &book_resp.book;
 
     html! {
         <div class="book-fluid" key={book.id}>
@@ -41,7 +43,7 @@ fn generate_book_element(book: &BookResp) -> Html {
 
                 <div class="book-authors">
                 {
-                    book.authors.iter().map(|author| {
+                    book_resp.authors.iter().map(|author| {
                         html!{
                         <a href={ format!("/author/books/{:?}", author.id) } target="_blank">
                             <span class="book-author" title={ author.name.clone() }>

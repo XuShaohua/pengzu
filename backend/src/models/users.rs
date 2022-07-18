@@ -4,12 +4,9 @@
 
 use crate::error::Error;
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, Queryable};
 use serde::{Deserialize, Serialize};
 
-use crate::schema::users;
-
-#[derive(Debug, Clone, Copy, PartialEq, Insertable)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum UserRole {
     User = 0,
@@ -41,8 +38,7 @@ pub struct UserResp {
     pub created: NaiveDateTime,
 }
 
-#[derive(Debug, Deserialize, Insertable)]
-#[table_name = "users"]
+#[derive(Debug, Deserialize)]
 pub struct NewUser {
     pub name: String,
     pub display_name: String,

@@ -11,6 +11,7 @@ use std::io;
 #[derive(Debug, Clone, Copy, PartialEq, Serialize)]
 pub enum ErrorKind {
     ConfigError,
+    JwtError,
 
     CalibreError,
 
@@ -157,10 +158,17 @@ impl From<mongodb::bson::document::ValueAccessError> for Error {
     }
 }
 
+impl From<jsonwebtoken::errors::Error> for Error {
+    fn from(err: jsonwebtoken::errors::Error) -> Self {
+        Self::from_string(ErrorKind::JwtError, format!("{:?}", err))
+    }
+}
+
 impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {
             ErrorKind::ConfigError
+            | ErrorKind::JwtError
             | ErrorKind::CalibreError
             | ErrorKind::DbConnError
             | ErrorKind::DbGeneralError

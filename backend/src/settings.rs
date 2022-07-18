@@ -17,3 +17,12 @@ pub fn get_library_root_dir() -> Result<PathBuf, Error> {
 
     Ok(PathBuf::from(path))
 }
+
+pub fn get_jwt_secret() -> Result<String, Error> {
+    env::var("JWT_SECRET").map_err(|err| {
+        Error::from_string(
+            ErrorKind::ConfigError,
+            format!("JWT_SECRET is not set in environment, err: {:?}", err),
+        )
+    })
+}

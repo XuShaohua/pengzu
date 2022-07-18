@@ -48,47 +48,83 @@ pub async fn run() -> Result<(), Error> {
             .app_data(web::Data::new(pool.clone()))
             .service(
                 web::resource("/api/hello")
-                    .wrap(auth)
+                    .wrap(auth.clone())
                     .route(web::get().to(index)),
             )
             // For /api/login
             .route("/api/login", web::post().to(users::login))
             // For /api/author
-            .route("/api/author", web::post().to(authors::add_author))
-            .route(
-                "/api/author/books/{author_id}",
-                web::get().to(books::get_books_by_author),
+            .service(
+                web::resource("/api/author")
+                    .wrap(auth.clone())
+                    .route(web::get().to(authors::get_authors))
+                    .route(web::post().to(authors::add_author)),
             )
-            .route("/api/author", web::get().to(authors::get_authors))
+            .service(
+                web::resource("/api/author/books/{author_id}")
+                    .wrap(auth.clone())
+                    .route(web::get().to(books::get_books_by_author)),
+            )
             // For /api/book
-            .route("/api/book", web::post().to(books::add_book))
-            .route("/api/book", web::get().to(books::get_books))
-            .route("/api/book/{book_id}", web::get().to(books::get_book_detail))
+            .service(
+                web::resource("/api/book")
+                    .wrap(auth.clone())
+                    .route(web::get().to(books::get_books))
+                    .route(web::post().to(books::add_book)),
+            )
+            .service(
+                web::resource("/api/book/{book_id}")
+                    .wrap(auth.clone())
+                    .route(web::get().to(books::get_book_detail)),
+            )
             // For /api/comment
-            .route("/api/comment", web::post().to(comments::add_comment))
+            .service(
+                web::resource("/api/comment")
+                    .wrap(auth.clone())
+                    .route(web::post().to(comments::add_comment)),
+            )
             .service(
                 web::resource("/api/comment/{book_id}")
+                    .wrap(auth.clone())
                     .route(web::get().to(comments::get_comment))
                     .route(web::put().to(comments::update_comment))
                     .route(web::delete().to(comments::delete_comment)),
             )
             // For /api/file
-            .route("/api/file", web::get().to(files::get_file_by_path))
+            .service(
+                web::resource("/api/file")
+                    .wrap(auth.clone())
+                    .route(web::get().to(files::get_file_by_path)),
+            )
             // For /api/formats
-            .route(
-                "/api/format/books/{format_id}",
-                web::get().to(books::get_books_by_format),
+            .service(
+                web::resource("/api/format/books/{format_id}")
+                    .wrap(auth.clone())
+                    .route(web::get().to(books::get_books_by_format)),
             )
-            .route("/api/format", web::get().to(file_formats::get_formats))
+            .service(
+                web::resource("/api/format")
+                    .wrap(auth.clone())
+                    .route(web::get().to(file_formats::get_formats)),
+            )
             // For /api/publisher
-            .route("/api/publisher", web::post().to(publishers::add_publisher))
-            .route(
-                "/api/publisher/books/{publisher_id}",
-                web::get().to(books::get_books_by_publisher),
+            .service(
+                web::resource("/api/publisher")
+                    .wrap(auth.clone())
+                    .route(web::get().to(publishers::get_publishers))
+                    .route(web::post().to(publishers::add_publisher)),
             )
-            .route("/api/publisher", web::get().to(publishers::get_publishers))
+            .service(
+                web::resource("/api/publisher/books/{publisher_id}")
+                    .wrap(auth.clone())
+                    .route(web::get().to(books::get_books_by_publisher)),
+            )
             // For /api/rating
-            .route("/api/rating", web::post().to(ratings::add_rating))
+            .service(
+                web::resource("/api/rating")
+                    .wrap(auth.clone())
+                    .route(web::post().to(ratings::add_rating)),
+            )
             .service(
                 web::resource("/api/rating/{book_id}")
                     .route(web::get().to(ratings::get_ratings))
@@ -96,20 +132,34 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::delete().to(ratings::delete_rating)),
             )
             // For /api/series
-            .route("/api/series", web::post().to(series::add_series))
-            .route(
-                "/api/series/books/{series_id}",
-                web::get().to(books::get_books_by_series),
+            .service(
+                web::resource("/api/series")
+                    .wrap(auth.clone())
+                    .route(web::get().to(series::get_series))
+                    .route(web::post().to(series::add_series)),
             )
-            .route("/api/series", web::get().to(series::get_series))
+            .service(
+                web::resource("/api/series/books/{series_id}")
+                    .wrap(auth.clone())
+                    .route(web::get().to(books::get_books_by_series)),
+            )
             // For /api/tag
-            .route("/api/tag", web::post().to(tags::add_tag))
-            .route(
-                "/api/tag/books/{tag_id}",
-                web::get().to(books::get_books_by_tag),
+            .service(
+                web::resource("/api/tag")
+                    .wrap(auth.clone())
+                    .route(web::get().to(tags::get_tags))
+                    .route(web::post().to(tags::add_tag)),
             )
-            .route("/api/tag", web::get().to(tags::get_tags))
-            .route("/api/tag/{tag_id}", web::put().to(tags::update_tag))
+            .service(
+                web::resource("/api/tag/books/{tag_id}")
+                    .wrap(auth.clone())
+                    .route(web::get().to(books::get_books_by_tag)),
+            )
+            .service(
+                web::resource("/api/tag/{tag_id}")
+                    .wrap(auth.clone())
+                    .route(web::put().to(tags::update_tag)),
+            )
     })
     .bind(("127.0.0.1", 3000))?
     .run()

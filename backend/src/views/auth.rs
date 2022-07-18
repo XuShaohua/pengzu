@@ -50,6 +50,14 @@ impl Claims {
         self.role
     }
 
+    pub fn permission(self) -> UserPermissions {
+        UserPermissions {
+            id: self.id,
+            name: self.name,
+            role: self.role,
+        }
+    }
+
     pub fn roles(&self) -> Vec<UserRole> {
         match self.role {
             UserRole::User => vec![UserRole::User],

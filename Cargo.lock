@@ -332,6 +332,7 @@ name = "backend"
 version = "0.2.0"
 dependencies = [
  "actix-files",
+ "actix-http",
  "actix-web",
  "actix-web-grants",
  "actix-web-httpauth",

@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use actix_http::error::HttpError;
 use actix_web::http::StatusCode;
 use diesel::result::DatabaseErrorKind;
 use serde::Serialize;
@@ -26,6 +27,7 @@ pub enum ErrorKind {
     ActixBlockingError,
     MongoDbError,
     MongoDbValueAccessError,
+    HttpError,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -164,6 +166,12 @@ impl From<jsonwebtoken::errors::Error> for Error {
     }
 }
 
+impl From<HttpError> for Error {
+    fn from(err: HttpError) -> Self {
+        Self::from_string(ErrorKind::HttpError, format!("{:?}", err))
+    }
+}
+
 impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {
@@ -173,13 +181,14 @@ impl actix_web::error::ResponseError for Error {
             | ErrorKind::DbGeneralError
             | ErrorKind::JsonError
             | ErrorKind::ActixBlockingError
+            | ErrorKind::HttpError
             | ErrorKind::MongoDbError
             | ErrorKind::MongoDbValueAccessError => StatusCode::INTERNAL_SERVER_ERROR,
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError
             | ErrorKind::IoError => StatusCode::BAD_REQUEST,
             ErrorKind::DbNotFoundError => StatusCode::NOT_FOUND,
-            ErrorKind::JwtError => StatusCode::FORBIDDEN,
+            ErrorKind::JwtError => StatusCode::UNAUTHORIZED,
         }
     }
 }

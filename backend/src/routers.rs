@@ -4,47 +4,34 @@
 
 use actix_web::dev::ServiceRequest;
 use actix_web::{middleware, web, App, HttpServer};
-use actix_web_grants::permissions::AttachPermissions;
-use actix_web_grants::PermissionGuard;
+use actix_web_grants::permissions::{AttachPermissions, AuthDetails};
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 use actix_web_httpauth::middleware::HttpAuthentication;
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
-use crate::models::users::UserRole;
-use crate::views::auth::{Claims, TOKEN_NAME};
+use crate::views::auth::{Claims, UserPermissions};
 use crate::views::{
-    authors, books, comments, file_formats, files, publishers, ratings, series, tags,
+    authors, books, comments, file_formats, files, publishers, ratings, series, tags, users,
 };
 
 const CONTENT_TYPE: &str = "content-type";
 const APPLICATION_JSON: &str = "application/json";
 
-// You can use custom type instead of String
-async fn extract(req: &ServiceRequest) -> Result<Vec<UserRole>, actix_web::Error> {
-    log::info!("extract()");
-    let token = if let Some(token) = req.cookie(TOKEN_NAME) {
-        token
-    } else {
-        return Ok(Vec::new());
-    };
-    let user_token = Claims::decode(token.value())?;
-    match user_token.role() {
-        UserRole::User => Ok(vec![UserRole::User]),
-        UserRole::Admin => Ok(vec![UserRole::User, UserRole::Admin]),
-    }
-}
-
 async fn validator(
     req: ServiceRequest,
     credentials: BearerAuth,
 ) -> Result<ServiceRequest, actix_web::Error> {
+    // We just get permissions from JWT
     let claims = Claims::decode(credentials.token())?;
-    req.attach(claims.roles());
+    log::info!("validator() claims: {:?}", claims);
+    req.attach(vec![claims.permission()]);
     Ok(req)
 }
 
-async fn index() -> String {
+async fn index(detail: AuthDetails<UserPermissions>) -> String {
+    let permissions = &detail.permissions;
+    log::info!("permissions: {:?}", permissions);
     "Hello, world".to_string()
 }
 
@@ -56,22 +43,21 @@ pub async fn run() -> Result<(), Error> {
 
     HttpServer::new(move || {
         let auth = HttpAuthentication::bearer(validator);
-
         App::new()
             .wrap(middleware::Logger::default())
-            .wrap(auth)
             .app_data(web::Data::new(pool.clone()))
             .service(
                 web::resource("/api/hello")
-                    .route(web::get().to(index))
-                    .guard(PermissionGuard::new(UserRole::Admin)),
+                    .wrap(auth)
+                    .route(web::get().to(index)),
             )
+            // For /api/login
+            .route("/api/login", web::post().to(users::login))
             // For /api/author
-            //.route("/api/author", web::post().to(authors::add_author))
-            .service(
-                web::resource("/api/author/books/{author_id}")
-                    .route(web::get().to(books::get_books_by_author))
-                    .guard(PermissionGuard::new(UserRole::User)),
+            .route("/api/author", web::post().to(authors::add_author))
+            .route(
+                "/api/author/books/{author_id}",
+                web::get().to(books::get_books_by_author),
             )
             .route("/api/author", web::get().to(authors::get_authors))
             // For /api/book

@@ -9,6 +9,14 @@ use serde::Deserialize;
 use crate::components::models::page::Page;
 
 #[derive(Debug, PartialEq, Deserialize)]
+pub struct Tag {
+    pub id: i32,
+    pub order_index: i32,
+    pub name: String,
+    pub parent: i32,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
 pub struct TagAndBook {
     pub id: i32,
     pub order_index: i32,

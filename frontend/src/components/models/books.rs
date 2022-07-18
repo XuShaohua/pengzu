@@ -2,12 +2,12 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::components::models::fetch::fetch;
 use chrono::NaiveDateTime;
 use serde::Deserialize;
 
 use super::error::FetchError;
 use super::page::Page;
+use crate::components::models::fetch::fetch;
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 pub struct AuthorAndBookId {
@@ -93,4 +93,15 @@ pub async fn fetch_books_by_tag(tag_id: i32) -> Result<GetBooksResp, FetchError>
     let text = fetch(&url).await?;
     let obj: GetBooksResp = serde_json::from_str(&text)?;
     Ok(obj)
+}
+
+#[derive(Debug, Clone, Deserialize, PartialEq)]
+pub struct Book {
+    pub id: i32,
+    pub title: String,
+    pub has_cover: bool,
+    pub small_cover: Option<String>,
+    pub large_cover: Option<String>,
+    pub created: NaiveDateTime,
+    pub pubdate: NaiveDateTime,
 }

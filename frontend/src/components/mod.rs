@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 pub mod authors;
+pub mod book_detail;
 pub mod books;
 pub mod books_of_author;
 pub mod books_of_publisher;

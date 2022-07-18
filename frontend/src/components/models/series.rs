@@ -9,6 +9,12 @@ use crate::components::models::fetch::fetch;
 use crate::components::models::page::Page;
 
 #[derive(Debug, PartialEq, Deserialize)]
+pub struct Series {
+    pub id: i32,
+    pub name: String,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
 pub struct SeriesAndBook {
     pub id: i32,
     pub name: String,

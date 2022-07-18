@@ -6,10 +6,11 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::components::{
-    authors::AuthorsComponent, books::BooksComponent, books_of_author::BooksOfAuthorComponent,
-    books_of_publisher::BooksOfPublisherComponent, books_of_series::BooksOfSeriesComponent,
-    books_of_tag::BooksOfTagComponent, categories::CategoriesComponent,
-    discover::DiscoverComponent, file_formats::FileFormatsComponent, not_found::NotFoundComponent,
+    authors::AuthorsComponent, book_detail::BookDetailComponent, books::BooksComponent,
+    books_of_author::BooksOfAuthorComponent, books_of_publisher::BooksOfPublisherComponent,
+    books_of_series::BooksOfSeriesComponent, books_of_tag::BooksOfTagComponent,
+    categories::CategoriesComponent, discover::DiscoverComponent,
+    file_formats::FileFormatsComponent, not_found::NotFoundComponent,
     publishers::PublishersComponent, ratings::RatingsComponent, series::SeriesComponent,
     tags::TagsComponent,
 };
@@ -18,6 +19,8 @@ use crate::components::{
 pub enum Route {
     #[at("/")]
     Home,
+    #[at("/book/:book_id")]
+    BookDetail { book_id: i32 },
     #[at("/book")]
     Book,
     #[at("/author/books/:author_id")]
@@ -52,6 +55,9 @@ pub enum Route {
 #[must_use]
 pub fn switch_route(routes: &Route) -> Html {
     match routes {
+        Route::BookDetail { book_id } => {
+            html! { <BookDetailComponent book_id={ * book_id } /> }
+        }
         Route::Book | Route::Home => html! { <BooksComponent /> },
         Route::BooksOfAuthor { author_id } => {
             html! { <BooksOfAuthorComponent author_id={ *author_id } /> }

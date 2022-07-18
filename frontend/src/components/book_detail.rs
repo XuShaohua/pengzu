@@ -27,18 +27,6 @@ pub struct BookDetailComponent {
 fn generate_metadata_element(metadata: &BookMetadata) -> Html {
     let book = &metadata.book;
 
-    let publisher_element = match &metadata.publisher {
-        Some(publisher) => {
-            html! {
-                <span>
-                    { "Publisher: " }
-                    <a href={ format!("/publisher/{}", publisher.id) }>{ publisher.name.clone() }</a>
-                </span>
-            }
-        }
-        None => html! {<></>},
-    };
-
     let authors = &metadata.authors;
     let authors_element = authors
         .iter()
@@ -64,22 +52,66 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
         })
         .collect::<Html>();
 
+    let publisher_element = match &metadata.publisher {
+        Some(publisher) => {
+            html! {
+                <span>
+                    { "Publisher: " }
+                    <a href={ format!("/publisher/{}", publisher.id) } target="_blank">{ publisher.name.clone() }</a>
+                </span>
+            }
+        }
+        None => html! {<></>},
+    };
+
+    // TODO(Shaohua): pubdate shall be optional.
+    let published_date_element = if true {
+        let year = 2048;
+        html! {
+            <span>{ format!("Published At: {}", year) }</span>
+        }
+    } else {
+        html! {}
+    };
+
+    let tags = &metadata.tags;
+    let tags_element = tags
+        .iter()
+        .enumerate()
+        .map(|(index, tag)| {
+            let delimiter = if tags.len() - index > 1 {
+                html! { <span>{ " & " }</span> }
+            } else {
+                html! {}
+            };
+            html! {
+                <span key={ tag.id }>
+                    <a href={ format!("/tag/{}", tag.id) } target="_blank">{ tag.name.clone() }</a>
+                    { delimiter }
+                </span>
+            }
+        })
+        .collect::<Html>();
+
+    let series_element = if let Some(series) = &metadata.series {
+        html! {
+            <a href={ format!("/series/{}", series.id) } target="_blank">{ series.name.clone() }</a>
+        }
+    } else {
+        html! {}
+    };
+
     html! {
         <>
             <h3>{ metadata.book.title.clone() }</h3>
             <div class="book-cover">
                 <img class="detail-cover" src={ get_cover_image_url(&book.small_cover) } alt={book.title.clone()} />
             </div>
-            <div class="book-authors">
-              {
-                  authors_element
-              }
-            </div>
-            <div class="book-publishers">
-                { publisher_element }
-            </div>
-            <div class="book-published-date">
-            </div>
+            <div class="book-authors">{ authors_element }</div>
+            <div class="book-publishers">{ publisher_element }</div>
+            <div class="book-published-date">{ published_date_element }</div>
+            <div class="book-tags">{ tags_element }</div>
+            <div class="book-series">{ series_element }</div>
         </>
     }
 }

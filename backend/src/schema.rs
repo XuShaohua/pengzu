@@ -321,6 +321,7 @@ table! {
         id -> Int4,
         name -> Text,
         display_name -> Text,
+        email -> Text,
         role -> Int4,
         salt -> Text,
         hash -> Text,

@@ -5,6 +5,7 @@ CREATE TABLE users
     id   SERIAL PRIMARY KEY NOT NULL ,
     name TEXT NOT NULL,
     display_name TEXT NOT NULL,
+    email TEXT NOT NULL,
     role INTEGER NOT NULL,
     salt TEXT NOT NULL,
     hash TEXT NOT NULL,

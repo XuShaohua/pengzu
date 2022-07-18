@@ -6,6 +6,7 @@ use yew::prelude::*;
 
 use crate::components::models::books_meta::{fetch_book_metadata, BookMetadata};
 use crate::components::models::error::FetchError;
+use crate::components::util::get_cover_image_url;
 
 #[derive(PartialEq)]
 pub enum Msg {
@@ -21,6 +22,50 @@ pub struct Prop {
 
 pub struct BookDetailComponent {
     metadata: Option<BookMetadata>,
+}
+
+fn generate_metadata_element(metadata: &BookMetadata) -> Html {
+    let book = &metadata.book;
+    let authors = &metadata.authors;
+
+    let publisher_element = match &metadata.publisher {
+        Some(publisher) => {
+            html! {
+                <span>
+                    { "Publisher:" }
+                    <a href={ format!("/publisher/{}", publisher.id) }>{ publisher.name.clone() }</a>
+                </span>
+            }
+        }
+        None => html! { <></>},
+    };
+
+    html! {
+        <>
+            <h3>{ metadata.book.title.clone() }</h3>
+            <div class="book-cover">
+                <img class="detail-cover" src={ get_cover_image_url(&book.small_cover) } alt={book.title.clone()} />
+            </div>
+            <div class="book-authors">
+              {
+                    authors.iter().map(|author| {
+                        html!{
+                        <a href={ format!("/author/books/{:?}", author.id) } target="_blank">
+                            <span class="book-author" title={ author.name.clone() }>
+                            { author.name.clone() }
+                            </span>
+                        </a>
+                        }
+                    }).collect::<Html>()
+                }
+            </div>
+            <div class="book-publishers">
+                { publisher_element }
+            </div>
+            <div class="book-published-date">
+            </div>
+        </>
+    }
 }
 
 impl Component for BookDetailComponent {
@@ -58,9 +103,17 @@ impl Component for BookDetailComponent {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let fetch = ctx.link().callback(|_| Msg::Fetch);
 
+        let book_detail = match &self.metadata {
+            Some(metadata) => generate_metadata_element(metadata),
+            None => html! { <></> },
+        };
+
         html! {
             <>
+                <h2>{ "Book Details" }</h2>
                 <button onclick={fetch}>{"Fetch metadata"}</button>
+
+                { book_detail }
             </>
         }
     }

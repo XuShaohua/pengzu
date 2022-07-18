@@ -5,6 +5,7 @@
 use yew::prelude::*;
 
 use crate::components::models::books::BookResp;
+use crate::components::util::get_cover_image_url;
 
 #[derive(PartialEq)]
 pub enum Msg {}
@@ -17,21 +18,14 @@ pub struct Prop {
 pub struct BookListComponent {}
 
 fn generate_book_element(book_resp: &BookResp) -> Html {
-    let generate_cover_element = |small_cover: &Option<String>| -> String {
-        if let Some(cover) = small_cover {
-            format!("/api/file?path={}", cover)
-        } else {
-            "#".to_string()
-        }
-    };
-
     let book = &book_resp.book;
+    let authors = &book_resp.authors;
 
     html! {
         <div class="book-fluid" key={book.id}>
             <div class="book-cover">
                 <a href={ format!("/book/{}", book.id) } target="_blank">
-                <img src={ generate_cover_element(&book.small_cover) } alt={book.title.clone()} />
+                    <img src={ get_cover_image_url(&book.small_cover) } alt={book.title.clone()} />
                 </a>
             </div>
             <div class="book-meta">
@@ -43,7 +37,7 @@ fn generate_book_element(book_resp: &BookResp) -> Html {
 
                 <div class="book-authors">
                 {
-                    book_resp.authors.iter().map(|author| {
+                    authors.iter().map(|author| {
                         html!{
                         <a href={ format!("/author/books/{:?}", author.id) } target="_blank">
                             <span class="book-author" title={ author.name.clone() }>

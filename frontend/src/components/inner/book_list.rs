@@ -20,34 +20,43 @@ pub struct BookListComponent {}
 fn generate_book_element(book_resp: &BookResp) -> Html {
     let book = &book_resp.book;
     let authors = &book_resp.authors;
+    let authors_element = authors
+        .iter()
+        .enumerate()
+        .map(|(index, author)| {
+            let delimiter = if authors.len() - index > 1 {
+                html!{ <span>{ " & " }</span> }
+            } else {
+                html!{}
+            };
+
+            html! {
+                <>
+                <a key={ author.id } href={ format!("/author/books/{:?}", author.id) } target="_blank">
+                    <span class="book-author" title={ author.name.clone() }>
+                        { author.name.clone() }
+                    </span>
+                </a>
+
+                { delimiter }
+                </>
+            }
+        })
+        .collect::<Html>();
 
     html! {
         <div class="book-fluid" key={book.id}>
             <div class="book-cover">
                 <a href={ format!("/book/{}", book.id) } target="_blank">
-                    <img src={ get_cover_image_url(&book.small_cover) } alt={book.title.clone()} />
+                    <img src={ get_cover_image_url(&book.small_cover) } alt={ book.title.clone() } />
                 </a>
             </div>
             <div class="book-meta">
                 <a href={ format!("/book/{}", book.id) } target="_blank">
-                <span class="book-title" title={book.title.clone()}>
-                    {book.title.clone()}
-                </span>
+                    <span class="book-title" title={ book.title.clone() }>{ book.title.clone() }</span>
                 </a>
 
-                <div class="book-authors">
-                {
-                    authors.iter().map(|author| {
-                        html!{
-                        <a href={ format!("/author/books/{:?}", author.id) } target="_blank">
-                            <span class="book-author" title={ author.name.clone() }>
-                            { author.name.clone() }
-                            </span>
-                        </a>
-                        }
-                    }).collect::<Html>()
-                }
-                </div>
+                <div class="book-authors">{ authors_element }</div>
             </div>
         </div>
     }

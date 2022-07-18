@@ -26,19 +26,43 @@ pub struct BookDetailComponent {
 
 fn generate_metadata_element(metadata: &BookMetadata) -> Html {
     let book = &metadata.book;
-    let authors = &metadata.authors;
 
     let publisher_element = match &metadata.publisher {
         Some(publisher) => {
             html! {
                 <span>
-                    { "Publisher:" }
+                    { "Publisher: " }
                     <a href={ format!("/publisher/{}", publisher.id) }>{ publisher.name.clone() }</a>
                 </span>
             }
         }
-        None => html! { <></>},
+        None => html! {<></>},
     };
+
+    let authors = &metadata.authors;
+    let authors_element = authors
+        .iter()
+        .enumerate()
+        .map(|(index, author)| {
+            let delimiter = if authors.len() - index > 1 {
+                html!{ <span>{ " & " }</span> }
+            } else {
+                html!{}
+            };
+
+            html! {
+                <>
+                <a key={ author.id } href={ format!("/author/books/{:?}", author.id) } target="_blank">
+                    <span class="book-author" title={ author.name.clone() }>
+                        { author.name.clone() }
+                    </span>
+                </a>
+
+                { delimiter }
+                </>
+            }
+        })
+        .collect::<Html>();
 
     html! {
         <>
@@ -48,16 +72,8 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             </div>
             <div class="book-authors">
               {
-                    authors.iter().map(|author| {
-                        html!{
-                        <a href={ format!("/author/books/{:?}", author.id) } target="_blank">
-                            <span class="book-author" title={ author.name.clone() }>
-                            { author.name.clone() }
-                            </span>
-                        </a>
-                        }
-                    }).collect::<Html>()
-                }
+                  authors_element
+              }
             </div>
             <div class="book-publishers">
                 { publisher_element }

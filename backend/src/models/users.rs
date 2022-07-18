@@ -10,7 +10,6 @@ use serde::{Deserialize, Serialize};
 #[repr(u8)]
 pub enum UserRole {
     User = 0,
-    Guest = 1,
     Admin = 2,
 }
 

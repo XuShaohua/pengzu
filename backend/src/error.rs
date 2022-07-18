@@ -168,7 +168,6 @@ impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {
             ErrorKind::ConfigError
-            | ErrorKind::JwtError
             | ErrorKind::CalibreError
             | ErrorKind::DbConnError
             | ErrorKind::DbGeneralError
@@ -180,6 +179,7 @@ impl actix_web::error::ResponseError for Error {
             | ErrorKind::DbUniqueViolationError
             | ErrorKind::IoError => StatusCode::BAD_REQUEST,
             ErrorKind::DbNotFoundError => StatusCode::NOT_FOUND,
+            ErrorKind::JwtError => StatusCode::FORBIDDEN,
         }
     }
 }

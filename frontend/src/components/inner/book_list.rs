@@ -33,9 +33,7 @@ fn generate_book_element(book_resp: &BookResp) -> Html {
             html! {
                 <>
                 <a key={ author.id } href={ format!("/author/books/{:?}", author.id) } target="_blank">
-                    <span class="book-author" title={ author.name.clone() }>
-                        { author.name.clone() }
-                    </span>
+                    { author.name.clone() }
                 </a>
 
                 { delimiter }

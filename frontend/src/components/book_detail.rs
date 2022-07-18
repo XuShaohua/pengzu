@@ -41,9 +41,7 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             html! {
                 <>
                 <a key={ author.id } href={ format!("/author/books/{:?}", author.id) } target="_blank">
-                    <span class="book-author" title={ author.name.clone() }>
-                        { author.name.clone() }
-                    </span>
+                    { author.name.clone() }
                 </a>
 
                 { delimiter }

@@ -7,7 +7,7 @@ use serde::Serialize;
 
 use crate::error::{Error, ErrorKind};
 use crate::models::authors::Author;
-use crate::models::books::{get_book_by_id, Book};
+use crate::models::books::{get_book_by_id, BookWithCover};
 use crate::models::books_authors::get_authors_by_book;
 use crate::models::books_languages::get_language_by_book;
 use crate::models::books_publishers::get_publisher_by_book;
@@ -23,7 +23,7 @@ use crate::models::tags::Tag;
 // TODO(Shaohua): Replace subquery with a meta table in postgres.
 #[derive(Debug, Serialize, Queryable)]
 pub struct BookMetadata {
-    pub book: Book,
+    pub book: BookWithCover,
     pub authors: Vec<Author>,
     pub tags: Vec<Tag>,
     pub files: Vec<File>,

@@ -56,8 +56,12 @@ pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<Book, Error> 
         .map_err(Into::into)
 }
 
-pub fn get_book_by_id(conn: &PgConnection, book_id: i32) -> Result<Book, Error> {
-    books::table.find(book_id).first(conn).map_err(Into::into)
+pub fn get_book_by_id(conn: &PgConnection, book_id: i32) -> Result<BookWithCover, Error> {
+    books::table
+        .find(book_id)
+        .first(conn)
+        .map(|book| book_to_book_cover(book))
+        .map_err(Into::into)
 }
 
 #[derive(Debug, Clone, Copy, Deserialize)]

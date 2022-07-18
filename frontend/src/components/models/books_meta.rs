@@ -5,7 +5,7 @@
 use serde::Deserialize;
 
 use crate::components::models::authors::Author;
-use crate::components::models::books::Book;
+use crate::components::models::books::BookWithCover;
 use crate::components::models::error::FetchError;
 use crate::components::models::fetch::fetch;
 use crate::components::models::publishers::Publisher;
@@ -14,7 +14,7 @@ use crate::components::models::tags::Tag;
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct BookMetadata {
-    pub book: Book,
+    pub book: BookWithCover,
     pub authors: Vec<Author>,
     pub publisher: Option<Publisher>,
     pub series: Option<Series>,

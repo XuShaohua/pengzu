@@ -316,6 +316,20 @@ table! {
     }
 }
 
+table! {
+    users (id) {
+        id -> Int4,
+        name -> Text,
+        display_name -> Text,
+        role -> Int4,
+        salt -> Text,
+        hash -> Text,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+        deleted_at -> Nullable<Timestamp>,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     authors,
     books,
@@ -346,4 +360,5 @@ allow_tables_to_appear_in_same_query!(
     ratings,
     series,
     tags,
+    users,
 );

@@ -23,7 +23,7 @@ pub struct PublishersComponent {
 
 fn generate_publisher_element(publisher: &PublisherAndBook) -> Html {
     html! {
-        <li class="publisher-item">
+        <li class="publisher-item" key={ publisher.id }>
             <span class="badge">{ publisher.count }</span>
             <a href={ format!("/publisher/books/{}", publisher.id) } target="_blank" title={ publisher.name.clone() }>
                 { publisher.name.clone() }

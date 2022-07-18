@@ -22,7 +22,7 @@ pub struct AuthorsComponent {
 
 fn generate_author_element(author: &AuthorAndBook) -> Html {
     html! {
-        <li class="author-item">
+        <li class="author-item" key={ author.id }>
             <span class="badge">{ author.count }</span>
             <a href={ format!("/author/books/{}", author.id) } target="_blank" title={ author.name.clone() }>
                 { author.name.clone() }

@@ -21,7 +21,7 @@ pub struct TagsComponent {
 
 fn generate_tag_element(tag: &TagAndBook) -> Html {
     html! {
-        <li class="tag-item">
+        <li class="tag-item" key={ tag.id }>
             <span class="badge">{ tag.count }</span>
             <a href={ format!("/tag/books/{}", tag.id) } target="_blank" title={ tag.name.clone() }>
                 { tag.name.clone() }

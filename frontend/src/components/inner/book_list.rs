@@ -45,7 +45,7 @@ fn generate_book_element(book_resp: &BookResp) -> Html {
         .collect::<Html>();
 
     html! {
-        <div class="book-fluid" key={book.id}>
+        <div class="book-fluid" key={ book.id }>
             <div class="book-cover">
                 <a href={ format!("/book/{}", book.id) } target="_blank">
                     <img src={ get_cover_image_url(&book.small_cover) } alt={ book.title.clone() } />

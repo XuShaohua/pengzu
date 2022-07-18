@@ -21,7 +21,7 @@ pub struct SeriesComponent {
 
 fn generate_series_element(series: &SeriesAndBook) -> Html {
     html! {
-        <li class="series-item">
+        <li class="series-item" key={ series.id }>
             <span class="badge">{ series.count }</span>
             <a href={ format!("/series/books/{}", series.id) } target="_blank" title={ series.name.clone() }>
                 { series.name.clone() }

@@ -23,8 +23,8 @@ pub struct Book {
     pub path: String,
     pub uuid: String,
     pub has_cover: bool,
+    pub pubdate: Option<NaiveDateTime>,
     pub created: NaiveDateTime,
-    pub pubdate: NaiveDateTime,
     pub last_modified: NaiveDateTime,
 }
 
@@ -35,8 +35,8 @@ pub struct BookWithCover {
     pub has_cover: bool,
     pub small_cover: Option<String>,
     pub large_cover: Option<String>,
+    pub pubdate: Option<NaiveDateTime>,
     pub created: NaiveDateTime,
-    pub pubdate: NaiveDateTime,
 }
 
 #[derive(Debug, Deserialize, Insertable)]

@@ -23,8 +23,8 @@ pub struct BookWithCover {
     pub has_cover: bool,
     pub small_cover: Option<String>,
     pub large_cover: Option<String>,
+    pub pubdate: Option<NaiveDateTime>,
     pub created: NaiveDateTime,
-    pub pubdate: NaiveDateTime,
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]

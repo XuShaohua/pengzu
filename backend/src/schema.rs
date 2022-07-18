@@ -15,8 +15,8 @@ table! {
         path -> Text,
         uuid -> Text,
         has_cover -> Bool,
+        pubdate -> Nullable<Timestamp>,
         created -> Timestamp,
-        pubdate -> Timestamp,
         last_modified -> Timestamp,
     }
 }

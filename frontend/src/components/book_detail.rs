@@ -64,11 +64,9 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
         None => html! {<></>},
     };
 
-    // TODO(Shaohua): pubdate shall be optional.
-    let published_date_element = if true {
-        let year = 2048;
+    let published_date_element = if let Some(pubdate) = book.pubdate {
         html! {
-            <span>{ format!("Published At: {}", year) }</span>
+            <span>{ format!("Published At: {:?}", pubdate) }</span>
         }
     } else {
         html! {}

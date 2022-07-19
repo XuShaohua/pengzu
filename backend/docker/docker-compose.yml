@@ -1,14 +1,14 @@
 version: "3.0"
 services:
-  library_db:
+  pengzu_backend_db:
     image: postgres:14.3
     restart: always
     ports:
       - 127.0.0.1:5432:5432
     environment:
-      POSTGRES_PASSWORD: library-password
+      POSTGRES_PASSWORD: pengzu-password
       POSTGRES_USER: postgres
-      POSTGRES_DB: library
+      POSTGRES_DB: pengzu
     volumes:
-      - /docker/library:/var/lib/postgresql
-      - /docker/library/data:/var/lib/postgresql/data
+      - /docker/pengzu:/var/lib/postgresql
+      - /docker/pengzu/data:/var/lib/postgresql/data

@@ -1,3 +1,5 @@
 /db
-/bin
 /frontend
+/bin/backend
+/bin/import_categories
+/bin/import_library

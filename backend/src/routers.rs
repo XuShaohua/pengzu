@@ -165,7 +165,7 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::put().to(tags::update_tag)),
             )
     })
-    .bind(("127.0.0.1", 3000))?
+    .bind(("0.0.0.0", 3000))?
     .run()
     .await
     .map_err(Into::into)

@@ -3,12 +3,18 @@ services:
   pengzu_db:
     image: postgres:14.3
     restart: always
-    ports:
-      - 127.0.0.1:5432:5432
     environment:
       POSTGRES_PASSWORD: pengzu-password
       POSTGRES_USER: postgres
       POSTGRES_DB: pengzu
     volumes:
-      - /docker/pengzu:/var/lib/postgresql
-      - /docker/pengzu/data:/var/lib/postgresql/data
+      - /docker/pengzu-db-release:/var/lib/postgresql
+      - /docker/pengzu-db-release/data:/var/lib/postgresql/data
+
+  app:
+    image: pengzu:latest
+    restart: always
+    ports:
+      - 127.0.0.1:3100:3000
+    links:
+      - pengzu_db:pengzu_db

@@ -13,11 +13,8 @@ build-frontend:
 	cd ../frontend && trunk build
 
 install-frontend: build-frontend
-	rm -rvf frontend
-	cp -rv	../frontend/dist frontend
+	rm -rvf html
+	cp -rv	../frontend/dist html
 
-build-backend-docker: install-backend
-	docker build -t pengzu-backend:latest -f Dockerfile.backend .
-
-build-frontend-docker: install-frontend
-	docker build -t pengzu-frontend:latest -f Dockerfile.frontend .
+build-docker: install-backend install-frontend
+	docker build -t pengzu:latest -f Dockerfile .

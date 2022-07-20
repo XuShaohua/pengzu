@@ -21,12 +21,16 @@ const APPLICATION_JSON: &str = "application/json";
 async fn validator(
     req: ServiceRequest,
     credentials: BearerAuth,
-) -> Result<ServiceRequest, actix_web::Error> {
+) -> Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
     // We just get permissions from JWT
-    let claims = Claims::decode(credentials.token())?;
-    log::info!("validator() claims: {:?}", claims);
-    req.attach(vec![claims.permission()]);
-    Ok(req)
+    match Claims::decode(credentials.token()) {
+        Ok(claims) => {
+            log::info!("validator() claims: {:?}", claims);
+            req.attach(vec![claims.permission()]);
+            Ok(req)
+        }
+        Err(err) => Err((err.into(), req)),
+    }
 }
 
 async fn index(detail: AuthDetails<UserPermissions>) -> String {

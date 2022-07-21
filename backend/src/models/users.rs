@@ -6,7 +6,8 @@ use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
+use crate::models::auth;
 use crate::schema::users;
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -27,6 +28,16 @@ impl From<i32> for UserRole {
             1 => Self::User,
             2 => Self::Admin,
             _ => Self::Nil,
+        }
+    }
+}
+
+impl Into<i32> for UserRole {
+    fn into(self) -> i32 {
+        match self {
+            UserRole::Nil => 0,
+            UserRole::User => 1,
+            UserRole::Admin => 2,
         }
     }
 }
@@ -66,6 +77,15 @@ fn user_to_user_info(user: User) -> UserInfo {
     }
 }
 
+#[derive(Debug, Deserialize)]
+pub struct NewUserReq {
+    pub name: String,
+    pub display_name: String,
+    pub email: String,
+    pub role: UserRole,
+    pub password: String,
+}
+
 #[derive(Debug, Deserialize, Insertable)]
 #[table_name = "users"]
 pub struct NewUser {
@@ -77,15 +97,26 @@ pub struct NewUser {
     pub salt: String,
 }
 
-pub fn add_user(conn: &PgConnection, new_user: &NewUser) -> Result<UserInfo, Error> {
+pub fn add_user(conn: &PgConnection, new_user_req: NewUserReq) -> Result<UserInfo, Error> {
+    let salt = auth::new_salt()?;
+    let hash = auth::encrypt(&new_user_req.password, &salt);
+    let new_user = NewUser {
+        name: new_user_req.name,
+        display_name: new_user_req.display_name,
+        email: new_user_req.email,
+        role: new_user_req.role.into(),
+        hash: hash.hex(),
+        salt: salt.hex(),
+    };
     let user = diesel::insert_into(users::table)
         .values(new_user)
         .get_result::<User>(conn)?;
     Ok(user_to_user_info(user))
 }
 
-pub fn get_all_users() -> Result<Vec<User>, Error> {
-    todo!()
+pub fn get_all_users(conn: &PgConnection) -> Result<Vec<UserInfo>, Error> {
+    let user_list = users::table.load(conn)?;
+    Ok(user_list.into_iter().map(user_to_user_info).collect())
 }
 
 #[derive(Debug, Deserialize)]
@@ -95,10 +126,20 @@ pub struct LoginForm {
 }
 
 pub fn login(conn: &PgConnection, form: &LoginForm) -> Result<UserInfo, Error> {
-    let _user = users::table
+    let user = users::table
         .filter(users::name.eq(&form.username))
         .first::<User>(conn)?;
-    todo!()
+
+    let hash = auth::PasswordHash::from_string(&user.hash)?;
+    let salt = auth::Salt::from_string(&user.salt)?;
+    if auth::verify(&form.password, &hash, &salt).is_err() {
+        return Err(Error::new(
+            ErrorKind::AuthFailed,
+            "Invalid username or password",
+        ));
+    }
+
+    Ok(user_to_user_info(user))
 }
 
 pub fn get_user_info(_id: i32) -> Result<UserInfo, Error> {

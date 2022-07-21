@@ -24,6 +24,8 @@ pub enum ErrorKind {
 
     IoError,
     JsonError,
+    RingError,
+    AuthFailed,
     ActixBlockingError,
     MongoDbError,
     MongoDbValueAccessError,
@@ -172,6 +174,12 @@ impl From<HttpError> for Error {
     }
 }
 
+impl From<ring::error::Unspecified> for Error {
+    fn from(err: ring::error::Unspecified) -> Self {
+        Self::from_string(ErrorKind::RingError, format!("{:?}", err))
+    }
+}
+
 impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {
@@ -183,9 +191,11 @@ impl actix_web::error::ResponseError for Error {
             | ErrorKind::ActixBlockingError
             | ErrorKind::HttpError
             | ErrorKind::MongoDbError
-            | ErrorKind::MongoDbValueAccessError => StatusCode::INTERNAL_SERVER_ERROR,
+            | ErrorKind::MongoDbValueAccessError
+            | ErrorKind::RingError => StatusCode::INTERNAL_SERVER_ERROR,
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError
+            | ErrorKind::AuthFailed
             | ErrorKind::IoError => StatusCode::BAD_REQUEST,
             ErrorKind::DbNotFoundError => StatusCode::NOT_FOUND,
             ErrorKind::JwtError => StatusCode::UNAUTHORIZED,

@@ -12,7 +12,7 @@ use crate::views::auth::{Claims, UserPermissions, TOKEN_NAME};
 
 pub async fn login(
     pool: web::Data<DbPool>,
-    form: web::Form<users::LoginForm>,
+    form: web::Json<users::LoginForm>,
 ) -> Result<HttpResponse, Error> {
     let user_info: users::UserInfo = web::block(move || {
         let conn = pool.get()?;

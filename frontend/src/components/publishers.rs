@@ -78,7 +78,7 @@ impl Component for PublishersComponent {
 
         html! {
             <>
-                <button onclick={fetch}>{"Fetch publishers"}</button>
+                <button onclick={ fetch }>{"Fetch publishers"}</button>
 
                 <ul class="publisher-list">
                     { publisher_elements }

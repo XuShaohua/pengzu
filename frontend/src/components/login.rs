@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
 use crate::components::models::error::FetchError;
@@ -16,6 +17,8 @@ pub enum Msg {
 
 pub struct LoginComponent {
     user_info: Option<UserInfo>,
+    username_node: NodeRef,
+    password_node: NodeRef,
 }
 
 impl Component for LoginComponent {
@@ -23,16 +26,21 @@ impl Component for LoginComponent {
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self { user_info: None }
+        Self {
+            user_info: None,
+            username_node: Default::default(),
+            password_node: Default::default(),
+        }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Fetch => {
-                let form = LoginForm {
-                    username: "".to_string(),
-                    password: "".to_string(),
-                };
+                let username_node = self.username_node.cast::<HtmlInputElement>().unwrap();
+                let password_node = self.password_node.cast::<HtmlInputElement>().unwrap();
+                let username = username_node.value();
+                let password = password_node.value();
+                let form = LoginForm { username, password };
                 ctx.link().send_future(async move {
                     match login(&form).await {
                         Ok(obj) => Msg::FetchSuccess(obj),
@@ -64,11 +72,11 @@ impl Component for LoginComponent {
                 <form onsubmit={ login } method="POST" role="form">
                     <div class="form-item">
                         <label for="username">{ "Username" }</label>
-                        <input name="username" type="text" />
+                        <input name="username" type="text" ref={ self.username_node.clone() } />
                     </div>
                     <div class="form-item">
                         <label for="password">{ "Password" }</label>
-                        <input name="password" type="password" />
+                        <input name="password" type="password" ref={ self.password_node.clone() } />
                     </div>
                     <button>{ "Login" }</button>
                 </form>

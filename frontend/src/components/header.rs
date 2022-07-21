@@ -23,7 +23,8 @@ impl Component for HeaderComponent {
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <div class="navbar">
-                {"Online Library"}
+                { "Online Library" }
+                <a href="/login">{"Login"}</a>
             </div>
         }
     }

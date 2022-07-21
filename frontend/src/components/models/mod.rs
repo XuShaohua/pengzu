@@ -12,3 +12,4 @@ pub mod page;
 pub mod publishers;
 pub mod series;
 pub mod tags;
+pub mod users;

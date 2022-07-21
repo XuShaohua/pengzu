@@ -10,7 +10,7 @@ use crate::components::{
     books_of_author::BooksOfAuthorComponent, books_of_publisher::BooksOfPublisherComponent,
     books_of_series::BooksOfSeriesComponent, books_of_tag::BooksOfTagComponent,
     categories::CategoriesComponent, discover::DiscoverComponent,
-    file_formats::FileFormatsComponent, not_found::NotFoundComponent,
+    file_formats::FileFormatsComponent, login::LoginComponent, not_found::NotFoundComponent,
     publishers::PublishersComponent, ratings::RatingsComponent, series::SeriesComponent,
     tags::TagsComponent,
 };
@@ -47,6 +47,8 @@ pub enum Route {
     FileFormat,
     #[at("/rating")]
     Rating,
+    #[at("/login")]
+    Login,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -77,6 +79,7 @@ pub fn switch_route(routes: &Route) -> Html {
         Route::Discover => html! { <DiscoverComponent /> },
         Route::FileFormat => html! { <FileFormatsComponent /> },
         Route::Rating => html! { <RatingsComponent /> },
+        Route::Login => html! { <LoginComponent /> },
         Route::NotFound => html! { <NotFoundComponent /> },
     }
 }

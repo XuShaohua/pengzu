@@ -60,6 +60,7 @@ impl Claims {
 
     pub fn roles(&self) -> Vec<UserRole> {
         match self.role {
+            UserRole::Nil => vec![],
             UserRole::User => vec![UserRole::User],
             UserRole::Admin => vec![UserRole::Admin, UserRole::User],
         }

@@ -2,29 +2,33 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::error::Error;
-use crate::models::users::UserRole;
-use crate::views::auth::{Claims, UserPermissions, TOKEN_NAME};
 use actix_web::cookie::Cookie;
 use actix_web::{web, HttpResponse};
-use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
-pub struct LoginForm {
-    pub username: String,
-    pub password: String,
-}
+use crate::db::DbPool;
+use crate::error::Error;
+use crate::models::users;
+use crate::views::auth::{Claims, UserPermissions, TOKEN_NAME};
 
-pub async fn login(form: web::Form<LoginForm>) -> Result<HttpResponse, Error> {
-    let mut resp = HttpResponse::Ok().body("Ok");
+pub async fn login(
+    pool: web::Data<DbPool>,
+    form: web::Form<users::LoginForm>,
+) -> Result<HttpResponse, Error> {
+    let user_info: users::UserInfo = web::block(move || {
+        let conn = pool.get()?;
+        users::login(&conn, &form)
+    })
+    .await??;
+
     let permission = UserPermissions {
-        id: 42,
-        name: form.username.to_string(),
-        role: UserRole::Admin,
+        id: user_info.id,
+        name: user_info.name.clone(),
+        role: user_info.role,
     };
     let claims = Claims::new(&permission);
     let token = claims.encode()?;
     let cookie = Cookie::new(TOKEN_NAME, &token);
+    let mut resp = HttpResponse::Ok().json(user_info);
     resp.add_cookie(&cookie)?;
     Ok(resp)
 }

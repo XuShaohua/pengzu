@@ -12,5 +12,6 @@ CREATE TABLE users
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP,
-    UNIQUE (name)
+    UNIQUE (name),
+    UNIQUE (email)
 )

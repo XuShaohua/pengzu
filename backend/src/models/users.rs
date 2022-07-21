@@ -77,6 +77,7 @@ fn user_to_user_info(user: User) -> UserInfo {
     }
 }
 
+// TODO(Shaohua): Replace String with &'a str.
 #[derive(Debug, Deserialize)]
 pub struct NewUserReq {
     pub name: String,
@@ -142,8 +143,9 @@ pub fn login(conn: &PgConnection, form: &LoginForm) -> Result<UserInfo, Error> {
     Ok(user_to_user_info(user))
 }
 
-pub fn get_user_info(_id: i32) -> Result<UserInfo, Error> {
-    todo!()
+pub fn get_user_info(conn: &PgConnection, id: i32) -> Result<UserInfo, Error> {
+    let user = users::table.find(id).first::<User>(conn)?;
+    Ok(user_to_user_info(user))
 }
 
 pub fn delete_user() -> Result<(), Error> {

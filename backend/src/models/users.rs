@@ -127,6 +127,7 @@ pub struct LoginForm {
 }
 
 pub fn login(conn: &PgConnection, form: &LoginForm) -> Result<UserInfo, Error> {
+    log::info!("login() {:?}", form);
     let user = users::table
         .filter(users::name.eq(&form.username))
         .first::<User>(conn)?;

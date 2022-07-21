@@ -180,6 +180,12 @@ impl From<ring::error::Unspecified> for Error {
     }
 }
 
+impl From<data_encoding::DecodeError> for Error {
+    fn from(err: data_encoding::DecodeError) -> Self {
+        Self::from_string(ErrorKind::RingError, format!("{:?}", err))
+    }
+}
+
 impl actix_web::error::ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self.kind {

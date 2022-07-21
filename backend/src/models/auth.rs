@@ -17,7 +17,7 @@ impl Salt {
     }
 
     pub fn from_string(s: &str) -> Result<Self, Error> {
-        let bytes = s.as_bytes();
+        let bytes = HEXUPPER.decode(s.as_bytes())?;
         if bytes.len() == CREDENTIAL_LEN {
             let mut salt = Self::new();
             for (index, byte) in bytes.iter().enumerate() {

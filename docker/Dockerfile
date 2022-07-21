@@ -9,8 +9,8 @@ RUN apt clean
 
 RUN mkdir /opt/pengzu/
 COPY bin/backend bin/import_library bin/import_categories .env /opt/pengzu/
-COPY html/ /opt/pengzu/html/
 
+EXPOSE 3000
 WORKDIR /opt/pengzu
 CMD ["/opt/pengzu/backend"]
 

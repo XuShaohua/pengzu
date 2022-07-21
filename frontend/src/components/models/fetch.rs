@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use gloo_storage::Storage;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Headers, Request, RequestInit, RequestMode, Response};
@@ -19,7 +20,13 @@ use crate::components::models::error::{ErrorKind, FetchError};
 /// Returns error if failed to construct request or failed to read response body.
 pub async fn fetch(url: &str) -> Result<String, FetchError> {
     let mut opts = RequestInit::new();
-    opts.method("GET").mode(RequestMode::Cors);
+    let headers = Headers::new()?;
+    headers.set("Content-Type", "application/json")?;
+    let storage = gloo_storage::LocalStorage::raw();
+    let token: String = storage.get("Token")?.unwrap_or_default();
+    log::info!("token: {}", token);
+    headers.set("Authorization", &format!("Bearer {}", token))?;
+    opts.method("GET").mode(RequestMode::Cors).headers(&headers);
     let request = Request::new_with_str_and_init(url, &opts)?;
 
     let window = gloo_utils::window();

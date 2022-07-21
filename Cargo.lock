@@ -769,6 +769,7 @@ name = "frontend"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "gloo-storage",
  "gloo-utils",
  "log",
  "serde",

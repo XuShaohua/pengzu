@@ -95,11 +95,7 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::delete().to(comments::delete_comment)),
             )
             // For /api/file
-            .service(
-                web::resource("/api/file")
-                    .wrap(auth.clone())
-                    .route(web::get().to(files::get_file_by_path)),
-            )
+            .service(web::resource("/api/file").route(web::get().to(files::get_file_by_path)))
             // For /api/formats
             .service(
                 web::resource("/api/format/books/{format_id}")

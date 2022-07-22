@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use web_sys::HtmlInputElement;
+use web_sys::{HtmlInputElement, Url};
 use yew::prelude::*;
 
 use crate::components::models::error::FetchError;
@@ -19,6 +19,21 @@ pub struct LoginComponent {
     user_info: Option<UserInfo>,
     username_node: NodeRef,
     password_node: NodeRef,
+}
+
+fn redirect_to_last_page() {
+    let location = gloo_utils::window().location();
+    let href = match location.href() {
+        Ok(href) => href,
+        Err(_err) => return,
+    };
+    let url = match Url::new(&href) {
+        Ok(url) => url,
+        Err(_err) => return,
+    };
+    let params = url.search_params();
+    let last_url = params.get("redirect").unwrap_or_else(|| "/".to_string());
+    let _ = location.set_href(&last_url);
 }
 
 impl Component for LoginComponent {
@@ -62,6 +77,10 @@ impl Component for LoginComponent {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
+        if self.user_info.is_some() {
+            redirect_to_last_page();
+        }
+
         let login = ctx.link().callback(|event: FocusEvent| {
             event.prevent_default();
             Msg::Fetch

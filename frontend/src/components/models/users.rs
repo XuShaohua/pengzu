@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
+use gloo_storage::Storage;
 use serde::{Deserialize, Serialize};
 
 use crate::components::models::error::FetchError;
@@ -36,6 +37,10 @@ pub async fn login(form: &LoginForm) -> Result<UserInfo, FetchError> {
     let url = "/api/login";
     let body = serde_json::to_string(form)?;
     let text = fetch_post(url, &body).await?;
+    let storage = gloo_storage::LocalStorage::raw();
+    if let Err(err) = storage.set("user-info", &text) {
+        log::error!("Failed to store user info to local storage, err: {:?}", err);
+    }
     let obj: UserInfo = serde_json::from_str(&text)?;
     Ok(obj)
 }

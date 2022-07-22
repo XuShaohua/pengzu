@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use actix_web::cookie::time::OffsetDateTime;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
@@ -38,16 +39,24 @@ impl Claims {
         }
     }
 
-    pub fn id(&self) -> i32 {
+    #[must_use]
+    pub const fn id(&self) -> i32 {
         self.id
     }
 
+    #[must_use]
     pub fn name(&self) -> &str {
         &self.name
     }
 
-    pub fn role(&self) -> UserRole {
+    #[must_use]
+    pub const fn role(&self) -> UserRole {
         self.role
+    }
+
+    #[must_use]
+    pub fn exp_offset(&self) -> OffsetDateTime {
+        OffsetDateTime::from_unix_timestamp(self.exp).unwrap()
     }
 
     pub fn permission(self) -> UserPermissions {

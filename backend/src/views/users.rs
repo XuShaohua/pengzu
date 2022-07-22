@@ -27,7 +27,9 @@ pub async fn login(
     };
     let claims = Claims::new(&permission);
     let token = claims.encode()?;
-    let cookie = Cookie::new(TOKEN_NAME, &token);
+    let mut cookie = Cookie::new(TOKEN_NAME, &token);
+    cookie.set_path("/");
+    cookie.set_expires(claims.exp_offset());
     let mut resp = HttpResponse::Ok().json(user_info);
     resp.add_cookie(&cookie)?;
     Ok(resp)

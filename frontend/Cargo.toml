@@ -21,8 +21,10 @@ wasm-cookies = "0.1.0"
 [dependencies.web-sys]
 version = "0.3.58"
 features = [
+    "Document",
     "Headers",
     "HtmlInputElement",
+    "Location",
     "Request",
     "RequestInit",
     "RequestMode",

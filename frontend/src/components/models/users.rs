@@ -9,6 +9,8 @@ use serde::{Deserialize, Serialize};
 use crate::components::models::error::FetchError;
 use crate::components::models::fetch::fetch_post;
 
+const USER_INFO_STORAGE_KEY: &str = "user-info";
+
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum UserRole {
@@ -38,9 +40,21 @@ pub async fn login(form: &LoginForm) -> Result<UserInfo, FetchError> {
     let body = serde_json::to_string(form)?;
     let text = fetch_post(url, &body).await?;
     let storage = gloo_storage::LocalStorage::raw();
-    if let Err(err) = storage.set("user-info", &text) {
+    if let Err(err) = storage.set(USER_INFO_STORAGE_KEY, &text) {
         log::error!("Failed to store user info to local storage, err: {:?}", err);
     }
     let obj: UserInfo = serde_json::from_str(&text)?;
     Ok(obj)
+}
+
+pub fn get_user_info() -> Option<UserInfo> {
+    let storage = gloo_storage::LocalStorage::raw();
+    match storage.get(USER_INFO_STORAGE_KEY) {
+        Ok(Some(text)) => serde_json::from_str(&text).unwrap_or_else(|_| None),
+        Ok(None) => None,
+        Err(err) => {
+            log::error!("Failed to read local storage: {:?}", err);
+            None
+        }
+    }
 }

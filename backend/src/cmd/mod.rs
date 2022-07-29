@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 use clap::Command;
+use std::env;
 
 use crate::error::Error;
 use crate::import::daemon;
@@ -26,8 +27,8 @@ pub fn run() -> Result<(), Error> {
     dotenv::dotenv().ok();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    let mut cmd = Command::new("Pengzu")
-        .version("0.2.0")
+    let mut cmd = Command::new("backend")
+        .version(env!("VERGEN_GIT_SEMVER"))
         .author("Xu Shaohua <shaohua@biofan.org>")
         .about("Pengzu backend app")
         .subcommand(run_server_cmd())

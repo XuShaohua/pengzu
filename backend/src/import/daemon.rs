@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use clap::{Arg, Command};
+use clap::{Arg, ArgMatches, Command};
 use tokio::runtime::Runtime;
 
 use crate::error::Error;
@@ -12,13 +12,12 @@ const OPT_RESUME: &str = "resume";
 const OPT_IMPORT: &str = "import";
 const OPT_STOP: &str = "stop";
 
+pub const CMD_IMPORT_LIBRARY: &str = "import-library";
 const OPT_LIBRARY_ID: &str = "library_id";
 const OPT_CALIBRE_PATH: &str = "calibre_path";
 
-fn parse_cmdline() -> Command<'static> {
-    Command::new("import_library")
-        .version("0.1.0")
-        .author("Xu Shaohua <shaohua@biofan.org>")
+pub fn parse_cmdline() -> Command<'static> {
+    Command::new(CMD_IMPORT_LIBRARY)
         .about("Import books from calibra library")
         .arg(
             Arg::new(OPT_RESUME)
@@ -55,13 +54,7 @@ fn stop_task(_library_id: i32) -> Result<(), Error> {
     todo!()
 }
 
-pub fn run_daemon() -> Result<(), Error> {
-    dotenv::dotenv().ok();
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-
-    let cmd = parse_cmdline();
-    let matches = cmd.get_matches();
-
+pub fn run_daemon(matches: &ArgMatches) -> Result<(), Error> {
     if let Some(library_id) = matches.value_of(OPT_RESUME) {
         let library_id = library_id.parse()?;
         return resume_task(library_id);

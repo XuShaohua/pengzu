@@ -22,10 +22,6 @@ fn run_server() -> Result<(), Error> {
     rt.block_on(handle).unwrap()
 }
 
-fn import_library() -> Result<(), Error> {
-    daemon::run_daemon()
-}
-
 pub fn run() -> Result<(), Error> {
     dotenv::dotenv().ok();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
@@ -35,7 +31,8 @@ pub fn run() -> Result<(), Error> {
         .author("Xu Shaohua <shaohua@biofan.org>")
         .about("Pengzu backend")
         .subcommand(run_server_cmd())
-        .subcommand(add_user::add_user_cmd());
+        .subcommand(add_user::add_user_cmd())
+        .subcommand(daemon::parse_cmdline());
     let matches = cmd.get_matches();
 
     if let Some(matches) = matches.subcommand_matches(add_user::CMD_ADD_USER) {
@@ -43,6 +40,9 @@ pub fn run() -> Result<(), Error> {
     }
     if let Some(_matches) = matches.subcommand_matches(CMD_RUN) {
         return run_server();
+    }
+    if let Some(matches) = matches.subcommand_matches(daemon::CMD_IMPORT_LIBRARY) {
+        return daemon::run_daemon(matches);
     }
 
     Ok(())

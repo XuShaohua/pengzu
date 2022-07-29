@@ -17,6 +17,7 @@
 #[macro_use]
 extern crate diesel;
 
+pub mod cmd;
 pub mod db;
 pub mod error;
 pub mod import;

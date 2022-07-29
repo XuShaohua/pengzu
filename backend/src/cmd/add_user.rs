@@ -2,24 +2,21 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use backend::db::get_connection_pool;
-use backend::error::Error;
-use backend::models::users;
-use backend::models::users::{NewUserReq, UserRole};
-use clap::{Arg, Command};
+use clap::{Arg, ArgMatches, Command};
 
+use crate::db::get_connection_pool;
+use crate::error::Error;
+use crate::models::users;
+use crate::models::users::{NewUserReq, UserRole};
+
+pub const CMD_ADD_USER: &str = "add-user";
 const OPT_NAME: &str = "username";
 const OPT_PASSWORD: &str = "password";
 const OPT_EMAIL: &str = "email";
 const OPT_DISPLAY_NAME: &str = "display-name";
 
-fn main() -> Result<(), Error> {
-    dotenv::dotenv().ok();
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-
-    let cmd = Command::new("Add user")
-        .version("0.1.0")
-        .author("Xu Shaohua <shaohua@biofan.org>")
+pub fn add_user_cmd() -> Command<'static> {
+    Command::new(CMD_ADD_USER)
         .about("Add admin user")
         .arg(
             Arg::new(OPT_NAME)
@@ -52,9 +49,10 @@ fn main() -> Result<(), Error> {
                 .required(false)
                 .value_name(OPT_DISPLAY_NAME)
                 .help("Optionally specify display name"),
-        );
-    let matches = cmd.get_matches();
+        )
+}
 
+pub fn add_user(matches: &ArgMatches) -> Result<(), Error> {
     let username = matches.value_of(OPT_NAME).unwrap();
     let password = matches.value_of(OPT_PASSWORD).unwrap();
     let email = matches.value_of(OPT_EMAIL).unwrap();

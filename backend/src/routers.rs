@@ -40,9 +40,6 @@ async fn index(detail: AuthDetails<UserPermissions>) -> String {
 }
 
 pub async fn run() -> Result<(), Error> {
-    dotenv::dotenv().ok();
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-
     let pool = get_connection_pool()?;
 
     HttpServer::new(move || {

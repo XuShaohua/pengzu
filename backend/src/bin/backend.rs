@@ -2,10 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use backend::cmd;
 use backend::error::Error;
-use backend::routers;
 
-#[actix_web::main]
-async fn main() -> Result<(), Error> {
-    routers::run().await
+fn main() -> Result<(), Error> {
+    cmd::run()
 }

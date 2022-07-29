@@ -26,14 +26,14 @@ pub fn run() -> Result<(), Error> {
     dotenv::dotenv().ok();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    let cmd = Command::new("Pengzu")
+    let mut cmd = Command::new("Pengzu")
         .version("0.2.0")
         .author("Xu Shaohua <shaohua@biofan.org>")
-        .about("Pengzu backend")
+        .about("Pengzu backend app")
         .subcommand(run_server_cmd())
         .subcommand(add_user::add_user_cmd())
         .subcommand(daemon::parse_cmdline());
-    let matches = cmd.get_matches();
+    let matches = cmd.clone().get_matches();
 
     if let Some(matches) = matches.subcommand_matches(add_user::CMD_ADD_USER) {
         return add_user::add_user(&matches);
@@ -45,5 +45,5 @@ pub fn run() -> Result<(), Error> {
         return daemon::run_daemon(matches);
     }
 
-    Ok(())
+    cmd.print_help().map_err(Into::into)
 }

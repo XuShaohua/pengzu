@@ -2,11 +2,13 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use gloo_storage::Storage;
+use serde::de::DeserializeOwned;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Headers, Request, RequestInit, RequestMode, Response};
 
-use crate::error::{ErrorKind, FetchError};
+use crate::error::FetchError;
 
 /// Wrap fetch() api in browser.
 ///
@@ -17,29 +19,11 @@ use crate::error::{ErrorKind, FetchError};
 /// # Errors
 ///
 /// Returns error if failed to construct request or failed to read response body.
-pub async fn fetch(url: &str) -> Result<String, FetchError> {
-    let mut opts = RequestInit::new();
-    let headers = Headers::new()?;
-    headers.set("Content-Type", "application/json")?;
-    let token = match wasm_cookies::get("Token") {
-        Some(Ok(token)) => token,
-        _ => "".to_string(),
-    };
-    headers.set("Authorization", &format!("Bearer {}", token))?;
-    opts.method("GET").mode(RequestMode::Cors).headers(&headers);
-    let request = Request::new_with_str_and_init(url, &opts)?;
-
-    let window = gloo_utils::window();
-    let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
-    let resp: Response = resp_value.dyn_into()?;
-
-    let text = JsFuture::from(resp.text()?).await?;
-    text.as_string().ok_or_else(|| {
-        FetchError::from_string(
-            ErrorKind::ResponseError,
-            format!("Failed to read response body as text in: {:?}", url),
-        )
-    })
+pub async fn request_get<T>(url: &str) -> Result<T, FetchError>
+where
+    T: DeserializeOwned + std::fmt::Debug,
+{
+    request("GET", url, None).await
 }
 
 /// Wrap fetch() api in browser, for POST requests.
@@ -54,29 +38,39 @@ pub async fn fetch(url: &str) -> Result<String, FetchError> {
 /// # Errors
 ///
 /// Returns error if failed to construct request or failed to read response body.
-pub async fn fetch_post(url: &str, body: &str) -> Result<String, FetchError> {
-    let resp: Response = fetch_post_resp(url, body).await?;
-    let text = JsFuture::from(resp.text()?).await?;
-    text.as_string().ok_or_else(|| {
-        FetchError::from_string(
-            ErrorKind::ResponseError,
-            format!("Failed to read response body as text in: {:?}", url),
-        )
-    })
+pub async fn request_post<T>(url: &str, body: Option<&str>) -> Result<T, FetchError>
+where
+    T: DeserializeOwned + std::fmt::Debug,
+{
+    request("POST", url, body).await
 }
 
-pub async fn fetch_post_resp(url: &str, body: &str) -> Result<Response, FetchError> {
+fn get_token() -> Option<String> {
+    let storage = gloo_storage::LocalStorage::raw();
+    storage.get("TOKEN").unwrap()
+}
+
+async fn request<T>(method: &str, url: &str, body: Option<&str>) -> Result<T, FetchError>
+where
+    T: DeserializeOwned + std::fmt::Debug,
+{
     let mut opts = RequestInit::new();
     let headers = Headers::new()?;
+    if let Some(token) = get_token() {
+        headers.set("Authorization", &format!("Bearer {}", token))?;
+    }
     headers.set("Content-Type", "application/json")?;
-    opts.method("POST")
+    opts.method(method)
         .mode(RequestMode::Cors)
-        .body(Some(&JsValue::from_str(body)))
         .headers(&headers);
-    let request = Request::new_with_str_and_init(url, &opts)?;
+    if let Some(body) = body {
+        opts.body(Some(&JsValue::from_str(body)));
+    }
 
+    let request = Request::new_with_str_and_init(url, &opts)?;
     let window = gloo_utils::window();
     let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
     let resp: Response = resp_value.dyn_into()?;
-    Ok(resp)
+    let text = JsFuture::from(resp.text()?).await?;
+    text.into_serde().map_err(Into::into)
 }

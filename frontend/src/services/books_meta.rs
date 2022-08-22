@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use crate::error::FetchError;
-use crate::services::fetch::fetch;
+use crate::services::fetch::request_get;
 use crate::types::books_meta::BookMetadata;
 
 /// Get book metadata.
@@ -13,7 +13,5 @@ use crate::types::books_meta::BookMetadata;
 /// Returns error if server failed.
 pub async fn fetch_book_metadata(book_id: i32) -> Result<BookMetadata, FetchError> {
     let url = format!("/api/book/{}", book_id);
-    let text = fetch(&url).await?;
-    let metadata: BookMetadata = serde_json::from_str(&text)?;
-    Ok(metadata)
+    request_get(&url).await
 }

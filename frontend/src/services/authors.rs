@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use crate::error::FetchError;
-use crate::services::fetch::fetch;
+use crate::services::fetch::request_get;
 use crate::types::authors::GetAuthorsResp;
 
 /// Get author list
@@ -14,7 +14,5 @@ use crate::types::authors::GetAuthorsResp;
 pub async fn fetch_authors() -> Result<GetAuthorsResp, FetchError> {
     // TODO(Shaohua): Add query.
     let url = "/api/author";
-    let text = fetch(url).await?;
-    let obj: GetAuthorsResp = serde_json::from_str(&text)?;
-    Ok(obj)
+    request_get(url).await
 }

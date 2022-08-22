@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use crate::error::FetchError;
-use crate::services::fetch::fetch;
+use crate::services::fetch::request_get;
 use crate::types::publishers::GetPublishersResp;
 
 /// Get publisher list.
@@ -13,7 +13,5 @@ use crate::types::publishers::GetPublishersResp;
 /// Returns error if server fails.
 pub async fn fetch_publishers() -> Result<GetPublishersResp, FetchError> {
     let url = "/api/publisher";
-    let text = fetch(url).await?;
-    let obj: GetPublishersResp = serde_json::from_str(&text)?;
-    Ok(obj)
+    request_get(url).await
 }

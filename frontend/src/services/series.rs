@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use crate::error::FetchError;
-use crate::services::fetch::fetch;
+use crate::services::fetch::request_get;
 use crate::types::series::GetSeriesResp;
 
 /// Get series list.
@@ -13,7 +13,5 @@ use crate::types::series::GetSeriesResp;
 /// Returns error if server fails.
 pub async fn fetch_series() -> Result<GetSeriesResp, FetchError> {
     let url = "/api/series";
-    let text = fetch(url).await?;
-    let obj: GetSeriesResp = serde_json::from_str(&text)?;
-    Ok(obj)
+    request_get(url).await
 }

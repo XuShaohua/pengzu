@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use crate::error::FetchError;
-use crate::services::fetch::fetch;
+use crate::services::fetch::request_get;
 use crate::types::books::GetBooksResp;
 
 /// Get book list.
@@ -13,9 +13,7 @@ use crate::types::books::GetBooksResp;
 /// Returns error if server fails.
 pub async fn fetch_books() -> Result<GetBooksResp, FetchError> {
     let url = "/api/book";
-    let text = fetch(url).await?;
-    let obj: GetBooksResp = serde_json::from_str(&text)?;
-    Ok(obj)
+    request_get(url).await
 }
 
 /// Get book list of specific author `author_id`.
@@ -25,9 +23,7 @@ pub async fn fetch_books() -> Result<GetBooksResp, FetchError> {
 /// Returns error if server fails.
 pub async fn fetch_books_by_author(author_id: i32) -> Result<GetBooksResp, FetchError> {
     let url = format!("/api/author/books/{}", author_id);
-    let text = fetch(&url).await?;
-    let obj: GetBooksResp = serde_json::from_str(&text)?;
-    Ok(obj)
+    request_get(&url).await
 }
 
 /// Get book list of specific publisher `publisher_id`.
@@ -37,9 +33,7 @@ pub async fn fetch_books_by_author(author_id: i32) -> Result<GetBooksResp, Fetch
 /// Returns error if server fails.
 pub async fn fetch_books_by_publisher(publisher_id: i32) -> Result<GetBooksResp, FetchError> {
     let url = format!("/api/publisher/books/{}", publisher_id);
-    let text = fetch(&url).await?;
-    let obj: GetBooksResp = serde_json::from_str(&text)?;
-    Ok(obj)
+    request_get(&url).await
 }
 
 /// Get book list of specific series `series_id`.
@@ -49,9 +43,7 @@ pub async fn fetch_books_by_publisher(publisher_id: i32) -> Result<GetBooksResp,
 /// Returns error if server fails.
 pub async fn fetch_books_by_series(series_id: i32) -> Result<GetBooksResp, FetchError> {
     let url = format!("/api/series/books/{}", series_id);
-    let text = fetch(&url).await?;
-    let obj: GetBooksResp = serde_json::from_str(&text)?;
-    Ok(obj)
+    request_get(&url).await
 }
 
 /// Get book list of specific tag `tag_id`.
@@ -61,7 +53,5 @@ pub async fn fetch_books_by_series(series_id: i32) -> Result<GetBooksResp, Fetch
 /// Returns error if server fails.
 pub async fn fetch_books_by_tag(tag_id: i32) -> Result<GetBooksResp, FetchError> {
     let url = format!("/api/tag/books/{}", tag_id);
-    let text = fetch(&url).await?;
-    let obj: GetBooksResp = serde_json::from_str(&text)?;
-    Ok(obj)
+    request_get(&url).await
 }

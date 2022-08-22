@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use crate::error::FetchError;
-use crate::services::fetch::fetch;
+use crate::services::fetch::request_get;
 use crate::types::tags::GetTagsResp;
 
 /// Returns tag list.
@@ -13,7 +13,5 @@ use crate::types::tags::GetTagsResp;
 /// Returns error if server fails.
 pub async fn fetch_tags() -> Result<GetTagsResp, FetchError> {
     let url = "/api/tag";
-    let text = fetch(url).await?;
-    let obj: GetTagsResp = serde_json::from_str(&text)?;
-    Ok(obj)
+    request_get(url).await
 }

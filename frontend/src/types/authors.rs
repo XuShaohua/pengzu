@@ -5,9 +5,7 @@
 use chrono::NaiveDateTime;
 use serde::Deserialize;
 
-use crate::components::models::error::FetchError;
-use crate::components::models::fetch::fetch;
-use crate::components::models::page::Page;
+use crate::types::page::Page;
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct Author {
@@ -30,17 +28,4 @@ pub struct AuthorAndBook {
 pub struct GetAuthorsResp {
     pub page: Page,
     pub list: Vec<AuthorAndBook>,
-}
-
-/// Get author list
-///
-/// # Errors
-///
-/// Returns error if server failed.
-pub async fn fetch_authors() -> Result<GetAuthorsResp, FetchError> {
-    // TODO(Shaohua): Add query.
-    let url = "/api/author";
-    let text = fetch(url).await?;
-    let obj: GetAuthorsResp = serde_json::from_str(&text)?;
-    Ok(obj)
 }

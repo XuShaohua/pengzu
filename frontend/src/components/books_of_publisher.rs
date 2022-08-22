@@ -5,9 +5,9 @@
 use yew::prelude::*;
 
 use crate::components::inner::book_list::BookListComponent;
-use crate::components::models::books::{fetch_books_by_publisher, BookResp, GetBooksResp};
-use crate::components::models::error::FetchError;
-use crate::components::models::page::Page;
+use crate::services::books::{fetch_books_by_publisher, BookResp, GetBooksResp};
+use crate::types::error::FetchError;
+use crate::types::page::Page;
 
 #[derive(PartialEq)]
 pub enum Msg {

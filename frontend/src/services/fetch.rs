@@ -6,7 +6,7 @@ use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Headers, Request, RequestInit, RequestMode, Response};
 
-use crate::components::models::error::{ErrorKind, FetchError};
+use crate::types::error::{ErrorKind, FetchError};
 
 /// Wrap fetch() api in browser.
 ///

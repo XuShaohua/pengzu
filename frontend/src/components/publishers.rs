@@ -4,11 +4,9 @@
 
 use yew::prelude::*;
 
-use crate::components::models::error::FetchError;
-use crate::components::models::page::Page;
-use crate::components::models::publishers::{
-    fetch_publishers, GetPublishersResp, PublisherAndBook,
-};
+use crate::services::publishers::{fetch_publishers, GetPublishersResp, PublisherAndBook};
+use crate::types::error::FetchError;
+use crate::types::page::Page;
 
 pub enum Msg {
     Fetch,

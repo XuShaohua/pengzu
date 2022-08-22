@@ -2,42 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use serde::Deserialize;
-
-use super::error::FetchError;
-use super::page::Page;
-use crate::components::models::fetch::fetch;
-
-#[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct AuthorAndBookId {
-    pub id: i32,
-    pub name: String,
-    pub book: i32,
-}
-
-#[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct BookWithCover {
-    pub id: i32,
-    pub title: String,
-    pub has_cover: bool,
-    pub small_cover: Option<String>,
-    pub large_cover: Option<String>,
-    pub pubdate: Option<NaiveDateTime>,
-    pub created: NaiveDateTime,
-}
-
-#[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct BookResp {
-    pub book: BookWithCover,
-    pub authors: Vec<AuthorAndBookId>,
-}
-
-#[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct GetBooksResp {
-    pub page: Page,
-    pub list: Vec<BookResp>,
-}
+use crate::services::fetch::fetch;
+use crate::types::books::GetBooksResp;
+use crate::types::error::FetchError;
 
 /// Get book list.
 ///
@@ -97,15 +64,4 @@ pub async fn fetch_books_by_tag(tag_id: i32) -> Result<GetBooksResp, FetchError>
     let text = fetch(&url).await?;
     let obj: GetBooksResp = serde_json::from_str(&text)?;
     Ok(obj)
-}
-
-#[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct Book {
-    pub id: i32,
-    pub title: String,
-    pub has_cover: bool,
-    pub small_cover: Option<String>,
-    pub large_cover: Option<String>,
-    pub created: NaiveDateTime,
-    pub pubdate: NaiveDateTime,
 }

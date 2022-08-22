@@ -4,9 +4,9 @@
 
 use yew::prelude::*;
 
-use crate::components::models::books_meta::{fetch_book_metadata, BookMetadata};
-use crate::components::models::error::FetchError;
 use crate::components::util::get_cover_image_url;
+use crate::services::books_meta::{fetch_book_metadata, BookMetadata};
+use crate::types::error::FetchError;
 
 #[derive(PartialEq)]
 pub enum Msg {

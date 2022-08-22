@@ -4,9 +4,9 @@
 
 use yew::prelude::*;
 
-use crate::components::models::error::FetchError;
-use crate::components::models::page::Page;
-use crate::components::models::series::{fetch_series, GetSeriesResp, SeriesAndBook};
+use crate::services::series::{fetch_series, GetSeriesResp, SeriesAndBook};
+use crate::types::error::FetchError;
+use crate::types::page::Page;
 
 pub enum Msg {
     Fetch,

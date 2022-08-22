@@ -2,38 +2,13 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
 use gloo_storage::Storage;
-use serde::{Deserialize, Serialize};
 
-use crate::components::models::error::FetchError;
-use crate::components::models::fetch::fetch_post;
+use crate::services::fetch::fetch_post;
+use crate::types::error::FetchError;
+use crate::types::users::{LoginForm, UserInfo};
 
 const USER_INFO_STORAGE_KEY: &str = "user-info";
-
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-#[repr(u8)]
-pub enum UserRole {
-    User = 0,
-    Admin = 2,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct UserInfo {
-    pub id: i32,
-    pub name: String,
-    pub display_name: String,
-    pub email: String,
-    pub role: UserRole,
-    pub created: NaiveDateTime,
-}
-
-// TODO(Shaohua): Replace String with &str.
-#[derive(Debug, Serialize, Deserialize)]
-pub struct LoginForm {
-    pub username: String,
-    pub password: String,
-}
 
 pub async fn login(form: &LoginForm) -> Result<UserInfo, FetchError> {
     let url = "/api/login";

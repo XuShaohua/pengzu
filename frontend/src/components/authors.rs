@@ -4,9 +4,9 @@
 
 use yew::prelude::*;
 
-use crate::components::models::authors::{fetch_authors, AuthorAndBook, GetAuthorsResp};
-use crate::components::models::error::FetchError;
-use crate::components::models::page::Page;
+use crate::services::authors::{fetch_authors, AuthorAndBook, GetAuthorsResp};
+use crate::types::error::FetchError;
+use crate::types::page::Page;
 
 #[derive(PartialEq)]
 pub enum Msg {

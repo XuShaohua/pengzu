@@ -62,9 +62,9 @@ impl Component for BooksComponent {
 
         html! {
             <>
-                <button onclick={fetch}>{"Fetch books"}</button>
+                <button onclick={ fetch }>{ "Fetch books" }</button>
 
-                <BookListComponent books={self.books.clone()} />
+                <BookListComponent books={ self.books.clone() } />
             </>
         }
     }

@@ -103,9 +103,9 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
 
     html! {
         <>
-            <h3>{ metadata.book.title.clone() }</h3>
+            <h3>{ &metadata.book.title }</h3>
             <div class="book-cover">
-                <img class="detail-cover" src={ get_cover_image_url(&book.small_cover) } alt={book.title.clone()} />
+                <img class="detail-cover" src={ get_cover_image_url(&book.small_cover) } alt={ book.title.clone() } />
             </div>
             <div class="book-authors">{ authors_element }</div>
             <div class="book-publishers">{ publisher_element }</div>

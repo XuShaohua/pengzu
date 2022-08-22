@@ -3,8 +3,10 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_router::prelude::Link;
 
 use crate::error::FetchError;
+use crate::route::Route;
 use crate::services::publishers::fetch_publishers;
 use crate::types::page::Page;
 use crate::types::publishers::{GetPublishersResp, PublisherAndBook};
@@ -24,9 +26,9 @@ fn generate_publisher_element(publisher: &PublisherAndBook) -> Html {
     html! {
         <li class="publisher-item" key={ publisher.id }>
             <span class="badge">{ publisher.count }</span>
-            <a href={ format!("/publisher/books/{}", publisher.id) } target="_blank" title={ publisher.name.clone() }>
-                { publisher.name.clone() }
-            </a>
+            <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id } }>
+                { &publisher.name }
+            </Link<Route>>
         </li>
     }
 }

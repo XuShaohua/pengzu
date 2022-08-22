@@ -3,8 +3,10 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_router::prelude::Link;
 
 use crate::error::FetchError;
+use crate::route::Route;
 use crate::services::series::fetch_series;
 use crate::types::page::Page;
 use crate::types::series::{GetSeriesResp, SeriesAndBook};
@@ -24,9 +26,9 @@ fn generate_series_element(series: &SeriesAndBook) -> Html {
     html! {
         <li class="series-item" key={ series.id }>
             <span class="badge">{ series.count }</span>
-            <a href={ format!("/series/books/{}", series.id) } target="_blank" title={ series.name.clone() }>
-                { series.name.clone() }
-            </a>
+            <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>
+                { &series.name }
+            </Link<Route>>
         </li>
     }
 }

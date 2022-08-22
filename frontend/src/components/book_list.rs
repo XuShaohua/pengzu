@@ -3,7 +3,9 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_router::prelude::Link;
 
+use crate::route::Route;
 use crate::types::books::BookResp;
 use crate::views::util::get_cover_image_url;
 
@@ -25,16 +27,16 @@ fn generate_book_element(book_resp: &BookResp) -> Html {
         .enumerate()
         .map(|(index, author)| {
             let delimiter = if authors.len() - index > 1 {
-                html!{ <span>{ " & " }</span> }
+                html! { <span>{ " & " }</span> }
             } else {
-                html!{}
+                html! {}
             };
 
             html! {
                 <>
-                <a key={ author.id } href={ format!("/author/books/{:?}", author.id) } target="_blank">
-                    { author.name.clone() }
-                </a>
+                <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } }>
+                    { &author.name }
+                </Link<Route>>
 
                 { delimiter }
                 </>
@@ -45,14 +47,14 @@ fn generate_book_element(book_resp: &BookResp) -> Html {
     html! {
         <div class="book-fluid" key={ book.id }>
             <div class="book-cover">
-                <a href={ format!("/book/{}", book.id) } target="_blank">
+                <Link<Route> to={ Route::BookDetail { book_id: book.id } }>
                     <img src={ get_cover_image_url(&book.small_cover) } alt={ book.title.clone() } />
-                </a>
+                </Link<Route>>
             </div>
             <div class="book-meta">
-                <a href={ format!("/book/{}", book.id) } target="_blank">
-                    <span class="book-title" title={ book.title.clone() }>{ book.title.clone() }</span>
-                </a>
+                <Link<Route> to={ Route::BookDetail { book_id: book.id } }>
+                    <span class="book-title" title={ book.title.clone() }>{ &book.title }</span>
+                </Link<Route>>
 
                 <div class="book-authors">{ authors_element }</div>
             </div>

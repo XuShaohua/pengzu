@@ -3,8 +3,10 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_router::prelude::Link;
 
 use crate::error::FetchError;
+use crate::route::Route;
 use crate::services::books_meta::fetch_book_metadata;
 use crate::types::books_meta::BookMetadata;
 use crate::views::util::get_cover_image_url;
@@ -34,17 +36,16 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
         .enumerate()
         .map(|(index, author)| {
             let delimiter = if authors.len() - index > 1 {
-                html!{ <span>{ " & " }</span> }
+                html! { <span>{ " & " }</span> }
             } else {
-                html!{}
+                html! {}
             };
 
             html! {
                 <>
-                <a key={ author.id } href={ format!("/author/books/{:?}", author.id) } target="_blank">
-                    { author.name.clone() }
-                </a>
-
+                <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } }>
+                    { &author.name }
+                </Link<Route>>
                 { delimiter }
                 </>
             }
@@ -56,7 +57,9 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             html! {
                 <span>
                     { "Publisher: " }
-                    <a href={ format!("/publisher/{}", publisher.id) } target="_blank">{ publisher.name.clone() }</a>
+                    <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id }}>
+                        { &publisher.name }
+                    </Link<Route>>
                 </span>
             }
         }
@@ -83,7 +86,7 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             };
             html! {
                 <span key={ tag.id }>
-                    <a href={ format!("/tag/{}", tag.id) } target="_blank">{ tag.name.clone() }</a>
+                    <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id } }>{ &tag.name } </Link<Route>>
                     { delimiter }
                 </span>
             }
@@ -92,7 +95,7 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
 
     let series_element = if let Some(series) = &metadata.series {
         html! {
-            <a href={ format!("/series/{}", series.id) } target="_blank">{ series.name.clone() }</a>
+            <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>{ &series.name }</Link<Route>>
         }
     } else {
         html! {}

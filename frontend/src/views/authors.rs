@@ -3,8 +3,10 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_router::prelude::Link;
 
 use crate::error::FetchError;
+use crate::route::Route;
 use crate::services::authors::fetch_authors;
 use crate::types::authors::{AuthorAndBook, GetAuthorsResp};
 use crate::types::page::Page;
@@ -25,9 +27,7 @@ fn generate_author_element(author: &AuthorAndBook) -> Html {
     html! {
         <li class="author-item" key={ author.id }>
             <span class="badge">{ author.count }</span>
-            <a href={ format!("/author/books/{}", author.id) } target="_blank" title={ author.name.clone() }>
-                { author.name.clone() }
-            </a>
+            <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } } >{ &author.name } </Link<Route>>
         </li>
     }
 }

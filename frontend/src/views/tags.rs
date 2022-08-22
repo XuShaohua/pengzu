@@ -2,11 +2,14 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use yew::prelude::*;
+use yew_router::prelude::Link;
+
 use crate::error::FetchError;
+use crate::route::Route;
 use crate::services::tags::fetch_tags;
 use crate::types::page::Page;
 use crate::types::tags::{GetTagsResp, TagAndBook};
-use yew::prelude::*;
 
 #[derive(PartialEq)]
 pub enum Msg {
@@ -24,9 +27,9 @@ fn generate_tag_element(tag: &TagAndBook) -> Html {
     html! {
         <li class="tag-item" key={ tag.id }>
             <span class="badge">{ tag.count }</span>
-            <a href={ format!("/tag/books/{}", tag.id) } target="_blank" title={ tag.name.clone() }>
-                { tag.name.clone() }
-            </a>
+            <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
+                { &tag.name }
+            </Link<Route>>
         </li>
     }
 }

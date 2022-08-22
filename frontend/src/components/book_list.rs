@@ -4,8 +4,8 @@
 
 use yew::prelude::*;
 
-use crate::components::util::get_cover_image_url;
 use crate::types::books::BookResp;
+use crate::views::util::get_cover_image_url;
 
 #[derive(PartialEq)]
 pub enum Msg {}

@@ -4,8 +4,8 @@
 
 use yew::prelude::*;
 
-use crate::components::inner::book_list::BookListComponent;
-use crate::services::books::fetch_books_by_series;
+use crate::components::book_list::BookListComponent;
+use crate::services::books::fetch_books_by_publisher;
 use crate::types::books::{BookResp, GetBooksResp};
 use crate::types::error::FetchError;
 use crate::types::page::Page;
@@ -19,15 +19,15 @@ pub enum Msg {
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct Prop {
-    pub series_id: i32,
+    pub publisher_id: i32,
 }
 
-pub struct BooksOfSeriesComponent {
+pub struct BooksOfPublisherComponent {
     books: Vec<BookResp>,
     page: Option<Page>,
 }
 
-impl Component for BooksOfSeriesComponent {
+impl Component for BooksOfPublisherComponent {
     type Message = Msg;
     type Properties = Prop;
 
@@ -41,9 +41,9 @@ impl Component for BooksOfSeriesComponent {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Fetch => {
-                let series_id = ctx.props().series_id;
+                let publisher_id = ctx.props().publisher_id;
                 ctx.link().send_future(async move {
-                    match fetch_books_by_series(series_id).await {
+                    match fetch_books_by_publisher(publisher_id).await {
                         Ok(obj) => Msg::FetchSuccess(obj),
                         Err(err) => Msg::FetchFailed(err),
                     }
@@ -68,7 +68,7 @@ impl Component for BooksOfSeriesComponent {
 
         html! {
             <>
-                <button onclick={fetch}>{"Fetch books by series"}</button>
+                <button onclick={fetch}>{"Fetch books by publisher"}</button>
                 <BookListComponent books={self.books.clone()} />
             </>
         }

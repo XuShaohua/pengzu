@@ -5,15 +5,21 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::components::{
-    authors::AuthorsComponent, book_detail::BookDetailComponent, books::BooksComponent,
-    books_of_author::BooksOfAuthorComponent, books_of_publisher::BooksOfPublisherComponent,
-    books_of_series::BooksOfSeriesComponent, books_of_tag::BooksOfTagComponent,
-    categories::CategoriesComponent, discover::DiscoverComponent,
-    file_formats::FileFormatsComponent, not_found::NotFoundComponent,
-    publishers::PublishersComponent, ratings::RatingsComponent, series::SeriesComponent,
-    tags::TagsComponent,
-};
+use crate::components::not_found::NotFoundComponent;
+use crate::views::authors::AuthorsComponent;
+use crate::views::book_detail::BookDetailComponent;
+use crate::views::books::BooksComponent;
+use crate::views::books_of_author::BooksOfAuthorComponent;
+use crate::views::books_of_publisher::BooksOfPublisherComponent;
+use crate::views::books_of_series::BooksOfSeriesComponent;
+use crate::views::books_of_tag::BooksOfTagComponent;
+use crate::views::categories::CategoriesComponent;
+use crate::views::discover::DiscoverComponent;
+use crate::views::file_formats::FileFormatsComponent;
+use crate::views::publishers::PublishersComponent;
+use crate::views::ratings::RatingsComponent;
+use crate::views::series::SeriesComponent;
+use crate::views::tags::TagsComponent;
 
 #[derive(Debug, Clone, PartialEq, Routable)]
 pub enum Route {

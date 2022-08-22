@@ -20,6 +20,7 @@ pub struct UserInfo {
     pub email: String,
     pub role: UserRole,
     pub created: NaiveDateTime,
+    pub token: String,
 }
 
 // TODO(Shaohua): Replace String with &str.

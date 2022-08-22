@@ -64,6 +64,7 @@ pub struct UserInfo {
     pub email: String,
     pub role: UserRole,
     pub created: NaiveDateTime,
+    pub token: String,
 }
 
 fn user_to_user_info(user: User) -> UserInfo {
@@ -74,6 +75,7 @@ fn user_to_user_info(user: User) -> UserInfo {
         email: user.email,
         role: user.role.into(),
         created: user.created,
+        token: String::new(),
     }
 }
 

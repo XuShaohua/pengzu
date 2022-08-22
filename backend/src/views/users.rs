@@ -14,7 +14,7 @@ pub async fn login(
     pool: web::Data<DbPool>,
     form: web::Json<users::LoginForm>,
 ) -> Result<HttpResponse, Error> {
-    let user_info: users::UserInfo = web::block(move || {
+    let mut user_info: users::UserInfo = web::block(move || {
         let conn = pool.get()?;
         users::login(&conn, &form)
     })
@@ -30,6 +30,7 @@ pub async fn login(
     let mut cookie = Cookie::new(TOKEN_NAME, &token);
     cookie.set_path("/");
     cookie.set_expires(claims.exp_offset());
+    user_info.token = token.clone();
     let mut resp = HttpResponse::Ok().json(user_info);
     resp.add_cookie(&cookie)?;
     Ok(resp)

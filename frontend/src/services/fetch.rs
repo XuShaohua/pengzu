@@ -2,7 +2,6 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use gloo_storage::Storage;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use wasm_bindgen::{JsCast, JsValue};
@@ -10,6 +9,7 @@ use wasm_bindgen_futures::JsFuture;
 use web_sys::{Headers, Request, RequestInit, RequestMode, Response};
 
 use crate::error::{ErrorKind, FetchError};
+use crate::services::auth::get_token;
 
 /// Wrap fetch() api in browser.
 ///
@@ -47,11 +47,6 @@ where
     request("POST", url, body).await
 }
 
-fn get_token() -> Option<String> {
-    let storage = gloo_storage::LocalStorage::raw();
-    storage.get("TOKEN").unwrap()
-}
-
 async fn request<T, B>(method: &str, url: &str, body: B) -> Result<T, FetchError>
 where
     T: DeserializeOwned + std::fmt::Debug,
@@ -68,7 +63,6 @@ where
         .headers(&headers);
     if method == "POST" || method == "PUT" {
         let body = serde_json::to_string(&body)?;
-        log::info!("body: {}", body);
         opts.body(Some(&JsValue::from_str(&body)));
     }
 

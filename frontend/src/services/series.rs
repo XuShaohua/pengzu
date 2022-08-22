@@ -4,14 +4,14 @@
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::series::GetSeriesResp;
+use crate::types::series::SeriesList;
 
 /// Get series list.
 ///
 /// # Error
 ///
 /// Returns error if server fails.
-pub async fn fetch_series() -> Result<GetSeriesResp, FetchError> {
+pub async fn fetch_series() -> Result<SeriesList, FetchError> {
     let url = "/api/series";
     request_get(url).await
 }

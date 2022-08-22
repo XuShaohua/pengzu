@@ -6,13 +6,13 @@ use yew::prelude::*;
 
 use crate::error::FetchError;
 use crate::services::file_formats::fetch_file_formats;
-use crate::types::file_formats::{FileFormatAndBook, GetFileFormatsResp};
+use crate::types::file_formats::{FileFormatAndBook, FileFormatList};
 use crate::types::page::Page;
 
 #[derive(PartialEq)]
 pub enum Msg {
     Fetch,
-    FetchSuccess(GetFileFormatsResp),
+    FetchSuccess(FileFormatList),
     FetchFailed(FetchError),
 }
 

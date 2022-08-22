@@ -20,7 +20,7 @@ pub struct SeriesAndBook {
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct GetSeriesResp {
+pub struct SeriesList {
     pub page: Page,
     pub list: Vec<SeriesAndBook>,
 }

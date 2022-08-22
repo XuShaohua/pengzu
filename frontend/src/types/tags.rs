@@ -24,7 +24,7 @@ pub struct TagAndBook {
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct GetTagsResp {
+pub struct TagList {
     pub page: Page,
     pub list: Vec<TagAndBook>,
 }

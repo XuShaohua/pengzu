@@ -26,19 +26,19 @@ pub struct BookWithCover {
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct BookResp {
+pub struct Book {
     pub book: BookWithCover,
     pub authors: Vec<AuthorAndBookId>,
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct GetBooksResp {
+pub struct BooksList {
     pub page: Page,
-    pub list: Vec<BookResp>,
+    pub list: Vec<Book>,
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
-pub struct Book {
+pub struct BookDetail {
     pub id: i32,
     pub title: String,
     pub has_cover: bool,

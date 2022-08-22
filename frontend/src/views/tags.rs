@@ -9,12 +9,12 @@ use crate::error::FetchError;
 use crate::route::Route;
 use crate::services::tags::fetch_tags;
 use crate::types::page::Page;
-use crate::types::tags::{GetTagsResp, TagAndBook};
+use crate::types::tags::{TagAndBook, TagList};
 
 #[derive(PartialEq)]
 pub enum Msg {
     Fetch,
-    FetchSuccess(GetTagsResp),
+    FetchSuccess(TagList),
     FetchFailed(FetchError),
 }
 

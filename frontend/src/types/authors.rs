@@ -25,7 +25,7 @@ pub struct AuthorAndBook {
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct GetAuthorsResp {
+pub struct AuthorList {
     pub page: Page,
     pub list: Vec<AuthorAndBook>,
 }

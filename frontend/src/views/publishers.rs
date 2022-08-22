@@ -9,11 +9,11 @@ use crate::error::FetchError;
 use crate::route::Route;
 use crate::services::publishers::fetch_publishers;
 use crate::types::page::Page;
-use crate::types::publishers::{GetPublishersResp, PublisherAndBook};
+use crate::types::publishers::{PublisherAndBook, PublisherList};
 
 pub enum Msg {
     Fetch,
-    FetchSuccess(GetPublishersResp),
+    FetchSuccess(PublisherList),
     FetchFailed(FetchError),
 }
 

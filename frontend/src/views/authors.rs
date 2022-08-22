@@ -8,13 +8,13 @@ use yew_router::prelude::Link;
 use crate::error::FetchError;
 use crate::route::Route;
 use crate::services::authors::fetch_authors;
-use crate::types::authors::{AuthorAndBook, GetAuthorsResp};
+use crate::types::authors::{AuthorAndBook, AuthorList};
 use crate::types::page::Page;
 
 #[derive(PartialEq)]
 pub enum Msg {
     Fetch,
-    FetchSuccess(GetAuthorsResp),
+    FetchSuccess(AuthorList),
     FetchFailed(FetchError),
 }
 

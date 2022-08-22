@@ -7,13 +7,13 @@ use yew::prelude::*;
 use crate::components::book_list::BookListComponent;
 use crate::error::FetchError;
 use crate::services::books::fetch_books_by_tag;
-use crate::types::books::{BookResp, GetBooksResp};
+use crate::types::books::{Book, BooksList};
 use crate::types::page::Page;
 
 #[derive(PartialEq)]
 pub enum Msg {
     Fetch,
-    FetchSuccess(GetBooksResp),
+    FetchSuccess(BooksList),
     FetchFailed(FetchError),
 }
 
@@ -23,7 +23,7 @@ pub struct Prop {
 }
 
 pub struct BooksOfTagComponent {
-    books: Vec<BookResp>,
+    books: Vec<Book>,
     page: Option<Page>,
 }
 

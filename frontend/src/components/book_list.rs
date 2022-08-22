@@ -6,7 +6,7 @@ use yew::prelude::*;
 use yew_router::prelude::Link;
 
 use crate::route::Route;
-use crate::types::books::BookResp;
+use crate::types::books::Book;
 use crate::views::util::get_cover_image_url;
 
 #[derive(PartialEq)]
@@ -14,12 +14,12 @@ pub enum Msg {}
 
 #[derive(Debug, PartialEq, Properties)]
 pub struct Prop {
-    pub books: Vec<BookResp>,
+    pub books: Vec<Book>,
 }
 
 pub struct BookListComponent {}
 
-fn generate_book_element(book_resp: &BookResp) -> Html {
+fn generate_book_element(book_resp: &Book) -> Html {
     let book = &book_resp.book;
     let authors = &book_resp.authors;
     let authors_element = authors

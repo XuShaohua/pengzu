@@ -14,7 +14,7 @@ pub struct FileFormatAndBook {
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct GetFileFormatsResp {
+pub struct FileFormatList {
     pub page: Page,
     pub list: Vec<FileFormatAndBook>,
 }

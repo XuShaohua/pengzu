@@ -4,14 +4,14 @@
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::file_formats::GetFileFormatsResp;
+use crate::types::file_formats::FileFormatList;
 
 /// Get file format lit.
 ///
 /// # Error
 ///
 /// Returns error if server fails.
-pub async fn fetch_file_formats() -> Result<GetFileFormatsResp, FetchError> {
+pub async fn fetch_file_formats() -> Result<FileFormatList, FetchError> {
     let url = "/api/format";
     request_get(url).await
 }

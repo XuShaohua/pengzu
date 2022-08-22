@@ -9,11 +9,11 @@ use crate::error::FetchError;
 use crate::route::Route;
 use crate::services::series::fetch_series;
 use crate::types::page::Page;
-use crate::types::series::{GetSeriesResp, SeriesAndBook};
+use crate::types::series::{SeriesAndBook, SeriesList};
 
 pub enum Msg {
     Fetch,
-    FetchSuccess(GetSeriesResp),
+    FetchSuccess(SeriesList),
     FetchFailed(FetchError),
 }
 

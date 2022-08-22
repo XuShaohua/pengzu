@@ -4,8 +4,8 @@
 
 use yew::prelude::*;
 
+use crate::error::FetchError;
 use crate::services::series::fetch_series;
-use crate::types::error::FetchError;
 use crate::types::page::Page;
 use crate::types::series::{GetSeriesResp, SeriesAndBook};
 

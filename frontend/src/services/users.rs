@@ -4,8 +4,8 @@
 
 use gloo_storage::Storage;
 
+use crate::error::FetchError;
 use crate::services::fetch::fetch_post;
-use crate::types::error::FetchError;
 use crate::types::users::{LoginForm, UserInfo};
 
 const USER_INFO_STORAGE_KEY: &str = "user-info";

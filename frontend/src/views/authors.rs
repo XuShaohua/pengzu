@@ -4,9 +4,9 @@
 
 use yew::prelude::*;
 
+use crate::error::FetchError;
 use crate::services::authors::fetch_authors;
 use crate::types::authors::{AuthorAndBook, GetAuthorsResp};
-use crate::types::error::FetchError;
 use crate::types::page::Page;
 
 #[derive(PartialEq)]

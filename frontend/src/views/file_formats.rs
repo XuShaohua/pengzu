@@ -4,8 +4,8 @@
 
 use yew::prelude::*;
 
+use crate::error::FetchError;
 use crate::services::file_formats::fetch_file_formats;
-use crate::types::error::FetchError;
 use crate::types::file_formats::{FileFormatAndBook, GetFileFormatsResp};
 use crate::types::page::Page;
 

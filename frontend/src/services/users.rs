@@ -12,8 +12,7 @@ const USER_INFO_STORAGE_KEY: &str = "user-info";
 
 pub async fn login(form: &LoginForm) -> Result<UserInfo, FetchError> {
     let url = "/api/login";
-    let body = serde_json::to_string(form)?;
-    request_post(url, Some(&body)).await
+    request_post(url, form).await
 }
 
 pub fn get_user_info() -> Option<UserInfo> {

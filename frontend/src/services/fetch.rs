@@ -4,6 +4,7 @@
 
 use gloo_storage::Storage;
 use serde::de::DeserializeOwned;
+use serde::Serialize;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Headers, Request, RequestInit, RequestMode, Response};
@@ -23,7 +24,7 @@ pub async fn request_get<T>(url: &str) -> Result<T, FetchError>
 where
     T: DeserializeOwned + std::fmt::Debug,
 {
-    request("GET", url, None).await
+    request("GET", url, ()).await
 }
 
 /// Wrap fetch() api in browser, for POST requests.
@@ -38,9 +39,10 @@ where
 /// # Errors
 ///
 /// Returns error if failed to construct request or failed to read response body.
-pub async fn request_post<T>(url: &str, body: Option<&str>) -> Result<T, FetchError>
+pub async fn request_post<T, B>(url: &str, body: B) -> Result<T, FetchError>
 where
     T: DeserializeOwned + std::fmt::Debug,
+    B: Serialize + std::fmt::Debug,
 {
     request("POST", url, body).await
 }
@@ -50,9 +52,10 @@ fn get_token() -> Option<String> {
     storage.get("TOKEN").unwrap()
 }
 
-async fn request<T>(method: &str, url: &str, body: Option<&str>) -> Result<T, FetchError>
+async fn request<T, B>(method: &str, url: &str, body: B) -> Result<T, FetchError>
 where
     T: DeserializeOwned + std::fmt::Debug,
+    B: Serialize + std::fmt::Debug,
 {
     let mut opts = RequestInit::new();
     let headers = Headers::new()?;
@@ -63,8 +66,10 @@ where
     opts.method(method)
         .mode(RequestMode::Cors)
         .headers(&headers);
-    if let Some(body) = body {
-        opts.body(Some(&JsValue::from_str(body)));
+    if method == "POST" || method == "PUT" {
+        let body = serde_json::to_string(&body)?;
+        log::info!("body: {}", body);
+        opts.body(Some(&JsValue::from_str(&body)));
     }
 
     let request = Request::new_with_str_and_init(url, &opts)?;

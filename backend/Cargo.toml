@@ -5,15 +5,15 @@ edition = "2021"
 publish = false
 
 [dependencies]
-actix-files = "0.6.1"
+actix-files = "0.6.2"
 actix-http = "3.2.1"
 actix-rt = "2.7.0"
 actix-web = "4.1.0"
 actix-web-grants = "3.0.1"
 actix-web-httpauth = "0.8.0"
 calibre = { path = "../calibre" }
-chrono = { version = "0.4.19", features = ["serde"] }
-clap = "3.2.12"
+chrono = { version = "0.4.20", features = ["serde"] }
+clap = "3.2.16"
 data-encoding = "2.3.2"
 diesel = { version = "1.4.8", default-features=false, features = ["chrono", "postgres", "r2d2"] }
 dotenv = "0.15.0"
@@ -22,15 +22,15 @@ futures = "0.3.21"
 hmac = "0.12.1"
 jsonwebtoken = "8.1.1"
 log = "0.4.17"
-mongodb = "2.2.2"
+mongodb = "2.3.0"
 r2d2 = "0.8.10"
 ring = { version = "0.16.20", features = ["std"] }
-serde = { version = "1.0.139", features = ["serde_derive"] }
-serde_json = "1.0.82"
+serde = { version = "1.0.142", features = ["serde_derive"] }
+serde_json = "1.0.83"
 sha2 = "0.10.2"
 shell-rs = "0.2.6"
-tokio = { version = "1.20.0", features = [ "full", ] }
+tokio = { version = "1.20.1", features = [ "full", ] }
 uuid = { version = "1.1.2", features = ["serde", "v4"] }
 
 [build-dependencies]
-vergen = "7.3.1"
+vergen = "7.3.2"

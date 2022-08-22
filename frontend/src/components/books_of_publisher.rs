@@ -5,7 +5,8 @@
 use yew::prelude::*;
 
 use crate::components::inner::book_list::BookListComponent;
-use crate::services::books::{fetch_books_by_publisher, BookResp, GetBooksResp};
+use crate::services::books::fetch_books_by_publisher;
+use crate::types::books::{BookResp, GetBooksResp};
 use crate::types::error::FetchError;
 use crate::types::page::Page;
 

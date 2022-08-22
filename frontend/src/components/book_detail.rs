@@ -5,7 +5,8 @@
 use yew::prelude::*;
 
 use crate::components::util::get_cover_image_url;
-use crate::services::books_meta::{fetch_book_metadata, BookMetadata};
+use crate::services::books_meta::fetch_book_metadata;
+use crate::types::books_meta::BookMetadata;
 use crate::types::error::FetchError;
 
 #[derive(PartialEq)]

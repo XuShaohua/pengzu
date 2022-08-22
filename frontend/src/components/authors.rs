@@ -4,7 +4,8 @@
 
 use yew::prelude::*;
 
-use crate::services::authors::{fetch_authors, AuthorAndBook, GetAuthorsResp};
+use crate::services::authors::fetch_authors;
+use crate::types::authors::{AuthorAndBook, GetAuthorsResp};
 use crate::types::error::FetchError;
 use crate::types::page::Page;
 

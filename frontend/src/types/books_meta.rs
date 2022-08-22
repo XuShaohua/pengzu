@@ -4,6 +4,12 @@
 
 use serde::Deserialize;
 
+use crate::types::authors::Author;
+use crate::types::books::BookWithCover;
+use crate::types::publishers::Publisher;
+use crate::types::series::Series;
+use crate::types::tags::Tag;
+
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct BookMetadata {
     pub book: BookWithCover,

@@ -2,10 +2,12 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::services::file_formats::{fetch_file_formats, FileFormatAndBook, GetFileFormatsResp};
-use crate::types::error::FetchError;
-use crate::types::page::Page;
 use yew::prelude::*;
+
+use crate::services::file_formats::fetch_file_formats;
+use crate::types::error::FetchError;
+use crate::types::file_formats::{FileFormatAndBook, GetFileFormatsResp};
+use crate::types::page::Page;
 
 #[derive(PartialEq)]
 pub enum Msg {

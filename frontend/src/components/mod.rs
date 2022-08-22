@@ -17,7 +17,6 @@ pub mod header;
 mod inner;
 pub mod left_panel;
 pub mod login;
-pub mod models;
 pub mod not_found;
 pub mod publishers;
 pub mod ratings;

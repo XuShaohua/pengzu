@@ -5,8 +5,9 @@
 use web_sys::{HtmlInputElement, Url};
 use yew::prelude::*;
 
-use crate::services::users::{login, LoginForm, UserInfo};
+use crate::services::users::login;
 use crate::types::error::FetchError;
+use crate::types::users::{LoginForm, UserInfo};
 
 #[derive(PartialEq)]
 pub enum Msg {

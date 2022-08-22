@@ -4,8 +4,8 @@
 
 use yew::prelude::*;
 
-use crate::services::publishers::fetch_publishers;
 use crate::error::FetchError;
+use crate::services::publishers::fetch_publishers;
 use crate::types::page::Page;
 use crate::types::publishers::{GetPublishersResp, PublisherAndBook};
 

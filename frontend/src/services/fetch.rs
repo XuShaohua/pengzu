@@ -72,7 +72,10 @@ where
     let resp: Response = resp_value.dyn_into()?;
     if resp.ok() {
         let text = JsFuture::from(resp.text()?).await?;
-        text.into_serde().map_err(Into::into)
+        let s = text
+            .as_string()
+            .ok_or_else(|| FetchError::new(ErrorKind::ResponseError))?;
+        serde_json::from_str(&s).map_err(Into::into)
     } else {
         log::warn!("http response: {}, url: {}", resp.status(), url);
         let reason = match resp.status() {

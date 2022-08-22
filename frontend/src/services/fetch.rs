@@ -9,7 +9,7 @@ use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Headers, Request, RequestInit, RequestMode, Response};
 
-use crate::error::FetchError;
+use crate::error::{ErrorKind, FetchError};
 
 /// Wrap fetch() api in browser.
 ///
@@ -76,6 +76,20 @@ where
     let window = gloo_utils::window();
     let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
     let resp: Response = resp_value.dyn_into()?;
-    let text = JsFuture::from(resp.text()?).await?;
-    text.into_serde().map_err(Into::into)
+    if resp.ok() {
+        let text = JsFuture::from(resp.text()?).await?;
+        text.into_serde().map_err(Into::into)
+    } else {
+        log::warn!("http response: {}, url: {}", resp.status(), url);
+        let reason = match resp.status() {
+            400 => ErrorKind::BadRequest,
+            401 => ErrorKind::Unauthorized,
+            403 => ErrorKind::Forbidden,
+            404 => ErrorKind::NotFound,
+            500 => ErrorKind::InternalServerError,
+            _ => ErrorKind::ResponseError,
+        };
+
+        Err(FetchError::new(reason))
+    }
 }

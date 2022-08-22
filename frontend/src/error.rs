@@ -8,8 +8,24 @@ use wasm_bindgen::JsValue;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ErrorKind {
+    // For status == 400.
+    BadRequest,
+
+    // For status == 401.
+    Unauthorized,
+
+    // For status == 403.
+    Forbidden,
+
+    // For status == 404.
+    NotFound,
+
+    // For status == 500.
+    InternalServerError,
+
     JsError,
-    SerdeError,
+    DeserializeError,
+    RequestError,
     ResponseError,
 }
 
@@ -21,10 +37,10 @@ pub struct FetchError {
 
 impl FetchError {
     #[must_use]
-    pub fn new(kind: ErrorKind, message: &str) -> Self {
+    pub fn new(kind: ErrorKind) -> Self {
         Self {
             kind,
-            message: message.to_owned(),
+            message: "".to_string(),
         }
     }
 
@@ -50,6 +66,6 @@ impl From<JsValue> for FetchError {
 
 impl From<serde_json::Error> for FetchError {
     fn from(err: serde_json::Error) -> Self {
-        Self::from_string(ErrorKind::SerdeError, format!("{:?}", err))
+        Self::from_string(ErrorKind::DeserializeError, format!("{:?}", err))
     }
 }

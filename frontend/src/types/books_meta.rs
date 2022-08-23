@@ -10,7 +10,7 @@ use crate::types::publishers::Publisher;
 use crate::types::series::Series;
 use crate::types::tags::Tag;
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct BookMetadata {
     pub book: BookWithCover,
     pub authors: Vec<Author>,

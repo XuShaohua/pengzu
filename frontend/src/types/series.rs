@@ -6,20 +6,20 @@ use serde::Deserialize;
 
 use crate::types::page::Page;
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct Series {
     pub id: i32,
     pub name: String,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct SeriesAndBook {
     pub id: i32,
     pub name: String,
     pub count: i64,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct SeriesList {
     pub page: Page,
     pub list: Vec<SeriesAndBook>,

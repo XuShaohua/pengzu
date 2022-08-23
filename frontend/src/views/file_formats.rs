@@ -3,66 +3,29 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
-use crate::error::FetchError;
 use crate::services::file_formats::fetch_file_formats;
-use crate::types::file_formats::{FileFormatAndBook, FileFormatList};
-use crate::types::page::Page;
 
-#[derive(PartialEq)]
-pub enum Msg {
-    Fetch,
-    FetchSuccess(FileFormatList),
-    FetchFailed(FetchError),
-}
+#[function_component(FileFormatsComponent)]
+pub fn file_formats_page() -> Html {
+    let file_formats = use_async_with_options(
+        async move { fetch_file_formats().await },
+        UseAsyncOptions::enable_auto(),
+    );
 
-pub struct FileFormatsComponent {
-    formats: Vec<FileFormatAndBook>,
-    page: Option<Page>,
-}
-
-impl Component for FileFormatsComponent {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            formats: vec![],
-            page: None,
-        }
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Fetch => {
-                ctx.link().send_future(async {
-                    match fetch_file_formats().await {
-                        Ok(obj) => Msg::FetchSuccess(obj),
-                        Err(err) => Msg::FetchFailed(err),
-                    }
-                });
-                false
-            }
-            Msg::FetchSuccess(obj) => {
-                log::info!("obj: {:#?}", obj);
-                self.page = Some(obj.page);
-                self.formats.extend(obj.list);
-                true
-            }
-            Msg::FetchFailed(err) => {
-                log::warn!("failed to fetch formats: {:?}", err);
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let fetch = ctx.link().callback(|_| Msg::Fetch);
-
-        html! {
-            <div>
-                <button onclick={fetch}>{"Fetch file formats"}</button>
-            </div>
-        }
+    if let Some(file_formats) = &file_formats.data {
+        return html! {
+            <ul>
+                {for file_formats.list.iter().map(|file_format| html!{
+                    <li key={ file_format.id }>
+                    <span class="badge">{ file_format.count }</span>
+                    { &file_format.name }
+                    </li>
+                })}
+            </ul>
+        };
+    } else {
+        return html! {};
     }
 }

@@ -6,14 +6,14 @@ use serde::Deserialize;
 
 use crate::types::page::Page;
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct FileFormatAndBook {
     pub id: i32,
     pub name: String,
     pub count: i64,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct FileFormatList {
     pub page: Page,
     pub list: Vec<FileFormatAndBook>,

@@ -4,28 +4,12 @@
 
 use yew::prelude::*;
 
-pub enum Msg {}
-
-pub struct HeaderComponent {}
-
-impl Component for HeaderComponent {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
-        false
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        html! {
-            <div class="navbar">
-                { "Online Library" }
-                <a href="/login">{"Login"}</a>
-            </div>
-        }
+#[function_component(HeaderComponent)]
+pub fn header() -> Html {
+    html! {
+        <div class="navbar">
+            { "Online Library" }
+            <a href="/login">{"Login"}</a>
+        </div>
     }
 }

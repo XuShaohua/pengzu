@@ -9,15 +9,10 @@ use crate::route::Route;
 use crate::types::books::Book;
 use crate::views::util::get_cover_image_url;
 
-#[derive(PartialEq)]
-pub enum Msg {}
-
 #[derive(Debug, PartialEq, Properties)]
-pub struct Prop {
+pub struct Props {
     pub books: Vec<Book>,
 }
-
-pub struct BookListComponent {}
 
 fn generate_book_element(book_resp: &Book) -> Html {
     let book = &book_resp.book;
@@ -62,30 +57,17 @@ fn generate_book_element(book_resp: &Book) -> Html {
     }
 }
 
-impl Component for BookListComponent {
-    type Message = Msg;
-    type Properties = Prop;
+#[function_component(BookListComponent)]
+pub fn book_list(props: &Props) -> Html {
+    let book_elements = props
+        .books
+        .iter()
+        .map(generate_book_element)
+        .collect::<Html>();
 
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
-        false
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let book_elements = ctx
-            .props()
-            .books
-            .iter()
-            .map(generate_book_element)
-            .collect::<Html>();
-
-        html! {
-            <div class="book-list">
-                { book_elements }
-            </div>
-        }
+    html! {
+        <div class="book-list">
+            { book_elements }
+        </div>
     }
 }

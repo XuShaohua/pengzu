@@ -12,10 +12,6 @@ use crate::components::{
 };
 use crate::route::{switch_route, Route};
 
-pub enum Msg {}
-
-pub struct AppComponent {}
-
 fn is_login_page() -> bool {
     let window = gloo_utils::window();
     let location = window.location();
@@ -31,40 +27,29 @@ fn is_login_page() -> bool {
     pathname == "/login"
 }
 
-impl Component for AppComponent {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
+#[function_component(AppComponent)]
+pub fn app() -> Html {
+    // TODO(Shaohua): Remove
+    if is_login_page() {
+        return html! {
+            <LoginComponent />
+        };
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
-        false
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        if is_login_page() {
-            return html! {
-                <LoginComponent />
-            };
-        }
-
-        html! {
-            <>
-                <BrowserRouter>
-                    <HeaderComponent />
-                    <div class="container-fluid">
-                        <div class="row-fluid">
-                            <LeftPanelComponent />
-                            <div class="content-area">
-                                <Switch<Route> render={Switch::render(switch_route)} />
-                            </div>
+    html! {
+        <>
+            <BrowserRouter>
+                <HeaderComponent />
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <LeftPanelComponent />
+                        <div class="content-area">
+                            <Switch<Route> render={Switch::render(switch_route)} />
                         </div>
                     </div>
-                    <FooterComponent />
-                </BrowserRouter>
-            </>
-        }
+                </div>
+                <FooterComponent />
+            </BrowserRouter>
+        </>
     }
 }

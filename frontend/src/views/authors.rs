@@ -3,87 +3,35 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_hooks::prelude::*;
 use yew_router::prelude::Link;
 
-use crate::error::FetchError;
 use crate::route::Route;
 use crate::services::authors::fetch_authors;
-use crate::types::authors::{AuthorAndBook, AuthorList};
-use crate::types::page::Page;
 
-#[derive(PartialEq)]
-pub enum Msg {
-    Fetch,
-    FetchSuccess(AuthorList),
-    FetchFailed(FetchError),
-}
+#[function_component(AuthorsComponent)]
+pub fn home() -> Html {
+    let author_list = {
+        use_async_with_options(
+            async move { fetch_authors().await },
+            UseAsyncOptions::enable_auto(),
+        )
+    };
 
-pub struct AuthorsComponent {
-    authors: Vec<AuthorAndBook>,
-    page: Option<Page>,
-}
-
-fn generate_author_element(author: &AuthorAndBook) -> Html {
-    html! {
-        <li class="author-item" key={ author.id }>
-            <span class="badge">{ author.count }</span>
-            <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } } >{ &author.name } </Link<Route>>
-        </li>
-    }
-}
-
-impl Component for AuthorsComponent {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            authors: vec![],
-            page: None,
-        }
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Fetch => {
-                ctx.link().send_future(async {
-                    match fetch_authors().await {
-                        Ok(obj) => Msg::FetchSuccess(obj),
-                        Err(err) => Msg::FetchFailed(err),
-                    }
-                });
-                false
-            }
-            Msg::FetchSuccess(obj) => {
-                log::info!("obj: {:#?}", obj);
-                self.page = Some(obj.page);
-                self.authors.extend(obj.list);
-                true
-            }
-            Msg::FetchFailed(err) => {
-                log::warn!("failed to fetch authors: {:?}", err);
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let fetch = ctx.link().callback(|_| Msg::Fetch);
-
-        let author_elements = self
-            .authors
-            .iter()
-            .map(generate_author_element)
-            .collect::<Html>();
-
-        html! {
-            <>
-                <button onclick={fetch}>{"Fetch authors"}</button>
-
-                <ul class="author-list">
-                    { author_elements }
-                </ul>
-            </>
-        }
+    if let Some(author_list) = &author_list.data {
+        return html! {
+             <ul class="author-list">
+                 {for author_list.list.iter().map(|author| html! {
+                     <li class="author-item" key={ author.id }>
+                     <span class="badge">{ author.count }</span>
+                     <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } } >
+                     { &author.name }
+                     </Link<Route>>
+                     </li>
+                 })}
+             </ul>
+        };
+    } else {
+        return html! {};
     }
 }

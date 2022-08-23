@@ -7,7 +7,6 @@ use crate::services::auth::set_token;
 use std::fmt;
 use std::fmt::Formatter;
 use std::ops::Deref;
-use web_sys::{set_scroll_top, to_json, UrlSearchParams};
 use yew::prelude::*;
 use yew_router::prelude::*;
 

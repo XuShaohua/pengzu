@@ -3,88 +3,33 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use yew_router::prelude::Link;
 
-use crate::error::FetchError;
 use crate::route::Route;
 use crate::services::series::fetch_series;
-use crate::types::page::Page;
-use crate::types::series::{SeriesAndBook, SeriesList};
 
-pub enum Msg {
-    Fetch,
-    FetchSuccess(SeriesList),
-    FetchFailed(FetchError),
-}
+#[function_component(SeriesComponent)]
+pub fn series_page() -> Html {
+    let series_list = use_async_with_options(
+        async move { fetch_series().await },
+        UseAsyncOptions::enable_auto(),
+    );
 
-pub struct SeriesComponent {
-    series: Vec<SeriesAndBook>,
-    page: Option<Page>,
-}
-
-fn generate_series_element(series: &SeriesAndBook) -> Html {
-    html! {
-        <li class="series-item" key={ series.id }>
-            <span class="badge">{ series.count }</span>
-            <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>
+    if let Some(series_list) = &series_list.data {
+        return html! {
+            <ul>
+            {for series_list.list.iter().map(|series| html!{
+                <li class="series-item" key={ series.id }>
+                <span class="badge">{ series.count }</span>
+                <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>
                 { &series.name }
-            </Link<Route>>
-        </li>
-    }
-}
-
-impl Component for SeriesComponent {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            series: vec![],
-            page: None,
-        }
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Fetch => {
-                ctx.link().send_future(async {
-                    match fetch_series().await {
-                        Ok(obj) => Msg::FetchSuccess(obj),
-                        Err(err) => Msg::FetchFailed(err),
-                    }
-                });
-                false
-            }
-            Msg::FetchSuccess(obj) => {
-                log::info!("obj: {:#?}", obj);
-                self.page = Some(obj.page);
-                self.series.extend(obj.list);
-                true
-            }
-            Msg::FetchFailed(err) => {
-                log::warn!("failed to fetch series: {:?}", err);
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let fetch = ctx.link().callback(|_| Msg::Fetch);
-
-        let series_elements = self
-            .series
-            .iter()
-            .map(generate_series_element)
-            .collect::<Html>();
-
-        html! {
-            <>
-                <button onclick={fetch}>{"Fetch series"}</button>
-
-                <ul class="series-list">
-                    { series_elements }
-                </ul>
-            </>
-        }
+                </Link<Route>>
+                </li>
+            })}
+            </ul>
+        };
+    } else {
+        return html! {};
     }
 }

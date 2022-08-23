@@ -20,12 +20,12 @@ pub fn publishers_page() -> Html {
         return html! {
              <ul class="publisher-list">
                 {for publisher_list.list.iter().map(|publisher| html!{
-                 <li class="publisher-item" key={ publisher.id }>
+                    <li class="publisher-item" key={ publisher.id }>
                     <span class="badge">{ publisher.count }</span>
                     <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id } }>
                     { &publisher.name }
                     </Link<Route>>
-                </li>
+                    </li>
                 })}
              </ul>
         };

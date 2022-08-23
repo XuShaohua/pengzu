@@ -12,7 +12,13 @@ pub enum UserRole {
     Admin = 2,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+impl Default for UserRole {
+    fn default() -> Self {
+        Self::User
+    }
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UserInfo {
     pub id: i32,
     pub name: String,

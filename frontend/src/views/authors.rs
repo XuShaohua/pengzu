@@ -11,12 +11,10 @@ use crate::services::authors::fetch_authors;
 
 #[function_component(AuthorsComponent)]
 pub fn home() -> Html {
-    let author_list = {
-        use_async_with_options(
-            async move { fetch_authors().await },
-            UseAsyncOptions::enable_auto(),
-        )
-    };
+    let author_list = use_async_with_options(
+        async move { fetch_authors().await },
+        UseAsyncOptions::enable_auto(),
+    );
 
     if let Some(author_list) = &author_list.data {
         return html! {

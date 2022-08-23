@@ -107,13 +107,11 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
 
 #[function_component(BookDetailComponent)]
 pub fn book_detail(props: &Props) -> Html {
-    let book_metadata = {
-        let book_id = props.book_id;
-        use_async_with_options(
-            async move { fetch_book_metadata(book_id).await },
-            UseAsyncOptions::enable_auto(),
-        )
-    };
+    let book_id = props.book_id;
+    let book_metadata = use_async_with_options(
+        async move { fetch_book_metadata(book_id).await },
+        UseAsyncOptions::enable_auto(),
+    );
 
     if let Some(book_metadata) = &book_metadata.data {
         return generate_metadata_element(book_metadata);

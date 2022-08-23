@@ -10,12 +10,10 @@ use crate::services::books::fetch_books;
 
 #[function_component(BooksComponent)]
 pub fn books() -> Html {
-    let book_list = {
-        use_async_with_options(
-            async move { fetch_books().await },
-            UseAsyncOptions::enable_auto(),
-        )
-    };
+    let book_list = use_async_with_options(
+        async move { fetch_books().await },
+        UseAsyncOptions::enable_auto(),
+    );
 
     if let Some(book_list) = &book_list.data {
         return html! {

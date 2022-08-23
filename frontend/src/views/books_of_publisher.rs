@@ -3,74 +3,29 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use crate::components::book_list::BookListComponent;
-use crate::error::FetchError;
 use crate::services::books::fetch_books_by_publisher;
-use crate::types::books::{Book, BooksList};
-use crate::types::page::Page;
-
-#[derive(PartialEq)]
-pub enum Msg {
-    Fetch,
-    FetchSuccess(BooksList),
-    FetchFailed(FetchError),
-}
 
 #[derive(Debug, Clone, PartialEq, Properties)]
-pub struct Prop {
+pub struct Props {
     pub publisher_id: i32,
 }
 
-pub struct BooksOfPublisherComponent {
-    books: Vec<Book>,
-    page: Option<Page>,
-}
+#[function_component(BooksOfPublisherComponent)]
+pub fn books_of_publisher(props: &Props) -> Html {
+    let publisher_id = props.publisher_id;
+    let book_list = use_async_with_options(
+        async move { fetch_books_by_publisher(publisher_id).await },
+        UseAsyncOptions::enable_auto(),
+    );
 
-impl Component for BooksOfPublisherComponent {
-    type Message = Msg;
-    type Properties = Prop;
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            books: Vec::new(),
-            page: None,
-        }
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Fetch => {
-                let publisher_id = ctx.props().publisher_id;
-                ctx.link().send_future(async move {
-                    match fetch_books_by_publisher(publisher_id).await {
-                        Ok(obj) => Msg::FetchSuccess(obj),
-                        Err(err) => Msg::FetchFailed(err),
-                    }
-                });
-                false
-            }
-            Msg::FetchSuccess(obj) => {
-                log::info!("obj: {:#?}", obj);
-                self.page = Some(obj.page);
-                self.books.extend(obj.list);
-                true
-            }
-            Msg::FetchFailed(err) => {
-                log::warn!("failed to fetch books: {:?}", err);
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let fetch = ctx.link().callback(|_| Msg::Fetch);
-
-        html! {
-            <>
-                <button onclick={ fetch }>{ "Fetch books by publisher" }</button>
-                <BookListComponent books={ self.books.clone() } />
-            </>
-        }
+    if let Some(book_list) = &book_list.data {
+        return html! {
+            <BookListComponent books={ book_list.list.clone() } />
+        };
+    } else {
+        return html! {};
     }
 }

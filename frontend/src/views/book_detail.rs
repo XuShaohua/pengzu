@@ -3,28 +3,17 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
-use yew_router::prelude::Link;
+use yew_hooks::prelude::*;
+use yew_router::prelude::*;
 
-use crate::error::FetchError;
 use crate::route::Route;
 use crate::services::books_meta::fetch_book_metadata;
 use crate::types::books_meta::BookMetadata;
 use crate::views::util::get_cover_image_url;
 
-#[derive(PartialEq)]
-pub enum Msg {
-    Fetch,
-    FetchSuccess(BookMetadata),
-    FetchFailed(FetchError),
-}
-
 #[derive(Debug, PartialEq, Properties)]
-pub struct Prop {
+pub struct Props {
     pub book_id: i32,
-}
-
-pub struct BookDetailComponent {
-    metadata: Option<BookMetadata>,
 }
 
 fn generate_metadata_element(metadata: &BookMetadata) -> Html {
@@ -116,53 +105,19 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
     }
 }
 
-impl Component for BookDetailComponent {
-    type Message = Msg;
-    type Properties = Prop;
+#[function_component(BookDetailComponent)]
+pub fn book_detail(props: &Props) -> Html {
+    let book_metadata = {
+        let book_id = props.book_id;
+        use_async_with_options(
+            async move { fetch_book_metadata(book_id).await },
+            UseAsyncOptions::enable_auto(),
+        )
+    };
 
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self { metadata: None }
-    }
-
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Fetch => {
-                let book_id = ctx.props().book_id;
-                ctx.link().send_future(async move {
-                    match fetch_book_metadata(book_id).await {
-                        Ok(obj) => Msg::FetchSuccess(obj),
-                        Err(err) => Msg::FetchFailed(err),
-                    }
-                });
-                false
-            }
-            Msg::FetchSuccess(metadata) => {
-                log::info!("metadata: {:#?}", metadata);
-                self.metadata = Some(metadata);
-                true
-            }
-            Msg::FetchFailed(err) => {
-                log::warn!("failed to fetch something: {:?}", err);
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let fetch = ctx.link().callback(|_| Msg::Fetch);
-
-        let book_detail = match &self.metadata {
-            Some(metadata) => generate_metadata_element(metadata),
-            None => html! { <></> },
-        };
-
-        html! {
-            <>
-                <h2>{ "Book Details" }</h2>
-                <button onclick={fetch}>{"Fetch metadata"}</button>
-
-                { book_detail }
-            </>
-        }
+    if let Some(book_metadata) = &book_metadata.data {
+        return generate_metadata_element(book_metadata);
+    } else {
+        return html! {};
     }
 }

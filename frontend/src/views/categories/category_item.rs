@@ -2,10 +2,12 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::services::categories::fetch_categories;
 use yew::prelude::*;
 use yew_hooks::use_async;
+use yew_router::prelude::*;
 
+use crate::route::Route;
+use crate::services::categories::fetch_categories;
 use crate::types::categories::{CategoryAndBook, CategoryList};
 
 #[derive(Debug, Clone, PartialEq, Properties)]
@@ -48,7 +50,9 @@ pub fn category_item(props: &Props) -> Html {
         <>
             <span class="badge">{ category.count }</span>
             <span>{ &category.serial_number }</span>
-            <a href="#">{ &category.name }</a>
+            <Link<Route> to={ Route::BooksOfCategory { category_id: category.id }}>
+                { &category.name }
+            </Link<Route>>
             <button {onclick} >{ "˃" }</button>
             { child_items }
         </>

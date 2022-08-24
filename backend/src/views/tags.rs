@@ -6,8 +6,8 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::page::PageQuery;
 use crate::models::tags;
+use crate::models::tags::GetTagsReq;
 
 pub async fn add_tag(
     pool: web::Data<DbPool>,
@@ -23,7 +23,7 @@ pub async fn add_tag(
 
 pub async fn get_tags(
     pool: web::Data<DbPool>,
-    query: web::Query<PageQuery>,
+    query: web::Query<GetTagsReq>,
 ) -> Result<HttpResponse, Error> {
     let resp_tags = web::block(move || {
         let conn = pool.get()?;

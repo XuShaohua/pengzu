@@ -6,7 +6,7 @@ use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, GroupByDsl, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
-use super::page::{Page, PageQuery};
+use super::page::{default_page_id, Page};
 use crate::error::Error;
 use crate::schema::tags;
 
@@ -54,7 +54,20 @@ pub struct GetTagsResp {
     pub list: Vec<TagAndBook>,
 }
 
-pub fn get_tags(conn: &PgConnection, query: &PageQuery) -> Result<GetTagsResp, Error> {
+#[must_use]
+pub const fn default_parent_tag_id() -> i32 {
+    0
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct GetTagsReq {
+    #[serde(default = "default_parent_tag_id")]
+    pub parent: i32,
+    #[serde(default = "default_page_id")]
+    pub page: i64,
+}
+
+pub fn get_tags(conn: &PgConnection, query: &GetTagsReq) -> Result<GetTagsResp, Error> {
     use crate::schema::books_tags_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -62,6 +75,7 @@ pub fn get_tags(conn: &PgConnection, query: &PageQuery) -> Result<GetTagsResp, E
     let offset = page_id * each_page;
 
     let list = tags::table
+        .filter(tags::parent.eq(query.parent))
         .left_join(books_tags_link::table.on(books_tags_link::tag.eq(tags::id)))
         .group_by(tags::id)
         .select((
@@ -75,7 +89,10 @@ pub fn get_tags(conn: &PgConnection, query: &PageQuery) -> Result<GetTagsResp, E
         .offset(offset)
         .load::<TagAndBook>(conn)?;
 
-    let total = tags::table.count().first(conn)?;
+    let total = tags::table
+        .filter(tags::parent.eq(query.parent))
+        .count()
+        .first(conn)?;
 
     Ok(GetTagsResp {
         page: Page {

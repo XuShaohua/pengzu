@@ -4,27 +4,9 @@
 
 use yew::prelude::*;
 
-pub enum Msg {}
+#[function_component(CategoriesComponent)]
+pub fn categories() -> Html {
+    let _default_parent_id = 0;
 
-pub struct CategoriesComponent {}
-
-impl Component for CategoriesComponent {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
-        false
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        html! {
-            <div>
-            {"categories"}
-            </div>
-        }
-    }
+    return html! {};
 }

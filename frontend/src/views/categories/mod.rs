@@ -8,7 +8,7 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use crate::services::categories::fetch_categories;
 
 mod category_item;
-use category_item::CategoryItemComponent;
+use category_item::generate_category_list;
 
 #[function_component(CategoriesComponent)]
 pub fn categories() -> Html {
@@ -19,16 +19,8 @@ pub fn categories() -> Html {
     );
 
     if let Some(category_list) = &category_list.data {
-        return html! {
-            <ul>
-            {for category_list.list.iter().map(|category| html!{
-                <li class="category-item" key={ category.id }>
-                <CategoryItemComponent category={ category.clone() } />
-                </li>
-            })}
-            </ul>
-        };
+        generate_category_list(category_list)
     } else {
-        return html! {};
+        html! {}
     }
 }

@@ -8,7 +8,7 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use crate::services::tags::fetch_tags;
 
 mod tag_item;
-use tag_item::TagItemComponent;
+use tag_item::generate_tag_list;
 
 #[function_component(TagsComponent)]
 pub fn tags_page() -> Html {
@@ -19,16 +19,8 @@ pub fn tags_page() -> Html {
     );
 
     if let Some(tag_list) = &tag_list.data {
-        return html! {
-            <ul>
-            {for tag_list.list.iter().map(|tag| html!{
-                <li class="tag-item" key={ tag.id }>
-                <TagItemComponent tag={ tag.clone() } />
-                </li>
-            })}
-            </ul>
-        };
+        generate_tag_list(tag_list)
     } else {
-        return html! {};
+        html! {}
     }
 }

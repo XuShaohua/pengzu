@@ -8,11 +8,23 @@ use yew_router::prelude::Link;
 
 use crate::route::Route;
 use crate::services::tags::fetch_tags;
-use crate::types::tags::TagAndBook;
+use crate::types::tags::{TagAndBook, TagList};
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct Props {
     pub tag: TagAndBook,
+}
+
+pub fn generate_tag_list(tag_list: &TagList) -> Html {
+    html! {
+        <ul>
+        {for tag_list.list.iter().map(|tag| html!{
+            <li class="tag-item" key={ tag.id }>
+            <TagItemComponent tag={ tag.clone() } />
+            </li>
+        })}
+        </ul>
+    }
 }
 
 #[function_component(TagItemComponent)]
@@ -29,15 +41,7 @@ pub fn tag_item(props: &Props) -> Html {
     };
 
     let child_items = if let Some(tag_list) = &child_tags.data {
-        html! {
-            <ul class="child-tags">
-            {for tag_list.list.iter().map(|tag| html!{
-                <li class="tag-item" key={ tag.id }>
-                <TagItemComponent tag={ tag.clone() } />
-                </li>
-            })}
-            </ul>
-        }
+        generate_tag_list(tag_list)
     } else {
         html! {}
     };

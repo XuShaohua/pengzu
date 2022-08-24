@@ -6,11 +6,23 @@ use crate::services::categories::fetch_categories;
 use yew::prelude::*;
 use yew_hooks::use_async;
 
-use crate::types::categories::CategoryAndBook;
+use crate::types::categories::{CategoryAndBook, CategoryList};
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct Props {
     pub category: CategoryAndBook,
+}
+
+pub fn generate_category_list(category_list: &CategoryList) -> Html {
+    html! {
+        <ul class="child-categories">
+        {for category_list.list.iter().map(|category| html!{
+            <li class="category-item" key={ category.id }>
+            <CategoryItemComponent category={ category.clone() } />
+            </li>
+        })}
+        </ul>
+    }
 }
 
 #[function_component(CategoryItemComponent)]
@@ -27,15 +39,7 @@ pub fn category_item(props: &Props) -> Html {
     };
 
     let child_items = if let Some(category_list) = &child_categories.data {
-        html! {
-            <ul class="child-categories">
-            {for category_list.list.iter().map(|category| html!{
-                <li class="category-item" key={ category.id }>
-                <CategoryItemComponent category={ category.clone() } />
-                </li>
-            })}
-            </ul>
-        }
+        generate_category_list(category_list)
     } else {
         html! {}
     };

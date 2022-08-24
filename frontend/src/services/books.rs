@@ -26,6 +26,16 @@ pub async fn fetch_books_by_author(author_id: i32) -> Result<BooksList, FetchErr
     request_get(&url).await
 }
 
+/// Get book list of specific category `category_id`.
+///
+/// # Errors
+///
+/// Returns error if server fails.
+pub async fn fetch_books_by_category(category_id: i32) -> Result<BooksList, FetchError> {
+    let url = format!("/api/category/books/{}", category_id);
+    request_get(&url).await
+}
+
 /// Get book list of specific publisher `publisher_id`.
 ///
 /// # Errors

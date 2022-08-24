@@ -10,6 +10,7 @@ use crate::views::authors::AuthorsComponent;
 use crate::views::book_detail::BookDetailComponent;
 use crate::views::books::BooksComponent;
 use crate::views::books_of_author::BooksOfAuthorComponent;
+use crate::views::books_of_category::BooksOfCategoryComponent;
 use crate::views::books_of_publisher::BooksOfPublisherComponent;
 use crate::views::books_of_series::BooksOfSeriesComponent;
 use crate::views::books_of_tag::BooksOfTagComponent;
@@ -33,6 +34,8 @@ pub enum Route {
     BooksOfAuthor { author_id: i32 },
     #[at("/author")]
     Author,
+    #[at("/category/books/:category_id")]
+    BooksOfCategory { category_id: i32 },
     #[at("/category")]
     Category,
     #[at("/tag/books/:tag_id")]
@@ -69,6 +72,9 @@ pub fn switch_route(routes: &Route) -> Html {
             html! { <BooksOfAuthorComponent author_id={ *author_id } /> }
         }
         Route::Author => html! { <AuthorsComponent /> },
+        Route::BooksOfCategory { category_id } => {
+            html! { <BooksOfCategoryComponent category_id={ *category_id } /> }
+        }
         Route::Category => html! { <CategoriesComponent /> },
         Route::BooksOfTag { tag_id } => html! { <BooksOfTagComponent tag_id={ *tag_id }/>},
         Route::Tag => html! { <TagsComponent /> },

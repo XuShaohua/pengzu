@@ -25,12 +25,12 @@ pub async fn get_tags(
     pool: web::Data<DbPool>,
     query: web::Query<GetTagsReq>,
 ) -> Result<HttpResponse, Error> {
-    let resp_tags = web::block(move || {
+    let tags_resp = web::block(move || {
         let conn = pool.get()?;
         tags::get_tags(&conn, &query)
     })
     .await??;
-    Ok(HttpResponse::Ok().json(resp_tags))
+    Ok(HttpResponse::Ok().json(tags_resp))
 }
 
 pub async fn update_tag(

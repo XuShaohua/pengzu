@@ -12,7 +12,8 @@ use crate::db::get_connection_pool;
 use crate::error::Error;
 use crate::views::auth::{Claims, UserPermissions};
 use crate::views::{
-    authors, books, comments, file_formats, files, publishers, ratings, series, tags, users,
+    authors, books, categories, comments, file_formats, files, publishers, ratings, series, tags,
+    users,
 };
 
 const CONTENT_TYPE: &str = "content-type";
@@ -77,6 +78,12 @@ pub async fn run() -> Result<(), Error> {
                 web::resource("/api/book/{book_id}")
                     .wrap(auth.clone())
                     .route(web::get().to(books::get_book_detail)),
+            )
+            // For /api/categories
+            .service(
+                web::resource("/api/category")
+                    .wrap(auth.clone())
+                    .route(web::get().to(categories::get_categories)),
             )
             // For /api/comment
             .service(

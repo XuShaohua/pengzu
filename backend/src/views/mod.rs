@@ -5,6 +5,7 @@
 pub mod auth;
 pub mod authors;
 pub mod books;
+pub mod categories;
 pub mod comments;
 pub mod file_formats;
 pub mod files;

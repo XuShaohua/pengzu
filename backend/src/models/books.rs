@@ -251,6 +251,21 @@ pub fn get_books_by_author(
     get_books_by_ids(conn, query, &book_ids)
 }
 
+pub fn get_books_by_category(
+    conn: &PgConnection,
+    category_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
+    use crate::schema::books_categories_link;
+
+    let book_ids = books_categories_link::table
+        .filter(books_categories_link::category.eq(category_id))
+        .select(books_categories_link::book)
+        .load::<i32>(conn)?;
+
+    get_books_by_ids(conn, query, &book_ids)
+}
+
 pub fn get_books_by_format(
     conn: &PgConnection,
     format_id: i32,

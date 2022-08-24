@@ -85,6 +85,11 @@ pub async fn run() -> Result<(), Error> {
                     .wrap(auth.clone())
                     .route(web::get().to(categories::get_categories)),
             )
+            .service(
+                web::resource("/api/category/books/{category_id}")
+                    .wrap(auth.clone())
+                    .route(web::get().to(books::get_books_by_category)),
+            )
             // For /api/comment
             .service(
                 web::resource("/api/comment")

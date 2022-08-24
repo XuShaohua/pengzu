@@ -47,8 +47,9 @@ pub fn category_item(props: &Props) -> Html {
     return html! {
         <>
             <span class="badge">{ category.count }</span>
+            <span>{ &category.serial_number }</span>
             <a href="#">{ &category.name }</a>
-            <a href="#" {onclick} >{ "˃" }</a>
+            <button {onclick} >{ "˃" }</button>
             { child_items }
         </>
     };

@@ -4,15 +4,17 @@
 
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
-use yew_router::prelude::Link;
 
-use crate::route::Route;
 use crate::services::tags::fetch_tags;
+
+mod tag_item;
+use tag_item::TagItemComponent;
 
 #[function_component(TagsComponent)]
 pub fn tags_page() -> Html {
+    let default_parent_tag_id = 0;
     let tag_list = use_async_with_options(
-        async move { fetch_tags().await },
+        async move { fetch_tags(default_parent_tag_id).await },
         UseAsyncOptions::enable_auto(),
     );
 
@@ -21,10 +23,7 @@ pub fn tags_page() -> Html {
             <ul>
             {for tag_list.list.iter().map(|tag| html!{
                 <li class="tag-item" key={ tag.id }>
-                <span class="badge">{ tag.count }</span>
-                <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
-                { &tag.name }
-                </Link<Route>>
+                <TagItemComponent tag={ tag.clone() } />
                 </li>
             })}
             </ul>

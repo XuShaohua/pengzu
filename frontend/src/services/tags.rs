@@ -11,7 +11,7 @@ use crate::types::tags::TagList;
 /// # Errors
 ///
 /// Returns error if server fails.
-pub async fn fetch_tags() -> Result<TagList, FetchError> {
-    let url = "/api/tag";
-    request_get(url).await
+pub async fn fetch_tags(parent_tag_id: i32) -> Result<TagList, FetchError> {
+    let url = format!("/api/tag?parent={}", parent_tag_id);
+    request_get(&url).await
 }

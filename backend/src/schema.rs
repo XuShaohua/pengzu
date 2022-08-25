@@ -77,6 +77,15 @@ table! {
 }
 
 table! {
+    books_user_tags_link (id) {
+        id -> Int4,
+        book -> Int4,
+        tag -> Int4,
+        created -> Timestamp,
+    }
+}
+
+table! {
     categories (id) {
         id -> Int4,
         order_index -> Int4,
@@ -352,6 +361,7 @@ allow_tables_to_appear_in_same_query!(
     books_publishers_link,
     books_series_link,
     books_tags_link,
+    books_user_tags_link,
     categories,
     cips,
     cips_authors_link,

@@ -22,6 +22,7 @@ pub mod languages;
 pub mod page;
 pub mod publishers;
 pub mod ratings;
+pub mod reading_history;
 pub mod series;
 pub mod tags;
 pub mod user_tags;

@@ -13,7 +13,7 @@ use crate::error::Error;
 use crate::views::auth::{Claims, UserPermissions};
 use crate::views::{
     authors, books, categories, comments, file_formats, files, publishers, ratings, series, tags,
-    users,
+    user_tags, users,
 };
 
 const CONTENT_TYPE: &str = "content-type";
@@ -168,6 +168,18 @@ pub async fn run() -> Result<(), Error> {
                 web::resource("/api/tag/{tag_id}")
                     .wrap(auth.clone())
                     .route(web::put().to(tags::update_tag)),
+            )
+            // For /api/user-tag
+            .service(
+                web::resource("/api/user-tag")
+                    .wrap(auth.clone())
+                    .route(web::get().to(user_tags::get_tags))
+                    .route(web::post().to(user_tags::add_tag)),
+            )
+            .service(
+                web::resource("/api/user-tag/books/{tag_id}")
+                    .wrap(auth.clone())
+                    .route(web::get().to(books::get_books_by_user_tag)),
             )
     })
     .bind(("0.0.0.0", 3000))?

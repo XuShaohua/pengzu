@@ -123,3 +123,16 @@ pub async fn get_books_by_tag(
     .await??;
     Ok(HttpResponse::Ok().json(resp))
 }
+
+pub async fn get_books_by_user_tag(
+    pool: web::Data<DbPool>,
+    tag_id: web::Path<i32>,
+    query: web::Query<books::GetBooksQuery>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let conn = pool.get()?;
+        books::get_books_by_user_tag(&conn, tag_id.into_inner(), &query)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}

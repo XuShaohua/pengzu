@@ -15,4 +15,5 @@ pub mod publishers;
 pub mod ratings;
 pub mod series;
 pub mod tags;
+pub mod user_tags;
 pub mod users;

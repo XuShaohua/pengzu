@@ -317,6 +317,18 @@ table! {
 }
 
 table! {
+    user_tags (id) {
+        id -> Int4,
+        user_id -> Int4,
+        order_index -> Int4,
+        name -> Text,
+        parent -> Int4,
+        created -> Timestamp,
+        last_modified -> Timestamp,
+    }
+}
+
+table! {
     users (id) {
         id -> Int4,
         name -> Text,
@@ -361,5 +373,6 @@ allow_tables_to_appear_in_same_query!(
     ratings,
     series,
     tags,
+    user_tags,
     users,
 );

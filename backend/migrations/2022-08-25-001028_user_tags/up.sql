@@ -1,0 +1,13 @@
+-- Your SQL goes here
+
+CREATE TABLE user_tags
+(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    order_index INTEGER NOT NULL DEFAULT 0,
+    name TEXT NOT NULL,
+    parent INTEGER NOT NULL DEFAULT 0,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (name)
+)

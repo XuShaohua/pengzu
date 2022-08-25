@@ -65,6 +65,14 @@ pub fn get_book_by_id(conn: &PgConnection, book_id: i32) -> Result<BookWithCover
         .map_err(Into::into)
 }
 
+pub fn get_book_path_by_id(conn: &PgConnection, book_id: i32) -> Result<String, Error> {
+    books::table
+        .find(book_id)
+        .select(books::path)
+        .first(conn)
+        .map_err(Into::into)
+}
+
 #[derive(Debug, Clone, Copy, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum GetBooksOrder {

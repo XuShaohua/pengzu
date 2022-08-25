@@ -13,8 +13,7 @@ use crate::models::books_languages::get_language_by_book;
 use crate::models::books_publishers::get_publisher_by_book;
 use crate::models::books_series::get_series_by_book;
 use crate::models::books_tags::get_tags_by_book;
-use crate::models::file_formats::{get_file_format_by_ids, FileFormat};
-use crate::models::files::{get_book_files, File};
+use crate::models::files::{get_book_files_and_formats, FileWithPath};
 use crate::models::languages::Language;
 use crate::models::publishers::Publisher;
 use crate::models::ratings::{get_rating, Rating};
@@ -27,8 +26,7 @@ pub struct BookMetadata {
     pub book: BookWithCover,
     pub authors: Vec<Author>,
     pub tags: Vec<Tag>,
-    pub files: Vec<File>,
-    pub formats: Vec<FileFormat>,
+    pub files: Vec<FileWithPath>,
     pub publisher: Option<Publisher>,
     pub series: Option<Series>,
     pub lang: Option<Language>,
@@ -39,7 +37,7 @@ pub fn get_book_metadata(conn: &PgConnection, book_id: i32) -> Result<BookMetada
     let book = get_book_by_id(conn, book_id)?;
     let authors = get_authors_by_book(conn, book_id)?;
     let tags = get_tags_by_book(conn, book_id)?;
-    let files = get_book_files(conn, book_id)?;
+    let files = get_book_files_and_formats(conn, book_id)?;
     let publisher = get_publisher_by_book(conn, book_id)?;
     let series = get_series_by_book(conn, book_id)?;
     let rating = match get_rating(conn, book_id) {
@@ -51,15 +49,11 @@ pub fn get_book_metadata(conn: &PgConnection, book_id: i32) -> Result<BookMetada
     };
     let lang = get_language_by_book(conn, book_id)?;
 
-    let format_id_list: Vec<i32> = files.iter().map(|file| file.format).collect();
-    let formats = get_file_format_by_ids(conn, &format_id_list)?;
-
     Ok(BookMetadata {
         book,
         authors,
         tags,
         files,
-        formats,
         publisher,
         series,
         lang,

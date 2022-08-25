@@ -30,7 +30,7 @@ pub async fn get_book_files(
 ) -> Result<HttpResponse, Error> {
     let resp_files = web::block(move || {
         let conn = pool.get()?;
-        files::get_book_files(&conn, book_id.into_inner())
+        files::get_book_files_and_formats(&conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_files))

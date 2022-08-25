@@ -19,7 +19,7 @@ pub struct NewFileFormat {
     pub name: String,
 }
 
-#[derive(Debug, Serialize, Queryable)]
+#[derive(Debug, Default, Serialize, Queryable)]
 pub struct FileFormat {
     pub id: i32,
     pub name: String,

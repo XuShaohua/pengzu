@@ -32,6 +32,7 @@ pub struct Book {
 pub struct BookWithCover {
     pub id: i32,
     pub title: String,
+    pub path: String,
     pub has_cover: bool,
     pub small_cover: Option<String>,
     pub large_cover: Option<String>,
@@ -137,6 +138,7 @@ pub fn book_to_book_cover(book: Book) -> BookWithCover {
     BookWithCover {
         id: book.id,
         title: book.title,
+        path: book.path.clone(),
         has_cover: book.has_cover,
         small_cover: file_data::get_small_cover(&book.path, book.has_cover),
         large_cover: file_data::get_large_cover(&book.path, book.has_cover),

@@ -11,6 +11,7 @@ use crate::views::book_detail::BookDetailComponent;
 use crate::views::books::BooksComponent;
 use crate::views::books_of_author::BooksOfAuthorComponent;
 use crate::views::books_of_category::BooksOfCategoryComponent;
+use crate::views::books_of_file_format::BooksOfFileFormatComponent;
 use crate::views::books_of_publisher::BooksOfPublisherComponent;
 use crate::views::books_of_series::BooksOfSeriesComponent;
 use crate::views::books_of_tag::BooksOfTagComponent;
@@ -54,6 +55,8 @@ pub enum Route {
     Series,
     #[at("/discover")]
     Discover,
+    #[at("/format/books/:format_id")]
+    BooksOfFileFormat { format_id: i32 },
     #[at("/format")]
     FileFormat,
     #[at("/rating")]
@@ -73,28 +76,31 @@ pub enum Route {
 pub fn switch_route(routes: &Route) -> Html {
     match routes {
         Route::BookDetail { book_id } => {
-            html! { <BookDetailComponent book_id={ * book_id } /> }
+            html! { <BookDetailComponent book_id={ * book_id }/> }
         }
         Route::Book | Route::Home => html! { <BooksComponent /> },
         Route::BooksOfAuthor { author_id } => {
-            html! { <BooksOfAuthorComponent author_id={ *author_id } /> }
+            html! { <BooksOfAuthorComponent author_id={ *author_id }/> }
         }
         Route::Author => html! { <AuthorsComponent /> },
         Route::BooksOfCategory { category_id } => {
-            html! { <BooksOfCategoryComponent category_id={ *category_id } /> }
+            html! { <BooksOfCategoryComponent category_id={ *category_id }/> }
         }
         Route::Category => html! { <CategoriesComponent /> },
         Route::BooksOfTag { tag_id } => html! { <BooksOfTagComponent tag_id={ *tag_id }/>},
         Route::Tag => html! { <TagsComponent /> },
         Route::BooksOfPublisher { publisher_id } => {
-            html! { <BooksOfPublisherComponent publisher_id={ *publisher_id } /> }
+            html! { <BooksOfPublisherComponent publisher_id={ *publisher_id }/> }
         }
         Route::Publisher => html! { <PublishersComponent /> },
         Route::BooksOfSeries { series_id } => {
-            html! { <BooksOfSeriesComponent series_id={ * series_id } /> }
+            html! { <BooksOfSeriesComponent series_id={ *series_id }/> }
         }
         Route::Series => html! { <SeriesComponent /> },
         Route::Discover => html! { <DiscoverComponent /> },
+        Route::BooksOfFileFormat { format_id } => {
+            html! { <BooksOfFileFormatComponent format_id={ *format_id }/> }
+        }
         Route::FileFormat => html! { <FileFormatsComponent /> },
         Route::Rating => html! { <RatingsComponent /> },
 

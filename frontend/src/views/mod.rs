@@ -7,6 +7,7 @@ pub mod book_detail;
 pub mod books;
 pub mod books_of_author;
 pub mod books_of_category;
+pub mod books_of_file_format;
 pub mod books_of_publisher;
 pub mod books_of_series;
 pub mod books_of_tag;

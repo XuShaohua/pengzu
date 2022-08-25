@@ -36,6 +36,16 @@ pub async fn fetch_books_by_category(category_id: i32) -> Result<BooksList, Fetc
     request_get(&url).await
 }
 
+/// Get book list of specific file format `format_id`.
+///
+/// # Errors
+///
+/// Returns error if server fails.
+pub async fn fetch_books_by_file_format(format_id: i32) -> Result<BooksList, FetchError> {
+    let url = format!("/api/format/books/{}", format_id);
+    request_get(&url).await
+}
+
 /// Get book list of specific publisher `publisher_id`.
 ///
 /// # Errors

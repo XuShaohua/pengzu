@@ -10,6 +10,7 @@ pub mod books_of_category;
 pub mod books_of_publisher;
 pub mod books_of_series;
 pub mod books_of_tag;
+pub mod books_of_user_tag;
 pub mod categories;
 pub mod discover;
 pub mod file_formats;

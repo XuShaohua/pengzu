@@ -307,6 +307,18 @@ table! {
 }
 
 table! {
+    reading_history (id) {
+        id -> Int4,
+        user_id -> Int4,
+        book -> Int4,
+        page -> Int4,
+        percent -> Int4,
+        created -> Timestamp,
+        updated -> Timestamp,
+    }
+}
+
+table! {
     series (id) {
         id -> Int4,
         name -> Text,
@@ -382,6 +394,7 @@ allow_tables_to_appear_in_same_query!(
     languages,
     publishers,
     ratings,
+    reading_history,
     series,
     tags,
     user_tags,

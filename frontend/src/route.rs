@@ -14,6 +14,7 @@ use crate::views::books_of_category::BooksOfCategoryComponent;
 use crate::views::books_of_publisher::BooksOfPublisherComponent;
 use crate::views::books_of_series::BooksOfSeriesComponent;
 use crate::views::books_of_tag::BooksOfTagComponent;
+use crate::views::books_of_user_tag::BooksOfUserTagComponent;
 use crate::views::categories::CategoriesComponent;
 use crate::views::discover::DiscoverComponent;
 use crate::views::file_formats::FileFormatsComponent;
@@ -21,6 +22,7 @@ use crate::views::publishers::PublishersComponent;
 use crate::views::ratings::RatingsComponent;
 use crate::views::series::SeriesComponent;
 use crate::views::tags::TagsComponent;
+use crate::views::user_tags::UserTagsComponent;
 
 #[derive(Debug, Clone, PartialEq, Routable)]
 pub enum Route {
@@ -56,6 +58,12 @@ pub enum Route {
     FileFormat,
     #[at("/rating")]
     Rating,
+
+    #[at("/user-tag/books/:tag_id")]
+    BooksOfUserTag { tag_id: i32 },
+    #[at("/user-tag")]
+    UserTag,
+
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -89,6 +97,10 @@ pub fn switch_route(routes: &Route) -> Html {
         Route::Discover => html! { <DiscoverComponent /> },
         Route::FileFormat => html! { <FileFormatsComponent /> },
         Route::Rating => html! { <RatingsComponent /> },
+
+        Route::BooksOfUserTag { tag_id } => html! { <BooksOfUserTagComponent tag_id={ *tag_id }/>},
+        Route::UserTag => html! { <UserTagsComponent /> },
+
         Route::NotFound => html! { <NotFoundComponent /> },
     }
 }

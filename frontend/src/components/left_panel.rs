@@ -22,6 +22,10 @@ pub fn left_panel() -> Html {
                 <li><Link<Route> to={ Route::FileFormat }>{ "File Formats" }</Link<Route>></li>
                 <li><Link<Route> to={ Route::Rating }>{ "Ratings" }</Link<Route>></li>
             </ul>
+            <br />
+            <ul>
+                <li><Link<Route> to={ Route::UserTag }>{ "My Tags" }</Link<Route>></li>
+            </ul>
         </div>
     }
 }

@@ -18,6 +18,7 @@ pub struct AuthorAndBookId {
 pub struct BookWithCover {
     pub id: i32,
     pub title: String,
+    pub path: String,
     pub has_cover: bool,
     pub small_cover: Option<String>,
     pub large_cover: Option<String>,

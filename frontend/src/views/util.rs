@@ -9,3 +9,13 @@ pub fn get_cover_image_url(cover: &Option<String>) -> String {
         |cover| format!("/api/file?path={}", cover),
     )
 }
+
+#[must_use]
+pub fn get_file_format_url(path: &str, name: &str, format: &str) -> String {
+    format!(
+        "/api/file?path={}/{}.{}",
+        path,
+        name,
+        format.to_ascii_lowercase()
+    )
+}

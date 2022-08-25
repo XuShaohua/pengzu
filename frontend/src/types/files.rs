@@ -16,3 +16,14 @@ pub struct File {
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,
 }
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+pub struct FileWithPath {
+    pub id: i32,
+    pub book: i32,
+    pub size: i32,
+    pub format_id: i32,
+    pub format_name: String,
+    pub name: String,
+    pub path: String,
+}

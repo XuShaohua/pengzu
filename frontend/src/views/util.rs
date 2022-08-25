@@ -2,6 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+pub const KILO_BYTES: i32 = 1 << 10;
+pub const MEGA_BYTES: i32 = 1 << 20;
+
 #[must_use]
 pub fn get_cover_image_url(cover: &Option<String>) -> String {
     cover.as_ref().map_or_else(
@@ -11,11 +14,19 @@ pub fn get_cover_image_url(cover: &Option<String>) -> String {
 }
 
 #[must_use]
-pub fn get_file_format_url(path: &str, name: &str, format: &str) -> String {
-    format!(
-        "/api/file?path={}/{}.{}",
-        path,
-        name,
-        format.to_ascii_lowercase()
-    )
+pub fn get_file_format_url(path: &str) -> String {
+    format!("/api/file?path={}", path,)
+}
+
+#[must_use]
+pub fn to_readable_size(size: i32) -> String {
+    if size > MEGA_BYTES {
+        let mb_size = size / MEGA_BYTES;
+        format!("{}Mib", mb_size)
+    } else if size > KILO_BYTES {
+        let kb_size = size / KILO_BYTES;
+        format!("{}Kib", kb_size)
+    } else {
+        format!("{}B", size)
+    }
 }

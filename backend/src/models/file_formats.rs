@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
+use diesel::dsl::any;
 use diesel::{
     ExpressionMethods, GroupByDsl, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl,
 };
@@ -48,6 +49,14 @@ pub fn get_file_format_by_name(
 pub fn get_file_format(conn: &PgConnection, format_id: i32) -> Result<FileFormat, Error> {
     use crate::schema::file_formats::dsl::file_formats;
     file_formats.find(format_id).first(conn).map_err(Into::into)
+}
+
+pub fn get_file_format_by_ids(conn: &PgConnection, ids: &[i32]) -> Result<Vec<FileFormat>, Error> {
+    use crate::schema::file_formats::dsl::{file_formats, id};
+    file_formats
+        .filter(id.eq(any(ids)))
+        .load(conn)
+        .map_err(Into::into)
 }
 
 #[derive(Debug, Serialize, Queryable)]

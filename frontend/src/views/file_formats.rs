@@ -4,7 +4,9 @@
 
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_router::prelude::Link;
 
+use crate::route::Route;
 use crate::services::file_formats::fetch_file_formats;
 
 #[function_component(FileFormatsComponent)]
@@ -20,7 +22,9 @@ pub fn file_formats_page() -> Html {
                 {for file_formats.list.iter().map(|file_format| html!{
                     <li key={ file_format.id }>
                     <span class="badge">{ file_format.count }</span>
+                    <Link<Route> to={ Route::BooksOfFileFormat{ format_id: { file_format.id }}}>
                     { &file_format.name }
+                    </Link<Route>>
                     </li>
                 })}
             </ul>

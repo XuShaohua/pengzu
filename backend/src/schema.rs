@@ -79,6 +79,7 @@ table! {
 table! {
     books_user_tags_link (id) {
         id -> Int4,
+        user_id -> Int4,
         book -> Int4,
         tag -> Int4,
         created -> Timestamp,

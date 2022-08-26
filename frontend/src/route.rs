@@ -24,6 +24,7 @@ use crate::views::ratings::RatingsComponent;
 use crate::views::series::SeriesComponent;
 use crate::views::tags::TagsComponent;
 use crate::views::user_tags::UserTagsComponent;
+use crate::views::users::UsersComponent;
 
 #[derive(Debug, Clone, PartialEq, Routable)]
 pub enum Route {
@@ -67,6 +68,9 @@ pub enum Route {
     #[at("/user-tag")]
     UserTag,
 
+    #[at("/user")]
+    User,
+
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -106,6 +110,8 @@ pub fn switch_route(routes: &Route) -> Html {
 
         Route::BooksOfUserTag { tag_id } => html! { <BooksOfUserTagComponent tag_id={ *tag_id }/>},
         Route::UserTag => html! { <UserTagsComponent /> },
+
+        Route::User => html! { <UsersComponent /> },
 
         Route::NotFound => html! { <NotFoundComponent /> },
     }

@@ -8,7 +8,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum UserRole {
-    User = 0,
+    Nil = 0,
+    User = 1,
     Admin = 2,
 }
 

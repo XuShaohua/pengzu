@@ -18,6 +18,12 @@ pub enum UserRole {
     Admin = 2,
 }
 
+impl Default for UserRole {
+    fn default() -> Self {
+        Self::User
+    }
+}
+
 impl diesel::Expression for UserRole {
     type SqlType = diesel::sql_types::Integer;
 }
@@ -56,7 +62,7 @@ pub struct User {
     pub deleted_at: Option<NaiveDateTime>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct UserInfo {
     pub id: i32,
     pub name: String,
@@ -80,7 +86,7 @@ fn user_to_user_info(user: User) -> UserInfo {
 }
 
 // TODO(Shaohua): Replace String with &'a str.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct NewUserReq {
     pub name: String,
     pub display_name: String,
@@ -148,6 +154,13 @@ pub fn login(conn: &PgConnection, form: &LoginForm) -> Result<UserInfo, Error> {
 
 pub fn get_user_info(conn: &PgConnection, user_id: i32) -> Result<UserInfo, Error> {
     let user = users::table.find(user_id).first::<User>(conn)?;
+    Ok(user_to_user_info(user))
+}
+
+pub fn get_user_info_by_name(conn: &PgConnection, name: &str) -> Result<UserInfo, Error> {
+    let user = users::table
+        .filter(users::name.eq(name))
+        .first::<User>(conn)?;
     Ok(user_to_user_info(user))
 }
 

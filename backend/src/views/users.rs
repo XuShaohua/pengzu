@@ -41,13 +41,13 @@ pub async fn add_user(
     pool: web::Data<DbPool>,
     new_user: web::Json<NewUserReq>,
 ) -> Result<HttpResponse, Error> {
-    web::block(move || {
+    let user_info = web::block(move || {
         let conn = pool.get()?;
         users::add_user(&conn, new_user.into_inner())
     })
     .await??;
 
-    Ok(HttpResponse::Ok().finish())
+    Ok(HttpResponse::Ok().json(user_info))
 }
 
 pub async fn get_users(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {

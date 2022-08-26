@@ -8,6 +8,7 @@ use actix_web::{web, HttpResponse};
 use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::users;
+use crate::models::users::NewUserReq;
 use crate::views::auth::{Claims, UserPermissions, TOKEN_NAME};
 
 pub async fn login(
@@ -34,4 +35,38 @@ pub async fn login(
     let mut resp = HttpResponse::Ok().json(user_info);
     resp.add_cookie(&cookie)?;
     Ok(resp)
+}
+
+pub async fn add_user(
+    pool: web::Data<DbPool>,
+    new_user: web::Json<NewUserReq>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let conn = pool.get()?;
+        users::add_user(&conn, new_user.into_inner())
+    })
+    .await??;
+
+    Ok(HttpResponse::Ok().finish())
+}
+
+pub async fn get_users(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+    let users_resp = web::block(move || {
+        let conn = pool.get()?;
+        users::get_users(&conn)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(users_resp))
+}
+
+pub async fn delete_user(
+    pool: web::Data<DbPool>,
+    user_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let conn = pool.get()?;
+        users::delete_user(&conn, user_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
 }

@@ -181,6 +181,18 @@ pub async fn run() -> Result<(), Error> {
                     .wrap(auth.clone())
                     .route(web::get().to(books::get_books_by_user_tag)),
             )
+            // For /api/user
+            .service(
+                web::resource("/api/user")
+                    .wrap(auth.clone())
+                    .route(web::get().to(users::get_users))
+                    .route(web::post().to(users::add_user)),
+            )
+            .service(
+                web::resource("/api/user/{user_id}")
+                    .wrap(auth.clone())
+                    .route(web::delete().to(users::delete_user)),
+            )
     })
     .bind(("0.0.0.0", 3000))?
     .run()

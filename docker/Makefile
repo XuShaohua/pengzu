@@ -6,8 +6,6 @@ build-backend:
 
 install-backend: build-backend
 	cp -v ../target/release/backend bin/
-	cp -v ../target/release/import_categories bin/
-	cp -v ../target/release/import_library bin/
 
 build-frontend:
 	cd ../frontend && trunk build

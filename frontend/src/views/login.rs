@@ -2,105 +2,78 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use web_sys::{HtmlInputElement, Url};
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
+use yew_hooks::use_async;
 
-use crate::error::FetchError;
+use crate::hooks::use_user_context;
 use crate::services::users::login;
-use crate::types::users::{LoginForm, UserInfo};
+use crate::types::users::LoginForm;
 
-#[derive(PartialEq)]
-pub enum Msg {
-    Fetch,
-    FetchSuccess(UserInfo),
-    FetchFailed(FetchError),
-}
-
-pub struct LoginComponent {
-    user_info: Option<UserInfo>,
-    username_node: NodeRef,
-    password_node: NodeRef,
-}
-
-fn redirect_to_last_page() {
-    let location = gloo_utils::window().location();
-    let href = match location.href() {
-        Ok(href) => href,
-        Err(_err) => return,
+#[function_component(LoginComponent)]
+pub fn login_page() -> Html {
+    let user_ctx = use_user_context();
+    let login_form = use_state(LoginForm::default);
+    let user_login = {
+        let login_form = login_form.clone();
+        use_async(async move { login(&login_form).await })
     };
-    let url = match Url::new(&href) {
-        Ok(url) => url,
-        Err(_err) => return,
+
+    use_effect_with_deps(
+        move |user_login| {
+            if let Some(user_info) = &user_login.data {
+                user_ctx.login(user_info.clone())
+            }
+            || ()
+        },
+        user_login.clone(),
+    );
+
+    let onsubmit = {
+        let user_login = user_login.clone();
+        Callback::from(move |e: FocusEvent| {
+            e.prevent_default();
+            user_login.run();
+        })
     };
-    let params = url.search_params();
-    let last_url = params.get("redirect").unwrap_or_else(|| "/".to_string());
-    let _ = location.set_href(&last_url);
-}
 
-impl Component for LoginComponent {
-    type Message = Msg;
-    type Properties = ();
+    let oninput_username = {
+        let login_form = login_form.clone();
+        Callback::from(move |e: InputEvent| {
+            let input: HtmlInputElement = e.target_unchecked_into();
+            let mut form: LoginForm = (*login_form).clone();
+            form.username = input.value();
+            login_form.set(form);
+        })
+    };
 
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {
-            user_info: None,
-            username_node: Default::default(),
-            password_node: Default::default(),
-        }
-    }
+    let oninput_password = {
+        let login_form = login_form.clone();
+        Callback::from(move |e: InputEvent| {
+            let input: HtmlInputElement = e.target_unchecked_into();
+            let mut form: LoginForm = (*login_form).clone();
+            form.password = input.value();
+            login_form.set(form);
+        })
+    };
 
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Fetch => {
-                let username_node = self.username_node.cast::<HtmlInputElement>().unwrap();
-                let password_node = self.password_node.cast::<HtmlInputElement>().unwrap();
-                let username = username_node.value();
-                let password = password_node.value();
-                let form = LoginForm { username, password };
-                ctx.link().send_future(async move {
-                    match login(&form).await {
-                        Ok(obj) => Msg::FetchSuccess(obj),
-                        Err(err) => Msg::FetchFailed(err),
-                    }
-                });
-                false
-            }
-            Msg::FetchSuccess(user_info) => {
-                log::info!("user info: {:?}", user_info);
-                self.user_info = Some(user_info);
-                true
-            }
-            Msg::FetchFailed(err) => {
-                log::warn!("failed to fetch something: {:?}", err);
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        if self.user_info.is_some() {
-            redirect_to_last_page();
-        }
-
-        let login = ctx.link().callback(|event: FocusEvent| {
-            event.prevent_default();
-            Msg::Fetch
-        });
-
-        html! {
-            <div class="login-form">
-                <form onsubmit={ login } method="POST" role="form">
-                    <div class="form-item">
-                        <label for="username">{ "Username" }</label>
-                        <input name="username" type="text" ref={ self.username_node.clone() } />
-                    </div>
-                    <div class="form-item">
-                        <label for="password">{ "Password" }</label>
-                        <input name="password" type="password" ref={ self.password_node.clone() } />
-                    </div>
-                    <button>{ "Login" }</button>
-                </form>
-            </div>
-        }
+    html! {
+        <div class="login-form">
+            <form {onsubmit}>
+                <fieldset class="form-item">
+                    <label for="username">{ "Username" }</label>
+                    <input name="username" type="text"
+                        oninput={ oninput_username }
+                        value={ login_form.username.clone() } />
+                </fieldset>
+                <fieldset class="form-item">
+                    <label for="password">{ "Password" }</label>
+                    <input name="password" type="password"
+                        oninput={ oninput_password }
+                        value={ login_form.password.clone() } />
+                </fieldset>
+                <button>{ "Login" }</button>
+            </form>
+        </div>
     }
 }

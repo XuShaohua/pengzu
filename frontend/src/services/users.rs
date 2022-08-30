@@ -3,15 +3,12 @@
 // that can be found in the LICENSE file.
 
 use crate::error::FetchError;
-use crate::services::auth::set_token;
 use crate::services::fetch::{request_get, request_post};
 use crate::types::users::{LoginForm, UserInfo};
 
 pub async fn login(form: &LoginForm) -> Result<UserInfo, FetchError> {
     let url = "/api/login";
-    let user_info: UserInfo = request_post(url, form).await?;
-    set_token(Some(&user_info.token));
-    Ok(user_info)
+    request_post(url, form).await
 }
 
 pub async fn fetch_users() -> Result<Vec<UserInfo>, FetchError> {

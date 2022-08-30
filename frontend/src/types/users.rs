@@ -30,8 +30,7 @@ pub struct UserInfo {
     pub token: String,
 }
 
-// TODO(Shaohua): Replace String with &str.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LoginForm {
     pub username: String,
     pub password: String,

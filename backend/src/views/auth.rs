@@ -4,13 +4,14 @@
 
 use actix_web::cookie::time::OffsetDateTime;
 use actix_web::dev::ServiceRequest;
+use actix_web::HttpRequest;
 use actix_web_grants::permissions::AttachPermissions;
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
 use crate::models::users::UserRole;
 use crate::settings::get_jwt_secret;
 
@@ -19,14 +20,14 @@ const JWT_EXPIRATION_HOURS: i64 = 24 * 3;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct UserPermissions {
-    pub user_id: i32,
+    pub id: i32,
     pub name: String,
     pub role: UserRole,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Claims {
-    user_id: i32,
+    id: i32,
     name: String,
     role: UserRole,
     exp: i64,
@@ -35,7 +36,7 @@ pub struct Claims {
 impl Claims {
     pub fn new(permission: &UserPermissions) -> Self {
         Self {
-            user_id: permission.user_id,
+            id: permission.id,
             name: permission.name.clone(),
             role: permission.role,
             exp: (Utc::now() + Duration::hours(JWT_EXPIRATION_HOURS)).timestamp(),
@@ -43,8 +44,8 @@ impl Claims {
     }
 
     #[must_use]
-    pub const fn user_id(&self) -> i32 {
-        self.user_id
+    pub const fn id(&self) -> i32 {
+        self.id
     }
 
     #[must_use]
@@ -64,7 +65,7 @@ impl Claims {
 
     pub fn permission(self) -> UserPermissions {
         UserPermissions {
-            user_id: self.user_id,
+            id: self.id,
             name: self.name,
             role: self.role,
         }
@@ -109,10 +110,29 @@ pub async fn auth_validator(
     // We just get permissions from JWT
     match Claims::decode(credentials.token()) {
         Ok(claims) => {
-            log::info!("auth_validator() claims: {:?}", claims);
             req.attach(vec![claims.permission()]);
             Ok(req)
         }
         Err(err) => Err((err.into(), req)),
     }
+}
+
+pub fn get_claims_from_request(req: &HttpRequest) -> Result<Claims, Error> {
+    let header = req.headers().get("Authorization").unwrap();
+    let invalid_token_error = Error::from_string(
+        ErrorKind::InvalidToken,
+        format!("invalid token: {:?}", header),
+    );
+
+    if header.len() < 8 {
+        return Err(invalid_token_error);
+    }
+    let token = header.to_str().map_err(|_| invalid_token_error.clone())?;
+    let mut parts = token.splitn(2, ' ');
+    match parts.next() {
+        Some(scheme) if scheme == "Bearer" => {}
+        _ => return Err(invalid_token_error),
+    }
+    let token = parts.next().ok_or(invalid_token_error)?;
+    Claims::decode(&token)
 }

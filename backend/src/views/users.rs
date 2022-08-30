@@ -3,13 +3,13 @@
 // that can be found in the LICENSE file.
 
 use actix_web::cookie::Cookie;
-use actix_web::{web, HttpResponse};
+use actix_web::{web, HttpRequest, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::users;
 use crate::models::users::NewUserReq;
-use crate::views::auth::{Claims, UserPermissions, TOKEN_NAME};
+use crate::views::auth::{get_claims_from_request, Claims, UserPermissions, TOKEN_NAME};
 
 pub async fn login(
     pool: web::Data<DbPool>,
@@ -22,7 +22,7 @@ pub async fn login(
     .await??;
 
     let permission = UserPermissions {
-        user_id: user_info.id,
+        id: user_info.id,
         name: user_info.name.clone(),
         role: user_info.role,
     };
@@ -37,8 +37,12 @@ pub async fn login(
     Ok(resp)
 }
 
-pub async fn get_user_info(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
-    let user_id = 1;
+pub async fn get_user_info(
+    pool: web::Data<DbPool>,
+    req: HttpRequest,
+) -> Result<HttpResponse, Error> {
+    let claims = get_claims_from_request(&req)?;
+    let user_id = claims.id();
     let user_info = web::block(move || {
         let conn = pool.get()?;
         users::get_user_info(&conn, user_id)

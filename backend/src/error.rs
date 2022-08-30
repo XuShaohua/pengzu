@@ -13,6 +13,7 @@ use std::io;
 pub enum ErrorKind {
     ConfigError,
     JwtError,
+    InvalidToken,
 
     CalibreError,
 
@@ -202,6 +203,7 @@ impl actix_web::error::ResponseError for Error {
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError
             | ErrorKind::AuthFailed
+            | ErrorKind::InvalidToken
             | ErrorKind::IoError => StatusCode::BAD_REQUEST,
             ErrorKind::DbNotFoundError => StatusCode::NOT_FOUND,
             ErrorKind::JwtError => StatusCode::UNAUTHORIZED,

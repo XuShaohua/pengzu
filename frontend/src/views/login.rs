@@ -60,18 +60,18 @@ pub fn login_page() -> Html {
     html! {
         <div class="login-form">
             <form {onsubmit}>
-                <fieldset class="form-item">
+                <div class="form-item">
                     <label for="username">{ "Username" }</label>
                     <input name="username" type="text"
                         oninput={ oninput_username }
                         value={ login_form.username.clone() } />
-                </fieldset>
-                <fieldset class="form-item">
+                </div>
+                <div class="form-item">
                     <label for="password">{ "Password" }</label>
                     <input name="password" type="password"
                         oninput={ oninput_password }
                         value={ login_form.password.clone() } />
-                </fieldset>
+                </div>
                 <button>{ "Login" }</button>
             </form>
         </div>

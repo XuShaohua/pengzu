@@ -15,7 +15,7 @@ pub enum UserRole {
 
 impl Default for UserRole {
     fn default() -> Self {
-        Self::User
+        Self::Nil
     }
 }
 

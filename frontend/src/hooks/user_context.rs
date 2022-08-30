@@ -10,7 +10,7 @@ use std::ops::Deref;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::types::users::UserInfo;
+use crate::types::users::{UserInfo, UserRole};
 
 /// State handle for the [`use_user_context`] hook.
 #[derive(Clone)]
@@ -30,6 +30,10 @@ impl UseUserContextHandle {
         set_token(None);
         self.inner.set(UserInfo::default());
         self.history.push(Route::Home);
+    }
+
+    pub fn is_login(&self) -> bool {
+        self.inner.id > 0 && self.inner.role != UserRole::Nil
     }
 }
 

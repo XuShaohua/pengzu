@@ -15,6 +15,7 @@ pub mod books_of_user_tag;
 pub mod categories;
 pub mod discover;
 pub mod file_formats;
+pub mod login;
 pub mod publishers;
 pub mod ratings;
 pub mod series;

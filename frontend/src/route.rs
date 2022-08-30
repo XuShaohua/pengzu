@@ -19,6 +19,7 @@ use crate::views::books_of_user_tag::BooksOfUserTagComponent;
 use crate::views::categories::CategoriesComponent;
 use crate::views::discover::DiscoverComponent;
 use crate::views::file_formats::FileFormatsComponent;
+use crate::views::login::LoginComponent;
 use crate::views::publishers::PublishersComponent;
 use crate::views::ratings::RatingsComponent;
 use crate::views::series::SeriesComponent;
@@ -70,6 +71,8 @@ pub enum Route {
 
     #[at("/user")]
     User,
+    #[at("/login")]
+    Login,
 
     #[not_found]
     #[at("/404")]
@@ -112,6 +115,7 @@ pub fn switch_route(routes: &Route) -> Html {
         Route::UserTag => html! { <UserTagsComponent /> },
 
         Route::User => html! { <UsersComponent /> },
+        Route::Login => html! { <LoginComponent /> },
 
         Route::NotFound => html! { <NotFoundComponent /> },
     }

@@ -70,6 +70,12 @@ a, .danger, .book-remove, .editable-empty, .editable-empty:hover {
   border-color: #e7e7e7;
 }
 
+.user-container {
+  display: inline-block;
+  position: absolute;
+  right: 80px;
+}
+
 footer {
   clear: both;
 }

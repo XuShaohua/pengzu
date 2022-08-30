@@ -21,13 +21,13 @@ pub struct UseUserContextHandle {
 
 impl UseUserContextHandle {
     pub fn login(&self, info: UserInfo) {
-        set_token(&info.token);
+        set_token(Some(&info.token));
         self.inner.set(info);
         self.history.push(Route::Home);
     }
 
     pub fn logout(&self) {
-        set_token("");
+        set_token(None);
         self.inner.set(UserInfo::default());
         self.history.push(Route::Home);
     }

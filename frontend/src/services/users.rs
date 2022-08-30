@@ -10,7 +10,7 @@ use crate::types::users::{LoginForm, UserInfo};
 pub async fn login(form: &LoginForm) -> Result<UserInfo, FetchError> {
     let url = "/api/login";
     let user_info: UserInfo = request_post(url, form).await?;
-    set_token(&user_info.token);
+    set_token(Some(&user_info.token));
     Ok(user_info)
 }
 

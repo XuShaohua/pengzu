@@ -11,9 +11,17 @@ pub fn get_token() -> Option<String> {
     storage.get(STORAGE_KEY_TOKEN).unwrap()
 }
 
-pub fn set_token(token: &str) {
+pub fn set_token(token: Option<&str>) {
     let storage = gloo_storage::LocalStorage::raw();
-    if let Err(err) = storage.set(STORAGE_KEY_TOKEN, token) {
-        log::error!("Failed to store token to local storage, err: {:?}", err);
+
+    if let Some(token) = token {
+        assert!(!token.is_empty());
+        if let Err(err) = storage.set(STORAGE_KEY_TOKEN, token) {
+            log::error!("Failed to store token to local storage, err: {:?}", err);
+        }
+    } else {
+        if let Err(err) = storage.delete(STORAGE_KEY_TOKEN) {
+            log::error!("Failed to delete token from local storage, err: {:?}", err);
+        }
     }
 }

@@ -53,8 +53,6 @@ pub async fn run() -> Result<(), Error> {
                     .wrap(auth.clone())
                     .route(web::get().to(index)),
             )
-            // For /api/login
-            .route("/api/login", web::post().to(users::login))
             // For /api/author
             .service(
                 web::resource("/api/author")
@@ -182,14 +180,21 @@ pub async fn run() -> Result<(), Error> {
                     .route(web::get().to(books::get_books_by_user_tag)),
             )
             // For /api/user
+            .route("/api/user/login", web::post().to(users::login))
             .service(
                 web::resource("/api/user")
+                    .wrap(auth.clone())
+                    .route(web::get().to(users::get_user_info)),
+            )
+            // For /api/users
+            .service(
+                web::resource("/api/users")
                     .wrap(auth.clone())
                     .route(web::get().to(users::get_users))
                     .route(web::post().to(users::add_user)),
             )
             .service(
-                web::resource("/api/user/{user_id}")
+                web::resource("/api/users/{user_id}")
                     .wrap(auth.clone())
                     .route(web::delete().to(users::delete_user)),
             )

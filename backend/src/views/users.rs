@@ -37,6 +37,17 @@ pub async fn login(
     Ok(resp)
 }
 
+pub async fn get_user_info(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+    let user_id = 1;
+    let user_info = web::block(move || {
+        let conn = pool.get()?;
+        users::get_user_info(&conn, user_id)
+    })
+    .await??;
+
+    Ok(HttpResponse::Ok().json(user_info))
+}
+
 pub async fn add_user(
     pool: web::Data<DbPool>,
     new_user: web::Json<NewUserReq>,

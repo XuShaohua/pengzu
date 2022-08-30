@@ -48,6 +48,16 @@ impl FetchError {
     pub const fn from_string(kind: ErrorKind, message: String) -> Self {
         Self { kind, message }
     }
+
+    #[must_use]
+    pub fn kind(&self) -> ErrorKind {
+        self.kind
+    }
+
+    #[must_use]
+    pub fn message(&self) -> &str {
+        &self.message
+    }
 }
 
 impl fmt::Display for FetchError {

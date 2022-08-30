@@ -8,3 +8,4 @@ pub mod header;
 pub mod left_panel;
 pub mod login;
 pub mod not_found;
+pub mod user_context_provider;

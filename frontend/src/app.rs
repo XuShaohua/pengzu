@@ -2,42 +2,19 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use web_sys::Url;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::components::{
-    footer::FooterComponent, header::HeaderComponent, left_panel::LeftPanelComponent,
-    login::LoginComponent,
-};
+use crate::components::footer::FooterComponent;
+use crate::components::header::HeaderComponent;
+use crate::components::left_panel::LeftPanelComponent;
+use crate::components::user_context_provider::UserContextProvider;
 use crate::route::{switch_route, Route};
-
-fn is_login_page() -> bool {
-    let window = gloo_utils::window();
-    let location = window.location();
-    let href = match location.href() {
-        Ok(href) => href,
-        Err(_err) => return false,
-    };
-    let url = match Url::new(&href) {
-        Ok(url) => url,
-        Err(_err) => return false,
-    };
-    let pathname = url.pathname();
-    pathname == "/login"
-}
 
 #[function_component(AppComponent)]
 pub fn app() -> Html {
-    // TODO(Shaohua): Remove
-    if is_login_page() {
-        return html! {
-            <LoginComponent />
-        };
-    }
-
     html! {
-        <>
+        <UserContextProvider>
             <BrowserRouter>
                 <HeaderComponent />
                 <div class="container-fluid">
@@ -50,6 +27,6 @@ pub fn app() -> Html {
                 </div>
                 <FooterComponent />
             </BrowserRouter>
-        </>
+        </UserContextProvider>
     }
 }

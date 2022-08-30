@@ -3,6 +3,9 @@
 // that can be found in the LICENSE file.
 
 use actix_web::cookie::time::OffsetDateTime;
+use actix_web::dev::ServiceRequest;
+use actix_web_grants::permissions::AttachPermissions;
+use actix_web_httpauth::extractors::bearer::BearerAuth;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
@@ -16,14 +19,14 @@ const JWT_EXPIRATION_HOURS: i64 = 24 * 3;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct UserPermissions {
-    pub id: i32,
+    pub user_id: i32,
     pub name: String,
     pub role: UserRole,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Claims {
-    id: i32,
+    user_id: i32,
     name: String,
     role: UserRole,
     exp: i64,
@@ -32,7 +35,7 @@ pub struct Claims {
 impl Claims {
     pub fn new(permission: &UserPermissions) -> Self {
         Self {
-            id: permission.id,
+            user_id: permission.user_id,
             name: permission.name.clone(),
             role: permission.role,
             exp: (Utc::now() + Duration::hours(JWT_EXPIRATION_HOURS)).timestamp(),
@@ -40,8 +43,8 @@ impl Claims {
     }
 
     #[must_use]
-    pub const fn id(&self) -> i32 {
-        self.id
+    pub const fn user_id(&self) -> i32 {
+        self.user_id
     }
 
     #[must_use]
@@ -61,7 +64,7 @@ impl Claims {
 
     pub fn permission(self) -> UserPermissions {
         UserPermissions {
-            id: self.id,
+            user_id: self.user_id,
             name: self.name,
             role: self.role,
         }
@@ -96,5 +99,20 @@ impl Claims {
             &EncodingKey::from_secret(secret.as_bytes()),
         )
         .map_err(Into::into)
+    }
+}
+
+pub async fn auth_validator(
+    req: ServiceRequest,
+    credentials: BearerAuth,
+) -> Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
+    // We just get permissions from JWT
+    match Claims::decode(credentials.token()) {
+        Ok(claims) => {
+            log::info!("auth_validator() claims: {:?}", claims);
+            req.attach(vec![claims.permission()]);
+            Ok(req)
+        }
+        Err(err) => Err((err.into(), req)),
     }
 }

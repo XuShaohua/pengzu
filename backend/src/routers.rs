@@ -2,15 +2,13 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use actix_web::dev::ServiceRequest;
 use actix_web::{middleware, web, App, HttpServer};
-use actix_web_grants::permissions::{AttachPermissions, AuthDetails};
-use actix_web_httpauth::extractors::bearer::BearerAuth;
+use actix_web_grants::permissions::AuthDetails;
 use actix_web_httpauth::middleware::HttpAuthentication;
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
-use crate::views::auth::{Claims, UserPermissions};
+use crate::views::auth::{auth_validator, UserPermissions};
 use crate::views::{
     authors, books, categories, comments, file_formats, files, publishers, ratings, series, tags,
     user_tags, users,
@@ -18,21 +16,6 @@ use crate::views::{
 
 const CONTENT_TYPE: &str = "content-type";
 const APPLICATION_JSON: &str = "application/json";
-
-async fn validator(
-    req: ServiceRequest,
-    credentials: BearerAuth,
-) -> Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
-    // We just get permissions from JWT
-    match Claims::decode(credentials.token()) {
-        Ok(claims) => {
-            log::info!("validator() claims: {:?}", claims);
-            req.attach(vec![claims.permission()]);
-            Ok(req)
-        }
-        Err(err) => Err((err.into(), req)),
-    }
-}
 
 async fn index(detail: AuthDetails<UserPermissions>) -> String {
     let permissions = &detail.permissions;
@@ -44,7 +27,7 @@ pub async fn run() -> Result<(), Error> {
     let pool = get_connection_pool()?;
 
     HttpServer::new(move || {
-        let auth = HttpAuthentication::bearer(validator);
+        let auth = HttpAuthentication::bearer(auth_validator);
         App::new()
             .wrap(middleware::Logger::default())
             .app_data(web::Data::new(pool.clone()))

@@ -22,7 +22,7 @@ pub async fn login(
     .await??;
 
     let permission = UserPermissions {
-        id: user_info.id,
+        user_id: user_info.id,
         name: user_info.name.clone(),
         role: user_info.role,
     };

@@ -4,8 +4,7 @@
 
 use chrono::NaiveDateTime;
 use diesel::{
-    ExpressionMethods, GroupByDsl, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable,
-    RunQueryDsl,
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
 

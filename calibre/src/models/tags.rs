@@ -11,7 +11,7 @@ pub struct Tag {
     pub name: String,
 }
 
-pub fn get_tags(conn: &SqliteConnection, limit: i64, offset: i64) -> Result<Vec<Tag>, Error> {
+pub fn get_tags(conn: &mut SqliteConnection, limit: i64, offset: i64) -> Result<Vec<Tag>, Error> {
     use crate::schema::tags::dsl::tags;
     tags.limit(limit)
         .offset(offset)

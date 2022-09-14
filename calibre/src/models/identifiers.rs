@@ -14,7 +14,10 @@ pub struct Identifier {
     pub val: String,
 }
 
-pub fn get_identifiers(conn: &SqliteConnection, book_id: i32) -> Result<Vec<Identifier>, Error> {
+pub fn get_identifiers(
+    conn: &mut SqliteConnection,
+    book_id: i32,
+) -> Result<Vec<Identifier>, Error> {
     use crate::schema::identifiers::dsl::{book, identifiers};
     identifiers
         .filter(book.eq(book_id))

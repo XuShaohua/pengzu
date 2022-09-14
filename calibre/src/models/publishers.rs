@@ -13,7 +13,7 @@ pub struct Publisher {
 }
 
 pub fn get_publishers(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     limit: i64,
     offset: i64,
 ) -> Result<Vec<Publisher>, Error> {

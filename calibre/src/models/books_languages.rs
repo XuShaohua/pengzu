@@ -12,7 +12,7 @@ pub struct BookLanguage {
     pub lang_code: String,
 }
 
-pub fn get_book_language(conn: &SqliteConnection, book_id: i32) -> Result<BookLanguage, Error> {
+pub fn get_book_language(conn: &mut SqliteConnection, book_id: i32) -> Result<BookLanguage, Error> {
     use crate::schema::{books_languages_link, languages};
 
     books_languages_link::dsl::books_languages_link

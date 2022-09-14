@@ -12,7 +12,7 @@ pub struct BookRating {
     pub rating: i32,
 }
 
-pub fn get_book_rating(conn: &SqliteConnection, book_id: i32) -> Result<BookRating, Error> {
+pub fn get_book_rating(conn: &mut SqliteConnection, book_id: i32) -> Result<BookRating, Error> {
     use crate::schema::{books_ratings_link, ratings};
 
     books_ratings_link::dsl::books_ratings_link

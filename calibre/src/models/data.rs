@@ -15,7 +15,7 @@ pub struct Data {
     pub name: String,
 }
 
-pub fn get_book_data(conn: &SqliteConnection, book_id: i32) -> Result<Vec<Data>, Error> {
+pub fn get_book_data(conn: &mut SqliteConnection, book_id: i32) -> Result<Vec<Data>, Error> {
     use crate::schema::data::dsl::{book, data};
     data.filter(book.eq(book_id)).load(conn).map_err(Into::into)
 }

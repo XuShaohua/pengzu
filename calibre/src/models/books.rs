@@ -25,7 +25,7 @@ pub struct CalibreBook {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn get_next_book(conn: &SqliteConnection, book_id: i32) -> Result<CalibreBook, Error> {
+pub fn get_next_book(conn: &mut SqliteConnection, book_id: i32) -> Result<CalibreBook, Error> {
     use crate::schema::books::dsl::{books, id};
     books
         .filter(id.gt(book_id))
@@ -34,7 +34,7 @@ pub fn get_next_book(conn: &SqliteConnection, book_id: i32) -> Result<CalibreBoo
         .map_err(Into::into)
 }
 
-pub fn get_total_books(conn: &SqliteConnection) -> Result<i64, Error> {
+pub fn get_total_books(conn: &mut SqliteConnection) -> Result<i64, Error> {
     use crate::schema::books::dsl::books;
     books.count().get_result(conn).map_err(Into::into)
 }

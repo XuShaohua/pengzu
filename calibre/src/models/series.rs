@@ -12,7 +12,11 @@ pub struct Series {
     pub sort: Option<String>,
 }
 
-pub fn get_series(conn: &SqliteConnection, limit: i64, offset: i64) -> Result<Vec<Series>, Error> {
+pub fn get_series(
+    conn: &mut SqliteConnection,
+    limit: i64,
+    offset: i64,
+) -> Result<Vec<Series>, Error> {
     use crate::schema::series::dsl::series;
     series
         .limit(limit)

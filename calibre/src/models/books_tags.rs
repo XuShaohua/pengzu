@@ -12,7 +12,7 @@ pub struct BookTag {
     pub name: String,
 }
 
-pub fn get_book_tags(conn: &SqliteConnection, book_id: i32) -> Result<Vec<BookTag>, Error> {
+pub fn get_book_tags(conn: &mut SqliteConnection, book_id: i32) -> Result<Vec<BookTag>, Error> {
     use crate::schema::{books_tags_link, tags};
 
     books_tags_link::dsl::books_tags_link

@@ -13,7 +13,7 @@ pub struct Comment {
     pub text: String,
 }
 
-pub fn get_comment(conn: &SqliteConnection, book_id: i32) -> Result<Comment, Error> {
+pub fn get_comment(conn: &mut SqliteConnection, book_id: i32) -> Result<Comment, Error> {
     use crate::schema::comments::dsl::{book, comments};
     comments
         .filter(book.eq(book_id))

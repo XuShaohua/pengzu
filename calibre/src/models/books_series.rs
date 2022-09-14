@@ -12,7 +12,7 @@ pub struct BookSeries {
     pub name: String,
 }
 
-pub fn get_book_series(conn: &SqliteConnection, book_id: i32) -> Result<BookSeries, Error> {
+pub fn get_book_series(conn: &mut SqliteConnection, book_id: i32) -> Result<BookSeries, Error> {
     use crate::schema::{books_series_link, series};
 
     books_series_link::dsl::books_series_link

@@ -6,7 +6,7 @@ use diesel::{QueryDsl, RunQueryDsl, SqliteConnection};
 
 use crate::error::Error;
 
-pub fn get_identifier_types(conn: &SqliteConnection) -> Result<Vec<String>, Error> {
+pub fn get_identifier_types(conn: &mut SqliteConnection) -> Result<Vec<String>, Error> {
     use crate::schema::identifiers::dsl::{identifiers, type_};
     identifiers
         .select(type_)

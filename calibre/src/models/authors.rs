@@ -14,7 +14,11 @@ pub struct Author {
     pub link: String,
 }
 
-pub fn get_authors(conn: &SqliteConnection, limit: i64, offset: i64) -> Result<Vec<Author>, Error> {
+pub fn get_authors(
+    conn: &mut SqliteConnection,
+    limit: i64,
+    offset: i64,
+) -> Result<Vec<Author>, Error> {
     use crate::schema::authors::dsl::{authors, id};
     authors
         .limit(limit)

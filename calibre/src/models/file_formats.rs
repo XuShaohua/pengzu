@@ -6,7 +6,7 @@ use diesel::{QueryDsl, RunQueryDsl, SqliteConnection};
 
 use crate::error::Error;
 
-pub fn get_file_formats(conn: &SqliteConnection) -> Result<Vec<String>, Error> {
+pub fn get_file_formats(conn: &mut SqliteConnection) -> Result<Vec<String>, Error> {
     use crate::schema::data::dsl::{data, format};
     data.select(format)
         .distinct()

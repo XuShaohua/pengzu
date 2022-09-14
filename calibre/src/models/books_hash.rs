@@ -16,7 +16,7 @@ pub struct FindDuplicateItem {
 
 pub type FindDuplicateMap = HashMap<String, FindDuplicateItem>;
 
-pub fn get_book_hash(conn: &SqliteConnection, book_id: i32) -> Result<FindDuplicateMap, Error> {
+pub fn get_book_hash(conn: &mut SqliteConnection, book_id: i32) -> Result<FindDuplicateMap, Error> {
     use crate::schema::books_plugin_data::dsl::{book, books_plugin_data, name, val};
     let duplicate_str = books_plugin_data
         .filter(book.eq(book_id))

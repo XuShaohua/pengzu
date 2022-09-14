@@ -11,7 +11,7 @@ pub struct Language {
     pub lang_code: String,
 }
 
-pub fn get_languages(conn: &SqliteConnection) -> Result<Vec<Language>, Error> {
+pub fn get_languages(conn: &mut SqliteConnection) -> Result<Vec<Language>, Error> {
     use crate::schema::languages::dsl::languages;
     languages.load::<Language>(conn).map_err(Into::into)
 }

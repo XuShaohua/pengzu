@@ -227,7 +227,7 @@ fn get_books_by_ids(
     let total = book_ids.len() as i64;
 
     let book_list = books::table
-        .filter(books::id.eq_eq(book_ids))
+        .filter(books::id.eq_any(book_ids))
         .order_by(order_column)
         .limit(EACH_PAGE)
         .offset(offset)

@@ -10,7 +10,7 @@ use crate::error::Error;
 use crate::schema::languages;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "languages"]
+#[diesel(table_name = languages)]
 pub struct NewLanguage {
     pub lang_code: String,
 }

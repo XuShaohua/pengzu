@@ -14,7 +14,7 @@ use crate::error::Error;
 use crate::schema::publishers;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "publishers"]
+#[diesel(table_name = publishers)]
 pub struct NewPublisher {
     pub name: String,
 }

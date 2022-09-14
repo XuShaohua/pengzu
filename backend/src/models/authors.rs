@@ -14,7 +14,7 @@ use crate::error::Error;
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "authors"]
+#[diesel(table_name = authors)]
 pub struct NewAuthor {
     pub name: String,
     pub link: String,

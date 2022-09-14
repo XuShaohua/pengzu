@@ -12,7 +12,7 @@ use crate::models::file_formats::{get_file_format_by_ids, FileFormat};
 use crate::schema::files;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "files"]
+#[diesel(table_name = files)]
 pub struct NewFile {
     pub book: i32,
     pub format: i32,

@@ -41,7 +41,7 @@ pub struct BookWithCover {
 }
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "books"]
+#[diesel(table_name = books)]
 pub struct NewBook {
     pub title: String,
     pub path: String,

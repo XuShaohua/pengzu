@@ -13,7 +13,7 @@ use crate::models::series::Series;
 use crate::schema::books_series_link;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "books_series_link"]
+#[diesel(table_name = books_series_link)]
 pub struct NewBookSeries {
     pub book: i32,
     pub series: i32,

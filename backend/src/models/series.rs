@@ -14,7 +14,7 @@ use crate::error::Error;
 use crate::schema::series;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "series"]
+#[diesel(table_name = series)]
 pub struct NewSeries {
     pub name: String,
 }

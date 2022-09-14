@@ -11,7 +11,7 @@ use crate::error::Error;
 use crate::schema::tags;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "tags"]
+#[diesel(table_name = tags)]
 pub struct NewTag {
     pub name: String,
 }

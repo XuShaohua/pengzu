@@ -13,7 +13,7 @@ use crate::models::publishers::Publisher;
 use crate::schema::books_publishers_link;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "books_publishers_link"]
+#[diesel(table_name = books_publishers_link)]
 pub struct NewBookPublisher {
     pub book: i32,
     pub publisher: i32,

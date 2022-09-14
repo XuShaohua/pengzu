@@ -14,7 +14,7 @@ use crate::models::page::{default_page_id, Page};
 use crate::schema::categories;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "categories"]
+#[diesel(table_name = categories)]
 pub struct NewCategory<'a> {
     pub order_index: i32,
     pub serial_number: &'a str,

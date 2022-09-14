@@ -14,7 +14,7 @@ use crate::error::Error;
 use crate::schema::file_formats;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "file_formats"]
+#[diesel(table_name = file_formats)]
 pub struct NewFileFormat {
     pub name: String,
 }

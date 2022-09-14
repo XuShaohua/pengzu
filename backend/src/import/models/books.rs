@@ -10,7 +10,7 @@ use crate::error::Error;
 use crate::schema::import_books;
 
 #[derive(Debug, Serialize, Insertable)]
-#[table_name = "import_books"]
+#[diesel(table_name = import_books)]
 pub struct NewImportBook {
     pub library: i32,
     pub calibre_book: i32,

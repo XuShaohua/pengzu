@@ -10,7 +10,7 @@ use crate::error::Error;
 use crate::schema::ratings;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "ratings"]
+#[diesel(table_name = ratings)]
 pub struct NewRating {
     pub book: i32,
     pub rating: i32,

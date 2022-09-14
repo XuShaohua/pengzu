@@ -10,7 +10,7 @@ use crate::models::authors::Author;
 use crate::schema::books_authors_link;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "books_authors_link"]
+#[diesel(table_name = books_authors_link)]
 pub struct NewBookAuthor {
     pub book: i32,
     pub author: i32,

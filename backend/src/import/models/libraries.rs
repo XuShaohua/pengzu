@@ -10,7 +10,7 @@ use crate::error::Error;
 use crate::schema::import_libraries;
 
 #[derive(Debug, Serialize, Insertable)]
-#[table_name = "import_libraries"]
+#[diesel(table_name = import_libraries)]
 pub struct NewImportLibrary {
     pub calibre_library_path: String,
     pub library_path: String,

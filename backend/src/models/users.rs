@@ -96,7 +96,7 @@ pub struct NewUserReq {
 }
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "users"]
+#[diesel(table_name = users)]
 pub struct NewUser {
     pub name: String,
     pub display_name: String,

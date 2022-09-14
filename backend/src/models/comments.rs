@@ -10,7 +10,7 @@ use crate::error::Error;
 use crate::schema::comments;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "comments"]
+#[diesel(table_name = comments)]
 pub struct NewComment {
     pub book: i32,
     pub text: String,

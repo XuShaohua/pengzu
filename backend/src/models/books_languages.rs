@@ -13,7 +13,7 @@ use crate::models::languages::Language;
 use crate::schema::books_languages_link;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "books_languages_link"]
+#[diesel(table_name = books_languages_link)]
 pub struct NewBookLanguage {
     pub book: i32,
     pub lang_code: i32,

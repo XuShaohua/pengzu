@@ -13,7 +13,7 @@ use crate::models::tags::Tag;
 use crate::schema::books_tags_link;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "books_tags_link"]
+#[diesel(table_name = books_tags_link)]
 pub struct NewBookTag {
     pub book: i32,
     pub tag: i32,

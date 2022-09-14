@@ -10,7 +10,7 @@ use crate::error::Error;
 use crate::schema::identifier_types;
 
 #[derive(Debug, Deserialize, Insertable)]
-#[table_name = "identifier_types"]
+#[diesel(table_name = identifier_types)]
 pub struct NewIdentifierType {
     pub name: String,
 }

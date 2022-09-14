@@ -3,8 +3,10 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
+use diesel::expression::expression_types::NotSelectable;
 use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+    BoxableExpression, ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable,
+    RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
 
@@ -97,7 +99,8 @@ impl GetBooksOrder {
     #[must_use]
     pub fn get_column(
         self,
-    ) -> Box<dyn diesel::BoxableExpression<books::dsl::books, diesel::pg::Pg, SqlType = ()>> {
+    ) -> Box<dyn BoxableExpression<books::dsl::books, diesel::pg::Pg, SqlType = NotSelectable>>
+    {
         use crate::schema::books::dsl;
         match self {
             Self::IdAsc => Box::new(dsl::id.asc()),

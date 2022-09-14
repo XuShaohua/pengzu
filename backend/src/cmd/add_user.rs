@@ -61,7 +61,7 @@ pub fn add_user(matches: &ArgMatches) -> Result<(), Error> {
         .unwrap_or_else(|| username);
 
     let db_pool = get_connection_pool()?;
-    let pg_conn = db_pool.get()?;
+    let mut pg_conn = db_pool.get()?;
 
     let new_user_req = NewUserReq {
         name: username.to_string(),
@@ -71,7 +71,7 @@ pub fn add_user(matches: &ArgMatches) -> Result<(), Error> {
         password: password.to_string(),
     };
 
-    let user_info = users::add_user(&pg_conn, new_user_req)?;
+    let user_info = users::add_user(&mut pg_conn, new_user_req)?;
     log::info!("New user: {:?}", user_info);
 
     Ok(())

@@ -29,7 +29,7 @@ async fn query_children(
     return Ok(list);
 }
 
-fn insert_into_db(pg_conn: &PgConnection, documents: &[Document]) -> Result<(), Error> {
+fn insert_into_db(pg_conn: &mut PgConnection, documents: &[Document]) -> Result<(), Error> {
     if documents.is_empty() {
         return Ok(());
     }
@@ -70,13 +70,13 @@ async fn main() -> Result<(), Error> {
     println!("collection: {:?}", collection);
 
     let db_pool = get_connection_pool()?;
-    let pg_conn = db_pool.get()?;
+    let mut pg_conn = db_pool.get()?;
     println!("pg conn is ok");
 
     let mut todo_list = Vec::new();
     let mut root_list = query_children(&collection, "0").await?;
     println!("root_list: {}", root_list.len());
-    insert_into_db(&pg_conn, &root_list)?;
+    insert_into_db(&mut pg_conn, &root_list)?;
 
     root_list.reverse();
     todo_list.extend(root_list);
@@ -86,7 +86,7 @@ async fn main() -> Result<(), Error> {
             let mut leaf_list = query_children(&collection, parent_index).await?;
             if !leaf_list.is_empty() {
                 println!("leaf of {}, count: {}", parent_index, leaf_list.len());
-                insert_into_db(&pg_conn, &leaf_list)?;
+                insert_into_db(&mut pg_conn, &leaf_list)?;
 
                 leaf_list.reverse();
                 todo_list.extend(leaf_list);

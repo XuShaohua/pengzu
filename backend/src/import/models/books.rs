@@ -28,7 +28,7 @@ pub struct ImportBook {
     pub created: NaiveDateTime,
 }
 
-pub fn add_import_book(conn: &PgConnection, new_book: &NewImportBook) -> Result<(), Error> {
+pub fn add_import_book(conn: &mut PgConnection, new_book: &NewImportBook) -> Result<(), Error> {
     use crate::schema::import_books::dsl::import_books;
     diesel::insert_into(import_books)
         .values(new_book)

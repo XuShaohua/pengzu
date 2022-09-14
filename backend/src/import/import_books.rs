@@ -62,8 +62,8 @@ impl Default for ImportBookOptions {
 }
 
 fn import_authors(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
@@ -82,8 +82,8 @@ fn import_authors(
 }
 
 fn import_comment(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
@@ -108,8 +108,8 @@ fn import_comment(
 }
 
 fn import_identifiers(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
@@ -130,8 +130,8 @@ fn import_identifiers(
 }
 
 fn import_language(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
@@ -156,8 +156,8 @@ fn import_language(
 }
 
 fn import_publisher(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
@@ -182,8 +182,8 @@ fn import_publisher(
 }
 
 fn import_series(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
@@ -209,8 +209,8 @@ fn import_series(
 }
 
 fn import_rating(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
@@ -231,8 +231,8 @@ fn import_rating(
 }
 
 fn import_tags(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book_id: i32,
     book_id: i32,
 ) -> Result<(), Error> {
@@ -336,8 +336,8 @@ fn copy_book_cover(
 fn import_files(
     calibre_library_path: &str,
     library_path: &str,
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book_id: i32,
     calibre_book_path: &str,
     book_id: i32,
@@ -403,8 +403,8 @@ fn import_files(
 fn import_book_detail(
     calibre_library_path: &str,
     library_path: &str,
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     calibre_book: &CalibreBook,
     book: &Book,
     option: &ImportBookOptions,
@@ -436,8 +436,8 @@ fn import_book_detail(
 
 fn import_book(
     calibre_library_path: &str,
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     last_book_id: i32,
 ) -> Result<Option<(CalibreBook, Book)>, Error> {
     log::info!("import_book({}, {})", calibre_library_path, last_book_id);
@@ -468,8 +468,8 @@ fn import_book(
 }
 
 pub fn import_books(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
     import_library: &ImportLibrary,
     option: &ImportBookOptions,
     mut last_book_id: i32,

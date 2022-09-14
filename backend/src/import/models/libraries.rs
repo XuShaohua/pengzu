@@ -33,7 +33,7 @@ pub struct ImportLibrary {
 }
 
 pub fn add_import_library(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     new_library: &NewImportLibrary,
 ) -> Result<ImportLibrary, Error> {
     use crate::schema::import_libraries::dsl::import_libraries;
@@ -44,7 +44,7 @@ pub fn add_import_library(
 }
 
 pub fn update_import_library(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     id_val: i32,
     finished_val: bool,
 ) -> Result<(), Error> {

@@ -25,7 +25,10 @@ use crate::models::publishers::{add_publisher, NewPublisher};
 use crate::models::series::{add_series, NewSeries};
 use crate::models::tags::{add_tag, NewTag};
 
-fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
+fn import_authors(
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
+) -> Result<(), Error> {
     let limit = 10;
     let mut offset = 0;
     loop {
@@ -57,7 +60,10 @@ fn import_authors(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Res
     Ok(())
 }
 
-fn import_languages(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
+fn import_languages(
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
+) -> Result<(), Error> {
     let lang_list = get_languages(sqlite_conn)?;
     log::info!("lang list len: {}", lang_list.len());
     for lang in lang_list {
@@ -78,7 +84,10 @@ fn import_languages(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> R
     Ok(())
 }
 
-fn import_publishers(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
+fn import_publishers(
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
+) -> Result<(), Error> {
     let limit = 10;
     let mut offset = 0;
     loop {
@@ -109,7 +118,10 @@ fn import_publishers(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> 
     Ok(())
 }
 
-fn import_series(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
+fn import_series(
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
+) -> Result<(), Error> {
     let limit = 10;
     let mut offset = 0;
     loop {
@@ -138,7 +150,10 @@ fn import_series(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Resu
     Ok(())
 }
 
-fn import_tags(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result<(), Error> {
+fn import_tags(
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
+) -> Result<(), Error> {
     let limit = 10;
     let mut offset = 0;
 
@@ -168,8 +183,8 @@ fn import_tags(sqlite_conn: &SqliteConnection, pg_conn: &PgConnection) -> Result
 }
 
 fn import_file_formats(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
 ) -> Result<(), Error> {
     let format_list = get_file_formats(sqlite_conn)?;
     for format in format_list {
@@ -189,8 +204,8 @@ fn import_file_formats(
 }
 
 fn import_identifier_types(
-    sqlite_conn: &SqliteConnection,
-    pg_conn: &PgConnection,
+    sqlite_conn: &mut SqliteConnection,
+    pg_conn: &mut PgConnection,
 ) -> Result<(), Error> {
     let identifier_types = get_identifier_types(sqlite_conn)?;
     for identifier_type in identifier_types {
@@ -214,15 +229,15 @@ fn import_identifier_types(
 pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
     let calibre_pool = get_calibre_db(calibre_library_path)?;
     let pg_pool = get_connection_pool()?;
-    let sqlite_conn = calibre_pool.get()?;
-    let pg_conn = pg_pool.get()?;
-    import_authors(&sqlite_conn, &pg_conn)?;
-    import_languages(&sqlite_conn, &pg_conn)?;
-    import_publishers(&sqlite_conn, &pg_conn)?;
-    import_series(&sqlite_conn, &pg_conn)?;
-    import_tags(&sqlite_conn, &pg_conn)?;
-    import_file_formats(&sqlite_conn, &pg_conn)?;
-    import_identifier_types(&sqlite_conn, &pg_conn)?;
+    let mut sqlite_conn = calibre_pool.get()?;
+    let mut pg_conn = pg_pool.get()?;
+    import_authors(&mut sqlite_conn, &mut pg_conn)?;
+    import_languages(&mut sqlite_conn, &mut pg_conn)?;
+    import_publishers(&mut sqlite_conn, &mut pg_conn)?;
+    import_series(&mut sqlite_conn, &mut pg_conn)?;
+    import_tags(&mut sqlite_conn, &mut pg_conn)?;
+    import_file_formats(&mut sqlite_conn, &mut pg_conn)?;
+    import_identifier_types(&mut sqlite_conn, &mut pg_conn)?;
 
     // TODO(Shaohua): Use data directory.
     let library_path = "/tmp/HelloLibrary".to_string();
@@ -232,7 +247,7 @@ pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
     };
     let options_str = serde_json::to_string(&options)?;
     #[allow(clippy::cast_possible_truncation)]
-    let total_books = get_total_books(&sqlite_conn)? as i32;
+    let total_books = get_total_books(&mut sqlite_conn)? as i32;
     let new_library = NewImportLibrary {
         calibre_library_path: calibre_library_path.to_string(),
         library_path,
@@ -240,11 +255,11 @@ pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
         finished: false,
         options: options_str,
     };
-    let import_library = add_import_library(&pg_conn, &new_library)?;
+    let import_library = add_import_library(&mut pg_conn, &new_library)?;
     let last_book_id = 0;
     import_books(
-        &sqlite_conn,
-        &pg_conn,
+        &mut sqlite_conn,
+        &mut pg_conn,
         &import_library,
         &options,
         last_book_id,

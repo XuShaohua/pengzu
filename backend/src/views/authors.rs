@@ -14,8 +14,8 @@ pub async fn add_author(
     new_author: web::Json<authors::NewAuthor>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        authors::add_author(&conn, &new_author)
+        let mut conn = pool.get()?;
+        authors::add_author(&mut conn, &new_author)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -26,8 +26,8 @@ pub async fn get_authors(
     query: web::Query<PageQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        authors::get_authors(&conn, &query)
+        let mut conn = pool.get()?;
+        authors::get_authors(&mut conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

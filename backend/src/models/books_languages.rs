@@ -28,7 +28,7 @@ pub struct BookLanguage {
 }
 
 pub fn add_book_language(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     new_book_language: &NewBookLanguage,
 ) -> Result<(), Error> {
     use crate::schema::books_languages_link::dsl::books_languages_link;
@@ -38,7 +38,7 @@ pub fn add_book_language(
     Ok(())
 }
 
-pub fn get_book_language(conn: &PgConnection, book_id: i32) -> Result<BookLanguage, Error> {
+pub fn get_book_language(conn: &mut PgConnection, book_id: i32) -> Result<BookLanguage, Error> {
     use crate::schema::books_languages_link::dsl::{book, books_languages_link};
     books_languages_link
         .filter(book.eq(book_id))
@@ -46,14 +46,17 @@ pub fn get_book_language(conn: &PgConnection, book_id: i32) -> Result<BookLangua
         .map_err(Into::into)
 }
 
-pub fn delete_book_language(conn: &PgConnection, book_id: i32) -> Result<(), Error> {
+pub fn delete_book_language(conn: &mut PgConnection, book_id: i32) -> Result<(), Error> {
     use crate::schema::books_languages_link::dsl::{book, books_languages_link};
     let _lang = get_book_language(conn, book_id)?;
     diesel::delete(books_languages_link.filter(book.eq(book_id))).execute(conn)?;
     Ok(())
 }
 
-pub fn get_language_by_book(conn: &PgConnection, book_id: i32) -> Result<Option<Language>, Error> {
+pub fn get_language_by_book(
+    conn: &mut PgConnection,
+    book_id: i32,
+) -> Result<Option<Language>, Error> {
     use crate::schema::languages;
 
     let language: Result<Language, Error> = languages::table

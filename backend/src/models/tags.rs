@@ -26,13 +26,13 @@ pub struct Tag {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_tag(conn: &PgConnection, new_tag: &NewTag) -> Result<(), Error> {
+pub fn add_tag(conn: &mut PgConnection, new_tag: &NewTag) -> Result<(), Error> {
     use crate::schema::tags::dsl::tags;
     diesel::insert_into(tags).values(new_tag).execute(conn)?;
     Ok(())
 }
 
-pub fn get_tag_by_name(conn: &PgConnection, tag_name: &str) -> Result<Tag, Error> {
+pub fn get_tag_by_name(conn: &mut PgConnection, tag_name: &str) -> Result<Tag, Error> {
     use crate::schema::tags::dsl::{name, tags};
     tags.filter(name.eq(tag_name))
         .first(conn)
@@ -67,7 +67,7 @@ pub struct GetTagsReq {
     pub page: i64,
 }
 
-pub fn get_tags(conn: &PgConnection, query: &GetTagsReq) -> Result<GetTagsResp, Error> {
+pub fn get_tags(conn: &mut PgConnection, query: &GetTagsReq) -> Result<GetTagsResp, Error> {
     use crate::schema::books_tags_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -104,7 +104,7 @@ pub fn get_tags(conn: &PgConnection, query: &GetTagsReq) -> Result<GetTagsResp, 
     })
 }
 
-pub fn update_tag(conn: &PgConnection, tag_id: i32, new_tag: &NewTag) -> Result<(), Error> {
+pub fn update_tag(conn: &mut PgConnection, tag_id: i32, new_tag: &NewTag) -> Result<(), Error> {
     use crate::schema::tags::dsl::{name, tags};
     diesel::update(tags.find(tag_id))
         .set(name.eq(new_tag.name.as_str()))

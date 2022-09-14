@@ -27,7 +27,7 @@ pub struct Publisher {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_publisher(conn: &PgConnection, new_publisher: &NewPublisher) -> Result<(), Error> {
+pub fn add_publisher(conn: &mut PgConnection, new_publisher: &NewPublisher) -> Result<(), Error> {
     use crate::schema::publishers::dsl::publishers;
     diesel::insert_into(publishers)
         .values(new_publisher)
@@ -48,7 +48,10 @@ pub struct GetPublishersResp {
     pub list: Vec<PublisherAndBook>,
 }
 
-pub fn get_publishers(conn: &PgConnection, query: &PageQuery) -> Result<GetPublishersResp, Error> {
+pub fn get_publishers(
+    conn: &mut PgConnection,
+    query: &PageQuery,
+) -> Result<GetPublishersResp, Error> {
     use crate::schema::books_publishers_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -82,7 +85,7 @@ pub fn get_publishers(conn: &PgConnection, query: &PageQuery) -> Result<GetPubli
 }
 
 pub fn get_publisher_by_name(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     publisher_name: &str,
 ) -> Result<Publisher, Error> {
     use crate::schema::publishers::dsl::{name, publishers};
@@ -93,7 +96,7 @@ pub fn get_publisher_by_name(
 }
 
 pub fn update_publisher(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     pub_id: i32,
     new_publisher: &NewPublisher,
 ) -> Result<(), Error> {

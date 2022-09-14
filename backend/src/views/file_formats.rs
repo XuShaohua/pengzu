@@ -14,8 +14,8 @@ pub async fn get_formats(
     query: web::Query<PageQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        file_formats::get_formats(&conn, &query)
+        let mut conn = pool.get()?;
+        file_formats::get_formats(&mut conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

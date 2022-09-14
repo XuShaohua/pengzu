@@ -27,7 +27,7 @@ pub struct Series {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_series(conn: &PgConnection, new_series: &NewSeries) -> Result<(), Error> {
+pub fn add_series(conn: &mut PgConnection, new_series: &NewSeries) -> Result<(), Error> {
     use crate::schema::series::dsl::series;
     diesel::insert_into(series)
         .values(new_series)
@@ -48,7 +48,7 @@ pub struct GetSeriesResp {
     pub list: Vec<SeriesAndBook>,
 }
 
-pub fn get_series(conn: &PgConnection, query: &PageQuery) -> Result<GetSeriesResp, Error> {
+pub fn get_series(conn: &mut PgConnection, query: &PageQuery) -> Result<GetSeriesResp, Error> {
     use crate::schema::books_series_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -79,7 +79,7 @@ pub fn get_series(conn: &PgConnection, query: &PageQuery) -> Result<GetSeriesRes
     })
 }
 
-pub fn get_series_by_name(conn: &PgConnection, series_name: &str) -> Result<Series, Error> {
+pub fn get_series_by_name(conn: &mut PgConnection, series_name: &str) -> Result<Series, Error> {
     use crate::schema::series::dsl::{name, series};
     series
         .filter(name.eq(series_name))
@@ -88,7 +88,7 @@ pub fn get_series_by_name(conn: &PgConnection, series_name: &str) -> Result<Seri
 }
 
 pub fn update_series(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     pub_id: i32,
     new_series: &NewSeries,
 ) -> Result<(), Error> {

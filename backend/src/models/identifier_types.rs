@@ -25,7 +25,10 @@ pub struct IdentifierType {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_identifier_type(conn: &PgConnection, new_type: &NewIdentifierType) -> Result<(), Error> {
+pub fn add_identifier_type(
+    conn: &mut PgConnection,
+    new_type: &NewIdentifierType,
+) -> Result<(), Error> {
     use crate::schema::identifier_types::dsl::identifier_types;
     diesel::insert_into(identifier_types)
         .values(new_type)
@@ -34,7 +37,7 @@ pub fn add_identifier_type(conn: &PgConnection, new_type: &NewIdentifierType) ->
 }
 
 pub fn get_identifier_type_by_name(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     type_name: &str,
 ) -> Result<IdentifierType, Error> {
     use crate::schema::identifier_types::dsl::{identifier_types, name};
@@ -44,7 +47,7 @@ pub fn get_identifier_type_by_name(
         .map_err(Into::into)
 }
 
-pub fn get_identifier_type(conn: &PgConnection, type_id: i32) -> Result<IdentifierType, Error> {
+pub fn get_identifier_type(conn: &mut PgConnection, type_id: i32) -> Result<IdentifierType, Error> {
     use crate::schema::identifier_types::dsl::identifier_types;
     identifier_types
         .find(type_id)

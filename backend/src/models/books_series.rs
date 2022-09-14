@@ -27,7 +27,10 @@ pub struct BookSeries {
     pub created: NaiveDateTime,
 }
 
-pub fn add_book_series(conn: &PgConnection, new_book_series: &NewBookSeries) -> Result<(), Error> {
+pub fn add_book_series(
+    conn: &mut PgConnection,
+    new_book_series: &NewBookSeries,
+) -> Result<(), Error> {
     use crate::schema::books_series_link::dsl::books_series_link;
     diesel::insert_into(books_series_link)
         .values(new_book_series)
@@ -35,7 +38,7 @@ pub fn add_book_series(conn: &PgConnection, new_book_series: &NewBookSeries) -> 
     Ok(())
 }
 
-pub fn get_book_series(conn: &PgConnection, book_id: i32) -> Result<BookSeries, Error> {
+pub fn get_book_series(conn: &mut PgConnection, book_id: i32) -> Result<BookSeries, Error> {
     use crate::schema::books_series_link::dsl::{book, books_series_link};
     books_series_link
         .filter(book.eq(book_id))
@@ -43,7 +46,7 @@ pub fn get_book_series(conn: &PgConnection, book_id: i32) -> Result<BookSeries, 
         .map_err(Into::into)
 }
 
-pub fn delete_book_series(conn: &PgConnection, book_id: i32) -> Result<(), Error> {
+pub fn delete_book_series(conn: &mut PgConnection, book_id: i32) -> Result<(), Error> {
     use crate::schema::books_series_link::dsl::{book, books_series_link};
     let _link = get_book_series(conn, book_id)?;
     diesel::delete(books_series_link)
@@ -52,7 +55,7 @@ pub fn delete_book_series(conn: &PgConnection, book_id: i32) -> Result<(), Error
     Ok(())
 }
 
-pub fn get_series_by_book(conn: &PgConnection, book_id: i32) -> Result<Option<Series>, Error> {
+pub fn get_series_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Option<Series>, Error> {
     use crate::schema::series;
 
     let series: Result<Series, Error> = series::table

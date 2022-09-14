@@ -14,8 +14,8 @@ pub async fn add_series(
     new_series: web::Json<series::NewSeries>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        series::add_series(&conn, &new_series)
+        let mut conn = pool.get()?;
+        series::add_series(&mut conn, &new_series)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -26,8 +26,8 @@ pub async fn get_series(
     query: web::Query<PageQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp_series = web::block(move || {
-        let conn = pool.get()?;
-        series::get_series(&conn, &query)
+        let mut conn = pool.get()?;
+        series::get_series(&mut conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_series))

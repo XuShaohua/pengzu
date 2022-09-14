@@ -16,8 +16,8 @@ pub async fn login(
     form: web::Json<users::LoginForm>,
 ) -> Result<HttpResponse, Error> {
     let mut user_info: users::UserInfo = web::block(move || {
-        let conn = pool.get()?;
-        users::login(&conn, &form)
+        let mut conn = pool.get()?;
+        users::login(&mut conn, &form)
     })
     .await??;
 
@@ -44,8 +44,8 @@ pub async fn get_user_info(
     let claims = get_claims_from_request(&req)?;
     let user_id = claims.id();
     let user_info = web::block(move || {
-        let conn = pool.get()?;
-        users::get_user_info(&conn, user_id)
+        let mut conn = pool.get()?;
+        users::get_user_info(&mut conn, user_id)
     })
     .await??;
 
@@ -57,8 +57,8 @@ pub async fn add_user(
     new_user: web::Json<NewUserReq>,
 ) -> Result<HttpResponse, Error> {
     let user_info = web::block(move || {
-        let conn = pool.get()?;
-        users::add_user(&conn, new_user.into_inner())
+        let mut conn = pool.get()?;
+        users::add_user(&mut conn, new_user.into_inner())
     })
     .await??;
 
@@ -67,8 +67,8 @@ pub async fn add_user(
 
 pub async fn get_users(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
     let users_resp = web::block(move || {
-        let conn = pool.get()?;
-        users::get_users(&conn)
+        let mut conn = pool.get()?;
+        users::get_users(&mut conn)
     })
     .await??;
     Ok(HttpResponse::Ok().json(users_resp))
@@ -79,8 +79,8 @@ pub async fn delete_user(
     user_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        users::delete_user(&conn, user_id.into_inner())
+        let mut conn = pool.get()?;
+        users::delete_user(&mut conn, user_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().finish())

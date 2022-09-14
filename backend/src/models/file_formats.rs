@@ -27,7 +27,7 @@ pub struct FileFormat {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_file_format(conn: &PgConnection, new_format: &NewFileFormat) -> Result<(), Error> {
+pub fn add_file_format(conn: &mut PgConnection, new_format: &NewFileFormat) -> Result<(), Error> {
     use crate::schema::file_formats::dsl::file_formats;
     diesel::insert_into(file_formats)
         .values(new_format)
@@ -36,7 +36,7 @@ pub fn add_file_format(conn: &PgConnection, new_format: &NewFileFormat) -> Resul
 }
 
 pub fn get_file_format_by_name(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     format_name: &str,
 ) -> Result<FileFormat, Error> {
     use crate::schema::file_formats::dsl::{file_formats, name};
@@ -46,12 +46,15 @@ pub fn get_file_format_by_name(
         .map_err(Into::into)
 }
 
-pub fn get_file_format(conn: &PgConnection, format_id: i32) -> Result<FileFormat, Error> {
+pub fn get_file_format(conn: &mut PgConnection, format_id: i32) -> Result<FileFormat, Error> {
     use crate::schema::file_formats::dsl::file_formats;
     file_formats.find(format_id).first(conn).map_err(Into::into)
 }
 
-pub fn get_file_format_by_ids(conn: &PgConnection, ids: &[i32]) -> Result<Vec<FileFormat>, Error> {
+pub fn get_file_format_by_ids(
+    conn: &mut PgConnection,
+    ids: &[i32],
+) -> Result<Vec<FileFormat>, Error> {
     use crate::schema::file_formats::dsl::{file_formats, id};
     file_formats
         .filter(id.eq(any(ids)))
@@ -72,7 +75,10 @@ pub struct GetFileFormatsResp {
     pub list: Vec<FileFormatAndBook>,
 }
 
-pub fn get_formats(conn: &PgConnection, query: &PageQuery) -> Result<GetFileFormatsResp, Error> {
+pub fn get_formats(
+    conn: &mut PgConnection,
+    query: &PageQuery,
+) -> Result<GetFileFormatsResp, Error> {
     use crate::schema::files;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };

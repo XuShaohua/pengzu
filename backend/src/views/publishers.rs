@@ -14,8 +14,8 @@ pub async fn add_publisher(
     new_publisher: web::Json<publishers::NewPublisher>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        publishers::add_publisher(&conn, &new_publisher)
+        let mut conn = pool.get()?;
+        publishers::add_publisher(&mut conn, &new_publisher)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -26,8 +26,8 @@ pub async fn get_publishers(
     query: web::Query<PageQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp_publishers = web::block(move || {
-        let conn = pool.get()?;
-        publishers::get_publishers(&conn, &query)
+        let mut conn = pool.get()?;
+        publishers::get_publishers(&mut conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_publishers))

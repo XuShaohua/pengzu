@@ -13,8 +13,8 @@ pub async fn add_rating(
     new_rating: web::Json<ratings::NewRating>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        ratings::add_rating(&conn, &new_rating)
+        let mut conn = pool.get()?;
+        ratings::add_rating(&mut conn, &new_rating)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -25,8 +25,8 @@ pub async fn get_ratings(
     book_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     let resp_rating = web::block(move || {
-        let conn = pool.get()?;
-        ratings::get_rating(&conn, book_id.into_inner())
+        let mut conn = pool.get()?;
+        ratings::get_rating(&mut conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_rating))
@@ -39,8 +39,8 @@ pub async fn update_rating(
 ) -> Result<HttpResponse, Error> {
     debug_assert_eq!(book_id.into_inner(), new_rating.book);
     web::block(move || {
-        let conn = pool.get()?;
-        ratings::update_rating(&conn, &new_rating)
+        let mut conn = pool.get()?;
+        ratings::update_rating(&mut conn, &new_rating)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -51,8 +51,8 @@ pub async fn delete_rating(
     book_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        ratings::delete_rating(&conn, book_id.into_inner())
+        let mut conn = pool.get()?;
+        ratings::delete_rating(&mut conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().finish())

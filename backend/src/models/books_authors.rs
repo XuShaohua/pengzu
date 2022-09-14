@@ -16,7 +16,10 @@ pub struct NewBookAuthor {
     pub author: i32,
 }
 
-pub fn add_book_author(conn: &PgConnection, new_book_author: &NewBookAuthor) -> Result<(), Error> {
+pub fn add_book_author(
+    conn: &mut PgConnection,
+    new_book_author: &NewBookAuthor,
+) -> Result<(), Error> {
     use crate::schema::books_authors_link::dsl::books_authors_link;
     diesel::insert_into(books_authors_link)
         .values(new_book_author)
@@ -25,7 +28,7 @@ pub fn add_book_author(conn: &PgConnection, new_book_author: &NewBookAuthor) -> 
 }
 
 pub fn delete_book_author(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     new_book_author: &NewBookAuthor,
 ) -> Result<(), Error> {
     use crate::schema::books_authors_link::dsl::{author, book, books_authors_link};
@@ -39,7 +42,7 @@ pub fn delete_book_author(
     Ok(())
 }
 
-pub fn get_authors_by_book(conn: &PgConnection, book_id: i32) -> Result<Vec<Author>, Error> {
+pub fn get_authors_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Vec<Author>, Error> {
     use crate::schema::authors;
 
     authors::table

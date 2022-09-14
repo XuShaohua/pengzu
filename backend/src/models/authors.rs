@@ -29,7 +29,7 @@ pub struct Author {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_author(conn: &PgConnection, new_author: &NewAuthor) -> Result<(), Error> {
+pub fn add_author(conn: &mut PgConnection, new_author: &NewAuthor) -> Result<(), Error> {
     use crate::schema::authors::dsl::authors;
     diesel::insert_into(authors)
         .values(new_author)
@@ -51,7 +51,7 @@ pub struct GetAuthorsResp {
     pub list: Vec<AuthorAndBook>,
 }
 
-pub fn get_authors(conn: &PgConnection, query: &PageQuery) -> Result<GetAuthorsResp, Error> {
+pub fn get_authors(conn: &mut PgConnection, query: &PageQuery) -> Result<GetAuthorsResp, Error> {
     use crate::schema::books_authors_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -83,7 +83,7 @@ pub fn get_authors(conn: &PgConnection, query: &PageQuery) -> Result<GetAuthorsR
     })
 }
 
-pub fn get_author_by_name(conn: &PgConnection, author_name: &str) -> Result<Author, Error> {
+pub fn get_author_by_name(conn: &mut PgConnection, author_name: &str) -> Result<Author, Error> {
     use crate::schema::authors::dsl::{authors, name};
     authors
         .filter(name.eq(author_name))
@@ -92,7 +92,7 @@ pub fn get_author_by_name(conn: &PgConnection, author_name: &str) -> Result<Auth
 }
 
 pub fn update_author(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     author_id: i32,
     new_author: &NewAuthor,
 ) -> Result<(), Error> {

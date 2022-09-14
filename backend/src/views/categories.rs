@@ -14,8 +14,8 @@ pub async fn get_categories(
     query: web::Query<GetCategoriesReq>,
 ) -> Result<HttpResponse, Error> {
     let categories_resp = web::block(move || {
-        let conn = pool.get()?;
-        categories::get_categories(&conn, &query)
+        let mut conn = pool.get()?;
+        categories::get_categories(&mut conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(categories_resp))

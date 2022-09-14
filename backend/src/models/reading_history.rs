@@ -35,7 +35,7 @@ pub struct GetHistoryReq {
 }
 
 pub fn get_history_list(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     query: &GetHistoryReq,
 ) -> Result<GetHistoryResp, Error> {
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -67,7 +67,7 @@ pub struct NewHistory {
 }
 
 pub fn update_history(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     history_id: i32,
     new_history: &NewHistory,
 ) -> Result<(), Error> {

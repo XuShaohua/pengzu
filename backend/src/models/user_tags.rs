@@ -27,14 +27,14 @@ pub struct UserTag {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_tag(conn: &PgConnection, new_tag: &NewUserTag) -> Result<(), Error> {
+pub fn add_tag(conn: &mut PgConnection, new_tag: &NewUserTag) -> Result<(), Error> {
     diesel::insert_into(user_tags::table)
         .values(new_tag)
         .execute(conn)?;
     Ok(())
 }
 
-pub fn get_tag_by_name(conn: &PgConnection, tag_name: &str) -> Result<UserTag, Error> {
+pub fn get_tag_by_name(conn: &mut PgConnection, tag_name: &str) -> Result<UserTag, Error> {
     user_tags::table
         .filter(user_tags::name.eq(tag_name))
         .first(conn)
@@ -69,7 +69,7 @@ pub struct GetUserTagsReq {
     pub page: i64,
 }
 
-pub fn get_tags(conn: &PgConnection, query: &GetUserTagsReq) -> Result<GetUserTagsResp, Error> {
+pub fn get_tags(conn: &mut PgConnection, query: &GetUserTagsReq) -> Result<GetUserTagsResp, Error> {
     use crate::schema::books_user_tags_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -106,7 +106,7 @@ pub fn get_tags(conn: &PgConnection, query: &GetUserTagsReq) -> Result<GetUserTa
     })
 }
 
-pub fn update_tag(conn: &PgConnection, tag_id: i32, new_tag: &NewUserTag) -> Result<(), Error> {
+pub fn update_tag(conn: &mut PgConnection, tag_id: i32, new_tag: &NewUserTag) -> Result<(), Error> {
     diesel::update(user_tags::table.find(tag_id))
         .set(user_tags::name.eq(new_tag.name.as_str()))
         .execute(conn)?;

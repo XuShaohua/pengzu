@@ -25,7 +25,7 @@ pub struct Rating {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_rating(conn: &PgConnection, new_rating: &NewRating) -> Result<(), Error> {
+pub fn add_rating(conn: &mut PgConnection, new_rating: &NewRating) -> Result<(), Error> {
     use crate::schema::ratings::dsl::ratings;
     diesel::insert_into(ratings)
         .values(new_rating)
@@ -33,7 +33,7 @@ pub fn add_rating(conn: &PgConnection, new_rating: &NewRating) -> Result<(), Err
     Ok(())
 }
 
-pub fn get_rating(conn: &PgConnection, book_id: i32) -> Result<Rating, Error> {
+pub fn get_rating(conn: &mut PgConnection, book_id: i32) -> Result<Rating, Error> {
     use crate::schema::ratings::dsl::{book, ratings};
     ratings
         .filter(book.eq(book_id))
@@ -41,7 +41,7 @@ pub fn get_rating(conn: &PgConnection, book_id: i32) -> Result<Rating, Error> {
         .map_err(Into::into)
 }
 
-pub fn update_rating(conn: &PgConnection, new_rating: &NewRating) -> Result<(), Error> {
+pub fn update_rating(conn: &mut PgConnection, new_rating: &NewRating) -> Result<(), Error> {
     use crate::schema::ratings::dsl::{book, rating, ratings};
     diesel::update(ratings.filter(book.eq(new_rating.book)))
         .set(rating.eq(new_rating.rating))
@@ -49,7 +49,7 @@ pub fn update_rating(conn: &PgConnection, new_rating: &NewRating) -> Result<(), 
     Ok(())
 }
 
-pub fn delete_rating(conn: &PgConnection, book_id: i32) -> Result<(), Error> {
+pub fn delete_rating(conn: &mut PgConnection, book_id: i32) -> Result<(), Error> {
     use crate::schema::ratings::dsl::{book, ratings};
     let _rating = get_rating(conn, book_id)?;
     diesel::delete(ratings.filter(book.eq(book_id))).execute(conn)?;

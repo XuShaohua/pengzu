@@ -28,7 +28,7 @@ pub struct BookPublisher {
 }
 
 pub fn add_book_publisher(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     new_book_publisher: &NewBookPublisher,
 ) -> Result<(), Error> {
     use crate::schema::books_publishers_link::dsl::books_publishers_link;
@@ -38,7 +38,7 @@ pub fn add_book_publisher(
     Ok(())
 }
 
-pub fn get_book_publisher(conn: &PgConnection, book_id: i32) -> Result<BookPublisher, Error> {
+pub fn get_book_publisher(conn: &mut PgConnection, book_id: i32) -> Result<BookPublisher, Error> {
     use crate::schema::books_publishers_link::dsl::{book, books_publishers_link};
     books_publishers_link
         .filter(book.eq(book_id))
@@ -46,7 +46,7 @@ pub fn get_book_publisher(conn: &PgConnection, book_id: i32) -> Result<BookPubli
         .map_err(Into::into)
 }
 
-pub fn delete_book_publisher(conn: &PgConnection, book_id: i32) -> Result<(), Error> {
+pub fn delete_book_publisher(conn: &mut PgConnection, book_id: i32) -> Result<(), Error> {
     use crate::schema::books_publishers_link::dsl::{book, books_publishers_link};
     let _link = get_book_publisher(conn, book_id)?;
     diesel::delete(books_publishers_link)
@@ -56,7 +56,7 @@ pub fn delete_book_publisher(conn: &PgConnection, book_id: i32) -> Result<(), Er
 }
 
 pub fn get_publisher_by_book(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     book_id: i32,
 ) -> Result<Option<Publisher>, Error> {
     use crate::schema::publishers;

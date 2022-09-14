@@ -27,7 +27,7 @@ pub struct BookTag {
     pub created: NaiveDateTime,
 }
 
-pub fn add_book_tag(conn: &PgConnection, new_book_tag: &NewBookTag) -> Result<(), Error> {
+pub fn add_book_tag(conn: &mut PgConnection, new_book_tag: &NewBookTag) -> Result<(), Error> {
     use crate::schema::books_tags_link::dsl::books_tags_link;
     diesel::insert_into(books_tags_link)
         .values(new_book_tag)
@@ -35,7 +35,7 @@ pub fn add_book_tag(conn: &PgConnection, new_book_tag: &NewBookTag) -> Result<()
     Ok(())
 }
 
-pub fn get_tags_by_book(conn: &PgConnection, book_id: i32) -> Result<Vec<Tag>, Error> {
+pub fn get_tags_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Vec<Tag>, Error> {
     use crate::schema::tags;
     tags::table
         .inner_join(books_tags_link::table.on(books_tags_link::tag.eq(tags::id)))
@@ -52,7 +52,7 @@ pub fn get_tags_by_book(conn: &PgConnection, book_id: i32) -> Result<Vec<Tag>, E
         .map_err(Into::into)
 }
 
-pub fn delete_book_tag(conn: &PgConnection, new_book_tag: &NewBookTag) -> Result<(), Error> {
+pub fn delete_book_tag(conn: &mut PgConnection, new_book_tag: &NewBookTag) -> Result<(), Error> {
     use crate::schema::books_tags_link::dsl::{book, books_tags_link, tag};
     // TODO(Shaohua): Check exists
     diesel::delete(

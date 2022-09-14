@@ -44,14 +44,14 @@ pub struct FileWithPath {
     pub path: String,
 }
 
-pub fn add_file(conn: &PgConnection, new_file: &NewFile) -> Result<(), Error> {
+pub fn add_file(conn: &mut PgConnection, new_file: &NewFile) -> Result<(), Error> {
     use crate::schema::files::dsl::files;
     diesel::insert_into(files).values(new_file).execute(conn)?;
     Ok(())
 }
 
 pub fn get_book_files_and_formats(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     book_id: i32,
 ) -> Result<Vec<FileWithPath>, Error> {
     let list = files::table

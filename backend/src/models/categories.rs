@@ -37,7 +37,7 @@ pub struct Category {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_category(conn: &PgConnection, new_category: &NewCategory) -> Result<(), Error> {
+pub fn add_category(conn: &mut PgConnection, new_category: &NewCategory) -> Result<(), Error> {
     use crate::schema::categories::dsl::categories;
     diesel::insert_into(categories)
         .values(new_category)
@@ -46,7 +46,7 @@ pub fn add_category(conn: &PgConnection, new_category: &NewCategory) -> Result<(
 }
 
 pub fn get_category_by_serial_number(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     serial_number_val: &str,
 ) -> Result<Category, Error> {
     use crate::schema::categories::dsl::{categories, serial_number};
@@ -86,7 +86,7 @@ pub struct GetCategoriesResp {
 }
 
 pub fn get_categories(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     query: &GetCategoriesReq,
 ) -> Result<GetCategoriesResp, Error> {
     use crate::schema::books_categories_link;

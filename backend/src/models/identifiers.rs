@@ -29,7 +29,10 @@ pub struct Identifier {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_identifier(conn: &PgConnection, new_identifier: &NewIdentifier) -> Result<(), Error> {
+pub fn add_identifier(
+    conn: &mut PgConnection,
+    new_identifier: &NewIdentifier,
+) -> Result<(), Error> {
     use crate::schema::identifiers::dsl::identifiers;
     diesel::insert_into(identifiers)
         .values(new_identifier)
@@ -37,7 +40,7 @@ pub fn add_identifier(conn: &PgConnection, new_identifier: &NewIdentifier) -> Re
     Ok(())
 }
 
-pub fn get_identifiers(conn: &PgConnection, book_id: i32) -> Result<Vec<Identifier>, Error> {
+pub fn get_identifiers(conn: &mut PgConnection, book_id: i32) -> Result<Vec<Identifier>, Error> {
     use crate::schema::identifiers::dsl::{book, identifiers};
     identifiers
         .filter(book.eq(book_id))

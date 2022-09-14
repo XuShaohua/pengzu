@@ -14,8 +14,8 @@ pub async fn add_tag(
     new_tag: web::Json<tags::NewTag>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        tags::add_tag(&conn, &new_tag)
+        let mut conn = pool.get()?;
+        tags::add_tag(&mut conn, &new_tag)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -26,8 +26,8 @@ pub async fn get_tags(
     query: web::Query<GetTagsReq>,
 ) -> Result<HttpResponse, Error> {
     let tags_resp = web::block(move || {
-        let conn = pool.get()?;
-        tags::get_tags(&conn, &query)
+        let mut conn = pool.get()?;
+        tags::get_tags(&mut conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(tags_resp))
@@ -39,8 +39,8 @@ pub async fn update_tag(
     new_tag: web::Json<tags::NewTag>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        tags::update_tag(&conn, tag_id.into_inner(), &new_tag)
+        let mut conn = pool.get()?;
+        tags::update_tag(&mut conn, tag_id.into_inner(), &new_tag)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())

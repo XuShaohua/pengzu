@@ -13,8 +13,8 @@ pub async fn add_comment(
     new_comment: web::Json<comments::NewComment>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        comments::add_comment(&conn, &new_comment)
+        let mut conn = pool.get()?;
+        comments::add_comment(&mut conn, &new_comment)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -25,8 +25,8 @@ pub async fn get_comment(
     book_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     let resp_comment = web::block(move || {
-        let conn = pool.get()?;
-        comments::get_comment(&conn, book_id.into_inner())
+        let mut conn = pool.get()?;
+        comments::get_comment(&mut conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_comment))
@@ -40,8 +40,8 @@ pub async fn update_comment(
     debug_assert_eq!(book_id.into_inner(), new_comment.book);
 
     web::block(move || {
-        let conn = pool.get()?;
-        comments::update_comment(&conn, &new_comment)
+        let mut conn = pool.get()?;
+        comments::update_comment(&mut conn, &new_comment)
     })
     .await??;
 
@@ -53,8 +53,8 @@ pub async fn delete_comment(
     book_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        comments::delete_comment(&conn, book_id.into_inner())
+        let mut conn = pool.get()?;
+        comments::delete_comment(&mut conn, book_id.into_inner())
     })
     .await??;
 

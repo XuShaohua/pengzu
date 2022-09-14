@@ -13,8 +13,8 @@ pub async fn add_book(
     new_book: web::Json<books::NewBook>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
-        let conn = pool.get()?;
-        books::add_book(&conn, &new_book)
+        let mut conn = pool.get()?;
+        books::add_book(&mut conn, &new_book)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -26,8 +26,8 @@ pub async fn get_books(
 ) -> Result<HttpResponse, Error> {
     log::info!("query: {:?}", query);
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        books::get_books(&conn, &query)
+        let mut conn = pool.get()?;
+        books::get_books(&mut conn, &query)
     })
     .await??;
 
@@ -39,8 +39,8 @@ pub async fn get_book_detail(
     book_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     let resp_book = web::block(move || {
-        let conn = pool.get()?;
-        books_meta::get_book_metadata(&conn, book_id.into_inner())
+        let mut conn = pool.get()?;
+        books_meta::get_book_metadata(&mut conn, book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_book))
@@ -52,8 +52,8 @@ pub async fn get_books_by_author(
     query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        books::get_books_by_author(&conn, author_id.into_inner(), &query)
+        let mut conn = pool.get()?;
+        books::get_books_by_author(&mut conn, author_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -65,8 +65,8 @@ pub async fn get_books_by_category(
     query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        books::get_books_by_category(&conn, category_id.into_inner(), &query)
+        let mut conn = pool.get()?;
+        books::get_books_by_category(&mut conn, category_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -78,8 +78,8 @@ pub async fn get_books_by_format(
     query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        books::get_books_by_format(&conn, format_id.into_inner(), &query)
+        let mut conn = pool.get()?;
+        books::get_books_by_format(&mut conn, format_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -91,8 +91,8 @@ pub async fn get_books_by_publisher(
     query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        books::get_books_by_publisher(&conn, publisher_id.into_inner(), &query)
+        let mut conn = pool.get()?;
+        books::get_books_by_publisher(&mut conn, publisher_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -104,8 +104,8 @@ pub async fn get_books_by_series(
     query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        books::get_books_by_series(&conn, series_id.into_inner(), &query)
+        let mut conn = pool.get()?;
+        books::get_books_by_series(&mut conn, series_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -117,8 +117,8 @@ pub async fn get_books_by_tag(
     query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        books::get_books_by_tag(&conn, tag_id.into_inner(), &query)
+        let mut conn = pool.get()?;
+        books::get_books_by_tag(&mut conn, tag_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
@@ -130,8 +130,8 @@ pub async fn get_books_by_user_tag(
     query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
-        let conn = pool.get()?;
-        books::get_books_by_user_tag(&conn, tag_id.into_inner(), &query)
+        let mut conn = pool.get()?;
+        books::get_books_by_user_tag(&mut conn, tag_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

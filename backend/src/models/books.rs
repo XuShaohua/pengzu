@@ -49,7 +49,7 @@ pub struct NewBook {
     pub has_cover: bool,
 }
 
-pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<Book, Error> {
+pub fn add_book(conn: &mut PgConnection, new_book: &NewBook) -> Result<Book, Error> {
     use crate::schema::books::dsl::books;
     diesel::insert_into(books)
         .values(new_book)
@@ -57,7 +57,7 @@ pub fn add_book(conn: &PgConnection, new_book: &NewBook) -> Result<Book, Error> 
         .map_err(Into::into)
 }
 
-pub fn get_book_by_id(conn: &PgConnection, book_id: i32) -> Result<BookWithCover, Error> {
+pub fn get_book_by_id(conn: &mut PgConnection, book_id: i32) -> Result<BookWithCover, Error> {
     books::table
         .find(book_id)
         .first(conn)
@@ -65,7 +65,7 @@ pub fn get_book_by_id(conn: &PgConnection, book_id: i32) -> Result<BookWithCover
         .map_err(Into::into)
 }
 
-pub fn get_book_path_by_id(conn: &PgConnection, book_id: i32) -> Result<String, Error> {
+pub fn get_book_path_by_id(conn: &mut PgConnection, book_id: i32) -> Result<String, Error> {
     books::table
         .find(book_id)
         .select(books::path)
@@ -174,7 +174,7 @@ fn merge_books_and_authors(book_list: Vec<Book>, author_list: &[AuthorAndBookId]
 }
 
 fn get_authors_by_book_id(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     book_list: &[Book],
 ) -> Result<Vec<AuthorAndBookId>, Error> {
     use crate::schema::authors;
@@ -190,7 +190,7 @@ fn get_authors_by_book_id(
         .map_err(Into::into)
 }
 
-pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
+pub fn get_books(conn: &mut PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
     use crate::schema::books::dsl::books;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -218,7 +218,7 @@ pub fn get_books(conn: &PgConnection, query: &GetBooksQuery) -> Result<GetBooksR
 }
 
 fn get_books_by_ids(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     query: &GetBooksQuery,
     book_ids: &[i32],
 ) -> Result<GetBooksResp, Error> {
@@ -247,7 +247,7 @@ fn get_books_by_ids(
 }
 
 pub fn get_books_by_author(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     author_id: i32,
     query: &GetBooksQuery,
 ) -> Result<GetBooksResp, Error> {
@@ -262,7 +262,7 @@ pub fn get_books_by_author(
 }
 
 pub fn get_books_by_category(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     category_id: i32,
     query: &GetBooksQuery,
 ) -> Result<GetBooksResp, Error> {
@@ -277,7 +277,7 @@ pub fn get_books_by_category(
 }
 
 pub fn get_books_by_format(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     format_id: i32,
     query: &GetBooksQuery,
 ) -> Result<GetBooksResp, Error> {
@@ -292,7 +292,7 @@ pub fn get_books_by_format(
 }
 
 pub fn get_books_by_publisher(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     publisher_id: i32,
     query: &GetBooksQuery,
 ) -> Result<GetBooksResp, Error> {
@@ -307,7 +307,7 @@ pub fn get_books_by_publisher(
 }
 
 pub fn get_books_by_series(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     series_id: i32,
     query: &GetBooksQuery,
 ) -> Result<GetBooksResp, Error> {
@@ -322,7 +322,7 @@ pub fn get_books_by_series(
 }
 
 pub fn get_books_by_tag(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     tag_id: i32,
     query: &GetBooksQuery,
 ) -> Result<GetBooksResp, Error> {
@@ -337,7 +337,7 @@ pub fn get_books_by_tag(
 }
 
 pub fn get_books_by_user_tag(
-    conn: &PgConnection,
+    conn: &mut PgConnection,
     tag_id: i32,
     query: &GetBooksQuery,
 ) -> Result<GetBooksResp, Error> {

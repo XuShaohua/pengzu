@@ -3,7 +3,6 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::dsl::any;
 use diesel::{
     ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
 };
@@ -184,7 +183,7 @@ fn get_authors_by_book_id(
 
     authors::table
         .inner_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
-        .filter(books_authors_link::book.eq(any(book_ids)))
+        .filter(books_authors_link::book.eq_any(book_ids))
         .select((authors::id, authors::name, books_authors_link::book))
         .load::<AuthorAndBookId>(conn)
         .map_err(Into::into)
@@ -228,7 +227,7 @@ fn get_books_by_ids(
     let total = book_ids.len() as i64;
 
     let book_list = books::table
-        .filter(books::id.eq(any(book_ids)))
+        .filter(books::id.eq_eq(book_ids))
         .order_by(order_column)
         .limit(EACH_PAGE)
         .offset(offset)

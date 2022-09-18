@@ -101,6 +101,7 @@ impl GetBooksOrder {
         self,
     ) -> Box<dyn BoxableExpression<books::dsl::books, diesel::pg::Pg, SqlType = NotSelectable>>
     {
+        // FIXME(Shaohua): Return type not match.
         use crate::schema::books::dsl;
         match self {
             Self::IdAsc => Box::new(dsl::id.asc()),
@@ -193,14 +194,14 @@ fn get_authors_by_book_id(
 }
 
 pub fn get_books(conn: &mut PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
-    use crate::schema::books::dsl::books;
+    use crate::schema::books::dsl::{books, id};
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let offset = page_id * EACH_PAGE;
-    let order_column = query.order.get_column();
+    let _order_column = query.order.get_column();
 
     let book_list = books
-        .order_by(order_column)
+        .order_by(id.asc())
         .limit(EACH_PAGE)
         .offset(offset)
         .load::<Book>(conn)?;
@@ -226,12 +227,12 @@ fn get_books_by_ids(
 ) -> Result<GetBooksResp, Error> {
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let offset = page_id * EACH_PAGE;
-    let order_column = query.order.get_column();
+    // let order_column = query.order.get_column();
     let total = book_ids.len() as i64;
 
     let book_list = books::table
         .filter(books::id.eq_any(book_ids))
-        .order_by(order_column)
+        .order_by(books::id.asc())
         .limit(EACH_PAGE)
         .offset(offset)
         .load::<Book>(conn)?;

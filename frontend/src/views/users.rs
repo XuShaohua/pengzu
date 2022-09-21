@@ -16,13 +16,16 @@ pub fn users_page() -> Html {
 
     if let Some(user_list) = &user_list.data {
         return html! {
-            <ul>
-            {for user_list.iter().map(|user_info| html!{
-                <li key={ user_info.id }>
-                <span>{ &user_info.name }</span>
-                </li>
-            })}
-            </ul>
+            <>
+                <h2>{ "User List" }</h2>
+                <ul>
+                {for user_list.iter().map(|user_info| html!{
+                    <li key={ user_info.id }>
+                    <span>{ &user_info.name }</span>
+                    </li>
+                })}
+                </ul>
+            </>
         };
     } else {
         return html! {};

@@ -134,5 +134,5 @@ pub fn get_claims_from_request(req: &HttpRequest) -> Result<Claims, Error> {
         _ => return Err(invalid_token_error),
     }
     let token = parts.next().ok_or(invalid_token_error)?;
-    Claims::decode(&token)
+    Claims::decode(token)
 }

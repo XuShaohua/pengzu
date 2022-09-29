@@ -37,7 +37,7 @@ pub fn run() -> Result<(), Error> {
     let matches = cmd.clone().get_matches();
 
     if let Some(matches) = matches.subcommand_matches(add_user::CMD_ADD_USER) {
-        return add_user::add_user(&matches);
+        return add_user::add_user(matches);
     }
     if let Some(_matches) = matches.subcommand_matches(CMD_RUN) {
         return run_server();

@@ -16,6 +16,7 @@ pub const CMD_IMPORT_LIBRARY: &str = "import-library";
 const OPT_LIBRARY_ID: &str = "library_id";
 const OPT_CALIBRE_PATH: &str = "calibre_path";
 
+#[must_use]
 pub fn parse_cmdline() -> Command<'static> {
     Command::new(CMD_IMPORT_LIBRARY)
         .about("Import books from calibra library")

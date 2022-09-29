@@ -9,7 +9,7 @@ use serde::Serialize;
 use std::fmt::{Display, Formatter};
 use std::io;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum ErrorKind {
     ConfigError,
     JwtError,

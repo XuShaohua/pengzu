@@ -56,9 +56,7 @@ pub fn add_user(matches: &ArgMatches) -> Result<(), Error> {
     let username = matches.value_of(OPT_NAME).unwrap();
     let password = matches.value_of(OPT_PASSWORD).unwrap();
     let email = matches.value_of(OPT_EMAIL).unwrap();
-    let display_name = matches
-        .value_of(OPT_DISPLAY_NAME)
-        .unwrap_or_else(|| username);
+    let display_name = matches.value_of(OPT_DISPLAY_NAME).unwrap_or(username);
 
     let db_pool = get_connection_pool()?;
     let mut pg_conn = db_pool.get()?;

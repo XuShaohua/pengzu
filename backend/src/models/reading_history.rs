@@ -27,7 +27,7 @@ pub struct GetHistoryResp {
     pub list: Vec<History>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GetHistoryReq {
     pub user_id: i32,
     #[serde(default = "default_page_id")]

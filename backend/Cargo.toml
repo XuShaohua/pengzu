@@ -12,7 +12,7 @@ actix-web = "4.2.1"
 actix-web-grants = "3.0.1"
 actix-web-httpauth = "0.8.0"
 calibre = { path = "../calibre" }
-chrono = { version = "0.4.22", features = ["serde"] }
+chrono = { version = "0.4.22", default-features=false, features = ["serde", "std"] }
 clap = "3.2.22"
 data-encoding = "2.3.2"
 diesel = { version = "2.0.0", default-features=false, features = ["chrono", "postgres", "r2d2"] }
@@ -22,7 +22,6 @@ futures = "0.3.24"
 hmac = "0.12.1"
 jsonwebtoken = "8.1.1"
 log = "0.4.17"
-mongodb = "2.3.0"
 r2d2 = "0.8.10"
 ring = { version = "0.16.20", features = ["std"] }
 serde = { version = "1.0.144", features = ["serde_derive"] }

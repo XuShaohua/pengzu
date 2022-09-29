@@ -10,7 +10,7 @@ use crate::error::{Error, ErrorKind};
 use crate::models::auth;
 use crate::schema::users;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum UserRole {
     Nil = 0,
@@ -38,9 +38,9 @@ impl From<i32> for UserRole {
     }
 }
 
-impl Into<i32> for UserRole {
-    fn into(self) -> i32 {
-        match self {
+impl From<UserRole> for i32 {
+    fn from(role: UserRole) -> Self {
+        match role {
             UserRole::Nil => 0,
             UserRole::User => 1,
             UserRole::Admin => 2,

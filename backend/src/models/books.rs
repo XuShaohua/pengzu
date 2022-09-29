@@ -62,7 +62,7 @@ pub fn get_book_by_id(conn: &mut PgConnection, book_id: i32) -> Result<BookWithC
     books::table
         .find(book_id)
         .first(conn)
-        .map(|book| book_to_book_cover(book))
+        .map(book_to_book_cover)
         .map_err(Into::into)
 }
 
@@ -145,6 +145,7 @@ pub struct GetBooksResp {
     pub list: Vec<BookResp>,
 }
 
+#[must_use]
 pub fn book_to_book_cover(book: Book) -> BookWithCover {
     BookWithCover {
         id: book.id,
@@ -170,7 +171,7 @@ fn merge_books_and_authors(book_list: Vec<Book>, author_list: &[AuthorAndBookId]
         list.push(BookResp {
             book: book_to_book_cover(book),
             authors,
-        })
+        });
     }
 
     list

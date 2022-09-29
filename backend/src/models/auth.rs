@@ -10,9 +10,18 @@ use std::num::NonZeroU32;
 use crate::error::{Error, ErrorKind};
 
 pub const CREDENTIAL_LEN: usize = digest::SHA512_OUTPUT_LEN;
+
 pub struct Salt([u8; CREDENTIAL_LEN]);
+
+impl Default for Salt {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Salt {
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self([0u8; CREDENTIAL_LEN])
     }
 
@@ -32,6 +41,7 @@ impl Salt {
         }
     }
 
+    #[must_use]
     pub fn hex(&self) -> String {
         HEXUPPER.encode(&self.0)
     }
@@ -46,6 +56,12 @@ pub fn new_salt() -> Result<Salt, Error> {
     Ok(salt)
 }
 
+/// Encrypt password with salt.
+///
+/// # Panic
+///
+/// Raise panic if failed to allocate memory.
+#[must_use]
 pub fn encrypt(password: &str, salt: &Salt) -> PasswordHash {
     let n_iter = NonZeroU32::new(100_000).unwrap();
     let mut pbkdf2_hash = PasswordHash::new();
@@ -59,6 +75,11 @@ pub fn encrypt(password: &str, salt: &Salt) -> PasswordHash {
     pbkdf2_hash
 }
 
+/// Verify password matches or not.
+///
+/// # Panic
+///
+/// Raise panic if failed to allocate memory.
 pub fn verify(password: &str, hash: &PasswordHash, salt: &Salt) -> Result<(), Error> {
     let n_iter = NonZeroU32::new(100_000).unwrap();
 

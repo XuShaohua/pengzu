@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-chrono = { version = "0.4.22", features = ["serde"] }
+chrono = { version = "0.4.22", default-features=false, features = ["serde", "std"] }
 diesel = { version = "2.0.0", features = ["chrono", "sqlite", "r2d2"] }
 dotenv = "0.15.0"
 log = "0.4.17"

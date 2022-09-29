@@ -3,12 +3,11 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{middleware, web, App, HttpServer};
-use actix_web_grants::permissions::AuthDetails;
 use actix_web_httpauth::middleware::HttpAuthentication;
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
-use crate::views::auth::{auth_validator, UserPermissions};
+use crate::views::auth::auth_validator;
 use crate::views::{
     authors, books, categories, comments, file_formats, files, publishers, ratings, series, tags,
     user_tags, users,
@@ -17,25 +16,14 @@ use crate::views::{
 const CONTENT_TYPE: &str = "content-type";
 const APPLICATION_JSON: &str = "application/json";
 
-async fn index(detail: AuthDetails<UserPermissions>) -> String {
-    let permissions = &detail.permissions;
-    log::info!("permissions: {:?}", permissions);
-    "Hello, world".to_string()
-}
-
 pub async fn run() -> Result<(), Error> {
     let pool = get_connection_pool()?;
 
-    HttpServer::new(move || {
+    let server = HttpServer::new(move || {
         let auth = HttpAuthentication::bearer(auth_validator);
         App::new()
             .wrap(middleware::Logger::default())
             .app_data(web::Data::new(pool.clone()))
-            .service(
-                web::resource("/api/hello")
-                    .wrap(auth.clone())
-                    .route(web::get().to(index)),
-            )
             // For /api/author
             .service(
                 web::resource("/api/author")
@@ -178,12 +166,14 @@ pub async fn run() -> Result<(), Error> {
             )
             .service(
                 web::resource("/api/users/{user_id}")
-                    .wrap(auth.clone())
+                    .wrap(auth)
                     .route(web::delete().to(users::delete_user)),
             )
-    })
-    .bind(("0.0.0.0", 3000))?
-    .run()
-    .await
-    .map_err(Into::into)
+    });
+
+    server
+        .bind(("0.0.0.0", 3000))?
+        .run()
+        .await
+        .map_err(Into::into)
 }

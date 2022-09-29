@@ -39,7 +39,7 @@ use crate::models::ratings::{add_rating, NewRating};
 use crate::models::series::get_series_by_name;
 use crate::models::tags::get_tag_by_name;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum ImportBookFileAction {
     Copy = 1,
     Move = 2,

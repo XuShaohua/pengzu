@@ -10,7 +10,14 @@
     clippy::pedantic
 )]
 // TODO(Shaohua): Remove this attribute.
-#![allow(dead_code, clippy::module_name_repetitions, clippy::missing_errors_doc)]
+#![allow(
+    dead_code,
+    clippy::module_name_repetitions,
+    clippy::missing_errors_doc,
+    clippy::use_self,
+    clippy::future_not_send,
+    clippy::unused_async
+)]
 // Caused by diesel::Insertable trait
 #![allow(clippy::extra_unused_lifetimes)]
 

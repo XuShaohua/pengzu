@@ -18,14 +18,14 @@ use crate::settings::get_jwt_secret;
 pub const TOKEN_NAME: &str = "Token";
 const JWT_EXPIRATION_HOURS: i64 = 24 * 3;
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct UserPermissions {
     pub id: i32,
     pub name: String,
     pub role: UserRole,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Claims {
     id: i32,
     name: String,
@@ -63,10 +63,11 @@ impl Claims {
         OffsetDateTime::from_unix_timestamp(self.exp).unwrap()
     }
 
-    pub fn permission(self) -> UserPermissions {
+    #[must_use]
+    pub fn permission(&self) -> UserPermissions {
         UserPermissions {
             id: self.id,
-            name: self.name,
+            name: self.name.clone(),
             role: self.role,
         }
     }
@@ -134,5 +135,5 @@ pub fn get_claims_from_request(req: &HttpRequest) -> Result<Claims, Error> {
         _ => return Err(invalid_token_error),
     }
     let token = parts.next().ok_or(invalid_token_error)?;
-    Claims::decode(&token)
+    Claims::decode(token)
 }

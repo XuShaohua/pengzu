@@ -60,7 +60,7 @@ pub const fn default_parent_category_id() -> i32 {
     0
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GetCategoriesReq {
     #[serde(default = "default_parent_category_id")]
     pub parent: i32,

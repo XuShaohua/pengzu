@@ -9,7 +9,7 @@ use serde::Serialize;
 use std::fmt::{Display, Formatter};
 use std::io;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum ErrorKind {
     ConfigError,
     JwtError,
@@ -148,18 +148,6 @@ impl From<shell_rs::error::Error> for Error {
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
         Self::from_string(ErrorKind::JsonError, format!("{}", err))
-    }
-}
-
-impl From<mongodb::error::Error> for Error {
-    fn from(err: mongodb::error::Error) -> Self {
-        Self::from_string(ErrorKind::MongoDbError, format!("{:?}", err))
-    }
-}
-
-impl From<mongodb::bson::document::ValueAccessError> for Error {
-    fn from(err: mongodb::bson::document::ValueAccessError) -> Self {
-        Self::from_string(ErrorKind::MongoDbValueAccessError, format!("{:?}", err))
     }
 }
 

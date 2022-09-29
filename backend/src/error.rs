@@ -33,6 +33,8 @@ pub enum ErrorKind {
     HttpError,
 }
 
+unsafe impl Send for ErrorKind {}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct Error {
     kind: ErrorKind,

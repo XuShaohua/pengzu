@@ -3,12 +3,11 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{middleware, web, App, HttpServer};
-use actix_web_grants::permissions::AuthDetails;
 use actix_web_httpauth::middleware::HttpAuthentication;
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
-use crate::views::auth::{auth_validator, UserPermissions};
+use crate::views::auth::auth_validator;
 use crate::views::{
     authors, books, categories, comments, file_formats, files, publishers, ratings, series, tags,
     user_tags, users,

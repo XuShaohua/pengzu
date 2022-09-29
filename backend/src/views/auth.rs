@@ -63,10 +63,11 @@ impl Claims {
         OffsetDateTime::from_unix_timestamp(self.exp).unwrap()
     }
 
-    pub fn permission(self) -> UserPermissions {
+    #[must_use]
+    pub fn permission(&self) -> UserPermissions {
         UserPermissions {
             id: self.id,
-            name: self.name,
+            name: self.name.clone(),
             role: self.role,
         }
     }

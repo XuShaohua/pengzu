@@ -18,14 +18,14 @@ use crate::settings::get_jwt_secret;
 pub const TOKEN_NAME: &str = "Token";
 const JWT_EXPIRATION_HOURS: i64 = 24 * 3;
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct UserPermissions {
     pub id: i32,
     pub name: String,
     pub role: UserRole,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Claims {
     id: i32,
     name: String,

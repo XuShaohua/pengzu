@@ -19,7 +19,7 @@ const APPLICATION_JSON: &str = "application/json";
 pub async fn run() -> Result<(), Error> {
     let pool = get_connection_pool()?;
 
-    HttpServer::new(move || {
+    let server = HttpServer::new(move || {
         let auth = HttpAuthentication::bearer(auth_validator);
         App::new()
             .wrap(middleware::Logger::default())
@@ -169,9 +169,11 @@ pub async fn run() -> Result<(), Error> {
                     .wrap(auth)
                     .route(web::delete().to(users::delete_user)),
             )
-    })
-    .bind(("0.0.0.0", 3000))?
-    .run()
-    .await
-    .map_err(Into::into)
+    });
+
+    server
+        .bind(("0.0.0.0", 3000))?
+        .run()
+        .await
+        .map_err(Into::into)
 }

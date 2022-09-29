@@ -5,7 +5,7 @@
 use std::fmt;
 use std::io;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ErrorKind {
     ConfigError,
 

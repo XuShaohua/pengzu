@@ -17,12 +17,6 @@ use crate::views::{
 const CONTENT_TYPE: &str = "content-type";
 const APPLICATION_JSON: &str = "application/json";
 
-async fn index(detail: AuthDetails<UserPermissions>) -> String {
-    let permissions = &detail.permissions;
-    log::info!("permissions: {:?}", permissions);
-    "Hello, world".to_string()
-}
-
 pub async fn run() -> Result<(), Error> {
     let pool = get_connection_pool()?;
 
@@ -31,11 +25,6 @@ pub async fn run() -> Result<(), Error> {
         App::new()
             .wrap(middleware::Logger::default())
             .app_data(web::Data::new(pool.clone()))
-            .service(
-                web::resource("/api/hello")
-                    .wrap(auth.clone())
-                    .route(web::get().to(index)),
-            )
             // For /api/author
             .service(
                 web::resource("/api/author")
@@ -178,7 +167,7 @@ pub async fn run() -> Result<(), Error> {
             )
             .service(
                 web::resource("/api/users/{user_id}")
-                    .wrap(auth.clone())
+                    .wrap(auth)
                     .route(web::delete().to(users::delete_user)),
             )
     })

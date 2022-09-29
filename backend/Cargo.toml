@@ -12,7 +12,7 @@ actix-web = "4.2.1"
 actix-web-grants = "3.0.1"
 actix-web-httpauth = "0.8.0"
 calibre = { path = "../calibre" }
-chrono = { version = "0.4.22", features = ["serde"] }
+chrono = { version = "0.4.22", default-features=false, features = ["serde", "std"] }
 clap = "3.2.22"
 data-encoding = "2.3.2"
 diesel = { version = "2.0.0", default-features=false, features = ["chrono", "postgres", "r2d2"] }

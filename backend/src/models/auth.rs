@@ -61,6 +61,7 @@ pub fn new_salt() -> Result<Salt, Error> {
 /// # Panic
 ///
 /// Raise panic if failed to allocate memory.
+#[must_use]
 pub fn encrypt(password: &str, salt: &Salt) -> PasswordHash {
     let n_iter = NonZeroU32::new(100_000).unwrap();
     let mut pbkdf2_hash = PasswordHash::new();

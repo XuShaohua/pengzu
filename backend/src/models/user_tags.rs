@@ -61,7 +61,7 @@ pub const fn default_parent_tag_id() -> i32 {
     0
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GetUserTagsReq {
     #[serde(default = "default_parent_tag_id")]
     pub parent: i32,

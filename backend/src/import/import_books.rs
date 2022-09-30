@@ -333,6 +333,7 @@ fn copy_book_cover(
     )
 }
 
+#[allow(clippy::too_many_arguments)]
 fn import_files(
     calibre_library_path: &str,
     library_path: &str,

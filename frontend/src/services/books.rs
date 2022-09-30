@@ -9,7 +9,6 @@ use crate::types::books::BooksList;
 /// Get book list.
 ///
 /// # Errors
-///
 /// Returns error if server fails.
 pub async fn fetch_books() -> Result<BooksList, FetchError> {
     let url = "/api/book";
@@ -19,7 +18,6 @@ pub async fn fetch_books() -> Result<BooksList, FetchError> {
 /// Get book list of specific author `author_id`.
 ///
 /// # Errors
-///
 /// Returns error if server fails.
 pub async fn fetch_books_by_author(author_id: i32) -> Result<BooksList, FetchError> {
     let url = format!("/api/author/books/{}", author_id);
@@ -29,7 +27,6 @@ pub async fn fetch_books_by_author(author_id: i32) -> Result<BooksList, FetchErr
 /// Get book list of specific category `category_id`.
 ///
 /// # Errors
-///
 /// Returns error if server fails.
 pub async fn fetch_books_by_category(category_id: i32) -> Result<BooksList, FetchError> {
     let url = format!("/api/category/books/{}", category_id);
@@ -39,7 +36,6 @@ pub async fn fetch_books_by_category(category_id: i32) -> Result<BooksList, Fetc
 /// Get book list of specific file format `format_id`.
 ///
 /// # Errors
-///
 /// Returns error if server fails.
 pub async fn fetch_books_by_file_format(format_id: i32) -> Result<BooksList, FetchError> {
     let url = format!("/api/format/books/{}", format_id);
@@ -49,7 +45,6 @@ pub async fn fetch_books_by_file_format(format_id: i32) -> Result<BooksList, Fet
 /// Get book list of specific publisher `publisher_id`.
 ///
 /// # Errors
-///
 /// Returns error if server fails.
 pub async fn fetch_books_by_publisher(publisher_id: i32) -> Result<BooksList, FetchError> {
     let url = format!("/api/publisher/books/{}", publisher_id);
@@ -59,7 +54,6 @@ pub async fn fetch_books_by_publisher(publisher_id: i32) -> Result<BooksList, Fe
 /// Get book list of specific series `series_id`.
 ///
 /// # Errors
-///
 /// Returns error if server fails.
 pub async fn fetch_books_by_series(series_id: i32) -> Result<BooksList, FetchError> {
     let url = format!("/api/series/books/{}", series_id);
@@ -69,7 +63,6 @@ pub async fn fetch_books_by_series(series_id: i32) -> Result<BooksList, FetchErr
 /// Get book list of specific tag `tag_id`.
 ///
 /// # Errors
-///
 /// Returns error if server fails.
 pub async fn fetch_books_by_tag(tag_id: i32) -> Result<BooksList, FetchError> {
     let url = format!("/api/tag/books/{}", tag_id);
@@ -79,7 +72,6 @@ pub async fn fetch_books_by_tag(tag_id: i32) -> Result<BooksList, FetchError> {
 /// Get book list of specific user tag `tag_id`.
 ///
 /// # Errors
-///
 /// Returns error if server fails.
 pub async fn fetch_books_by_user_tag(tag_id: i32) -> Result<BooksList, FetchError> {
     let url = format!("/api/user-tag/books/{}", tag_id);

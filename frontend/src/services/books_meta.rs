@@ -9,7 +9,6 @@ use crate::types::books_meta::BookMetadata;
 /// Get book metadata.
 ///
 /// # Errors
-///
 /// Returns error if server failed.
 pub async fn fetch_book_metadata(book_id: i32) -> Result<BookMetadata, FetchError> {
     let url = format!("/api/book/{}", book_id);

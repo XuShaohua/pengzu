@@ -9,7 +9,6 @@ use crate::types::authors::AuthorList;
 /// Get author list
 ///
 /// # Errors
-///
 /// Returns error if server failed.
 pub async fn fetch_authors() -> Result<AuthorList, FetchError> {
     // TODO(Shaohua): Add query.

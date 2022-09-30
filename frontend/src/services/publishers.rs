@@ -8,8 +8,7 @@ use crate::types::publishers::PublisherList;
 
 /// Get publisher list.
 ///
-/// # Error
-///
+/// # Errors
 /// Returns error if server fails.
 pub async fn fetch_publishers() -> Result<PublisherList, FetchError> {
     let url = "/api/publisher";

@@ -9,7 +9,6 @@ use crate::types::categories::CategoryList;
 /// Returns category list.
 ///
 /// # Errors
-///
 /// Returns error if server fails.
 pub async fn fetch_categories(parent_category_id: i32) -> Result<CategoryList, FetchError> {
     let url = format!("/api/category?parent={}", parent_category_id);

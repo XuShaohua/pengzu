@@ -8,8 +8,7 @@ use crate::types::file_formats::FileFormatList;
 
 /// Get file format lit.
 ///
-/// # Error
-///
+/// # Errors
 /// Returns error if server fails.
 pub async fn fetch_file_formats() -> Result<FileFormatList, FetchError> {
     let url = "/api/format";

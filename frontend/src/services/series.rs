@@ -8,8 +8,7 @@ use crate::types::series::SeriesList;
 
 /// Get series list.
 ///
-/// # Error
-///
+/// # Errors
 /// Returns error if server fails.
 pub async fn fetch_series() -> Result<SeriesList, FetchError> {
     let url = "/api/series";

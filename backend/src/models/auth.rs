@@ -58,8 +58,7 @@ pub fn new_salt() -> Result<Salt, Error> {
 
 /// Encrypt password with salt.
 ///
-/// # Panic
-///
+/// # Panics
 /// Raise panic if failed to allocate memory.
 #[must_use]
 pub fn encrypt(password: &str, salt: &Salt) -> PasswordHash {
@@ -77,8 +76,7 @@ pub fn encrypt(password: &str, salt: &Salt) -> PasswordHash {
 
 /// Verify password matches or not.
 ///
-/// # Panic
-///
+/// # Panics
 /// Raise panic if failed to allocate memory.
 pub fn verify(password: &str, hash: &PasswordHash, salt: &Salt) -> Result<(), Error> {
     let n_iter = NonZeroU32::new(100_000).unwrap();

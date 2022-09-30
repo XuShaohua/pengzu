@@ -5,7 +5,7 @@
 use chrono::NaiveDateTime;
 use serde::Deserialize;
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct File {
     pub id: i32,
     pub book: i32,
@@ -17,7 +17,7 @@ pub struct File {
     pub last_modified: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct FileWithPath {
     pub id: i32,
     pub book: i32,

@@ -7,14 +7,14 @@ use serde::Deserialize;
 
 use crate::types::page::Page;
 
-#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct AuthorAndBookId {
     pub id: i32,
     pub name: String,
     pub book: i32,
 }
 
-#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct BookWithCover {
     pub id: i32,
     pub title: String,
@@ -26,19 +26,19 @@ pub struct BookWithCover {
     pub created: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Book {
     pub book: BookWithCover,
     pub authors: Vec<AuthorAndBookId>,
 }
 
-#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct BooksList {
     pub page: Page,
     pub list: Vec<Book>,
 }
 
-#[derive(Debug, Clone, Deserialize, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct BookDetail {
     pub id: i32,
     pub title: String,

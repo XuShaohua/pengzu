@@ -13,7 +13,7 @@ use crate::types::ratings::Rating;
 use crate::types::series::Series;
 use crate::types::tags::Tag;
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct BookMetadata {
     pub book: BookWithCover,
     pub authors: Vec<Author>,

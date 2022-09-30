@@ -7,7 +7,7 @@ use serde::Deserialize;
 
 use crate::types::page::Page;
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Category {
     pub id: i32,
     pub order_index: i32,
@@ -20,7 +20,7 @@ pub struct Category {
     pub last_modified: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct CategoryAndBook {
     pub id: i32,
     pub order_index: i32,
@@ -30,7 +30,7 @@ pub struct CategoryAndBook {
     pub count: i64,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct CategoryList {
     pub page: Page,
     pub list: Vec<CategoryAndBook>,

@@ -10,7 +10,7 @@ use crate::route::Route;
 use crate::services::categories::fetch_categories;
 use crate::types::categories::{CategoryAndBook, CategoryList};
 
-#[derive(Debug, Clone, PartialEq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub category: CategoryAndBook,
 }

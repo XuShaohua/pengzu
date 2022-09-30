@@ -10,7 +10,7 @@ use crate::route::Route;
 use crate::services::user_tags::fetch_user_tags;
 use crate::types::user_tags::{UserTagAndBook, UserTagList};
 
-#[derive(Debug, Clone, PartialEq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub tag: UserTagAndBook,
 }

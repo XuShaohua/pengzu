@@ -6,7 +6,7 @@ use serde::Deserialize;
 
 use crate::types::page::Page;
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct UserTag {
     pub id: i32,
     pub order_index: i32,
@@ -14,7 +14,7 @@ pub struct UserTag {
     pub parent: i32,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct UserTagAndBook {
     pub id: i32,
     pub order_index: i32,
@@ -23,7 +23,7 @@ pub struct UserTagAndBook {
     pub count: i64,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct UserTagList {
     pub page: Page,
     pub list: Vec<UserTagAndBook>,

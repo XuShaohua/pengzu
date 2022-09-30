@@ -5,7 +5,7 @@
 use chrono::NaiveDateTime;
 use serde::Deserialize;
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Rating {
     pub id: i32,
     pub book: i32,

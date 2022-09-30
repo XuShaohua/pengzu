@@ -4,7 +4,7 @@
 
 use serde::Deserialize;
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Page {
     pub page_num: i64,
     pub each_page: i64,

@@ -6,22 +6,32 @@ use gloo_storage::Storage;
 
 const STORAGE_KEY_TOKEN: &str = "token";
 
+#[must_use]
 pub fn get_token() -> Option<String> {
     let storage = gloo_storage::LocalStorage::raw();
-    storage.get(STORAGE_KEY_TOKEN).unwrap()
+    match storage.get(STORAGE_KEY_TOKEN) {
+        Ok(value) => value,
+        Err(err) => {
+            log::warn!("Failed to get token {}, err: {:?}", STORAGE_KEY_TOKEN, err);
+            None
+        }
+    }
 }
 
 pub fn set_token(token: Option<&str>) {
     let storage = gloo_storage::LocalStorage::raw();
 
-    if let Some(token) = token {
-        assert!(!token.is_empty());
-        if let Err(err) = storage.set(STORAGE_KEY_TOKEN, token) {
-            log::error!("Failed to store token to local storage, err: {:?}", err);
-        }
-    } else {
-        if let Err(err) = storage.delete(STORAGE_KEY_TOKEN) {
-            log::error!("Failed to delete token from local storage, err: {:?}", err);
-        }
-    }
+    token.map_or_else(
+        || {
+            if let Err(err) = storage.delete(STORAGE_KEY_TOKEN) {
+                log::error!("Failed to delete token from local storage, err: {:?}", err);
+            }
+        },
+        |token| {
+            debug_assert!(!token.is_empty());
+            if let Err(err) = storage.set(STORAGE_KEY_TOKEN, token) {
+                log::error!("Failed to store token to local storage, err: {:?}", err);
+            }
+        },
+    );
 }

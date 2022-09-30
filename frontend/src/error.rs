@@ -6,7 +6,7 @@ use std::error;
 use std::fmt;
 use wasm_bindgen::JsValue;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ErrorKind {
     // For status == 400.
     BadRequest,
@@ -29,7 +29,7 @@ pub enum ErrorKind {
     ResponseError,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FetchError {
     kind: ErrorKind,
     message: String,
@@ -50,7 +50,7 @@ impl FetchError {
     }
 
     #[must_use]
-    pub fn kind(&self) -> ErrorKind {
+    pub const fn kind(&self) -> ErrorKind {
         self.kind
     }
 

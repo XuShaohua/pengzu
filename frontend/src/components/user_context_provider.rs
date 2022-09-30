@@ -45,12 +45,12 @@ pub fn user_context_provider(props: &Props) -> Html {
                 || ()
             },
             current_user,
-        )
+        );
     }
 
-    return html! {
+    html! {
         <ContextProvider<UseStateHandle<UserInfo>> context={user_ctx}>
             { for props.children.iter() }
         </ContextProvider<UseStateHandle<UserInfo>>>
-    };
+    }
 }

@@ -60,6 +60,10 @@ impl fmt::Debug for UseUserContextHandle {
 }
 
 /// Manages user login context.
+///
+/// # Panics
+/// Raise panic if failed to get history object.
+#[must_use]
 pub fn use_user_context() -> UseUserContextHandle {
     let inner = use_context::<UseStateHandle<UserInfo>>().unwrap();
     let history = use_history().unwrap();

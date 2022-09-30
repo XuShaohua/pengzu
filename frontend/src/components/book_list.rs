@@ -9,7 +9,7 @@ use crate::route::Route;
 use crate::types::books::Book;
 use crate::views::util::get_cover_image_url;
 
-#[derive(Debug, PartialEq, Properties)]
+#[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
     pub books: Vec<Book>,
 }

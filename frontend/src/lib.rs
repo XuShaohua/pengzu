@@ -9,7 +9,11 @@
     clippy::nursery,
     clippy::pedantic
 )]
-#![allow(clippy::module_name_repetitions)]
+#![allow(
+    clippy::module_name_repetitions,
+    clippy::use_self,
+    clippy::future_not_send
+)]
 
 pub mod app;
 pub mod components;

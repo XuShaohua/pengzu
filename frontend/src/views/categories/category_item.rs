@@ -40,13 +40,12 @@ pub fn category_item(props: &Props) -> Html {
         })
     };
 
-    let child_items = if let Some(category_list) = &child_categories.data {
-        generate_category_list(category_list)
-    } else {
-        html! {}
-    };
+    let child_items = child_categories
+        .data
+        .as_ref()
+        .map_or_else(|| html! {}, generate_category_list);
 
-    return html! {
+    html! {
         <>
             <span class="badge">{ category.count }</span>
             <span>{ &category.serial_number }</span>
@@ -56,5 +55,5 @@ pub fn category_item(props: &Props) -> Html {
             <button {onclick} >{ "˃" }</button>
             { child_items }
         </>
-    };
+    }
 }

@@ -11,7 +11,7 @@ use crate::services::books_meta::fetch_book_metadata;
 use crate::types::books_meta::BookMetadata;
 use crate::views::util::{get_cover_image_url, get_file_format_url, to_readable_size};
 
-#[derive(Debug, PartialEq, Properties)]
+#[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
     pub book_id: i32,
 }
@@ -55,13 +55,14 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
         None => html! {<></>},
     };
 
-    let published_date_element = if let Some(pubdate) = book.pubdate {
-        html! {
-            <span>{ format!("Published At: {:?}", pubdate) }</span>
-        }
-    } else {
-        html! {}
-    };
+    let published_date_element = book.pubdate.as_ref().map_or_else(
+        || html! {},
+        |pubdate| {
+            html! {
+                <span>{ format!("Published At: {:?}", pubdate) }</span>
+            }
+        },
+    );
 
     let tags = &metadata.tags;
     let tags_element = tags
@@ -82,13 +83,11 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
         })
         .collect::<Html>();
 
-    let series_element = if let Some(series) = &metadata.series {
+    let series_element = metadata.series.as_ref().map_or_else(|| html!{},
+        |series|
         html! {
             <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>{ &series.name }</Link<Route>>
-        }
-    } else {
-        html! {}
-    };
+        });
 
     let formats_element = metadata
         .files
@@ -129,9 +128,8 @@ pub fn book_detail(props: &Props) -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(book_metadata) = &book_metadata.data {
-        return generate_metadata_element(book_metadata);
-    } else {
-        return html! {};
-    }
+    book_metadata
+        .data
+        .as_ref()
+        .map_or_else(|| html! {}, generate_metadata_element)
 }

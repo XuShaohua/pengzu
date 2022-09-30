@@ -22,7 +22,7 @@ pub fn login_page() -> Html {
     use_effect_with_deps(
         move |user_login| {
             if let Some(user_info) = &user_login.data {
-                user_ctx.login(user_info.clone())
+                user_ctx.login(user_info.clone());
             }
             || ()
         },
@@ -30,7 +30,6 @@ pub fn login_page() -> Html {
     );
 
     let onsubmit = {
-        let user_login = user_login.clone();
         Callback::from(move |e: FocusEvent| {
             e.prevent_default();
             user_login.run();

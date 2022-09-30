@@ -12,15 +12,15 @@ use category_item::generate_category_list;
 
 #[function_component(CategoriesComponent)]
 pub fn categories() -> Html {
-    let _default_parent_id = 0;
+    // TODO(Shaohua): Get category parent id.
+    let default_parent_id = 0;
     let category_list = use_async_with_options(
-        async move { fetch_categories(_default_parent_id).await },
+        async move { fetch_categories(default_parent_id).await },
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(category_list) = &category_list.data {
-        generate_category_list(category_list)
-    } else {
-        html! {}
-    }
+    category_list
+        .data
+        .as_ref()
+        .map_or_else(|| html! {}, generate_category_list)
 }

@@ -16,20 +16,21 @@ pub fn file_formats_page() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(file_formats) = &file_formats.data {
-        return html! {
-            <ul>
-                {for file_formats.list.iter().map(|file_format| html!{
-                    <li key={ file_format.id }>
-                    <span class="badge">{ file_format.count }</span>
-                    <Link<Route> to={ Route::BooksOfFileFormat{ format_id: { file_format.id }}}>
-                    { &file_format.name }
-                    </Link<Route>>
-                    </li>
-                })}
-            </ul>
-        };
-    } else {
-        return html! {};
-    }
+    file_formats.data.as_ref().map_or_else(
+        || html! {},
+        |file_formats| {
+            html! {
+                <ul>
+                    {for file_formats.list.iter().map(|file_format| html!{
+                        <li key={ file_format.id }>
+                        <span class="badge">{ file_format.count }</span>
+                        <Link<Route> to={ Route::BooksOfFileFormat{ format_id: { file_format.id }}}>
+                        { &file_format.name }
+                        </Link<Route>>
+                        </li>
+                    })}
+                </ul>
+            }
+        },
+    )
 }

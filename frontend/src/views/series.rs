@@ -16,20 +16,21 @@ pub fn series_page() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(series_list) = &series_list.data {
-        return html! {
-            <ul>
-            {for series_list.list.iter().map(|series| html!{
-                <li class="series-item" key={ series.id }>
-                <span class="badge">{ series.count }</span>
-                <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>
-                { &series.name }
-                </Link<Route>>
-                </li>
-            })}
-            </ul>
-        };
-    } else {
-        return html! {};
-    }
+    series_list.data.as_ref().map_or_else(
+        || html! {},
+        |series_list| {
+            html! {
+                <ul>
+                {for series_list.list.iter().map(|series| html!{
+                    <li class="series-item" key={ series.id }>
+                    <span class="badge">{ series.count }</span>
+                    <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>
+                    { &series.name }
+                    </Link<Route>>
+                    </li>
+                })}
+                </ul>
+            }
+        },
+    )
 }

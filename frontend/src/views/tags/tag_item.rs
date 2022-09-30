@@ -40,13 +40,12 @@ pub fn tag_item(props: &Props) -> Html {
         })
     };
 
-    let child_items = if let Some(tag_list) = &child_tags.data {
-        generate_tag_list(tag_list)
-    } else {
-        html! {}
-    };
+    let child_items = child_tags
+        .data
+        .as_ref()
+        .map_or_else(|| html! {}, generate_tag_list);
 
-    return html! {
+    html! {
         <>
             <span class="badge">{ tag.count }</span>
             <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
@@ -55,5 +54,5 @@ pub fn tag_item(props: &Props) -> Html {
             <a href="#" {onclick}>{ "˃" }</a>
             { child_items }
         </>
-    };
+    }
 }

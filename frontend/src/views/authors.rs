@@ -16,20 +16,21 @@ pub fn home() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(author_list) = &author_list.data {
-        return html! {
-             <ul class="author-list">
-                 {for author_list.list.iter().map(|author| html! {
-                     <li class="author-item" key={ author.id }>
-                     <span class="badge">{ author.count }</span>
-                     <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } } >
-                     { &author.name }
-                     </Link<Route>>
-                     </li>
-                 })}
-             </ul>
-        };
-    } else {
-        return html! {};
-    }
+    author_list.data.as_ref().map_or_else(
+        || html! {},
+        |author_list| {
+            html! {
+                 <ul class="author-list">
+                     {for author_list.list.iter().map(|author| html! {
+                         <li class="author-item" key={ author.id }>
+                         <span class="badge">{ author.count }</span>
+                         <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } } >
+                         { &author.name }
+                         </Link<Route>>
+                         </li>
+                     })}
+                 </ul>
+            }
+        },
+    )
 }

@@ -14,17 +14,18 @@ pub fn users_page() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(user_list) = &user_list.data {
-        return html! {
-            <ul>
-            {for user_list.iter().map(|user_info| html!{
-                <li key={ user_info.id }>
-                <span>{ &user_info.name }</span>
-                </li>
-            })}
-            </ul>
-        };
-    } else {
-        return html! {};
-    }
+    user_list.data.as_ref().map_or_else(
+        || html! {},
+        |user_list| {
+            html! {
+                <ul>
+                {for user_list.iter().map(|user_info| html!{
+                    <li key={ user_info.id }>
+                    <span>{ &user_info.name }</span>
+                    </li>
+                })}
+                </ul>
+            }
+        },
+    )
 }

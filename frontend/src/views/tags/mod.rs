@@ -18,9 +18,8 @@ pub fn tags_page() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(tag_list) = &tag_list.data {
-        generate_tag_list(tag_list)
-    } else {
-        html! {}
-    }
+    tag_list
+        .data
+        .as_ref()
+        .map_or_else(|| html! {}, generate_tag_list)
 }

@@ -16,20 +16,21 @@ pub fn publishers_page() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(publisher_list) = &publisher_list.data {
-        return html! {
-             <ul class="publisher-list">
-                {for publisher_list.list.iter().map(|publisher| html!{
-                    <li class="publisher-item" key={ publisher.id }>
-                    <span class="badge">{ publisher.count }</span>
-                    <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id } }>
-                    { &publisher.name }
-                    </Link<Route>>
-                    </li>
-                })}
-             </ul>
-        };
-    } else {
-        return html! {};
-    }
+    publisher_list.data.as_ref().map_or_else(
+        || html! {},
+        |publisher_list| {
+            html! {
+                 <ul class="publisher-list">
+                    {for publisher_list.list.iter().map(|publisher| html!{
+                        <li class="publisher-item" key={ publisher.id }>
+                        <span class="badge">{ publisher.count }</span>
+                        <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id } }>
+                        { &publisher.name }
+                        </Link<Route>>
+                        </li>
+                    })}
+                 </ul>
+            }
+        },
+    )
 }

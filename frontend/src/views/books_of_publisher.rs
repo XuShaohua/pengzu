@@ -8,7 +8,7 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_publisher;
 
-#[derive(Debug, Clone, PartialEq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub publisher_id: i32,
 }
@@ -21,11 +21,12 @@ pub fn books_of_publisher(props: &Props) -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(book_list) = &book_list.data {
-        return html! {
-            <BookListComponent books={ book_list.list.clone() } />
-        };
-    } else {
-        return html! {};
-    }
+    book_list.data.as_ref().map_or_else(
+        || html! {},
+        |book_list| {
+            html! {
+                <BookListComponent books={ book_list.list.clone() } />
+            }
+        },
+    )
 }

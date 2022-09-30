@@ -15,11 +15,12 @@ pub fn books() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if let Some(book_list) = &book_list.data {
-        return html! {
-            <BookListComponent books={ book_list.list.clone() } />
-        };
-    } else {
-        return html! {};
-    }
+    book_list.data.as_ref().map_or_else(
+        || html! {},
+        |book_list| {
+            html! {
+                <BookListComponent books={ book_list.list.clone() } />
+            }
+        },
+    )
 }

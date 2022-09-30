@@ -28,7 +28,7 @@ use crate::views::user_info::UserInfoComponent;
 use crate::views::user_tags::UserTagsComponent;
 use crate::views::users::UsersComponent;
 
-#[derive(Debug, Clone, PartialEq, Routable)]
+#[derive(Debug, Clone, PartialEq, Eq, Routable)]
 pub enum Route {
     #[at("/")]
     Home,
@@ -83,11 +83,10 @@ pub enum Route {
 }
 
 #[must_use]
+#[allow(clippy::let_unit_value)]
 pub fn switch_route(routes: &Route) -> Html {
     match routes {
-        Route::BookDetail { book_id } => {
-            html! { <BookDetailComponent book_id={ * book_id }/> }
-        }
+        Route::BookDetail { book_id } => html! { <BookDetailComponent book_id={ * book_id }/> },
         Route::Book | Route::Home => html! { <BooksComponent /> },
         Route::BooksOfAuthor { author_id } => {
             html! { <BooksOfAuthorComponent author_id={ *author_id }/> }

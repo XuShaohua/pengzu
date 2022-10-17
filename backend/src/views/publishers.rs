@@ -32,3 +32,15 @@ pub async fn get_publishers(
     .await??;
     Ok(HttpResponse::Ok().json(resp_publishers))
 }
+
+pub async fn get_publisher(
+    pool: web::Data<DbPool>,
+    publisher_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let resp_publisher = web::block(move || {
+        let mut conn = pool.get()?;
+        publishers::get_publisher_by_id(&mut conn, publisher_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp_publisher))
+}

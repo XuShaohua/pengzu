@@ -83,6 +83,13 @@ pub fn get_publishers(
     })
 }
 
+pub fn get_publisher_by_id(conn: &mut PgConnection, publisher_id: i32) -> Result<Publisher, Error> {
+    publishers::table
+        .find(publisher_id)
+        .first(conn)
+        .map_err(Into::into)
+}
+
 pub fn get_publisher_by_name(
     conn: &mut PgConnection,
     publisher_name: &str,

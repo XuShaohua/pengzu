@@ -17,6 +17,7 @@ body {
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
+  margin: 0;
 }
 
 body h2 {
@@ -69,13 +70,38 @@ a, .danger, .book-remove, .editable-empty, .editable-empty:hover {
 
 .navbar {
   background-color: #f8f8f8;
-  border-color: #e7e7e7;
+  padding: 15px 5px;
+  margin-bottom: 10px;
+  border: 1px solid transparent;
+}
+
+.navbar-brand {
+  font-size: 25px;
+  line-height: 20px;
+  color: #45b29d;
+  margin-left: 15px;
 }
 
 .user-container {
-  display: inline-block;
+  float: right;
   position: absolute;
-  right: 80px;
+  top: 0;
+  right: 10px;
+  margin-right: 15px;
+  list-style: none;
+}
+
+.user-container > li {
+  display: inline-block;
+  margin-left: 25px;
+}
+
+.user-container a {
+  color: #777;
+}
+
+.user-container span {
+  margin-right: 5px;
 }
 
 footer {
@@ -107,7 +133,8 @@ footer {
   margin-left: auto;
 }
 
-.left-panel, .content-area {
+.left-panel,
+.content-area {
   float: left;
   position: relative;
   padding-right: 15px;
@@ -119,16 +146,16 @@ footer {
   margin-right: 10px;
 }
 
+.left-panel ul {
+  list-style: none;
+}
+
 .left-panel {
   width: 16.67%;
 }
 
 .content-area {
   width: 83.33%;
-}
-
-.left-panel ul {
-  list-style: none;
 }
 
 .left-panel li a {

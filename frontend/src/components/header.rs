@@ -14,14 +14,26 @@ pub fn header() -> Html {
 
     html! {
         <div class="navbar">
-            { "Online Library" }
-            <div class="user-container">
+            <Link<Route> to={ Route::Home } classes="navbar-brand">
+                { "Online Library" }
+            </Link<Route>>
+            <ul class="user-container">
             if user_ctx.is_login() {
-                <span>{ &user_ctx.name }</span>
+                <li><Link<Route> to={ Route::UserInfo }>
+                    <span class="glyphicon glyphicon-user" />
+                    { &user_ctx.name }
+                </Link<Route>></li>
+                <li><Link<Route> to={ Route::Logout }>
+                    <span class="glyphicon glyphicon-log-out" />
+                    { "Logout" }
+                </Link<Route>></li>
             } else {
-                <Link<Route> to={ Route::Login }>{ "Login" }</Link<Route>>
+                <li><Link<Route> to={ Route::Login }>
+                    <span class="glyphicon glyphicon-log-in" />
+                    { "Login" }
+                </Link<Route>></li>
             }
-            </div>
+            </ul>
         </div>
     }
 }

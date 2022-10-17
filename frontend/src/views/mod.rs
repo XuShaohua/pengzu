@@ -16,6 +16,7 @@ pub mod categories;
 pub mod discover;
 pub mod file_formats;
 pub mod login;
+pub mod logout;
 pub mod publishers;
 pub mod ratings;
 pub mod series;

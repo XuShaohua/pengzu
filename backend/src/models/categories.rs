@@ -44,6 +44,13 @@ pub fn add_category(conn: &mut PgConnection, new_category: &NewCategory) -> Resu
     Ok(())
 }
 
+pub fn get_category_by_id(conn: &mut PgConnection, category_id: i32) -> Result<Category, Error> {
+    categories::table
+        .find(category_id)
+        .first(conn)
+        .map_err(Into::into)
+}
+
 pub fn get_category_by_serial_number(
     conn: &mut PgConnection,
     serial_number_val: &str,

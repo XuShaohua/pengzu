@@ -20,3 +20,15 @@ pub async fn get_categories(
     .await??;
     Ok(HttpResponse::Ok().json(categories_resp))
 }
+
+pub async fn get_category(
+    pool: web::Data<DbPool>,
+    category_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let category_resp = web::block(move || {
+        let mut conn = pool.get()?;
+        categories::get_category_by_id(&mut conn, category_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(category_resp))
+}

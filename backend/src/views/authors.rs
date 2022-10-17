@@ -32,3 +32,15 @@ pub async fn get_authors(
     .await??;
     Ok(HttpResponse::Ok().json(resp))
 }
+
+pub async fn get_author(
+    pool: web::Data<DbPool>,
+    author_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let mut conn = pool.get()?;
+        authors::get_author_by_id(&mut conn, author_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}

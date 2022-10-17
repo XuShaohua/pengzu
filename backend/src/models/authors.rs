@@ -82,6 +82,13 @@ pub fn get_authors(conn: &mut PgConnection, query: &PageQuery) -> Result<GetAuth
     })
 }
 
+pub fn get_author_by_id(conn: &mut PgConnection, author_id: i32) -> Result<Author, Error> {
+    authors::table
+        .find(author_id)
+        .first::<Author>(conn)
+        .map_err(Into::into)
+}
+
 pub fn get_author_by_name(conn: &mut PgConnection, author_name: &str) -> Result<Author, Error> {
     use crate::schema::authors::dsl::{authors, name};
     authors

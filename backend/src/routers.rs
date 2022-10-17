@@ -28,6 +28,11 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::post().to(authors::add_author)),
         )
         .service(
+            web::resource("/author/{author_id}")
+                .wrap(auth.clone())
+                .route(web::get().to(authors::get_author)),
+        )
+        .service(
             web::resource("/author/books/{author_id}")
                 .wrap(auth.clone())
                 .route(web::get().to(books::get_books_by_author)),

@@ -4,7 +4,7 @@
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::publishers::PublisherList;
+use crate::types::publishers::{Publisher, PublisherList};
 
 /// Get publisher list.
 ///
@@ -13,4 +13,13 @@ use crate::types::publishers::PublisherList;
 pub async fn fetch_publishers() -> Result<PublisherList, FetchError> {
     let url = "/api/publisher";
     request_get(url).await
+}
+
+/// Get publisher info.
+///
+/// # Errors
+/// Returns error if server fails.
+pub async fn fetch_publisher(publisher_id: i32) -> Result<Publisher, FetchError> {
+    let url = format!("/api/publisher/{}", publisher_id);
+    request_get(&url).await
 }

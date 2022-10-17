@@ -1,5 +1,7 @@
 /** Common cleanup **/
 
+@import "assets/styles/glyphicon";
+
 html {
   font-size: 10px;
 }
@@ -111,6 +113,10 @@ footer {
   padding-right: 15px;
   padding-left: 15px;
   min-height: 1px;
+}
+
+.left-panel span {
+  margin-right: 10px;
 }
 
 .left-panel {

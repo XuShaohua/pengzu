@@ -7,6 +7,7 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_category;
+use crate::services::categories::fetch_category;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -21,11 +22,28 @@ pub fn books_of_author(props: &Props) -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
+    let category_id = props.category_id;
+    let category_info = use_async_with_options(
+        async move { fetch_category(category_id).await },
+        UseAsyncOptions::enable_auto(),
+    );
+
+    let title_element = if let Some(category_info) = &category_info.data {
+        html! {
+            <h2>{ format!("Books of \"{}\"", category_info.name) }</h2>
+        }
+    } else {
+        html! {}
+    };
+
     book_list.data.as_ref().map_or_else(
         || html! {},
         |book_list| {
             html! {
+                <>
+                { title_element }
                 <BookListComponent books={ book_list.list.clone() } />
+                </>
             }
         },
     )

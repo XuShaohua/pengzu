@@ -28,13 +28,14 @@ pub fn books_of_author(props: &Props) -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    let title_element = if let Some(category_info) = &category_info.data {
-        html! {
-            <h2>{ format!("Books of \"{}\"", category_info.name) }</h2>
-        }
-    } else {
-        html! {}
-    };
+    let title_element = category_info.data.as_ref().map_or_else(
+        || html! {},
+        |category_info| {
+            html! {
+                <h2>{ format!("Books of \"{}\"", category_info.name) }</h2>
+            }
+        },
+    );
 
     book_list.data.as_ref().map_or_else(
         || html! {},

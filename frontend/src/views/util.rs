@@ -19,6 +19,7 @@ pub fn get_file_format_url(path: &str) -> String {
 }
 
 #[must_use]
+#[allow(clippy::cast_precision_loss)]
 pub fn to_readable_size(size: i32) -> String {
     if size > MEGA_BYTES {
         let mb_size: f32 = size as f32 / MEGA_BYTES as f32;

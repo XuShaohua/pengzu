@@ -21,12 +21,12 @@ pub fn get_file_format_url(path: &str) -> String {
 #[must_use]
 pub fn to_readable_size(size: i32) -> String {
     if size > MEGA_BYTES {
-        let mb_size = size / MEGA_BYTES;
-        format!("{}Mib", mb_size)
+        let mb_size: f32 = size as f32 / MEGA_BYTES as f32;
+        format!("{:.1} MB", mb_size)
     } else if size > KILO_BYTES {
-        let kb_size = size / KILO_BYTES;
-        format!("{}Kib", kb_size)
+        let kb_size: f32 = size as f32 / KILO_BYTES as f32;
+        format!("{:.1} kB", kb_size)
     } else {
-        format!("{}B", size)
+        format!("{} B", size)
     }
 }

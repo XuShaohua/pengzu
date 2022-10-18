@@ -22,9 +22,9 @@ impl Component for DiscoverComponent {
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
-            <div>
-            {"discover"}
-            </div>
+            <>
+            <h2>{ "Discover" }</h2>
+            </>
         }
     }
 }

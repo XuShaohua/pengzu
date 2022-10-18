@@ -19,8 +19,15 @@ pub fn categories() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    category_list
-        .data
-        .as_ref()
-        .map_or_else(|| html! {}, generate_category_list)
+    category_list.data.as_ref().map_or_else(
+        || html! {},
+        |category_list| {
+            html! {
+                <>
+                <h2>{ "Categories" }</h2>
+                { generate_category_list(category_list) }
+                </>
+            }
+        },
+    )
 }

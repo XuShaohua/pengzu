@@ -18,8 +18,15 @@ pub fn tags_page() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    tag_list
-        .data
-        .as_ref()
-        .map_or_else(|| html! {}, generate_tag_list)
+    tag_list.data.as_ref().map_or_else(
+        || html! {},
+        |tag_list| {
+            html! {
+                <>
+                <h2>{ "Tags" }</h2>
+                { generate_tag_list(tag_list) }
+                </>
+            }
+        },
+    )
 }

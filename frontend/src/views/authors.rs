@@ -20,16 +20,19 @@ pub fn home() -> Html {
         || html! {},
         |author_list| {
             html! {
-                 <ul class="author-list">
-                     {for author_list.list.iter().map(|author| html! {
-                         <li class="author-item" key={ author.id }>
-                         <span class="badge">{ author.count }</span>
-                         <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } } >
-                         { &author.name }
-                         </Link<Route>>
-                         </li>
-                     })}
-                 </ul>
+                <>
+                <h2>{ "Authors" }</h2>
+                <ul class="author-list">
+                {for author_list.list.iter().map(|author| html! {
+                    <li class="author-item" key={ author.id }>
+                        <span class="badge">{ author.count }</span>
+                        <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } } >
+                            { &author.name }
+                        </Link<Route>>
+                    </li>
+                })}
+                </ul>
+                </>
             }
         },
     )

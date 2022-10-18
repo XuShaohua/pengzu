@@ -20,6 +20,8 @@ pub fn series_page() -> Html {
         || html! {},
         |series_list| {
             html! {
+                <>
+                <h2>{ "Series" }</h2>
                 <ul>
                 {for series_list.list.iter().map(|series| html!{
                     <li class="series-item" key={ series.id }>
@@ -30,6 +32,7 @@ pub fn series_page() -> Html {
                     </li>
                 })}
                 </ul>
+                </>
             }
         },
     )

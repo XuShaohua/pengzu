@@ -20,6 +20,8 @@ pub fn file_formats_page() -> Html {
         || html! {},
         |file_formats| {
             html! {
+                <>
+                <h2>{ "File Formats" }</h2>
                 <ul>
                     {for file_formats.list.iter().map(|file_format| html!{
                         <li key={ file_format.id }>
@@ -30,6 +32,7 @@ pub fn file_formats_page() -> Html {
                         </li>
                     })}
                 </ul>
+                </>
             }
         },
     )

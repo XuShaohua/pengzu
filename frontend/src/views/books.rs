@@ -19,7 +19,10 @@ pub fn books() -> Html {
         || html! {},
         |book_list| {
             html! {
+                <>
+                <h2>{ "Books" }</h2>
                 <BookListComponent books={ book_list.list.clone() } />
+                </>
             }
         },
     )

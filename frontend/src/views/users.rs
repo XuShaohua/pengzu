@@ -18,6 +18,8 @@ pub fn users_page() -> Html {
         || html! {},
         |user_list| {
             html! {
+                <>
+                <h2>{ "Users" }</h2>
                 <ul>
                 {for user_list.iter().map(|user_info| html!{
                     <li key={ user_info.id }>
@@ -25,6 +27,7 @@ pub fn users_page() -> Html {
                     </li>
                 })}
                 </ul>
+                </>
             }
         },
     )

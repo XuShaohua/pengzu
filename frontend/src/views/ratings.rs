@@ -22,9 +22,9 @@ impl Component for RatingsComponent {
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
-            <div>
-            {"ratings"}
-            </div>
+            <>
+            <h2>{ "Ratings" }</h2>
+            </>
         }
     }
 }

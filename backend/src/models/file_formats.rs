@@ -43,7 +43,7 @@ pub fn get_file_format_by_name(
         .map_err(Into::into)
 }
 
-pub fn get_file_format(conn: &mut PgConnection, format_id: i32) -> Result<FileFormat, Error> {
+pub fn get_file_format_by_id(conn: &mut PgConnection, format_id: i32) -> Result<FileFormat, Error> {
     use crate::schema::file_formats::dsl::file_formats;
     file_formats.find(format_id).first(conn).map_err(Into::into)
 }

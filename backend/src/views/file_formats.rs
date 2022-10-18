@@ -20,3 +20,15 @@ pub async fn get_formats(
     .await??;
     Ok(HttpResponse::Ok().json(resp))
 }
+
+pub async fn get_format(
+    pool: web::Data<DbPool>,
+    format_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let mut conn = pool.get()?;
+        file_formats::get_file_format_by_id(&mut conn, format_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}

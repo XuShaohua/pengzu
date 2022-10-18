@@ -82,14 +82,19 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(web::resource("/file").route(web::get().to(files::get_file_by_path)))
         // For /api/formats
         .service(
-            web::resource("/format/books/{format_id}")
-                .wrap(auth.clone())
-                .route(web::get().to(books::get_books_by_format)),
-        )
-        .service(
             web::resource("/format")
                 .wrap(auth.clone())
                 .route(web::get().to(file_formats::get_formats)),
+        )
+        .service(
+            web::resource("/format/{format_id}")
+                .wrap(auth.clone())
+                .route(web::get().to(file_formats::get_format)),
+        )
+        .service(
+            web::resource("/format/books/{format_id}")
+                .wrap(auth.clone())
+                .route(web::get().to(books::get_books_by_format)),
         )
         // For /api/publisher
         .service(

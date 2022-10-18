@@ -7,6 +7,7 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_series;
+use crate::services::series::fetch_series;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -21,11 +22,29 @@ pub fn books_of_series(props: &Props) -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
+    let series_id = props.series_id;
+    let series_info = use_async_with_options(
+        async move { fetch_series(series_id).await },
+        UseAsyncOptions::enable_auto(),
+    );
+
+    let title_element = series_info.data.as_ref().map_or_else(
+        || html! {},
+        |series_info| {
+            html! {
+                <h2>{ format!("Books of \"{}\"", series_info.name) }</h2>
+            }
+        },
+    );
+
     book_list.data.as_ref().map_or_else(
         || html! {},
         |book_list| {
             html! {
+                <>
+                { title_element }
                 <BookListComponent books={ book_list.list.clone() } />
+                </>
             }
         },
     )

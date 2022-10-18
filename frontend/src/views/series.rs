@@ -7,12 +7,12 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use yew_router::prelude::Link;
 
 use crate::route::Route;
-use crate::services::series::fetch_series;
+use crate::services::series::fetch_series_list;
 
 #[function_component(SeriesComponent)]
 pub fn series_page() -> Html {
     let series_list = use_async_with_options(
-        async move { fetch_series().await },
+        async move { fetch_series_list().await },
         UseAsyncOptions::enable_auto(),
     );
 

@@ -34,6 +34,13 @@ pub fn add_tag(conn: &mut PgConnection, new_tag: &NewUserTag) -> Result<(), Erro
     Ok(())
 }
 
+pub fn get_tag_by_id(conn: &mut PgConnection, tag_id: i32) -> Result<UserTag, Error> {
+    user_tags::table
+        .find(tag_id)
+        .first(conn)
+        .map_err(Into::into)
+}
+
 pub fn get_tag_by_name(conn: &mut PgConnection, tag_name: &str) -> Result<UserTag, Error> {
     user_tags::table
         .filter(user_tags::name.eq(tag_name))

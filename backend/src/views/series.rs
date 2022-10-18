@@ -21,14 +21,26 @@ pub async fn add_series(
     Ok(HttpResponse::Ok().finish())
 }
 
-pub async fn get_series(
+pub async fn get_series_list(
     pool: web::Data<DbPool>,
     query: web::Query<PageQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp_series = web::block(move || {
         let mut conn = pool.get()?;
-        series::get_series(&mut conn, &query)
+        series::get_series_list(&mut conn, &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_series))
+}
+
+pub async fn get_series(
+    pool: web::Data<DbPool>,
+    series_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let mut conn = pool.get()?;
+        series::get_series_by_id(&mut conn, series_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
 }

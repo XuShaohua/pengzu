@@ -47,7 +47,7 @@ pub struct GetSeriesResp {
     pub list: Vec<SeriesAndBook>,
 }
 
-pub fn get_series(conn: &mut PgConnection, query: &PageQuery) -> Result<GetSeriesResp, Error> {
+pub fn get_series_list(conn: &mut PgConnection, query: &PageQuery) -> Result<GetSeriesResp, Error> {
     use crate::schema::books_series_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -76,6 +76,13 @@ pub fn get_series(conn: &mut PgConnection, query: &PageQuery) -> Result<GetSerie
         },
         list,
     })
+}
+
+pub fn get_series_by_id(conn: &mut PgConnection, series_id: i32) -> Result<Series, Error> {
+    series::table
+        .find(series_id)
+        .first(conn)
+        .map_err(Into::into)
 }
 
 pub fn get_series_by_name(conn: &mut PgConnection, series_name: &str) -> Result<Series, Error> {

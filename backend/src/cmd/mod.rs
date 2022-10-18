@@ -13,7 +13,7 @@ mod add_user;
 
 const CMD_RUN: &str = "run";
 
-fn run_server_cmd() -> Command<'static> {
+fn run_server_cmd() -> Command {
     Command::new(CMD_RUN).about("Run server")
 }
 

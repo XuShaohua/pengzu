@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use clap::{Arg, ArgMatches, Command};
+use clap::{Arg, ArgMatches, Command, ValueHint};
 use tokio::runtime::Runtime;
 
 use crate::error::Error;
@@ -17,27 +17,25 @@ const OPT_LIBRARY_ID: &str = "library_id";
 const OPT_CALIBRE_PATH: &str = "calibre_path";
 
 #[must_use]
-pub fn parse_cmdline() -> Command<'static> {
+pub fn parse_cmdline() -> Command {
     Command::new(CMD_IMPORT_LIBRARY)
         .about("Import books from calibra library")
         .arg(
             Arg::new(OPT_RESUME)
                 .long(OPT_RESUME)
-                .takes_value(true)
                 .value_name(OPT_LIBRARY_ID)
                 .help("Resume importing task specified in library id."),
         )
         .arg(
             Arg::new(OPT_IMPORT)
                 .long(OPT_IMPORT)
-                .takes_value(true)
+                .value_hint(ValueHint::DirPath)
                 .value_name(OPT_CALIBRE_PATH)
                 .help("Start a new importing task from specified calibre path"),
         )
         .arg(
             Arg::new(OPT_STOP)
                 .long(OPT_STOP)
-                .takes_value(true)
                 .value_name(OPT_LIBRARY_ID)
                 .help("Stop importing task of specified library id"),
         )
@@ -56,15 +54,15 @@ fn stop_task(_library_id: i32) -> Result<(), Error> {
 }
 
 pub fn run_daemon(matches: &ArgMatches) -> Result<(), Error> {
-    if let Some(library_id) = matches.value_of(OPT_RESUME) {
+    if let Some(library_id) = matches.get_one::<&str>(OPT_RESUME) {
         let library_id = library_id.parse()?;
         return resume_task(library_id);
     }
-    if let Some(library_id) = matches.value_of(OPT_STOP) {
+    if let Some(library_id) = matches.get_one::<&str>(OPT_STOP) {
         let library_id = library_id.parse()?;
         return stop_task(library_id);
     }
-    if let Some(calibre_path) = matches.value_of(OPT_IMPORT) {
+    if let Some(calibre_path) = matches.get_one::<&str>(OPT_IMPORT) {
         return new_task(calibre_path);
     }
 

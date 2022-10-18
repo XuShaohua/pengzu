@@ -15,13 +15,12 @@ const OPT_PASSWORD: &str = "password";
 const OPT_EMAIL: &str = "email";
 const OPT_DISPLAY_NAME: &str = "display-name";
 
-pub fn add_user_cmd() -> Command<'static> {
+pub fn add_user_cmd() -> Command {
     Command::new(CMD_ADD_USER)
         .about("Add admin user")
         .arg(
             Arg::new(OPT_NAME)
                 .long(OPT_NAME)
-                .takes_value(true)
                 .required(true)
                 .value_name(OPT_NAME)
                 .help("Specify username"),
@@ -29,7 +28,6 @@ pub fn add_user_cmd() -> Command<'static> {
         .arg(
             Arg::new(OPT_PASSWORD)
                 .long(OPT_PASSWORD)
-                .takes_value(true)
                 .required(true)
                 .value_name(OPT_PASSWORD)
                 .help("Specify password"),
@@ -37,7 +35,6 @@ pub fn add_user_cmd() -> Command<'static> {
         .arg(
             Arg::new(OPT_EMAIL)
                 .long(OPT_EMAIL)
-                .takes_value(true)
                 .required(true)
                 .value_name(OPT_EMAIL)
                 .help("Specify email address"),
@@ -45,7 +42,6 @@ pub fn add_user_cmd() -> Command<'static> {
         .arg(
             Arg::new(OPT_DISPLAY_NAME)
                 .long(OPT_DISPLAY_NAME)
-                .takes_value(true)
                 .required(false)
                 .value_name(OPT_DISPLAY_NAME)
                 .help("Optionally specify display name"),
@@ -53,10 +49,12 @@ pub fn add_user_cmd() -> Command<'static> {
 }
 
 pub fn add_user(matches: &ArgMatches) -> Result<(), Error> {
-    let username = matches.value_of(OPT_NAME).unwrap();
-    let password = matches.value_of(OPT_PASSWORD).unwrap();
-    let email = matches.value_of(OPT_EMAIL).unwrap();
-    let display_name = matches.value_of(OPT_DISPLAY_NAME).unwrap_or(username);
+    let username = matches.get_one::<&str>(OPT_NAME).unwrap();
+    let password: &str = matches.get_one::<&str>(OPT_PASSWORD).unwrap();
+    let email: &str = matches.get_one::<&str>(OPT_EMAIL).unwrap();
+    let display_name = matches
+        .get_one::<&str>(OPT_DISPLAY_NAME)
+        .unwrap_or(username);
 
     let db_pool = get_connection_pool()?;
     let mut pg_conn = db_pool.get()?;

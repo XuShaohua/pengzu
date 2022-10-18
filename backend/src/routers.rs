@@ -150,6 +150,11 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::post().to(tags::add_tag)),
         )
         .service(
+            web::resource("/tag/{tag_id}")
+                .wrap(auth.clone())
+                .route(web::get().to(tags::get_tag)),
+        )
+        .service(
             web::resource("/tag/books/{tag_id}")
                 .wrap(auth.clone())
                 .route(web::get().to(books::get_books_by_tag)),

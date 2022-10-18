@@ -33,6 +33,18 @@ pub async fn get_tags(
     Ok(HttpResponse::Ok().json(tags_resp))
 }
 
+pub async fn get_tag(
+    pool: web::Data<DbPool>,
+    tag_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let mut conn = pool.get()?;
+        tags::get_tag_by_id(&mut conn, tag_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}
+
 pub async fn update_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,

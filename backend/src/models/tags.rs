@@ -32,6 +32,10 @@ pub fn add_tag(conn: &mut PgConnection, new_tag: &NewTag) -> Result<(), Error> {
     Ok(())
 }
 
+pub fn get_tag_by_id(conn: &mut PgConnection, tag_id: i32) -> Result<Tag, Error> {
+    tags::table.find(tag_id).first(conn).map_err(Into::into)
+}
+
 pub fn get_tag_by_name(conn: &mut PgConnection, tag_name: &str) -> Result<Tag, Error> {
     use crate::schema::tags::dsl::{name, tags};
     tags.filter(name.eq(tag_name))

@@ -97,8 +97,10 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             let readable_size = to_readable_size(file.size);
             html! {
                 <li>
-                    <a href={ url }>{ &file.format_name }</a>
-                    <span>{ readable_size }</span>
+                    <a class="book-format" target="_blank" href={ url }>
+                        <span class="glyphicon glyphicon-download" />
+                        { format!("{} ({})", file.format_name, readable_size) }
+                    </a>
                 </li>
             }
         })
@@ -115,7 +117,7 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             <div class="book-published-date">{ published_date_element }</div>
             <div class="book-tags">{ tags_element }</div>
             <div class="book-series">{ series_element }</div>
-            <div class="book-formats">{ formats_element }</div>
+            <ul class="book-formats">{ formats_element }</ul>
         </>
     }
 }

@@ -4,7 +4,7 @@
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::user_tags::UserTagList;
+use crate::types::user_tags::{UserTag, UserTagList};
 
 /// Returns user tag list.
 ///
@@ -12,5 +12,14 @@ use crate::types::user_tags::UserTagList;
 /// Returns error if server fails.
 pub async fn fetch_user_tags(parent_tag_id: i32) -> Result<UserTagList, FetchError> {
     let url = format!("/api/user-tag?parent={}", parent_tag_id);
+    request_get(&url).await
+}
+
+/// Returns user tag info.
+///
+/// # Errors
+/// Returns error if server fails.
+pub async fn fetch_user_tag(tag_id: i32) -> Result<UserTag, FetchError> {
+    let url = format!("/api/user-tag/{}", tag_id);
     request_get(&url).await
 }

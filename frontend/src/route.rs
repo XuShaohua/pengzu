@@ -74,11 +74,8 @@ pub enum Route {
     #[at("/user-tag")]
     UserTag,
 
-    #[at("/advanced-search/books/:page_id")]
-    BooksOfAdvancedSearch {
-        query: AdvancedSearchQuery,
-        page_id: i32,
-    },
+    #[at("/advanced-search/books/:page_id/:query")]
+    BooksOfAdvancedSearch { query: String, page_id: i32 },
     #[at("/advanced-search")]
     AdvancedSearch,
 
@@ -131,7 +128,8 @@ pub fn switch_route(routes: &Route) -> Html {
         Route::UserTag => html! { <UserTagsComponent /> },
 
         Route::BooksOfAdvancedSearch { query, page_id } => {
-            html! { <BooksOfAdvancedSearchComponent query={ query.clone() } page_id={ *page_id } /> }
+            let query_obj: AdvancedSearchQuery = serde_json::from_str(query).unwrap();
+            html! { <BooksOfAdvancedSearchComponent query={ query_obj } page_id={ *page_id } /> }
         }
         Route::AdvancedSearch => html! { <AdvancedSearchComponent /> },
 

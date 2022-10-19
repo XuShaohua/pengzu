@@ -7,7 +7,8 @@ use yew::prelude::*;
 #[function_component(AdvancedSearchComponent)]
 pub fn advanced_search() -> Html {
     html! {
-        <form class="advanced-search" method="GET">
+        <form class="advanced-search"
+            method="GET">
         <div class="form-group">
             <label for="book_title">{ "Book Title" }</label>
             <input id="book_title" class="form-control" name="book_title" type="text" />

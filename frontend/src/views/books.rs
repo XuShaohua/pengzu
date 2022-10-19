@@ -7,11 +7,16 @@ use yew_hooks::prelude::*;
 
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books;
+use crate::services::query::{GetBooksOrder, GetBooksQuery};
 
 #[function_component(BooksComponent)]
 pub fn books() -> Html {
+    let query = Some(GetBooksQuery {
+        page: 2,
+        order: GetBooksOrder::IdDesc,
+    });
     let book_list = use_async_with_options(
-        async move { fetch_books().await },
+        async move { fetch_books(query).await },
         UseAsyncOptions::enable_auto(),
     );
 

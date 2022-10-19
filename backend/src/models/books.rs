@@ -75,7 +75,6 @@ pub fn get_book_path_by_id(conn: &mut PgConnection, book_id: i32) -> Result<Stri
 }
 
 #[derive(Debug, Clone, Copy, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub enum GetBooksOrder {
     IdDesc,
     IdAsc,

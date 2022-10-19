@@ -17,6 +17,17 @@ pub fn header() -> Html {
             <Link<Route> to={ Route::Home } classes="navbar-brand">
                 { "Online Library" }
             </Link<Route>>
+
+            <form class="navbar-search input-group" method="GET">
+                <input class="form-control" type="text" placeholder={ "Search Library" } />
+                <button class="btn btn-default" type="submit">{ "Search" }</button>
+            </form>
+
+            <a class="navbar-advanced-search" href="#advanced-search">
+                <span class="glyphicon glyphicon-search" />
+                <span>{ "Advanced Search" }</span>
+            </a>
+
             <ul class="user-container">
             if user_ctx.is_login() {
                 <li><Link<Route> to={ Route::UserInfo }>

@@ -182,6 +182,11 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(books::get_books_by_user_tag)),
         )
         // For /api/search
+        .service(
+            web::resource("/search/books")
+                .wrap(auth.clone())
+                .route(web::get().to(books::get_books_by_simple_search)),
+        )
         // For /api/advanced-search
         .service(
             web::resource("/advanced-search/books")

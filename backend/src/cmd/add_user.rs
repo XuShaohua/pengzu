@@ -49,11 +49,11 @@ pub fn add_user_cmd() -> Command {
 }
 
 pub fn add_user(matches: &ArgMatches) -> Result<(), Error> {
-    let username = matches.get_one::<&str>(OPT_NAME).unwrap();
-    let password: &str = matches.get_one::<&str>(OPT_PASSWORD).unwrap();
-    let email: &str = matches.get_one::<&str>(OPT_EMAIL).unwrap();
+    let username = matches.get_one::<String>(OPT_NAME).unwrap();
+    let password = matches.get_one::<String>(OPT_PASSWORD).unwrap();
+    let email = matches.get_one::<String>(OPT_EMAIL).unwrap();
     let display_name = matches
-        .get_one::<&str>(OPT_DISPLAY_NAME)
+        .get_one::<String>(OPT_DISPLAY_NAME)
         .unwrap_or(username);
 
     let db_pool = get_connection_pool()?;

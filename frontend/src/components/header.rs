@@ -15,7 +15,7 @@ pub fn header() -> Html {
     html! {
         <div class="navbar">
             <Link<Route> to={ Route::Home } classes="navbar-brand">
-                { "Online Library" }
+                { "Pengzu Library" }
             </Link<Route>>
 
             <form class="navbar-search input-group" method="GET">

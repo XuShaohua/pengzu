@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+pub mod advanced_search;
 pub mod authors;
 pub mod book_detail;
 pub mod books;

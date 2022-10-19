@@ -23,10 +23,11 @@ pub fn header() -> Html {
                 <button class="btn btn-default" type="submit">{ "Search" }</button>
             </form>
 
-            <a class="navbar-advanced-search" href="#advanced-search">
+            <Link<Route> to={ Route::AdvancedSearch }
+                classes="navbar-advanced-search">
                 <span class="glyphicon glyphicon-search" />
                 <span>{ "Advanced Search" }</span>
-            </a>
+            </Link<Route>>
 
             <ul class="user-container">
             if user_ctx.is_login() {

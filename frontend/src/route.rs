@@ -6,6 +6,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::components::not_found::NotFoundComponent;
+use crate::views::advanced_search::AdvancedSearchComponent;
 use crate::views::authors::AuthorsComponent;
 use crate::views::book_detail::BookDetailComponent;
 use crate::views::books::BooksComponent;
@@ -80,6 +81,8 @@ pub enum Route {
     #[at("/logout")]
     Logout,
 
+    #[at("/advanced-search")]
+    AdvancedSearch,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -124,6 +127,7 @@ pub fn switch_route(routes: &Route) -> Html {
         Route::Login => html! { <LoginComponent /> },
         Route::Logout => html! { <LogoutComponent /> },
 
+        Route::AdvancedSearch => html! { <AdvancedSearchComponent /> },
         Route::NotFound => html! { <NotFoundComponent /> },
     }
 }

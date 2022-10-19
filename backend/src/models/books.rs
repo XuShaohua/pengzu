@@ -353,3 +353,35 @@ pub fn get_books_by_user_tag(
 
     get_books_by_ids(conn, query, &book_ids)
 }
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct AdvancedSearchQuery {
+    #[serde(default = "default_page_id")]
+    pub page: i64,
+    #[serde(default = "GetBooksOrder::default")]
+    pub order: GetBooksOrder,
+
+    pub title: Option<String>,
+    pub author: Option<String>,
+    pub publisher: Option<String>,
+}
+
+pub fn get_books_by_advanced_search(
+    conn: &mut PgConnection,
+    query: &AdvancedSearchQuery,
+) -> Result<GetBooksResp, Error> {
+    let books_query = GetBooksQuery {
+        page: query.page,
+        order: query.order,
+    };
+
+    // TODO(Shaohua): Join query
+    let empty_title = "".to_string();
+    let book_title = query.title.as_ref().unwrap_or_else(|| &empty_title);
+    let book_ids = books::table
+        .filter(books::title.eq(book_title))
+        .select(books::id)
+        .load::<i32>(conn)?;
+
+    get_books_by_ids(conn, &books_query, &book_ids)
+}

@@ -3,8 +3,9 @@
 // that can be found in the LICENSE file.
 
 use crate::error::FetchError;
-use crate::services::fetch::request_get;
+use crate::services::fetch::{request_get, request_post};
 use crate::services::query::{append_query_to_url, GetBooksQuery};
+use crate::types::advanced_search::AdvancedSearchQuery;
 use crate::types::books::BooksList;
 
 /// Get book list.
@@ -78,4 +79,16 @@ pub async fn fetch_books_by_tag(tag_id: i32) -> Result<BooksList, FetchError> {
 pub async fn fetch_books_by_user_tag(tag_id: i32) -> Result<BooksList, FetchError> {
     let url = format!("/api/user-tag/books/{}", tag_id);
     request_get(&url).await
+}
+
+/// Get book list by advanced search.
+///
+/// # Errors
+/// Returns error if server fails.
+pub async fn fetch_books_by_advanced_search(
+    query: &AdvancedSearchQuery,
+    page_id: i32,
+) -> Result<BooksList, FetchError> {
+    let url = format!("/api/advanced-search/books/{}", page_id);
+    request_post(&url, query).await
 }

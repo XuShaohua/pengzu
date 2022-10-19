@@ -6,10 +6,12 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::components::not_found::NotFoundComponent;
+use crate::types::advanced_search::AdvancedSearchQuery;
 use crate::views::advanced_search::AdvancedSearchComponent;
 use crate::views::authors::AuthorsComponent;
 use crate::views::book_detail::BookDetailComponent;
 use crate::views::books::BooksComponent;
+use crate::views::books_of_advanced_search::BooksOfAdvancedSearchComponent;
 use crate::views::books_of_author::BooksOfAuthorComponent;
 use crate::views::books_of_category::BooksOfCategoryComponent;
 use crate::views::books_of_file_format::BooksOfFileFormatComponent;
@@ -72,6 +74,14 @@ pub enum Route {
     #[at("/user-tag")]
     UserTag,
 
+    #[at("/advanced-search/books/:page_id")]
+    BooksOfAdvancedSearch {
+        query: AdvancedSearchQuery,
+        page_id: i32,
+    },
+    #[at("/advanced-search")]
+    AdvancedSearch,
+
     #[at("/user-info")]
     UserInfo,
     #[at("/users")]
@@ -81,8 +91,6 @@ pub enum Route {
     #[at("/logout")]
     Logout,
 
-    #[at("/advanced-search")]
-    AdvancedSearch,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -119,15 +127,19 @@ pub fn switch_route(routes: &Route) -> Html {
         Route::FileFormat => html! { <FileFormatsComponent /> },
         Route::Rating => html! { <RatingsComponent /> },
 
-        Route::BooksOfUserTag { tag_id } => html! { <BooksOfUserTagComponent tag_id={ *tag_id }/>},
+        Route::BooksOfUserTag { tag_id } => html! { <BooksOfUserTagComponent tag_id={ *tag_id }/> },
         Route::UserTag => html! { <UserTagsComponent /> },
+
+        Route::BooksOfAdvancedSearch { query, page_id } => {
+            html! { <BooksOfAdvancedSearchComponent query={ query.clone() } page_id={ *page_id } /> }
+        }
+        Route::AdvancedSearch => html! { <AdvancedSearchComponent /> },
 
         Route::UserInfo => html! { <UserInfoComponent /> },
         Route::Users => html! { <UsersComponent /> },
         Route::Login => html! { <LoginComponent /> },
         Route::Logout => html! { <LogoutComponent /> },
 
-        Route::AdvancedSearch => html! { <AdvancedSearchComponent /> },
         Route::NotFound => html! { <NotFoundComponent /> },
     }
 }

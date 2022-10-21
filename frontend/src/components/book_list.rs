@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::Link;
 
@@ -59,6 +60,9 @@ fn generate_book_element(book_resp: &Book) -> Html {
 
 #[function_component(BookListComponent)]
 pub fn book_list(props: &Props) -> Html {
+    let style_str = include_str!("book_list.css");
+    let style_cls = Style::new(style_str).expect("Invalid style file book_list.css");
+
     let book_elements = props
         .books
         .iter()
@@ -66,7 +70,7 @@ pub fn book_list(props: &Props) -> Html {
         .collect::<Html>();
 
     html! {
-        <div class="book-list">
+        <div class={ style_cls }>
             { book_elements }
         </div>
     }

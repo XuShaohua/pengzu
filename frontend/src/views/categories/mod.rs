@@ -8,10 +8,13 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use crate::services::categories::fetch_categories;
 
 mod category_item;
+use crate::views::util;
 use category_item::generate_category_list;
 
 #[function_component(CategoriesComponent)]
 pub fn categories() -> Html {
+    util::set_document_title("Categories");
+
     // TODO(Shaohua): Get category parent id.
     let default_parent_id = 0;
     let category_list = use_async_with_options(

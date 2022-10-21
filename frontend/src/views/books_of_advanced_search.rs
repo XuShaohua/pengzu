@@ -18,7 +18,7 @@ pub struct Props {
 
 #[function_component(BooksOfAdvancedSearchComponent)]
 pub fn books_of_advanced_search(props: &Props) -> Html {
-    util::set_document_title("Books of Advanced Search");
+    util::set_document_title(&format!("Advanced Search: {}", props.query.desc()));
 
     let page_id = 1;
     let query = props.query.clone();

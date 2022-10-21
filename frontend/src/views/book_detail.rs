@@ -129,7 +129,7 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
 
 #[function_component(BookDetailComponent)]
 pub fn book_detail(props: &Props) -> Html {
-    util::set_document_title("Book Detail");
+    util::set_document_title(&format!("Book: {}", props.book_id));
 
     let book_id = props.book_id;
     let book_metadata = use_async_with_options(
@@ -137,8 +137,12 @@ pub fn book_detail(props: &Props) -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    book_metadata
-        .data
-        .as_ref()
-        .map_or_else(|| html! {}, generate_metadata_element)
+    book_metadata.data.as_ref().map_or_else(
+        || html! {},
+        |book_metadata| {
+            util::set_document_title(&format!("Book: {}", book_metadata.book.title));
+
+            generate_metadata_element(book_metadata)
+        },
+    )
 }

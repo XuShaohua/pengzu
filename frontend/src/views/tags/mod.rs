@@ -8,10 +8,13 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use crate::services::tags::fetch_tags;
 
 mod tag_item;
+use crate::views::util;
 use tag_item::generate_tag_list;
 
 #[function_component(TagsComponent)]
 pub fn tags_page() -> Html {
+    util::set_document_title("Tags");
+
     let default_parent_tag_id = 0;
     let tag_list = use_async_with_options(
         async move { fetch_tags(default_parent_tag_id).await },

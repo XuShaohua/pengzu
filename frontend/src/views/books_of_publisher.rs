@@ -8,6 +8,7 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_publisher;
 use crate::services::publishers::fetch_publisher;
+use crate::views::util;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -16,6 +17,8 @@ pub struct Props {
 
 #[function_component(BooksOfPublisherComponent)]
 pub fn books_of_publisher(props: &Props) -> Html {
+    util::set_document_title(&format!("Publisher: {}", props.publisher_id));
+
     let publisher_id = props.publisher_id;
     let book_list = use_async_with_options(
         async move { fetch_books_by_publisher(publisher_id).await },
@@ -31,6 +34,8 @@ pub fn books_of_publisher(props: &Props) -> Html {
     let title_element = publisher_info.data.as_ref().map_or_else(
         || html! {},
         |publisher_info| {
+            util::set_document_title(&format!("Publisher: {}", publisher_info.name));
+
             html! {
                 <h2>{ format!("Books of \"{}\"", publisher_info.name) }</h2>
             }

@@ -163,6 +163,21 @@ label {
   margin-bottom: 15px;
 }
 
+.badge {
+  display: inline-block;
+  min-width: 10px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-color: #777;
+  border-radius: 10px;
+}
+
 /** Details **/
 
 .clearfix::after,
@@ -201,8 +216,6 @@ label {
   width: 83.33%;
 }
 
-/** Books page **/
-
 /** author page **/
 .author-list {
   list-style: none;
@@ -212,28 +225,4 @@ label {
 
 }
 
-.badge {
-  display: inline-block;
-  min-width: 10px;
-  padding: 3px 7px;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  background-color: #777;
-  border-radius: 10px;
-}
-
 /** book detail **/
-.book-formats {
-  padding-left: 12px;
-}
-
-.book-format span {
-  padding-right: 2px;
-}
-
-/** advanced search page **/

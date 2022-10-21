@@ -4,28 +4,9 @@
 
 use yew::prelude::*;
 
-pub enum Msg {}
-
-pub struct DiscoverComponent {}
-
-// TODO(Shaohua):
-impl Component for DiscoverComponent {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
-        false
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        html! {
-            <>
-            <h2>{ "Discover" }</h2>
-            </>
-        }
+#[function_component(DiscoverComponent)]
+pub fn discover() -> Html {
+    html! {
+        <h2>{ "Discover" }</h2>
     }
 }

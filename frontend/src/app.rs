@@ -4,6 +4,7 @@
 
 #![allow(clippy::let_unit_value)]
 
+use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -15,11 +16,14 @@ use crate::route::{switch_route, Route};
 
 #[function_component(AppComponent)]
 pub fn app() -> Html {
+    let style_str = include_str!("app.css");
+    let style_cls = Style::new(style_str).expect("Invalid style file app.css");
+
     html! {
         <UserContextProvider>
             <BrowserRouter>
                 <HeaderComponent />
-                <div class="container-fluid">
+                <div class={ style_cls }>
                     <div class="row-fluid">
                         <LeftPanelComponent />
                         <div class="content-area">

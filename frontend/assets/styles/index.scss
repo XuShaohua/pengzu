@@ -178,42 +178,10 @@ label {
   border-radius: 10px;
 }
 
-/** Details **/
-
 .clearfix::after,
-.clearfix::before,
-.container-fluid::after,
-.container-fluid::before,
-.container::after,
-.container::before,
-.modal-footer::after,
-.modal-footer::before,
-.modal-header::after,
-.modal-header::before,
-.pager::after,
-.pager::before {
+.clearfix::before {
   display: table;
   content: " ";
-}
-
-.container-fluid {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.content-area {
-  float: left;
-  position: relative;
-  padding-right: 15px;
-  padding-left: 15px;
-  min-height: 1px;
-}
-
-
-.content-area {
-  width: 83.33%;
 }
 
 /** author page **/
@@ -224,5 +192,3 @@ label {
 .author-item {
 
 }
-
-/** book detail **/

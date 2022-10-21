@@ -5,6 +5,12 @@
     border: 1px solid transparent;
 }
 
+:root::before,
+:root::after {
+    display: table;
+    content: " ";
+}
+
 .navbar-brand {
     font-size: 25px;
     line-height: 20px;

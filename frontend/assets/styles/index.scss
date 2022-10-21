@@ -165,7 +165,6 @@ label {
 
 /** Details **/
 
-
 .clearfix::after,
 .clearfix::before,
 .container-fluid::after,
@@ -176,8 +175,6 @@ label {
 .modal-footer::before,
 .modal-header::after,
 .modal-header::before,
-.navbar::after,
-.navbar::before,
 .pager::after,
 .pager::before {
   display: table;
@@ -191,7 +188,6 @@ label {
   margin-left: auto;
 }
 
-.left-panel,
 .content-area {
   float: left;
   position: relative;
@@ -200,33 +196,9 @@ label {
   min-height: 1px;
 }
 
-.left-panel span {
-  margin-right: 10px;
-}
-
-.left-panel ul {
-  list-style: none;
-}
-
-.left-panel {
-  width: 16.67%;
-}
 
 .content-area {
   width: 83.33%;
-}
-
-.left-panel li a {
-  color: #444;
-  text-decoration: none;
-  display: block;
-  padding: 10px;
-}
-
-.left-panel li a:hover {
-  background: rgba(153, 153, 153, 0.4);
-  border-radius: 5px;
-  outline: 0;
 }
 
 /** Books page **/

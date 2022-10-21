@@ -1,0 +1,31 @@
+
+:root {
+    width: 16.67%;
+
+    float: left;
+    position: relative;
+    padding-right: 15px;
+    padding-left: 15px;
+    min-height: 1px;
+}
+
+span {
+    margin-right: 10px;
+}
+
+ul {
+    list-style: none;
+}
+
+li a {
+    color: #444;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+}
+
+li a:hover {
+    background: rgba(153, 153, 153, 0.4);
+    border-radius: 5px;
+    outline: 0;
+}

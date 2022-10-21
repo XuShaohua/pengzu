@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -9,8 +10,11 @@ use crate::route::Route;
 
 #[function_component(LeftPanelComponent)]
 pub fn left_panel() -> Html {
+    let style_str = include_str!("left_panel.css");
+    let style_cls = Style::new(style_str).expect("Invalid style file left_panel.css");
+
     html! {
-        <div class="left-panel">
+        <div class={ style_cls }>
             <ul>
                 <li><Link<Route> to={ Route::Home }>
                     <span class="glyphicon glyphicon-book" />

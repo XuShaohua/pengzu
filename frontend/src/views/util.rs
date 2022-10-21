@@ -33,11 +33,11 @@ pub fn to_readable_size(size: i32) -> String {
 }
 
 pub fn set_document_title(title: &str) {
-    let title = if title.is_empty() {
-        "PengzuLibrary".to_owned()
+    let prefix = "PengzuLibrary";
+    if title.is_empty() {
+        gloo_utils::document().set_title(prefix);
     } else {
-        format!("PengzuLibrary | {}", title)
-    };
-    log::info!("set document title to: {}", title);
-    gloo_utils::document().set_title(&title);
+        let title = [prefix, title].join(" | ");
+        gloo_utils::document().set_title(&title);
+    }
 }

@@ -4,28 +4,9 @@
 
 use yew::prelude::*;
 
-pub enum Msg {}
-
-pub struct RatingsComponent {}
-
-// TODO(Shaohua):
-impl Component for RatingsComponent {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
-        false
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        html! {
-            <>
-            <h2>{ "Ratings" }</h2>
-            </>
-        }
+#[function_component(RatingsComponent)]
+pub fn ratings() -> Html {
+    html! {
+        <h2>{ "Ratings" }</h2>
     }
 }

@@ -17,6 +17,7 @@ yew = "0.19.3"
 yew-router = "0.16.0"
 gloo-storage = "0.2.2"
 yew-hooks = "0.1.56"
+stylist = { version = "0.10.1", features = ["yew_integration"] }
 
 [dependencies.web-sys]
 version = "0.3.60"

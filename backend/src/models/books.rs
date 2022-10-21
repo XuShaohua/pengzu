@@ -403,8 +403,8 @@ pub fn get_books_by_advanced_search(
     };
 
     // TODO(Shaohua): Join query
-    let empty_title = "".to_string();
-    let book_title = query.title.as_ref().unwrap_or_else(|| &empty_title);
+    let empty_title = "".to_owned();
+    let book_title = query.title.as_ref().unwrap_or(&empty_title);
     let book_ids = books::table
         .filter(books::title.eq(book_title))
         .select(books::id)

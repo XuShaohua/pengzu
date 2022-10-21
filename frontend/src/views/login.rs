@@ -9,9 +9,12 @@ use yew_hooks::use_async;
 use crate::hooks::use_user_context;
 use crate::services::users::login;
 use crate::types::users::LoginForm;
+use crate::views::util;
 
 #[function_component(LoginComponent)]
 pub fn login_page() -> Html {
+    util::set_document_title("Login");
+
     let user_ctx = use_user_context();
     let login_form = use_state(LoginForm::default);
     let user_login = {

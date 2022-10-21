@@ -8,9 +8,12 @@ use yew_router::prelude::Link;
 
 use crate::route::Route;
 use crate::services::file_formats::fetch_file_formats;
+use crate::views::util;
 
 #[function_component(FileFormatsComponent)]
 pub fn file_formats_page() -> Html {
+    util::set_document_title("File Formats");
+
     let file_formats = use_async_with_options(
         async move { fetch_file_formats().await },
         UseAsyncOptions::enable_auto(),

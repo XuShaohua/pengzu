@@ -9,9 +9,12 @@ use yew_router::prelude::Link;
 
 use crate::route::Route;
 use crate::services::authors::fetch_authors;
+use crate::views::util;
 
 #[function_component(AuthorsComponent)]
 pub fn home() -> Html {
+    util::set_document_title("Authors");
+
     let style_str = include_str!("authors.css");
     let style_cls = Style::new(style_str).expect("Invalid style file authors.css");
 

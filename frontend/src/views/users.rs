@@ -6,9 +6,12 @@ use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use crate::services::users::fetch_users;
+use crate::views::util;
 
 #[function_component(UsersComponent)]
 pub fn users_page() -> Html {
+    util::set_document_title("Users");
+
     let user_list = use_async_with_options(
         async move { fetch_users().await },
         UseAsyncOptions::enable_auto(),

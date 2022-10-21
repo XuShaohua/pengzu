@@ -8,9 +8,12 @@ use yew_hooks::prelude::*;
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books;
 use crate::services::query::{GetBooksOrder, GetBooksQuery};
+use crate::views::util;
 
 #[function_component(BooksComponent)]
 pub fn books() -> Html {
+    util::set_document_title("Books");
+
     let query = Some(GetBooksQuery {
         page: 2,
         order: GetBooksOrder::IdDesc,

@@ -8,9 +8,12 @@ use yew_router::prelude::Link;
 
 use crate::route::Route;
 use crate::services::series::fetch_series_list;
+use crate::views::util;
 
 #[function_component(SeriesComponent)]
 pub fn series_page() -> Html {
+    util::set_document_title("Series");
+
     let series_list = use_async_with_options(
         async move { fetch_series_list().await },
         UseAsyncOptions::enable_auto(),

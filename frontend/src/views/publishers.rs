@@ -8,9 +8,12 @@ use yew_router::prelude::Link;
 
 use crate::route::Route;
 use crate::services::publishers::fetch_publishers;
+use crate::views::util;
 
 #[function_component(PublishersComponent)]
 pub fn publishers_page() -> Html {
+    util::set_document_title("Publishers");
+
     let publisher_list = use_async_with_options(
         async move { fetch_publishers().await },
         UseAsyncOptions::enable_auto(),

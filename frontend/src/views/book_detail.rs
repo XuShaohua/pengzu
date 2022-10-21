@@ -10,6 +10,7 @@ use yew_router::prelude::*;
 use crate::route::Route;
 use crate::services::books_meta::fetch_book_metadata;
 use crate::types::books_meta::BookMetadata;
+use crate::views::util;
 use crate::views::util::{get_cover_image_url, get_file_format_url, to_readable_size};
 
 #[derive(Debug, PartialEq, Eq, Properties)]
@@ -128,6 +129,8 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
 
 #[function_component(BookDetailComponent)]
 pub fn book_detail(props: &Props) -> Html {
+    util::set_document_title("Book Detail");
+
     let book_id = props.book_id;
     let book_metadata = use_async_with_options(
         async move { fetch_book_metadata(book_id).await },

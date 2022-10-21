@@ -8,6 +8,7 @@ pub enum Msg {}
 
 pub struct RatingsComponent {}
 
+// TODO(Shaohua):
 impl Component for RatingsComponent {
     type Message = Msg;
     type Properties = ();

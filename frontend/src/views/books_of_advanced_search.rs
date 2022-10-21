@@ -8,6 +8,7 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_advanced_search;
 use crate::types::advanced_search::AdvancedSearchQuery;
+use crate::views::util;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -17,6 +18,8 @@ pub struct Props {
 
 #[function_component(BooksOfAdvancedSearchComponent)]
 pub fn books_of_advanced_search(props: &Props) -> Html {
+    util::set_document_title("Books of Advanced Search");
+
     let page_id = 1;
     let query = props.query.clone();
     let book_list = use_async_with_options(

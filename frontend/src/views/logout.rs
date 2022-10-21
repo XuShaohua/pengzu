@@ -5,9 +5,12 @@
 use yew::prelude::*;
 
 use crate::hooks::use_user_context;
+use crate::views::util;
 
 #[function_component(LogoutComponent)]
 pub fn logout_page() -> Html {
+    util::set_document_title("Logout");
+
     let user_ctx = use_user_context();
     user_ctx.logout();
 

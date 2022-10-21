@@ -31,3 +31,13 @@ pub fn to_readable_size(size: i32) -> String {
         format!("{} B", size)
     }
 }
+
+pub fn set_document_title(title: &str) {
+    let title = if title.is_empty() {
+        "PengzuLibrary".to_owned()
+    } else {
+        format!("PengzuLibrary | {}", title)
+    };
+    log::info!("set document title to: {}", title);
+    gloo_utils::document().set_title(&title);
+}

@@ -94,6 +94,7 @@ pub enum Route {
 }
 
 #[must_use]
+#[allow(clippy::cognitive_complexity)]
 #[allow(clippy::let_unit_value)]
 pub fn switch_route(routes: &Route) -> Html {
     match routes {
@@ -128,8 +129,12 @@ pub fn switch_route(routes: &Route) -> Html {
         Route::UserTag => html! { <UserTagsComponent /> },
 
         Route::BooksOfAdvancedSearch { query, page_id } => {
-            let query_obj: AdvancedSearchQuery = serde_json::from_str(query).unwrap();
-            html! { <BooksOfAdvancedSearchComponent query={ query_obj } page_id={ *page_id } /> }
+            if let Ok(query_obj) = serde_json::from_str::<AdvancedSearchQuery>(query) {
+                html! { <BooksOfAdvancedSearchComponent query={ query_obj } page_id={ *page_id } /> }
+            } else {
+                // TODO(Shaohua): Remove
+                html! { <h1>{"Invalid query" }</h1> }
+            }
         }
         Route::AdvancedSearch => html! { <AdvancedSearchComponent /> },
 

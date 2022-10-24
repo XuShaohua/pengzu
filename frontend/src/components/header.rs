@@ -6,6 +6,7 @@ use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::Link;
 
+use crate::components::header_search::HeaderSearchComponent;
 use crate::hooks::use_user_context;
 use crate::route::Route;
 
@@ -22,10 +23,7 @@ pub fn header() -> Html {
                 { "Pengzu Library" }
             </Link<Route>>
 
-            <form class="navbar-search input-group" method="GET">
-                <input class="form-control" type="text" placeholder={ "Search Library" } />
-                <button class="btn btn-default" type="submit">{ "Search" }</button>
-            </form>
+            <HeaderSearchComponent />
 
             <Link<Route> to={ Route::AdvancedSearch }
                 classes="navbar-advanced-search">

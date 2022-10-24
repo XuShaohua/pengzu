@@ -4,7 +4,7 @@
 
 use yew::prelude::*;
 
-#[derive(Debug, Clone, PartialEq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub query: String,
 }

@@ -5,6 +5,7 @@
 pub mod book_list;
 pub mod footer;
 pub mod header;
+mod header_search;
 pub mod left_panel;
 pub mod not_found;
 pub mod user_context_provider;

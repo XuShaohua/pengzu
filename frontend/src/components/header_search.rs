@@ -2,35 +2,51 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use crate::route::Route;
+use std::ops::Deref;
 use web_sys::{FocusEvent, HtmlInputElement};
 use yew::prelude::*;
+use yew_router::history::History;
+use yew_router::hooks::use_history;
 
 #[function_component(HeaderSearchComponent)]
 pub fn header_search() -> Html {
     let input_ref = use_node_ref();
+    let history = use_history().expect("History object is invalid");
+    let query_state = use_state(String::new);
+
+    use_effect_with_deps(
+        move |query_state| {
+            let query = query_state.deref().clone();
+            if !query.is_empty() {
+                history.push(Route::BooksOfSimpleSearch { query });
+            }
+            || ()
+        },
+        query_state.clone(),
+    );
 
     let search_onsubmit = {
         let input_ref_clone = input_ref.clone();
+        let query_state_clone = query_state.clone();
         Callback::from(move |event: FocusEvent| {
             event.prevent_default();
             if let Some(input) = input_ref_clone.cast::<HtmlInputElement>() {
-                let query = input.value();
-                log::info!("search query: {}", query);
+                query_state_clone.set(input.value());
             }
         })
     };
 
     let input_onkeydown = {
         let input_ref_clone = input_ref.clone();
+        let query_state_clone = query_state.clone();
         Callback::from(move |event: KeyboardEvent| {
             if event.code() != "Enter" {
                 return;
             }
             event.prevent_default();
-
             if let Some(input) = input_ref_clone.cast::<HtmlInputElement>() {
-                let query = input.value();
-                log::info!("search query: {}", query);
+                query_state_clone.set(input.value());
             }
         })
     };

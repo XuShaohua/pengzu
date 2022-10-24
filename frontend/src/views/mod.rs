@@ -12,6 +12,7 @@ pub mod books_of_category;
 pub mod books_of_file_format;
 pub mod books_of_publisher;
 pub mod books_of_series;
+pub mod books_of_simple_search;
 pub mod books_of_tag;
 pub mod books_of_user_tag;
 pub mod categories;

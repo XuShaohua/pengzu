@@ -17,6 +17,7 @@ use crate::views::books_of_category::BooksOfCategoryComponent;
 use crate::views::books_of_file_format::BooksOfFileFormatComponent;
 use crate::views::books_of_publisher::BooksOfPublisherComponent;
 use crate::views::books_of_series::BooksOfSeriesComponent;
+use crate::views::books_of_simple_search::BooksOfSimpleSearchComponent;
 use crate::views::books_of_tag::BooksOfTagComponent;
 use crate::views::books_of_user_tag::BooksOfUserTagComponent;
 use crate::views::categories::CategoriesComponent;
@@ -78,6 +79,8 @@ pub enum Route {
     BooksOfAdvancedSearch { query: String, page_id: i32 },
     #[at("/advanced-search")]
     AdvancedSearch,
+    #[at("/search/books/:query")]
+    BooksOfSimpleSearch { query: String },
 
     #[at("/user-info")]
     UserInfo,
@@ -137,6 +140,9 @@ pub fn switch_route(routes: &Route) -> Html {
             }
         }
         Route::AdvancedSearch => html! { <AdvancedSearchComponent /> },
+        Route::BooksOfSimpleSearch { query } => {
+            html! { <BooksOfSimpleSearchComponent query={ query.clone() } /> }
+        }
 
         Route::UserInfo => html! { <UserInfoComponent /> },
         Route::Users => html! { <UsersComponent /> },

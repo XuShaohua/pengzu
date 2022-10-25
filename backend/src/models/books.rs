@@ -5,8 +5,8 @@
 use chrono::NaiveDateTime;
 use diesel::expression::expression_types::NotSelectable;
 use diesel::{
-    BoxableExpression, ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable,
-    RunQueryDsl,
+    BoxableExpression, ExpressionMethods, Insertable, JoinOnDsl, PgConnection,
+    PgTextExpressionMethods, QueryDsl, Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
 
@@ -359,8 +359,9 @@ pub fn get_books_by_simple_search(
     query: &str,
     books_query: &GetBooksQuery,
 ) -> Result<GetBooksResp, Error> {
+    let query = format!("%{}%", query);
     let book_ids = books::table
-        .filter(books::title.eq(query))
+        .filter(books::title.ilike(&query))
         .select(books::id)
         .load::<i32>(conn)?;
 

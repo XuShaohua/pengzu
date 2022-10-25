@@ -406,8 +406,10 @@ pub fn get_books_by_advanced_search(
     // TODO(Shaohua): Join query
     let empty_title = "".to_owned();
     let book_title = query.title.as_ref().unwrap_or(&empty_title);
+    let title_pattern = format!("%{}%", book_title);
+
     let book_ids = books::table
-        .filter(books::title.ilike(book_title))
+        .filter(books::title.ilike(&title_pattern))
         .select(books::id)
         .load::<i32>(conn)?;
 

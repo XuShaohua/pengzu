@@ -7,7 +7,7 @@ use yew::prelude::*;
 use yew_hooks::prelude::*;
 use yew_router::prelude::Link;
 
-use crate::route::Route;
+use crate::router::Route;
 use crate::services::authors::fetch_authors;
 use crate::views::util;
 

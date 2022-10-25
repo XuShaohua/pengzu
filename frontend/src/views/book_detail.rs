@@ -7,7 +7,7 @@ use yew::prelude::*;
 use yew_hooks::prelude::*;
 use yew_router::prelude::*;
 
-use crate::route::Route;
+use crate::router::Route;
 use crate::services::books_meta::fetch_book_metadata;
 use crate::types::books_meta::BookMetadata;
 use crate::views::util;

@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::route::Route;
+use crate::router::Route;
 use crate::services::auth::set_token;
 use std::fmt;
 use std::fmt::Formatter;

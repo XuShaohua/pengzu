@@ -6,7 +6,7 @@ use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::Link;
 
-use crate::route::Route;
+use crate::router::Route;
 use crate::types::books::Book;
 use crate::views::util::get_cover_image_url;
 

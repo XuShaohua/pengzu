@@ -12,7 +12,7 @@ use crate::components::footer::FooterComponent;
 use crate::components::header::HeaderComponent;
 use crate::components::left_panel::LeftPanelComponent;
 use crate::components::user_context_provider::UserContextProvider;
-use crate::route::{switch_route, Route};
+use crate::router::{switch_route, Route};
 
 #[function_component(AppComponent)]
 pub fn app() -> Html {

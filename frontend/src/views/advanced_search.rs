@@ -7,7 +7,7 @@ use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::route::Route;
+use crate::router::Route;
 use crate::types::advanced_search::AdvancedSearchQuery;
 use crate::views::util;
 

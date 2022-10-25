@@ -10,7 +10,7 @@ use yew_router::prelude::Link;
 
 use crate::components::header_search::HeaderSearchComponent;
 use crate::hooks::use_user_context;
-use crate::route::Route;
+use crate::router::Route;
 
 #[function_component(HeaderComponent)]
 pub fn header() -> Html {

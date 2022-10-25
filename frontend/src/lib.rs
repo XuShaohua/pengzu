@@ -19,7 +19,7 @@ pub mod app;
 pub mod components;
 pub mod error;
 pub mod hooks;
-pub mod route;
+pub mod router;
 pub mod services;
 pub mod types;
 pub mod views;

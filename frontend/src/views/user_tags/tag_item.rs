@@ -6,7 +6,7 @@ use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::Link;
 
-use crate::route::Route;
+use crate::router::Route;
 use crate::services::user_tags::fetch_user_tags;
 use crate::types::user_tags::{UserTagAndBook, UserTagList};
 

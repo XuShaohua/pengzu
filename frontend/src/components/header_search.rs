@@ -8,7 +8,7 @@ use yew::prelude::*;
 use yew_router::history::History;
 use yew_router::hooks::use_history;
 
-use crate::route::Route;
+use crate::router::Route;
 use crate::types::simple_search::SimpleSearchQuery;
 
 #[function_component(HeaderSearchComponent)]

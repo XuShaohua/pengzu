@@ -6,7 +6,7 @@ use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::*;
 
-use crate::route::Route;
+use crate::router::Route;
 use crate::services::categories::fetch_categories;
 use crate::types::categories::{CategoryAndBook, CategoryList};
 

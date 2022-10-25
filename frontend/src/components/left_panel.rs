@@ -6,7 +6,7 @@ use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::route::Route;
+use crate::router::Route;
 
 #[function_component(LeftPanelComponent)]
 pub fn left_panel() -> Html {

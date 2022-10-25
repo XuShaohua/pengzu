@@ -6,7 +6,7 @@ use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use yew_router::prelude::Link;
 
-use crate::route::Route;
+use crate::router::Route;
 use crate::services::file_formats::fetch_file_formats;
 use crate::views::util;
 

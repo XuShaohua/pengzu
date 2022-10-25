@@ -2,12 +2,14 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::route::Route;
 use std::ops::Deref;
 use web_sys::{FocusEvent, HtmlInputElement};
 use yew::prelude::*;
 use yew_router::history::History;
 use yew_router::hooks::use_history;
+
+use crate::route::Route;
+use crate::types::simple_search::SimpleSearchQuery;
 
 #[function_component(HeaderSearchComponent)]
 pub fn header_search() -> Html {
@@ -19,7 +21,12 @@ pub fn header_search() -> Html {
         move |query_state| {
             let query = query_state.deref().clone();
             if !query.is_empty() {
-                history.push(Route::BooksOfSimpleSearch { query });
+                let query_obj = SimpleSearchQuery {
+                    query: query.clone(),
+                    page_id: 1,
+                };
+                let ret = history.push_with_query(Route::BooksOfSimpleSearch, &query_obj);
+                log::info!("ret: {:?}", ret);
             }
             || ()
         },

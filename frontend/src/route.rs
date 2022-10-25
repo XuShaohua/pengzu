@@ -79,8 +79,8 @@ pub enum Route {
     BooksOfAdvancedSearch { query: String, page_id: i32 },
     #[at("/advanced-search")]
     AdvancedSearch,
-    #[at("/search/books/:query")]
-    BooksOfSimpleSearch { query: String },
+    #[at("/search/books")]
+    BooksOfSimpleSearch,
 
     #[at("/user-info")]
     UserInfo,
@@ -140,8 +140,8 @@ pub fn switch_route(routes: &Route) -> Html {
             }
         }
         Route::AdvancedSearch => html! { <AdvancedSearchComponent /> },
-        Route::BooksOfSimpleSearch { query } => {
-            html! { <BooksOfSimpleSearchComponent query={ query.clone() } /> }
+        Route::BooksOfSimpleSearch => {
+            html! { <BooksOfSimpleSearchComponent /> }
         }
 
         Route::UserInfo => html! { <UserInfoComponent /> },

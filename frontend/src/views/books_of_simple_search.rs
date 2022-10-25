@@ -4,18 +4,20 @@
 
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_router::prelude::*;
 
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_simple_search;
-
-#[derive(Debug, Clone, PartialEq, Eq, Properties)]
-pub struct Props {
-    pub query: String,
-}
+use crate::types::simple_search::SimpleSearchQuery;
 
 #[function_component(BooksOfSimpleSearchComponent)]
-pub fn books_of_simple_search(props: &Props) -> Html {
-    let query = props.query.clone();
+pub fn books_of_simple_search() -> Html {
+    let location = use_location().unwrap();
+    let query = location
+        .query::<SimpleSearchQuery>()
+        .expect("Failed to parse query params");
+
+    let keyword = query.query.clone();
     let book_list = use_async_with_options(
         async move { fetch_books_by_simple_search(&query).await },
         UseAsyncOptions::enable_auto(),
@@ -24,13 +26,13 @@ pub fn books_of_simple_search(props: &Props) -> Html {
     book_list.data.as_ref().map_or_else(
         || {
             html! {
-                <h2>{ "Result for \"" }{ &props.query }{ "\""}</h2>
+                <h2>{ "Result for \"" }{ &keyword }{ "\""}</h2>
             }
         },
         |book_list| {
             html! {
                 <>
-                <h2>{ book_list.page.total }{ " Results for \""}{ &props.query }{"\""}</h2>
+                <h2>{ book_list.page.total }{ " Results for \""}{ &keyword }{"\""}</h2>
                 <BookListComponent books={ book_list.list.clone() } />
                 </>
             }

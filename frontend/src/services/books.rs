@@ -7,6 +7,7 @@ use crate::services::fetch::{request_get, request_post};
 use crate::services::query::{append_query_to_url, GetBooksQuery};
 use crate::types::advanced_search::AdvancedSearchQuery;
 use crate::types::books::BooksList;
+use crate::types::simple_search::SimpleSearchQuery;
 
 /// Get book list.
 ///
@@ -85,8 +86,10 @@ pub async fn fetch_books_by_user_tag(tag_id: i32) -> Result<BooksList, FetchErro
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_books_by_simple_search(query: &str) -> Result<BooksList, FetchError> {
-    let url = format!("/api/search/books/{}", query);
+pub async fn fetch_books_by_simple_search(
+    query: &SimpleSearchQuery,
+) -> Result<BooksList, FetchError> {
+    let url = format!("/api/search/books/{}", query.query);
     request_get(&url).await
 }
 

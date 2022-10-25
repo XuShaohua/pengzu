@@ -100,8 +100,8 @@ pub async fn fetch_books_by_simple_search(
 /// Returns error if server fails.
 pub async fn fetch_books_by_advanced_search(
     query: &AdvancedSearchQuery,
-    page_id: i32,
 ) -> Result<BooksList, FetchError> {
-    let url = format!("/api/advanced-search/books/{}", page_id);
+    let s: String = serde_urlencoded::to_string(query)?;
+    let url = format!("/api/advanced-search/books?{}", s);
     request_post(&url, query).await
 }

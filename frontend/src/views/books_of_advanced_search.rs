@@ -4,39 +4,36 @@
 
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_router::prelude::*;
 
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_advanced_search;
 use crate::types::advanced_search::AdvancedSearchQuery;
 use crate::views::util;
 
-#[derive(Debug, Clone, PartialEq, Eq, Properties)]
-pub struct Props {
-    pub query: AdvancedSearchQuery,
-    pub page_id: i32,
-}
-
 #[function_component(BooksOfAdvancedSearchComponent)]
-pub fn books_of_advanced_search(props: &Props) -> Html {
-    util::set_document_title(&format!("Advanced Search: {}", props.query.desc()));
+pub fn books_of_advanced_search() -> Html {
+    let location = use_location().unwrap();
+    let query = location.query::<AdvancedSearchQuery>().unwrap();
 
-    let page_id = 1;
-    let query = props.query.clone();
+    let query_desc = query.desc();
+    util::set_document_title(&format!("Advanced Search: {}", query_desc));
+
     let book_list = use_async_with_options(
-        async move { fetch_books_by_advanced_search(&query, page_id).await },
+        async move { fetch_books_by_advanced_search(&query).await },
         UseAsyncOptions::enable_auto(),
     );
 
-    let title_element = html! {
-        <h2>{ format!("Books of \"{}\"", props.query.desc()) }</h2>
-    };
-
     book_list.data.as_ref().map_or_else(
-        || html! {},
+        || {
+            html! {
+                <h2>{ "Result of \"" }{ &query_desc }{ "\"" }</h2>
+            }
+        },
         |book_list| {
             html! {
                 <>
-                { title_element }
+                <h2>{ book_list.page.total }{ " Results for \"" }{ &query_desc }{"\""}</h2>
                 <BookListComponent books={ book_list.list.clone() } />
                 </>
             }

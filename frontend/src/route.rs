@@ -6,7 +6,6 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::components::not_found::NotFoundComponent;
-use crate::types::advanced_search::AdvancedSearchQuery;
 use crate::views::advanced_search::AdvancedSearchComponent;
 use crate::views::authors::AuthorsComponent;
 use crate::views::book_detail::BookDetailComponent;
@@ -75,8 +74,8 @@ pub enum Route {
     #[at("/user-tag")]
     UserTag,
 
-    #[at("/advanced-search/books/:page_id/:query")]
-    BooksOfAdvancedSearch { query: String, page_id: i32 },
+    #[at("/advanced-search/books")]
+    BooksOfAdvancedSearch,
     #[at("/advanced-search")]
     AdvancedSearch,
     #[at("/search/books")]
@@ -131,18 +130,9 @@ pub fn switch_route(routes: &Route) -> Html {
         Route::BooksOfUserTag { tag_id } => html! { <BooksOfUserTagComponent tag_id={ *tag_id }/> },
         Route::UserTag => html! { <UserTagsComponent /> },
 
-        Route::BooksOfAdvancedSearch { query, page_id } => {
-            if let Ok(query_obj) = serde_json::from_str::<AdvancedSearchQuery>(query) {
-                html! { <BooksOfAdvancedSearchComponent query={ query_obj } page_id={ *page_id } /> }
-            } else {
-                // TODO(Shaohua): Remove
-                html! { <h1>{"Invalid query" }</h1> }
-            }
-        }
+        Route::BooksOfAdvancedSearch => html! { <BooksOfAdvancedSearchComponent /> },
         Route::AdvancedSearch => html! { <AdvancedSearchComponent /> },
-        Route::BooksOfSimpleSearch => {
-            html! { <BooksOfSimpleSearchComponent /> }
-        }
+        Route::BooksOfSimpleSearch => html! { <BooksOfSimpleSearchComponent /> },
 
         Route::UserInfo => html! { <UserInfoComponent /> },
         Route::Users => html! { <UsersComponent /> },

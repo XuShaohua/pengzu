@@ -13,7 +13,7 @@ pub struct Page {
 
 #[must_use]
 pub const fn default_page_id() -> i64 {
-    0
+    1
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

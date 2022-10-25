@@ -407,7 +407,7 @@ pub fn get_books_by_advanced_search(
     let empty_title = "".to_owned();
     let book_title = query.title.as_ref().unwrap_or(&empty_title);
     let book_ids = books::table
-        .filter(books::title.eq(book_title))
+        .filter(books::title.ilike(book_title))
         .select(books::id)
         .load::<i32>(conn)?;
 

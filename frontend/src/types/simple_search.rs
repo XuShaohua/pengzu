@@ -9,12 +9,12 @@ use crate::types::page::default_page_id;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SimpleSearchQuery {
-    pub query: String,
-
     #[serde(default = "default_page_id")]
     pub page: i64,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
+
+    pub query: String,
 }
 
 impl Default for SimpleSearchQuery {

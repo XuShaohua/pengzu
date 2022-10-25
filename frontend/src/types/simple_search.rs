@@ -4,8 +4,25 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
+use crate::types::books::GetBooksOrder;
+use crate::types::page::default_page_id;
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SimpleSearchQuery {
     pub query: String,
-    pub page_id: i32,
+
+    #[serde(default = "default_page_id")]
+    pub page: i64,
+    #[serde(default = "GetBooksOrder::default")]
+    pub order: GetBooksOrder,
+}
+
+impl Default for SimpleSearchQuery {
+    fn default() -> Self {
+        Self {
+            query: "".to_owned(),
+            page: default_page_id(),
+            order: GetBooksOrder::default(),
+        }
+    }
 }

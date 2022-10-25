@@ -10,3 +10,8 @@ pub struct Page {
     pub each_page: i64,
     pub total: i64,
 }
+
+#[must_use]
+pub const fn default_page_id() -> i64 {
+    1
+}

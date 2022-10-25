@@ -23,10 +23,10 @@ pub fn header_search() -> Html {
             if !query.is_empty() {
                 let query_obj = SimpleSearchQuery {
                     query: query.clone(),
-                    page_id: 1,
+                    ..Default::default()
                 };
                 let ret = history.push_with_query(Route::BooksOfSimpleSearch, &query_obj);
-                log::info!("ret: {:?}", ret);
+                debug_assert!(ret.is_ok());
             }
             || ()
         },

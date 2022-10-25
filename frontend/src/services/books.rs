@@ -81,6 +81,15 @@ pub async fn fetch_books_by_user_tag(tag_id: i32) -> Result<BooksList, FetchErro
     request_get(&url).await
 }
 
+/// Get book list by simple title search.
+///
+/// # Errors
+/// Returns error if server fails.
+pub async fn fetch_books_by_simple_search(query: &str) -> Result<BooksList, FetchError> {
+    let url = format!("/api/search/books/{}", query);
+    request_get(&url).await
+}
+
 /// Get book list by advanced search.
 ///
 /// # Errors

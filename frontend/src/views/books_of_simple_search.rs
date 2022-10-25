@@ -3,6 +3,10 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
+
+use crate::components::book_list::BookListComponent;
+use crate::services::books::fetch_books_by_simple_search;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -11,9 +15,20 @@ pub struct Props {
 
 #[function_component(BooksOfSimpleSearchComponent)]
 pub fn books_of_simple_search(props: &Props) -> Html {
-    log::info!("query: {}", props.query);
+    let query = props.query.clone();
+    let book_list = use_async_with_options(
+        async move { fetch_books_by_simple_search(&query).await },
+        UseAsyncOptions::enable_auto(),
+    );
 
-    html! {
-        <h1>{ "Simple Search" }</h1>
-    }
+    book_list.data.as_ref().map_or_else(
+        || html! {},
+        |book_list| {
+            html! {
+                <>
+                <BookListComponent books={ book_list.list.clone() } />
+                </>
+            }
+        },
+    )
 }

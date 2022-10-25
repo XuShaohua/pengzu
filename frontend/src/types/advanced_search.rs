@@ -3,20 +3,31 @@
 // that can be found in the LICENSE file.
 
 use serde::{Deserialize, Serialize};
-use std::str::FromStr;
 
-#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
+use crate::types::books::GetBooksOrder;
+use crate::types::page::default_page_id;
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AdvancedSearchQuery {
+    #[serde(default = "default_page_id")]
+    pub page: i64,
+    #[serde(default = "GetBooksOrder::default")]
+    pub order: GetBooksOrder,
+
     pub title: Option<String>,
     pub author: Option<String>,
     pub publisher: Option<String>,
 }
 
-impl FromStr for AdvancedSearchQuery {
-    type Err = String;
-
-    fn from_str(_s: &str) -> Result<Self, Self::Err> {
-        todo!()
+impl Default for AdvancedSearchQuery {
+    fn default() -> Self {
+        Self {
+            page: default_page_id(),
+            order: GetBooksOrder::default(),
+            title: None,
+            author: None,
+            publisher: None,
+        }
     }
 }
 

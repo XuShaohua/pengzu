@@ -27,7 +27,7 @@ pub fn books_of_advanced_search() -> Html {
     book_list.data.as_ref().map_or_else(
         || {
             html! {
-                <h2>{ "Result of \"" }{ &query_desc }{ "\"" }</h2>
+                <h2>{ "Result for \"" }{ &query_desc }{ "\"" }</h2>
             }
         },
         |book_list| {

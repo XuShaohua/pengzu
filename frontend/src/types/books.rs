@@ -61,7 +61,7 @@ impl Default for GetBooksQuery {
     fn default() -> Self {
         Self {
             page: default_page_id(),
-            order: Default::default(),
+            order: GetBooksOrder::default(),
         }
     }
 }

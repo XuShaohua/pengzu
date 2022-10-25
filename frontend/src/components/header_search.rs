@@ -22,7 +22,7 @@ pub fn header_search() -> Html {
             let query = query_state.deref().clone();
             if !query.is_empty() {
                 let query_obj = SimpleSearchQuery {
-                    query: query.clone(),
+                    query,
                     ..Default::default()
                 };
                 let ret = history.push_with_query(Route::BooksOfSimpleSearch, &query_obj);
@@ -46,14 +46,13 @@ pub fn header_search() -> Html {
 
     let input_onkeydown = {
         let input_ref_clone = input_ref.clone();
-        let query_state_clone = query_state.clone();
         Callback::from(move |event: KeyboardEvent| {
             if event.code() != "Enter" {
                 return;
             }
             event.prevent_default();
             if let Some(input) = input_ref_clone.cast::<HtmlInputElement>() {
-                query_state_clone.set(input.value());
+                query_state.set(input.value());
             }
         })
     };

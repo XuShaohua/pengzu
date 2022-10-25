@@ -183,7 +183,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         )
         // For /api/search
         .service(
-            web::resource("/search/books")
+            web::resource("/search/books/{query}")
                 .wrap(auth.clone())
                 .route(web::get().to(books::get_books_by_simple_search)),
         )

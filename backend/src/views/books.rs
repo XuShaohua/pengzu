@@ -139,11 +139,12 @@ pub async fn get_books_by_user_tag(
 
 pub async fn get_books_by_simple_search(
     pool: web::Data<DbPool>,
-    query: web::Query<books::SimpleSearchQuery>,
+    query: web::Path<String>,
+    books_query: web::Query<books::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;
-        books::get_books_by_simple_search(&mut conn, &query)
+        books::get_books_by_simple_search(&mut conn, &query.into_inner(), &books_query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

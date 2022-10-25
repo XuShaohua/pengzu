@@ -354,27 +354,13 @@ pub fn get_books_by_user_tag(
     get_books_by_ids(conn, query, &book_ids)
 }
 
-#[derive(Debug, Clone, Deserialize)]
-pub struct SimpleSearchQuery {
-    #[serde(default = "default_page_id")]
-    pub page: i64,
-    #[serde(default = "GetBooksOrder::default")]
-    pub order: GetBooksOrder,
-
-    pub keyword: String,
-}
-
 pub fn get_books_by_simple_search(
     conn: &mut PgConnection,
-    query: &SimpleSearchQuery,
+    query: &str,
+    books_query: &GetBooksQuery,
 ) -> Result<GetBooksResp, Error> {
-    let books_query = GetBooksQuery {
-        page: query.page,
-        order: query.order,
-    };
-
     let book_ids = books::table
-        .filter(books::title.eq(&query.keyword))
+        .filter(books::title.eq(query))
         .select(books::id)
         .load::<i32>(conn)?;
 

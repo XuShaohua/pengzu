@@ -89,7 +89,8 @@ pub async fn fetch_books_by_user_tag(tag_id: i32) -> Result<BooksList, FetchErro
 pub async fn fetch_books_by_simple_search(
     query: &SimpleSearchQuery,
 ) -> Result<BooksList, FetchError> {
-    let url = format!("/api/search/books/{}", query.query);
+    let s: String = serde_urlencoded::to_string(query)?;
+    let url = format!("/api/search/books?{}", s);
     request_get(&url).await
 }
 

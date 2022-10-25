@@ -27,6 +27,7 @@ pub enum ErrorKind {
     DeserializeError,
     RequestError,
     ResponseError,
+    UrlParamError,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -77,5 +78,11 @@ impl From<JsValue> for FetchError {
 impl From<serde_json::Error> for FetchError {
     fn from(err: serde_json::Error) -> Self {
         Self::from_string(ErrorKind::DeserializeError, format!("{:?}", err))
+    }
+}
+
+impl From<serde_urlencoded::ser::Error> for FetchError {
+    fn from(err: serde_urlencoded::ser::Error) -> Self {
+        Self::from_string(ErrorKind::UrlParamError, format!("{:?}", err))
     }
 }

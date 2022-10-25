@@ -22,10 +22,15 @@ pub fn books_of_simple_search(props: &Props) -> Html {
     );
 
     book_list.data.as_ref().map_or_else(
-        || html! {},
+        || {
+            html! {
+                <h2>{ "Result for \"" }{ &props.query }{ "\""}</h2>
+            }
+        },
         |book_list| {
             html! {
                 <>
+                <h2>{ book_list.page.total }{ " Results for \""}{ &props.query }{"\""}</h2>
                 <BookListComponent books={ book_list.list.clone() } />
                 </>
             }

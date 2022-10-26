@@ -4,11 +4,12 @@
 
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
-use yew_router::history::Location;
-use yew_router::hooks::use_location;
+use yew_router::history::{History, Location};
+use yew_router::hooks::{use_history, use_location};
 
 use crate::components::book_list::BookListComponent;
 use crate::components::book_pagination::BookPaginationComponent;
+use crate::router::Route;
 use crate::services::books::fetch_books;
 use crate::types::books::GetBooksQuery;
 use crate::types::page::PageId;
@@ -18,16 +19,26 @@ use crate::views::util;
 pub fn books() -> Html {
     util::set_document_title("Books");
 
+    let history = use_history().unwrap();
+
     let location = use_location().unwrap();
     let query = location.query::<GetBooksQuery>().unwrap_or_default();
+    let query_clone = query.clone();
     let book_list = use_async_with_options(
-        async move { fetch_books(&query).await },
+        async move { fetch_books(&query_clone).await },
         UseAsyncOptions::enable_auto(),
     );
 
-    let pagination_onclick = Callback::from(|page_id: PageId| {
-        log::info!("page clicked {}", page_id);
-    });
+    let pagination_onclick = {
+        Callback::from(move |page_id: PageId| {
+            let new_query = GetBooksQuery {
+                page: page_id,
+                ..query
+            };
+            let ret = history.push_with_query(Route::Book, &new_query);
+            debug_assert!(ret.is_ok());
+        })
+    };
 
     book_list.data.as_ref().map_or_else(
         || html! {},

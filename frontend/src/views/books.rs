@@ -8,8 +8,10 @@ use yew_router::history::Location;
 use yew_router::hooks::use_location;
 
 use crate::components::book_list::BookListComponent;
+use crate::components::book_pagination::BookPaginationComponent;
 use crate::services::books::fetch_books;
 use crate::types::books::GetBooksQuery;
+use crate::types::page::PageId;
 use crate::views::util;
 
 #[function_component(BooksComponent)]
@@ -23,13 +25,21 @@ pub fn books() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
+    let pagination_onclick = Callback::from(|page_id: PageId| {
+        log::info!("page clicked {}", page_id);
+    });
+
     book_list.data.as_ref().map_or_else(
         || html! {},
         |book_list| {
+            log::info!("page: {:?}", book_list.page);
             html! {
                 <>
                 <h2>{ "Books" }</h2>
                 <BookListComponent books={ book_list.list.clone() } />
+                <BookPaginationComponent current_page={ book_list.page.page_num }
+                    total_pages={ book_list.page.total_pages() }
+                    onclick={ pagination_onclick } />
                 </>
             }
         },

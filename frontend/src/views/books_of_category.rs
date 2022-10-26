@@ -25,7 +25,6 @@ pub fn books_of_author(props: &Props) -> Html {
     let category_id = props.category_id;
     let location = use_location().unwrap();
     let query = location.query::<GetBooksQuery>().unwrap();
-
     let book_list = use_async_with_options(
         async move { fetch_books_by_category(category_id, &query).await },
         UseAsyncOptions::enable_auto(),

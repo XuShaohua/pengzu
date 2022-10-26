@@ -82,6 +82,11 @@ pub enum GetBooksOrder {
 
 impl Default for GetBooksOrder {
     fn default() -> Self {
-        Self::PubdateDesc
+        Self::IdDesc
     }
+}
+
+#[must_use]
+pub fn append_query_to_url(url: &str, query: &GetBooksQuery) -> String {
+    [url, &serde_urlencoded::to_string(query).unwrap()].join("?")
 }

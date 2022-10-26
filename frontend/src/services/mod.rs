@@ -10,7 +10,6 @@ pub mod categories;
 pub mod fetch;
 pub mod file_formats;
 pub mod publishers;
-pub mod query;
 pub mod series;
 pub mod tags;
 pub mod user_tags;

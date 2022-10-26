@@ -8,7 +8,7 @@ use yew_router::prelude::*;
 
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books;
-use crate::services::query::GetBooksQuery;
+use crate::types::books::GetBooksQuery;
 use crate::views::util;
 
 #[function_component(BooksComponent)]

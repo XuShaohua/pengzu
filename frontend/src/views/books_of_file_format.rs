@@ -4,10 +4,13 @@
 
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_router::history::Location;
+use yew_router::hooks::use_location;
 
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_file_format;
 use crate::services::file_formats::fetch_file_format;
+use crate::types::books::GetBooksQuery;
 use crate::views::util;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
@@ -20,8 +23,10 @@ pub fn books_of_file_format(props: &Props) -> Html {
     util::set_document_title(&format!("Format: {}", props.format_id));
 
     let format_id = props.format_id;
+    let location = use_location().unwrap();
+    let query = location.query::<GetBooksQuery>().unwrap();
     let book_list = use_async_with_options(
-        async move { fetch_books_by_file_format(format_id).await },
+        async move { fetch_books_by_file_format(format_id, &query).await },
         UseAsyncOptions::enable_auto(),
     );
 

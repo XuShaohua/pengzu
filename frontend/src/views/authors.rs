@@ -4,7 +4,7 @@
 
 use stylist::Style;
 use yew::prelude::*;
-use yew_hooks::prelude::*;
+use yew_hooks::prelude::{use_async_with_options, UseAsyncOptions};
 use yew_router::prelude::Link;
 
 use crate::router::Route;

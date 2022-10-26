@@ -6,7 +6,8 @@
 
 use stylist::Style;
 use yew::prelude::*;
-use yew_router::prelude::*;
+use yew_router::BrowserRouter;
+use yew_router::Switch;
 
 use crate::components::footer::FooterComponent;
 use crate::components::header::HeaderComponent;

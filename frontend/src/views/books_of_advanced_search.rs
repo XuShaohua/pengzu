@@ -4,7 +4,8 @@
 
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
-use yew_router::prelude::*;
+use yew_router::history::Location;
+use yew_router::hooks::use_location;
 
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_advanced_search;

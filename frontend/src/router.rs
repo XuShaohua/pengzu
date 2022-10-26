@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
-use yew_router::prelude::*;
+use yew_router::Routable;
 
 use crate::components::not_found::NotFoundComponent;
 use crate::views::advanced_search::AdvancedSearchComponent;

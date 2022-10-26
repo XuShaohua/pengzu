@@ -2,14 +2,15 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::router::Route;
-use crate::services::auth::set_token;
 use std::fmt;
 use std::fmt::Formatter;
 use std::ops::Deref;
 use yew::prelude::*;
-use yew_router::prelude::*;
+use yew_router::history::{AnyHistory, History};
+use yew_router::prelude::use_history;
 
+use crate::router::Route;
+use crate::services::auth::set_token;
 use crate::types::users::{UserInfo, UserRole};
 
 /// State handle for the [`use_user_context`] hook.

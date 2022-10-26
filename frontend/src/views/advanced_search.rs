@@ -5,7 +5,7 @@
 use stylist::Style;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
-use yew_router::prelude::*;
+use yew_router::prelude::{use_history, History};
 
 use crate::router::Route;
 use crate::types::advanced_search::AdvancedSearchQuery;

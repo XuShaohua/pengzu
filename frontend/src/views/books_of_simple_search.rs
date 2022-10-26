@@ -13,11 +13,9 @@ use crate::types::simple_search::SimpleSearchQuery;
 #[function_component(BooksOfSimpleSearchComponent)]
 pub fn books_of_simple_search() -> Html {
     let location = use_location().unwrap();
-    let query = location
-        .query::<SimpleSearchQuery>()
-        .expect("Failed to parse query params");
-
+    let query = location.query::<SimpleSearchQuery>().unwrap_or_default();
     let keyword = query.query.clone();
+
     let book_list = use_async_with_options(
         async move { fetch_books_by_simple_search(&query).await },
         UseAsyncOptions::enable_auto(),

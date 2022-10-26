@@ -24,7 +24,7 @@ pub fn books_of_file_format(props: &Props) -> Html {
 
     let format_id = props.format_id;
     let location = use_location().unwrap();
-    let query = location.query::<GetBooksQuery>().unwrap();
+    let query = location.query::<GetBooksQuery>().unwrap_or_default();
     let book_list = use_async_with_options(
         async move { fetch_books_by_file_format(format_id, &query).await },
         UseAsyncOptions::enable_auto(),

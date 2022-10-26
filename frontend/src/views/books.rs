@@ -16,7 +16,7 @@ pub fn books() -> Html {
     util::set_document_title("Books");
 
     let location = use_location().unwrap();
-    let query = location.query::<GetBooksQuery>().unwrap();
+    let query = location.query::<GetBooksQuery>().unwrap_or_default();
     let book_list = use_async_with_options(
         async move { fetch_books(&query).await },
         UseAsyncOptions::enable_auto(),

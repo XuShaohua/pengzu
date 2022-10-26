@@ -22,10 +22,10 @@ pub struct Props {
 pub fn books_of_author(props: &Props) -> Html {
     util::set_document_title(&format!("Author: {}", props.author_id));
 
+    let author_id = props.author_id;
     let location = use_location().unwrap();
     let query = location.query::<GetBooksQuery>().unwrap();
 
-    let author_id = props.author_id;
     let book_list = use_async_with_options(
         async move { fetch_books_by_author(author_id, &query).await },
         UseAsyncOptions::enable_auto(),

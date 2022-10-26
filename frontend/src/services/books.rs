@@ -35,8 +35,12 @@ pub async fn fetch_books_by_author(
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_books_by_category(category_id: i32) -> Result<BooksList, FetchError> {
-    let url = format!("/api/category/books/{}", category_id);
+pub async fn fetch_books_by_category(
+    category_id: i32,
+    query: &GetBooksQuery,
+) -> Result<BooksList, FetchError> {
+    let query_str = serde_urlencoded::to_string(query).unwrap();
+    let url = format!("/api/category/books/{}?{}", category_id, query_str);
     request_get(&url).await
 }
 

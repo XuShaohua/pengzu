@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 use super::page::{default_page_id, Page};
 use crate::error::Error;
 use crate::models::file_data;
+use crate::models::page::PageId;
 use crate::schema::books;
 
 const EACH_PAGE: i64 = 50;
@@ -120,7 +121,7 @@ impl GetBooksOrder {
 #[derive(Debug, Clone, Deserialize)]
 pub struct GetBooksQuery {
     #[serde(default = "default_page_id")]
-    pub page: i64,
+    pub page: PageId,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
 }
@@ -220,6 +221,7 @@ pub fn get_books(conn: &mut PgConnection, query: &GetBooksQuery) -> Result<GetBo
     })
 }
 
+// TODO(Shaohua): Remove this method
 fn get_books_by_ids(
     conn: &mut PgConnection,
     query: &GetBooksQuery,
@@ -357,7 +359,7 @@ pub fn get_books_by_user_tag(
 #[derive(Debug, Clone, Deserialize)]
 pub struct SimpleSearchQuery {
     #[serde(default = "default_page_id")]
-    pub page: i64,
+    pub page: PageId,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
 
@@ -385,7 +387,7 @@ pub fn get_books_by_simple_search(
 #[derive(Debug, Clone, Deserialize)]
 pub struct AdvancedSearchQuery {
     #[serde(default = "default_page_id")]
-    pub page: i64,
+    pub page: PageId,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
 

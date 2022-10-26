@@ -4,14 +4,16 @@
 
 use serde::Deserialize;
 
+pub type PageId = i64;
+
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Page {
-    pub page_num: i64,
+    pub page_num: PageId,
     pub each_page: i64,
     pub total: i64,
 }
 
 #[must_use]
-pub const fn default_page_id() -> i64 {
+pub const fn default_page_id() -> PageId {
     1
 }

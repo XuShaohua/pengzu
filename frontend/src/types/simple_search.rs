@@ -5,12 +5,12 @@
 use serde::{Deserialize, Serialize};
 
 use crate::types::books::GetBooksOrder;
-use crate::types::page::default_page_id;
+use crate::types::page::{default_page_id, PageId};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SimpleSearchQuery {
     #[serde(default = "default_page_id")]
-    pub page: i64,
+    pub page: PageId,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
 

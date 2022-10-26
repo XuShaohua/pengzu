@@ -5,7 +5,7 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
-use crate::types::page::{default_page_id, Page};
+use crate::types::page::{default_page_id, Page, PageId};
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct AuthorAndBookId {
@@ -52,7 +52,7 @@ pub struct BookDetail {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct GetBooksQuery {
     #[serde(default = "default_page_id")]
-    pub page: i64,
+    pub page: PageId,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
 }

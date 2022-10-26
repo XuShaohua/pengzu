@@ -87,8 +87,12 @@ pub async fn fetch_books_by_series(
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_books_by_tag(tag_id: i32) -> Result<BooksList, FetchError> {
-    let url = format!("/api/tag/books/{}", tag_id);
+pub async fn fetch_books_by_tag(
+    tag_id: i32,
+    query: &GetBooksQuery,
+) -> Result<BooksList, FetchError> {
+    let query_str = serde_urlencoded::to_string(query).unwrap();
+    let url = format!("/api/tag/books/{}?{}", tag_id, query_str);
     request_get(&url).await
 }
 

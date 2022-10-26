@@ -2,12 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[must_use]
-pub const fn default_page_id() -> i64 {
-    0
-}
+use crate::types::page::default_page_id;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct PageQuery {
@@ -15,7 +12,7 @@ pub struct PageQuery {
     pub page: i64,
 }
 
-#[derive(Debug, Clone, Copy, Serialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GetBooksOrder {
     IdDesc,
     IdAsc,
@@ -29,7 +26,13 @@ pub enum GetBooksOrder {
     PubdateAsc,
 }
 
-#[derive(Debug, Clone, Serialize)]
+impl Default for GetBooksOrder {
+    fn default() -> Self {
+        Self::IdDesc
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GetBooksQuery {
     #[serde(default = "default_page_id")]
     pub page: i64,
@@ -38,11 +41,6 @@ pub struct GetBooksQuery {
 }
 
 #[must_use]
-pub fn append_query_to_url(url: &str, query: Option<GetBooksQuery>) -> String {
-    match query {
-        Some(q) => {
-            format!("{}?page={}&order={:?}", url, q.page, q.order)
-        }
-        None => url.to_string(),
-    }
+pub fn append_query_to_url(url: &str, query: &GetBooksQuery) -> String {
+    [url, &serde_urlencoded::to_string(query).unwrap()].join("?")
 }

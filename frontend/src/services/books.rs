@@ -13,7 +13,7 @@ use crate::types::simple_search::SimpleSearchQuery;
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_books(query: Option<GetBooksQuery>) -> Result<BooksList, FetchError> {
+pub async fn fetch_books(query: &GetBooksQuery) -> Result<BooksList, FetchError> {
     let url = append_query_to_url("/api/book", query);
     log::info!("book url: {}", url);
     request_get(&url).await

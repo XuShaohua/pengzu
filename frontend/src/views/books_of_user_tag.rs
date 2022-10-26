@@ -4,10 +4,13 @@
 
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_router::history::Location;
+use yew_router::hooks::use_location;
 
 use crate::components::book_list::BookListComponent;
 use crate::services::books::fetch_books_by_user_tag;
 use crate::services::user_tags::fetch_user_tag;
+use crate::types::books::GetBooksQuery;
 use crate::views::util;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
@@ -20,8 +23,10 @@ pub fn books_of_user_tag(props: &Props) -> Html {
     util::set_document_title(&format!("User Tag: {}", props.tag_id));
 
     let tag_id = props.tag_id;
+    let location = use_location().unwrap();
+    let query = location.query::<GetBooksQuery>().unwrap();
     let book_list = use_async_with_options(
-        async move { fetch_books_by_user_tag(tag_id).await },
+        async move { fetch_books_by_user_tag(tag_id, &query).await },
         UseAsyncOptions::enable_auto(),
     );
 

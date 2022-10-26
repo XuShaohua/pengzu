@@ -90,7 +90,7 @@ pub enum GetBooksOrder {
 
 impl Default for GetBooksOrder {
     fn default() -> Self {
-        Self::PubdateDesc
+        Self::IdDesc
     }
 }
 

@@ -24,13 +24,13 @@ pub fn book_pagination(props: &Props) -> Html {
     let mut pages = Vec::new();
     let min_pages = 12;
     if props.total_pages < min_pages {
-        for i in 1..props.total_pages + 1 {
+        for i in 1..=props.total_pages {
             pages.push(Some(i));
         }
     } else {
         let left_page = 5;
         if props.current_page < left_page && props.total_pages > left_page {
-            for i in 1..left_page + 1 {
+            for i in 1..=left_page {
                 pages.push(Some(i));
             }
         }

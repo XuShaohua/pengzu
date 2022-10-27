@@ -24,7 +24,7 @@ pub fn book_pagination(props: &Props) -> Html {
     let mut pages = Vec::new();
     let min_pages = 12;
     if props.total_pages < min_pages {
-        for i in 1..props.total_pages {
+        for i in 1..props.total_pages + 1 {
             pages.push(Some(i));
         }
     } else {

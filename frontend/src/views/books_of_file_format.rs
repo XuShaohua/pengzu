@@ -4,13 +4,16 @@
 
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
-use yew_router::history::Location;
-use yew_router::hooks::use_location;
+use yew_router::history::{History, Location};
+use yew_router::hooks::{use_history, use_location};
 
 use crate::components::book_list::BookListComponent;
+use crate::components::book_pagination::BookPaginationComponent;
+use crate::router::Route;
 use crate::services::books::fetch_books_by_file_format;
 use crate::services::file_formats::fetch_file_format;
 use crate::types::books::GetBooksQuery;
+use crate::types::page::PageId;
 use crate::views::util;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
@@ -22,19 +25,25 @@ pub struct Props {
 pub fn books_of_file_format(props: &Props) -> Html {
     util::set_document_title(&format!("Format: {}", props.format_id));
 
-    let format_id = props.format_id;
+    let history = use_history().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<GetBooksQuery>().unwrap_or_default();
-    let book_list = use_async_with_options(
-        async move { fetch_books_by_file_format(format_id, &query).await },
-        UseAsyncOptions::enable_auto(),
-    );
+    let book_list = {
+        let format_id = props.format_id;
+        let query_clone = query.clone();
+        use_async_with_options(
+            async move { fetch_books_by_file_format(format_id, &query_clone).await },
+            UseAsyncOptions::enable_auto(),
+        )
+    };
 
-    let format_id = props.format_id;
-    let format_info = use_async_with_options(
-        async move { fetch_file_format(format_id).await },
-        UseAsyncOptions::enable_auto(),
-    );
+    let format_info = {
+        let format_id = props.format_id;
+        use_async_with_options(
+            async move { fetch_file_format(format_id).await },
+            UseAsyncOptions::enable_auto(),
+        )
+    };
 
     let title_element = format_info.data.as_ref().map_or_else(
         || html! {},
@@ -47,6 +56,18 @@ pub fn books_of_file_format(props: &Props) -> Html {
         },
     );
 
+    let pagination_onclick = {
+        let format_id = props.format_id;
+        Callback::from(move |page_id: PageId| {
+            let new_query = GetBooksQuery {
+                page: page_id,
+                ..query
+            };
+            let ret = history.push_with_query(Route::BooksOfFileFormat { format_id }, &new_query);
+            debug_assert!(ret.is_ok());
+        })
+    };
+
     book_list.data.as_ref().map_or_else(
         || html! {},
         |book_list| {
@@ -54,6 +75,9 @@ pub fn books_of_file_format(props: &Props) -> Html {
                 <>
                 { title_element }
                 <BookListComponent books={ book_list.list.clone() } />
+                <BookPaginationComponent current_page={ book_list.page.page_num }
+                    total_pages={ book_list.page.total_pages() }
+                    onclick={ pagination_onclick } />
                 </>
             }
         },

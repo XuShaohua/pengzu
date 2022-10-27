@@ -78,6 +78,12 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::put().to(comments::update_comment))
                 .route(web::delete().to(comments::delete_comment)),
         )
+        // For /api/discover
+        .service(
+            web::resource("/discover/books")
+                .wrap(auth.clone())
+                .route(web::get().to(books::get_books_by_discover)),
+        )
         // For /api/file
         .service(web::resource("/file").route(web::get().to(files::get_file_by_path)))
         // For /api/formats

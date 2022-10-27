@@ -160,3 +160,12 @@ pub async fn get_books_by_advanced_search(
     .await??;
     Ok(HttpResponse::Ok().json(resp))
 }
+
+pub async fn get_books_by_discover(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let mut conn = pool.get()?;
+        books::get_books_by_discover(&mut conn)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}

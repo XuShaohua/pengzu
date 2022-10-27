@@ -24,11 +24,13 @@ pub fn books_of_advanced_search() -> Html {
 
     let query_desc = query.desc();
     util::set_document_title(&format!("Advanced Search: {}", query_desc));
-    let query_clone = query.clone();
-    let book_list = use_async_with_options(
-        async move { fetch_books_by_advanced_search(&query_clone).await },
-        UseAsyncOptions::enable_auto(),
-    );
+    let book_list = {
+        let query_clone = query.clone();
+        use_async_with_options(
+            async move { fetch_books_by_advanced_search(&query_clone).await },
+            UseAsyncOptions::enable_auto(),
+        )
+    };
 
     let pagination_onclick = {
         Callback::from(move |page_id: PageId| {
@@ -48,12 +50,6 @@ pub fn books_of_advanced_search() -> Html {
             }
         },
         |book_list| {
-            log::info!(
-                "current page: {}, items: {}, total pages: {}",
-                book_list.page.page_num,
-                book_list.page.total,
-                book_list.page.total_pages()
-            );
             html! {
                 <>
                 <h2>{ book_list.page.total }{ " Results for \"" }{ &query_desc }{"\""}</h2>

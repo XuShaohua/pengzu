@@ -20,14 +20,15 @@ pub fn books() -> Html {
     util::set_document_title("Books");
 
     let history = use_history().unwrap();
-
     let location = use_location().unwrap();
     let query = location.query::<GetBooksQuery>().unwrap_or_default();
-    let query_clone = query.clone();
-    let book_list = use_async_with_options(
-        async move { fetch_books(&query_clone).await },
-        UseAsyncOptions::enable_auto(),
-    );
+    let book_list = {
+        let query_clone = query.clone();
+        use_async_with_options(
+            async move { fetch_books(&query_clone).await },
+            UseAsyncOptions::enable_auto(),
+        )
+    };
 
     let pagination_onclick = {
         Callback::from(move |page_id: PageId| {

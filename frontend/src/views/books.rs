@@ -43,7 +43,6 @@ pub fn books() -> Html {
     book_list.data.as_ref().map_or_else(
         || html! {},
         |book_list| {
-            log::info!("page: {:?}", book_list.page);
             html! {
                 <>
                 <h2>{ "Books" }</h2>

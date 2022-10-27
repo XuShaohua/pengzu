@@ -40,7 +40,7 @@ pub fn left_panel() -> Html {
                     <span class="glyphicon glyphicon-th" />
                     { "Series" }
                 </Link<Route>></li>
-                <li><Link<Route> to={ Route::Discover }>
+                <li><Link<Route> to={ Route::BooksOfDiscover }>
                     <span class="glyphicon glyphicon-random" />
                     { "Discover" }
                 </Link<Route>></li>

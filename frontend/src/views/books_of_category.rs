@@ -22,7 +22,7 @@ pub struct Props {
 }
 
 #[function_component(BooksOfCategoryComponent)]
-pub fn books_of_author(props: &Props) -> Html {
+pub fn books_of_category(props: &Props) -> Html {
     util::set_document_title(&format!("Category: {}", props.category_id));
 
     let history = use_history().unwrap();

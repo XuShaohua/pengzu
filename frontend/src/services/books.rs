@@ -44,6 +44,14 @@ pub async fn fetch_books_by_category(
     request_get(&url).await
 }
 
+/// Get random book list.
+///
+/// # Errors
+/// Returns error if server fails.
+pub async fn fetch_books_by_discover() -> Result<BooksList, FetchError> {
+    request_get("/api/discover/books").await
+}
+
 /// Get book list of specific file format `format_id`.
 ///
 /// # Errors

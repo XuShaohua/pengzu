@@ -13,6 +13,7 @@ use crate::views::books::BooksComponent;
 use crate::views::books_of_advanced_search::BooksOfAdvancedSearchComponent;
 use crate::views::books_of_author::BooksOfAuthorComponent;
 use crate::views::books_of_category::BooksOfCategoryComponent;
+use crate::views::books_of_discover::BooksOfDiscoverComponent;
 use crate::views::books_of_file_format::BooksOfFileFormatComponent;
 use crate::views::books_of_publisher::BooksOfPublisherComponent;
 use crate::views::books_of_series::BooksOfSeriesComponent;
@@ -20,7 +21,6 @@ use crate::views::books_of_simple_search::BooksOfSimpleSearchComponent;
 use crate::views::books_of_tag::BooksOfTagComponent;
 use crate::views::books_of_user_tag::BooksOfUserTagComponent;
 use crate::views::categories::CategoriesComponent;
-use crate::views::discover::DiscoverComponent;
 use crate::views::file_formats::FileFormatsComponent;
 use crate::views::login::LoginComponent;
 use crate::views::logout::LogoutComponent;
@@ -60,8 +60,8 @@ pub enum Route {
     BooksOfSeries { series_id: i32 },
     #[at("/series")]
     Series,
-    #[at("/discover")]
-    Discover,
+    #[at("/discover/books")]
+    BooksOfDiscover,
     #[at("/format/books/:format_id")]
     BooksOfFileFormat { format_id: i32 },
     #[at("/format")]
@@ -120,7 +120,7 @@ pub fn switch_route(routes: &Route) -> Html {
             html! { <BooksOfSeriesComponent series_id={ *series_id }/> }
         }
         Route::Series => html! { <SeriesComponent /> },
-        Route::Discover => html! { <DiscoverComponent /> },
+        Route::BooksOfDiscover => html! { <BooksOfDiscoverComponent /> },
         Route::BooksOfFileFormat { format_id } => {
             html! { <BooksOfFileFormatComponent format_id={ *format_id }/> }
         }

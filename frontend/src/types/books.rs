@@ -32,7 +32,7 @@ pub struct Book {
     pub authors: Vec<AuthorAndBookId>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
 pub struct BooksList {
     pub page: Page,
     pub list: Vec<Book>,
@@ -72,10 +72,8 @@ pub enum GetBooksOrder {
     IdAsc,
     TitleDesc,
     TitleAsc,
-    CreatedDesc,
-    CreatedAsc,
-    LastModifiedDesc,
-    LastModifiedAsc,
+    AuthorDesc,
+    AuthorAsc,
     PubdateDesc,
     PubdateAsc,
 }

@@ -81,7 +81,7 @@ pub fn books_of_tag(props: &Props) -> Html {
             html! {
                 <>
                 { title_element }
-                <BookFilterComponent onchange={ book_filter_onchange }/>
+                <BookFilterComponent onchange={ book_filter_onchange } current_order={ query.order } />
                 <BookListComponent books={ book_list.list.clone() } />
                 <BookPaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }

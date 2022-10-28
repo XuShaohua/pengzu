@@ -41,10 +41,11 @@ pub fn books_of_simple_search() -> Html {
     };
 
     let pagination_onclick = {
+        let query_clone = query.clone();
         Callback::from(move |page_id: PageId| {
             let new_query = SimpleSearchQuery {
                 page: page_id,
-                ..query.clone()
+                ..query_clone.clone()
             };
             let ret = history.push_with_query(Route::BooksOfSimpleSearch, &new_query);
             debug_assert!(ret.is_ok());
@@ -61,7 +62,7 @@ pub fn books_of_simple_search() -> Html {
             html! {
                 <>
                 <h2>{ book_list.page.total }{ " Results for \""}{ &keyword }{"\""}</h2>
-                <BookFilterComponent onchange={ book_filter_onchange }/>
+                <BookFilterComponent onchange={ book_filter_onchange } current_order={ query.order } />
                 <BookListComponent books={ book_list.list.clone() } />
                 <BookPaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }

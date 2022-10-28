@@ -13,6 +13,7 @@ pub mod books_series;
 pub mod books_tags;
 pub mod categories;
 pub mod comments;
+pub mod discover;
 mod file_data;
 pub mod file_formats;
 pub mod files;

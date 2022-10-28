@@ -7,6 +7,7 @@ pub mod authors;
 pub mod books;
 pub mod categories;
 pub mod comments;
+pub mod discover;
 pub mod file_formats;
 pub mod files;
 pub mod identifiers;

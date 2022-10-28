@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 
 pub type PageId = i64;
 
+pub const EACH_PAGE: i64 = 50;
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Page {
     pub page_num: PageId,

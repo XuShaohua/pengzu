@@ -5,18 +5,17 @@
 use chrono::NaiveDateTime;
 use diesel::expression::expression_types::NotSelectable;
 use diesel::{
-    BoxableExpression, ExpressionMethods, Insertable, JoinOnDsl, PgConnection,
-    PgTextExpressionMethods, QueryDsl, Queryable, RunQueryDsl,
+    BoxableExpression, ExpressionMethods, Insertable, PgConnection, PgTextExpressionMethods,
+    QueryDsl, Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
 
 use super::page::{default_page_id, Page};
 use crate::error::Error;
+use crate::models::authors::get_authors_by_book_id;
 use crate::models::file_data;
-use crate::models::page::PageId;
+use crate::models::page::{PageId, EACH_PAGE};
 use crate::schema::books;
-
-const EACH_PAGE: i64 = 50;
 
 #[derive(Debug, Serialize, Queryable)]
 pub struct Book {
@@ -156,7 +155,10 @@ pub fn book_to_book_cover(book: Book) -> BookWithCover {
     }
 }
 
-fn merge_books_and_authors(book_list: Vec<Book>, author_list: &[AuthorAndBookId]) -> Vec<BookResp> {
+pub fn merge_books_and_authors(
+    book_list: Vec<Book>,
+    author_list: &[AuthorAndBookId],
+) -> Vec<BookResp> {
     let mut list = Vec::with_capacity(book_list.len());
 
     for book in book_list {
@@ -172,23 +174,6 @@ fn merge_books_and_authors(book_list: Vec<Book>, author_list: &[AuthorAndBookId]
     }
 
     list
-}
-
-fn get_authors_by_book_id(
-    conn: &mut PgConnection,
-    book_list: &[Book],
-) -> Result<Vec<AuthorAndBookId>, Error> {
-    use crate::schema::authors;
-    use crate::schema::books_authors_link;
-
-    let book_ids: Vec<i32> = book_list.iter().map(|book| book.id).collect();
-
-    authors::table
-        .inner_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
-        .filter(books_authors_link::book.eq_any(book_ids))
-        .select((authors::id, authors::name, books_authors_link::book))
-        .load::<AuthorAndBookId>(conn)
-        .map_err(Into::into)
 }
 
 pub fn get_books(conn: &mut PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
@@ -413,28 +398,4 @@ pub fn get_books_by_advanced_search(
         .load::<i32>(conn)?;
 
     get_books_by_ids(conn, &books_query, &book_ids)
-}
-
-pub fn get_books_by_discover(conn: &mut PgConnection) -> Result<GetBooksResp, Error> {
-    sql_function!(
-        /// Represents the SQL RANDOM() function
-        fn random() -> Integer;
-    );
-
-    let book_list = books::table
-        .order(random())
-        .limit(EACH_PAGE)
-        .load::<Book>(conn)?;
-
-    let author_list = get_authors_by_book_id(conn, &book_list)?;
-    let list = merge_books_and_authors(book_list, &author_list);
-
-    Ok(GetBooksResp {
-        page: Page {
-            page_num: default_page_id(),
-            each_page: EACH_PAGE,
-            total: EACH_PAGE,
-        },
-        list,
-    })
 }

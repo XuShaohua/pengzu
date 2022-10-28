@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use super::page::{Page, PageQuery};
 use crate::error::Error;
+use crate::models::books::{AuthorAndBookId, Book};
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -107,4 +108,20 @@ pub fn update_author(
         .set(name.eq(new_author.name.as_str()))
         .execute(conn)?;
     Ok(())
+}
+
+pub fn get_authors_by_book_id(
+    conn: &mut PgConnection,
+    book_list: &[Book],
+) -> Result<Vec<AuthorAndBookId>, Error> {
+    use crate::schema::books_authors_link;
+
+    let book_ids: Vec<i32> = book_list.iter().map(|book| book.id).collect();
+
+    authors::table
+        .inner_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
+        .filter(books_authors_link::book.eq_any(book_ids))
+        .select((authors::id, authors::name, books_authors_link::book))
+        .load::<AuthorAndBookId>(conn)
+        .map_err(Into::into)
 }

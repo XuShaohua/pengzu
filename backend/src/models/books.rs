@@ -81,10 +81,8 @@ pub enum GetBooksOrder {
     IdAsc,
     TitleDesc,
     TitleAsc,
-    CreatedDesc,
-    CreatedAsc,
-    LastModifiedDesc,
-    LastModifiedAsc,
+    AuthorDesc,
+    AuthorAsc,
     PubdateDesc,
     PubdateAsc,
 }
@@ -108,10 +106,9 @@ impl GetBooksOrder {
             Self::IdDesc => Box::new(dsl::id.desc()),
             Self::TitleAsc => Box::new(dsl::title.asc()),
             Self::TitleDesc => Box::new(dsl::title.desc()),
-            Self::CreatedAsc => Box::new(dsl::created.asc()),
-            Self::CreatedDesc => Box::new(dsl::created.desc()),
-            Self::LastModifiedAsc => Box::new(dsl::last_modified.asc()),
-            Self::LastModifiedDesc => Box::new(dsl::last_modified.desc()),
+            // TODO(Shaohua): Support author sorting.
+            Self::AuthorAsc => Box::new(dsl::created.asc()),
+            Self::AuthorDesc => Box::new(dsl::created.desc()),
             Self::PubdateAsc => Box::new(dsl::pubdate.asc()),
             Self::PubdateDesc => Box::new(dsl::pubdate.desc()),
         }

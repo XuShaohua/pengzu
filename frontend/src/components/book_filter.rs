@@ -29,11 +29,11 @@ pub fn book_filter(props: &Props) -> Html {
     let get_button_cls = {
         let active_order = props.current_order;
         move |order: GetBooksOrder| {
-            return if order == active_order {
+            if order == active_order {
                 "btn btn-primary active"
             } else {
                 "btn btn-primary"
-            };
+            }
         }
     };
 

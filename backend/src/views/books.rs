@@ -148,15 +148,3 @@ pub async fn get_books_by_simple_search(
     .await??;
     Ok(HttpResponse::Ok().json(resp))
 }
-
-pub async fn get_books_by_advanced_search(
-    pool: web::Data<DbPool>,
-    query: web::Query<books::AdvancedSearchQuery>,
-) -> Result<HttpResponse, Error> {
-    let resp = web::block(move || {
-        let mut conn = pool.get()?;
-        books::get_books_by_advanced_search(&mut conn, &query)
-    })
-    .await??;
-    Ok(HttpResponse::Ok().json(resp))
-}

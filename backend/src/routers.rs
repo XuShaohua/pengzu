@@ -9,8 +9,8 @@ use crate::db::get_connection_pool;
 use crate::error::Error;
 use crate::views::auth::auth_validator;
 use crate::views::{
-    authors, books, categories, comments, discover, file_formats, files, publishers, ratings,
-    series, tags, user_tags, users,
+    advanced_search, authors, books, categories, comments, discover, file_formats, files,
+    publishers, ratings, series, tags, user_tags, users,
 };
 
 const CONTENT_TYPE: &str = "content-type";
@@ -197,7 +197,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/advanced-search/books")
                 .wrap(auth.clone())
-                .route(web::get().to(books::get_books_by_advanced_search)),
+                .route(web::get().to(advanced_search::get_books_by_advanced_search)),
         )
         // For /api/user
         .route("/user/login", web::post().to(users::login))

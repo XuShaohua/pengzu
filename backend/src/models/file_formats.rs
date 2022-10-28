@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use super::page::{Page, PageQuery};
 use crate::error::Error;
+use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
 use crate::schema::file_formats;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -103,4 +104,19 @@ pub fn get_formats(
         },
         list,
     })
+}
+
+pub fn get_books_by_format(
+    conn: &mut PgConnection,
+    format_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
+    use crate::schema::files;
+
+    let book_ids = files::table
+        .filter(files::format.eq(format_id))
+        .select(files::book)
+        .load::<i32>(conn)?;
+
+    get_books_by_ids(conn, query, &book_ids)
 }

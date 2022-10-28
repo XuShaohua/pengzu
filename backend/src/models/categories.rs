@@ -9,6 +9,7 @@ use diesel::{
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
+use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
 use crate::models::page::{default_page_id, Page};
 use crate::schema::categories;
 
@@ -132,4 +133,19 @@ pub fn get_categories(
         },
         list,
     })
+}
+
+pub fn get_books_by_category(
+    conn: &mut PgConnection,
+    category_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
+    use crate::schema::books_categories_link;
+
+    let book_ids = books_categories_link::table
+        .filter(books_categories_link::category.eq(category_id))
+        .select(books_categories_link::book)
+        .load::<i32>(conn)?;
+
+    get_books_by_ids(conn, query, &book_ids)
 }

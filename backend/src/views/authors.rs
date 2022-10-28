@@ -6,8 +6,8 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::authors;
 use crate::models::page::PageQuery;
+use crate::models::{authors, books};
 
 pub async fn add_author(
     pool: web::Data<DbPool>,
@@ -40,6 +40,19 @@ pub async fn get_author(
     let resp = web::block(move || {
         let mut conn = pool.get()?;
         authors::get_author_by_id(&mut conn, author_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}
+
+pub async fn get_books_by_author(
+    pool: web::Data<DbPool>,
+    author_id: web::Path<i32>,
+    query: web::Query<books::GetBooksQuery>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let mut conn = pool.get()?;
+        authors::get_books_by_author(&mut conn, author_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

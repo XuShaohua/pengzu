@@ -35,7 +35,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/author/books/{author_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(books::get_books_by_author)),
+                .route(web::get().to(authors::get_books_by_author)),
         )
         // For /api/book
         .service(
@@ -63,7 +63,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/category/books/{category_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(books::get_books_by_category)),
+                .route(web::get().to(categories::get_books_by_category)),
         )
         // For /api/comment
         .service(
@@ -100,7 +100,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/format/books/{format_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(books::get_books_by_format)),
+                .route(web::get().to(file_formats::get_books_by_format)),
         )
         // For /api/publisher
         .service(

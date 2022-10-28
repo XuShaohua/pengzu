@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use super::page::{Page, PageQuery};
 use crate::error::Error;
-use crate::models::books::{AuthorAndBookId, Book};
+use crate::models::books::{get_books_by_ids, AuthorAndBookId, Book, GetBooksQuery, GetBooksResp};
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -124,4 +124,19 @@ pub fn get_authors_by_book_id(
         .select((authors::id, authors::name, books_authors_link::book))
         .load::<AuthorAndBookId>(conn)
         .map_err(Into::into)
+}
+
+pub fn get_books_by_author(
+    conn: &mut PgConnection,
+    author_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
+    use crate::schema::books_authors_link;
+
+    let book_ids = books_authors_link::table
+        .filter(books_authors_link::author.eq(author_id))
+        .select(books_authors_link::book)
+        .load::<i32>(conn)?;
+
+    get_books_by_ids(conn, query, &book_ids)
 }

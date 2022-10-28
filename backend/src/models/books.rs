@@ -5,8 +5,8 @@
 use chrono::NaiveDateTime;
 use diesel::expression::expression_types::NotSelectable;
 use diesel::{
-    BoxableExpression, ExpressionMethods, Insertable, PgConnection, PgTextExpressionMethods,
-    QueryDsl, Queryable, RunQueryDsl,
+    BoxableExpression, ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable,
+    RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
 
@@ -336,32 +336,4 @@ pub fn get_books_by_user_tag(
         .load::<i32>(conn)?;
 
     get_books_by_ids(conn, query, &book_ids)
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct SimpleSearchQuery {
-    #[serde(default = "default_page_id")]
-    pub page: PageId,
-    #[serde(default = "GetBooksOrder::default")]
-    pub order: GetBooksOrder,
-
-    pub query: String,
-}
-
-pub fn get_books_by_simple_search(
-    conn: &mut PgConnection,
-    query: &SimpleSearchQuery,
-) -> Result<GetBooksResp, Error> {
-    let query_pattern = format!("%{}%", query.query);
-    let books_query = GetBooksQuery {
-        page: query.page,
-        order: query.order,
-    };
-
-    let book_ids = books::table
-        .filter(books::title.ilike(&query_pattern))
-        .select(books::id)
-        .load::<i32>(conn)?;
-
-    get_books_by_ids(conn, &books_query, &book_ids)
 }

@@ -73,16 +73,20 @@ label {
   font-weight: 700;
 }
 
-.input-group > input {
+.input-group > .form-control {
   border-radius: 0;
 }
 
-.input-group > input,
+.input-group > .form-control,
 .input-group > .btn {
   height: 30px;
   padding: 5px 10px;
   font-size: 12px;
   line-height: 1.5;
+  margin-left: -1px;
+  z-index: 2;
+  position: relative;
+  float: left;
 }
 
 .input-group > .btn,
@@ -160,6 +164,10 @@ label {
 
 .form-group {
   margin-bottom: 15px;
+}
+
+.input-group > .form-control:focus {
+  z-index: 3;
 }
 
 .badge {

@@ -13,15 +13,17 @@ use crate::router::Route;
 use crate::services::books::fetch_books_by_simple_search;
 use crate::types::page::PageId;
 use crate::types::simple_search::SimpleSearchQuery;
+use crate::views::util;
 
 #[function_component(BooksOfSimpleSearchComponent)]
 pub fn books_of_simple_search() -> Html {
-    // TODO(Shaohua): Set document title.
+    util::set_document_title("Search");
 
     let history = use_history().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<SimpleSearchQuery>().unwrap_or_default();
     let keyword = query.query.clone();
+    log::info!("keyword: {}", keyword);
     let book_list = {
         let query_clone = query.clone();
         use_async_with_options(

@@ -277,33 +277,3 @@ pub fn get_books_by_format(
 
     get_books_by_ids(conn, query, &book_ids)
 }
-
-pub fn get_books_by_publisher(
-    conn: &mut PgConnection,
-    publisher_id: i32,
-    query: &GetBooksQuery,
-) -> Result<GetBooksResp, Error> {
-    use crate::schema::books_publishers_link;
-
-    let book_ids = books_publishers_link::table
-        .filter(books_publishers_link::publisher.eq(publisher_id))
-        .select(books_publishers_link::book)
-        .load::<i32>(conn)?;
-
-    get_books_by_ids(conn, query, &book_ids)
-}
-
-pub fn get_books_by_series(
-    conn: &mut PgConnection,
-    series_id: i32,
-    query: &GetBooksQuery,
-) -> Result<GetBooksResp, Error> {
-    use crate::schema::books_series_link;
-
-    let book_ids = books_series_link::table
-        .filter(books_series_link::series.eq(series_id))
-        .select(books_series_link::book)
-        .load::<i32>(conn)?;
-
-    get_books_by_ids(conn, query, &book_ids)
-}

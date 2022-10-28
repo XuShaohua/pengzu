@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use super::page::{Page, PageQuery};
 use crate::error::Error;
+use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
 use crate::schema::series;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -103,4 +104,19 @@ pub fn update_series(
         .set(name.eq(new_series.name.as_str()))
         .execute(conn)?;
     Ok(())
+}
+
+pub fn get_books_by_series(
+    conn: &mut PgConnection,
+    series_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
+    use crate::schema::books_series_link;
+
+    let book_ids = books_series_link::table
+        .filter(books_series_link::series.eq(series_id))
+        .select(books_series_link::book)
+        .load::<i32>(conn)?;
+
+    get_books_by_ids(conn, query, &book_ids)
 }

@@ -84,29 +84,3 @@ pub async fn get_books_by_format(
     .await??;
     Ok(HttpResponse::Ok().json(resp))
 }
-
-pub async fn get_books_by_publisher(
-    pool: web::Data<DbPool>,
-    publisher_id: web::Path<i32>,
-    query: web::Query<books::GetBooksQuery>,
-) -> Result<HttpResponse, Error> {
-    let resp = web::block(move || {
-        let mut conn = pool.get()?;
-        books::get_books_by_publisher(&mut conn, publisher_id.into_inner(), &query)
-    })
-    .await??;
-    Ok(HttpResponse::Ok().json(resp))
-}
-
-pub async fn get_books_by_series(
-    pool: web::Data<DbPool>,
-    series_id: web::Path<i32>,
-    query: web::Query<books::GetBooksQuery>,
-) -> Result<HttpResponse, Error> {
-    let resp = web::block(move || {
-        let mut conn = pool.get()?;
-        books::get_books_by_series(&mut conn, series_id.into_inner(), &query)
-    })
-    .await??;
-    Ok(HttpResponse::Ok().json(resp))
-}

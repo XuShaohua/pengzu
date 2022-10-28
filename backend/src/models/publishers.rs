@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use super::page::{Page, PageQuery};
 use crate::error::Error;
+use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
 use crate::schema::publishers;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -111,4 +112,19 @@ pub fn update_publisher(
         .set(name.eq(new_publisher.name.as_str()))
         .execute(conn)?;
     Ok(())
+}
+
+pub fn get_books_by_publisher(
+    conn: &mut PgConnection,
+    publisher_id: i32,
+    query: &GetBooksQuery,
+) -> Result<GetBooksResp, Error> {
+    use crate::schema::books_publishers_link;
+
+    let book_ids = books_publishers_link::table
+        .filter(books_publishers_link::publisher.eq(publisher_id))
+        .select(books_publishers_link::book)
+        .load::<i32>(conn)?;
+
+    get_books_by_ids(conn, query, &book_ids)
 }

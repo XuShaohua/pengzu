@@ -7,7 +7,7 @@ use actix_web::{web, HttpResponse};
 use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::page::PageQuery;
-use crate::models::series;
+use crate::models::{books, series};
 
 pub async fn add_series(
     pool: web::Data<DbPool>,
@@ -40,6 +40,19 @@ pub async fn get_series(
     let resp = web::block(move || {
         let mut conn = pool.get()?;
         series::get_series_by_id(&mut conn, series_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(resp))
+}
+
+pub async fn get_books_by_series(
+    pool: web::Data<DbPool>,
+    series_id: web::Path<i32>,
+    query: web::Query<books::GetBooksQuery>,
+) -> Result<HttpResponse, Error> {
+    let resp = web::block(move || {
+        let mut conn = pool.get()?;
+        series::get_books_by_series(&mut conn, series_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

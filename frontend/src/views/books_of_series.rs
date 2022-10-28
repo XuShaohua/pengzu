@@ -7,12 +7,13 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use yew_router::history::{History, Location};
 use yew_router::hooks::{use_history, use_location};
 
+use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
 use crate::components::book_pagination::BookPaginationComponent;
 use crate::router::Route;
 use crate::services::books::fetch_books_by_series;
 use crate::services::series::fetch_series;
-use crate::types::books::GetBooksQuery;
+use crate::types::books::{GetBooksOrder, GetBooksQuery};
 use crate::types::page::PageId;
 use crate::views::util;
 
@@ -56,6 +57,12 @@ pub fn books_of_series(props: &Props) -> Html {
         },
     );
 
+    let book_filter_onchange = {
+        Callback::from(|order: GetBooksOrder| {
+            log::info!("new order: {:?}", order);
+        })
+    };
+
     let pagination_onclick = {
         let series_id = props.series_id;
         Callback::from(move |page_id: PageId| {
@@ -74,6 +81,7 @@ pub fn books_of_series(props: &Props) -> Html {
             html! {
                 <>
                 { title_element }
+                <BookFilterComponent onchange={ book_filter_onchange }/>
                 <BookListComponent books={ book_list.list.clone() } />
                 <BookPaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }

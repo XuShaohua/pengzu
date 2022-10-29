@@ -139,12 +139,6 @@ impl From<calibre::error::Error> for Error {
     }
 }
 
-impl From<shell_rs::error::Error> for Error {
-    fn from(err: shell_rs::error::Error) -> Self {
-        Self::from_string(ErrorKind::IoError, format!("err: {}", err))
-    }
-}
-
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
         Self::from_string(ErrorKind::JsonError, format!("{}", err))

@@ -4,7 +4,6 @@
 
 use calibre::models::books::{get_next_book, CalibreBook};
 use calibre::models::books_authors::get_book_authors;
-use calibre::models::books_hash::get_book_hash;
 use calibre::models::books_languages::get_book_language;
 use calibre::models::books_publishers::get_book_publisher;
 use calibre::models::books_ratings::get_book_rating;
@@ -18,7 +17,7 @@ use serde::Serialize;
 use std::fs;
 
 use crate::error::{Error, ErrorKind};
-use crate::import::file_util::{calculate_book_hashes, get_book_file_path, get_book_metadata_path};
+use crate::import::file_util::{get_book_file_path, get_book_metadata_path};
 use crate::import::models::books::{add_import_book, NewImportBook};
 use crate::import::models::libraries::{update_import_library, ImportLibrary};
 use crate::models::authors::get_author_by_name;
@@ -349,18 +348,6 @@ fn import_files(
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
     log::info!("calibre_files len: {}", calibre_files.len());
 
-    let book_hashes = match get_book_hash(sqlite_conn, calibre_book_id) {
-        Ok(book_hashes) => book_hashes,
-        Err(err) => {
-            log::info!(
-                "Book hash not found int table: {}, err: {}",
-                calibre_book_id,
-                err
-            );
-            calculate_book_hashes(calibre_library_path, calibre_book_path, &calibre_files)?
-        }
-    };
-
     if let Err(err) = copy_book_cover(
         calibre_library_path,
         library_path,
@@ -373,10 +360,6 @@ fn import_files(
 
     for calibre_file in calibre_files {
         let file_format = get_file_format_by_name(pg_conn, &calibre_file.format)?;
-        let sha = book_hashes
-            .get(&calibre_file.format)
-            .map(|item| item.sha.clone())
-            .unwrap_or_default();
 
         copy_book_file(
             calibre_library_path,
@@ -393,7 +376,6 @@ fn import_files(
             format: file_format.id,
             size: calibre_file.uncompressed_size,
             name: calibre_file.name,
-            sha,
         };
         add_file(pg_conn, &new_file)?;
     }

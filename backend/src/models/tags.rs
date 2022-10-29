@@ -3,7 +3,9 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
+use diesel::{
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+};
 use serde::{Deserialize, Serialize};
 
 use super::page::{default_page_id, Page};

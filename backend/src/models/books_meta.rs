@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use diesel::PgConnection;
+use diesel::{PgConnection, Queryable};
 use serde::Serialize;
 
 use crate::error::{Error, ErrorKind};

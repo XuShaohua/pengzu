@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
@@ -18,7 +18,6 @@ pub struct NewFile {
     pub format: i32,
     pub size: i32,
     pub name: String,
-    pub sha: String,
 }
 
 #[derive(Debug, Serialize, Queryable)]
@@ -28,7 +27,6 @@ pub struct File {
     pub format: i32,
     pub size: i32,
     pub name: String,
-    pub sha: String,
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,
 }

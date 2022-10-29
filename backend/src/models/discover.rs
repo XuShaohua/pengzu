@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use diesel::{PgConnection, QueryDsl, RunQueryDsl};
+use diesel::{sql_function, PgConnection, QueryDsl, RunQueryDsl};
 
 use crate::error::Error;
 use crate::models::authors::get_authors_by_book_id;

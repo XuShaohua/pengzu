@@ -155,6 +155,7 @@ pub fn book_to_book_cover(book: Book) -> BookWithCover {
     }
 }
 
+#[must_use]
 pub fn merge_books_and_authors(
     book_list: Vec<Book>,
     author_list: &[AuthorAndBookId],

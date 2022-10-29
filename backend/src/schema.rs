@@ -1,4 +1,6 @@
-table! {
+// @generated automatically by Diesel CLI.
+
+diesel::table! {
     authors (id) {
         id -> Int4,
         name -> Text,
@@ -8,7 +10,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     books (id) {
         id -> Int4,
         title -> Text,
@@ -21,7 +23,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     books_authors_link (id) {
         id -> Int4,
         book -> Int4,
@@ -30,7 +32,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     books_categories_link (id) {
         id -> Int4,
         book -> Int4,
@@ -40,7 +42,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     books_languages_link (id) {
         id -> Int4,
         book -> Int4,
@@ -49,7 +51,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     books_publishers_link (id) {
         id -> Int4,
         book -> Int4,
@@ -58,7 +60,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     books_series_link (id) {
         id -> Int4,
         book -> Int4,
@@ -67,7 +69,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     books_tags_link (id) {
         id -> Int4,
         book -> Int4,
@@ -76,7 +78,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     books_user_tags_link (id) {
         id -> Int4,
         user_id -> Int4,
@@ -86,7 +88,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     categories (id) {
         id -> Int4,
         order_index -> Int4,
@@ -100,7 +102,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     cips (id) {
         id -> Int4,
         cip -> Int4,
@@ -117,7 +119,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     cips_authors_link (id) {
         id -> Int4,
         cip -> Int4,
@@ -127,7 +129,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     comments (id) {
         id -> Int4,
         book -> Int4,
@@ -137,7 +139,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     douban_authors (id) {
         id -> Int4,
         name -> Text,
@@ -147,7 +149,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     douban_books (id) {
         id -> Int4,
         subject_id -> Int4,
@@ -160,7 +162,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     douban_books_authors_link (id) {
         id -> Int4,
         book -> Int4,
@@ -170,7 +172,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     douban_books_detail (id) {
         id -> Int4,
         book_id -> Int4,
@@ -189,7 +191,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     douban_books_recommends_link (id) {
         id -> Int4,
         book -> Int4,
@@ -199,7 +201,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     douban_publishers (id) {
         id -> Int4,
         name -> Text,
@@ -209,7 +211,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     file_formats (id) {
         id -> Int4,
         name -> Text,
@@ -218,20 +220,19 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     files (id) {
         id -> Int4,
         book -> Int4,
         format -> Int4,
         size -> Int4,
         name -> Text,
-        sha -> Text,
         created -> Timestamp,
         last_modified -> Timestamp,
     }
 }
 
-table! {
+diesel::table! {
     identifier_types (id) {
         id -> Int4,
         name -> Text,
@@ -242,7 +243,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     identifiers (id) {
         id -> Int4,
         book -> Int4,
@@ -254,7 +255,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     import_books (id) {
         id -> Int4,
         library -> Int4,
@@ -265,7 +266,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     import_libraries (id) {
         id -> Int4,
         calibre_library_path -> Text,
@@ -279,7 +280,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     languages (id) {
         id -> Int4,
         lang_code -> Text,
@@ -287,7 +288,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     publishers (id) {
         id -> Int4,
         name -> Text,
@@ -296,7 +297,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     ratings (id) {
         id -> Int4,
         book -> Int4,
@@ -306,7 +307,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     reading_history (id) {
         id -> Int4,
         user_id -> Int4,
@@ -318,7 +319,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     series (id) {
         id -> Int4,
         name -> Text,
@@ -327,7 +328,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     tags (id) {
         id -> Int4,
         order_index -> Int4,
@@ -338,7 +339,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     user_tags (id) {
         id -> Int4,
         user_id -> Int4,
@@ -350,7 +351,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     users (id) {
         id -> Int4,
         name -> Text,
@@ -365,7 +366,7 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(
+diesel::allow_tables_to_appear_in_same_query!(
     authors,
     books,
     books_authors_link,

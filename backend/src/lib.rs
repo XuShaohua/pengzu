@@ -22,9 +22,6 @@
 // Caused by diesel::Insertable trait
 #![allow(clippy::extra_unused_lifetimes)]
 
-#[macro_use]
-extern crate diesel;
-
 pub mod cmd;
 pub mod db;
 pub mod error;

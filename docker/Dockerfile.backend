@@ -8,9 +8,9 @@ RUN apt install -y libsqlite3-0 libssl3 libpq5
 RUN apt clean
 
 RUN mkdir /opt/pengzu/
-COPY bin/backend .env /opt/pengzu/
+COPY bin/backend /opt/pengzu/
 
 EXPOSE 3000
 WORKDIR /opt/pengzu
-CMD ["/opt/pengzu/backend"]
+CMD ["/opt/pengzu/backend", "run"]
 

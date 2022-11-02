@@ -49,7 +49,6 @@ pub fn run_daemon(matches: &ArgMatches) -> Result<(), Error> {
     let library_path = library_path.into_os_string().into_string()?;
 
     if let Some(calibre_path) = matches.get_one::<String>(CALIBRE_LIBRARY) {
-        log::info!("calibre_path: {}", calibre_path);
         return new_task(calibre_path, &library_path, file_action);
     }
 

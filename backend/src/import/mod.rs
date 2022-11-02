@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 mod commands;
+mod convert;
 pub mod daemon;
 mod db;
 mod file_util;
@@ -10,4 +11,3 @@ mod import_books;
 pub mod models;
 mod new_task;
 mod run;
-pub mod views;

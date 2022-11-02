@@ -78,6 +78,12 @@ impl From<io::Error> for Error {
     }
 }
 
+impl From<image::ImageError> for Error {
+    fn from(err: image::ImageError) -> Self {
+        Self::from_string(ErrorKind::IoError, format!("{}", err))
+    }
+}
+
 impl From<r2d2::Error> for Error {
     fn from(err: r2d2::Error) -> Self {
         Self::from_string(ErrorKind::DbConnError, format!("r2d2 {}", err))

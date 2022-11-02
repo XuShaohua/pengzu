@@ -226,7 +226,11 @@ fn import_identifier_types(
     Ok(())
 }
 
-pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
+pub fn new_task(
+    calibre_library_path: &str,
+    library_path: &str,
+    file_action: ImportBookFileAction,
+) -> Result<(), Error> {
     let calibre_pool = get_calibre_db(calibre_library_path)?;
     let pg_pool = get_connection_pool()?;
     let mut sqlite_conn = calibre_pool.get()?;
@@ -239,18 +243,17 @@ pub fn new_task(calibre_library_path: &str) -> Result<(), Error> {
     import_file_formats(&mut sqlite_conn, &mut pg_conn)?;
     import_identifier_types(&mut sqlite_conn, &mut pg_conn)?;
 
-    // TODO(Shaohua): Use data directory.
-    let library_path = "/tmp/HelloLibrary".to_string();
     let options = ImportBookOptions {
-        file_action: ImportBookFileAction::DoNothing,
+        file_action,
         allow_duplication: true,
     };
     let options_str = serde_json::to_string(&options)?;
+
     #[allow(clippy::cast_possible_truncation)]
     let total_books = get_total_books(&mut sqlite_conn)? as i32;
     let new_library = NewImportLibrary {
         calibre_library_path: calibre_library_path.to_string(),
-        library_path,
+        library_path: library_path.to_owned(),
         total: total_books,
         finished: false,
         options: options_str,

@@ -365,6 +365,7 @@ fn copy_book_files(
     log::info!("copy_book_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
     log::info!("calibre_files len: {}", calibre_files.len());
+    log::info!("file action: {:?}", file_action);
 
     if let Err(err) = copy_book_cover(
         calibre_library_path,

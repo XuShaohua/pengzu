@@ -17,6 +17,7 @@ use serde::Serialize;
 use std::fs;
 
 use crate::error::{Error, ErrorKind};
+use crate::import::convert::convert_cover;
 use crate::import::file_util::{get_book_file_path, get_book_metadata_path};
 use crate::import::models::books::{add_import_book, NewImportBook};
 use crate::import::models::libraries::{update_import_library, ImportLibrary};
@@ -282,15 +283,21 @@ fn copy_book_file(
     }
 }
 
-fn copy_book_metadata(
+fn copy_book_metadata_opf(
     calibre_library_path: &str,
     library_path: &str,
     calibre_book_path: &str,
     book_path: &str,
-    file_name: &str,
-    move_files: bool,
+    file_action: ImportBookFileAction,
 ) -> Result<(), Error> {
-    log::info!("copy_metadata({}/{})", book_path, file_name);
+    let file_name = "metadata.opf";
+    log::info!("copy_book_metadata_opf({}/{})", book_path, file_name);
+    let move_files = match file_action {
+        ImportBookFileAction::Copy => false,
+        ImportBookFileAction::Move => true,
+        ImportBookFileAction::DoNothing => return Ok(()),
+    };
+
     let src_path = get_book_metadata_path(calibre_library_path, calibre_book_path, file_name);
     let dest_path = get_book_metadata_path(library_path, book_path, file_name);
     let parent_dir = dest_path.parent().ok_or_else(|| {
@@ -317,23 +324,34 @@ fn copy_book_cover(
     file_action: ImportBookFileAction,
 ) -> Result<(), Error> {
     log::info!("copy_book_cover({})", book_path);
+
+    let file_name = "cover.jpg";
     let move_files = match file_action {
         ImportBookFileAction::Copy => false,
         ImportBookFileAction::Move => true,
         ImportBookFileAction::DoNothing => return Ok(()),
     };
-    copy_book_metadata(
-        calibre_library_path,
-        library_path,
-        calibre_book_path,
-        book_path,
-        "cover.jpg",
-        move_files,
-    )
+
+    let src_path = get_book_metadata_path(calibre_library_path, calibre_book_path, file_name);
+    let dest_path = get_book_metadata_path(library_path, book_path, file_name);
+    let parent_dir = dest_path.parent().ok_or_else(|| {
+        Error::from_string(
+            ErrorKind::IoError,
+            format!("Failed to get parent dir: {:?}", &dest_path),
+        )
+    })?;
+    fs::create_dir_all(parent_dir)?;
+    if move_files {
+        fs::rename(&src_path, &dest_path).map(drop)?;
+    } else {
+        fs::copy(&src_path, &dest_path).map(drop)?;
+    }
+
+    convert_cover(&dest_path)
 }
 
 #[allow(clippy::too_many_arguments)]
-fn import_files(
+fn copy_book_files(
     calibre_library_path: &str,
     library_path: &str,
     sqlite_conn: &mut SqliteConnection,
@@ -344,7 +362,7 @@ fn import_files(
     book_path: &str,
     file_action: ImportBookFileAction,
 ) -> Result<(), Error> {
-    log::info!("import_files({}, {})", calibre_book_id, book_id);
+    log::info!("copy_book_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
     log::info!("calibre_files len: {}", calibre_files.len());
 
@@ -355,7 +373,17 @@ fn import_files(
         book_path,
         file_action,
     ) {
-        log::warn!("Failed to copy metadata: {:?}", err);
+        log::warn!("Failed to copy book cover: {:?}", err);
+    }
+
+    if let Err(err) = copy_book_metadata_opf(
+        calibre_library_path,
+        library_path,
+        calibre_book_path,
+        book_path,
+        file_action,
+    ) {
+        log::warn!("Failed to copy book metadata.opf: {:?}", err);
     }
 
     for calibre_file in calibre_files {
@@ -383,6 +411,9 @@ fn import_files(
     Ok(())
 }
 
+/// Import book details to pgsql database.
+///
+/// Copy book files and metadata (including cover image) if required.
 fn import_book_detail(
     calibre_library_path: &str,
     library_path: &str,
@@ -395,7 +426,7 @@ fn import_book_detail(
     let calibre_book_id = calibre_book.id;
     let book_id = book.id;
 
-    import_files(
+    copy_book_files(
         calibre_library_path,
         library_path,
         sqlite_conn,
@@ -417,6 +448,7 @@ fn import_book_detail(
     Ok(())
 }
 
+/// Add book record to pgsql database.
 fn import_book(
     calibre_library_path: &str,
     sqlite_conn: &mut SqliteConnection,

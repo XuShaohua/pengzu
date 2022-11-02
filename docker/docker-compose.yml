@@ -12,18 +12,15 @@ services:
       - /docker/pengzu-db-release/data:/var/lib/postgresql/data
 
   pengzu_app:
-    image: pengzu:latest
+    image: pengzu-backend:latest
     restart: always
     links:
       - pengzu_db:pengzu_db
 
   pengzu_nginx:
-    image: nginx:1.22
+    image: pengzu-frontend:latest
     restart: always
     links:
       - pengzu_app:pengzu_app
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./html:/var/www/html:ro
     ports:
       - 127.0.0.1:3100:80

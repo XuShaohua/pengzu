@@ -462,6 +462,7 @@ fn import_book(
             let new_book = NewBook {
                 title: calibre_book.title.clone(),
                 path: calibre_book.path,
+                author_sort: calibre_book.author_sort.unwrap_or_default(),
                 uuid: calibre_book.uuid,
                 has_cover: calibre_book.has_cover,
             };

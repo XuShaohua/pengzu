@@ -15,6 +15,7 @@ diesel::table! {
         id -> Int4,
         title -> Text,
         path -> Text,
+        author_sort -> Text,
         uuid -> Text,
         has_cover -> Bool,
         pubdate -> Nullable<Timestamp>,

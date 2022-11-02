@@ -22,6 +22,7 @@ pub struct Book {
     pub id: i32,
     pub title: String,
     pub path: String,
+    pub author_sort: String,
     pub uuid: String,
     pub has_cover: bool,
     pub pubdate: Option<NaiveDateTime>,
@@ -46,6 +47,7 @@ pub struct BookWithCover {
 pub struct NewBook {
     pub title: String,
     pub path: String,
+    pub author_sort: String,
     pub uuid: String,
     pub has_cover: bool,
 }

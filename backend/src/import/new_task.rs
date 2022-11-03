@@ -156,6 +156,7 @@ fn import_tags(
 ) -> Result<(), Error> {
     let limit = 10;
     let mut offset = 0;
+    const MAX_TAG_NAME_LENGTH: usize = 100;
 
     loop {
         let tag_list = get_tags(sqlite_conn, limit, offset)?;
@@ -166,14 +167,30 @@ fn import_tags(
         log::info!("tags offset: {}", offset);
 
         for tag in tag_list {
-            let new_tag = NewTag { name: tag.name };
-            if let Err(err) = add_tag(pg_conn, &new_tag) {
-                match err.kind() {
-                    ErrorKind::DbUniqueViolationError => {
-                        log::info!("tag exists: {:?}", new_tag);
-                        continue;
+            if tag.name.len() > MAX_TAG_NAME_LENGTH {
+                log::warn!("Ignore tag name which is too long: {}", tag.name);
+                continue;
+            }
+            let mut tag_parts: Vec<&str> = tag.name.split('&').collect();
+            if tag_parts.len() == 1 {
+                tag_parts = tag.name.split(';').collect();
+            }
+            if tag_parts.len() == 1 {
+                tag_parts = tag.name.split("；").collect();
+            }
+
+            for tag_part in tag_parts {
+                let new_tag = NewTag {
+                    name: tag_part.trim().to_owned(),
+                };
+                if let Err(err) = add_tag(pg_conn, &new_tag) {
+                    match err.kind() {
+                        ErrorKind::DbUniqueViolationError => {
+                            log::info!("tag exists: {:?}", new_tag);
+                            continue;
+                        }
+                        _ => return Err(err),
                     }
-                    _ => return Err(err),
                 }
             }
         }

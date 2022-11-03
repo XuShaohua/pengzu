@@ -12,7 +12,7 @@ services:
       - /docker/pengzu-db-release/data:/var/lib/postgresql/data
 
   pengzu_app:
-    image: pengzu-backend:latest
+    image: xushaohua/pengzu-backend:latest
     restart: always
     links:
       - pengzu_db:pengzu_db
@@ -20,7 +20,7 @@ services:
       - ./env.example:/opt/pengzu/.env:ro
 
   pengzu_nginx:
-    image: pengzu-frontend:latest
+    image: xushaohua/pengzu-frontend:latest
     restart: always
     links:
       - pengzu_app:pengzu_app

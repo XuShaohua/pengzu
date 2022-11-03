@@ -1,0 +1,20 @@
+FROM rust:bullseye as builder
+COPY . /build
+WORKDIR /build
+RUN cargo build --release --bin backend
+
+FROM debian:bullseye
+
+RUN rm -f /etc/apt/sources.list.d/*
+RUN echo 'deb http://mirrors.ustc.edu.cn/debian sid main' > /etc/apt/sources.list
+RUN apt update
+RUN apt install -y libsqlite3-0 libssl3 libpq5
+RUN apt clean
+
+RUN mkdir /opt/pengzu/
+COPY --from=0 /build/target/release/backend /opt/pengzu/
+
+EXPOSE 3000
+WORKDIR /opt/pengzu
+CMD ["/opt/pengzu/backend", "run"]
+

@@ -3,7 +3,7 @@ CURRENT_TAG = $(shell git describe --abbrev=0 --tags)
 all: push-backend-docker
 
 build-backend-docker:
-	docker build -t xushaohua/pengzu-backend:latest -f Dockerfile.backend-multi ..
+	docker build -t xushaohua/pengzu-backend:latest -f Dockerfile.backend ..
 	docker tag xushaohua/pengzu-backend:latest xushaohua/pengzu-backend:$(CURRENT_TAG)
 
 push-backend-docker: build-backend-docker

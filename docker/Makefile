@@ -3,10 +3,11 @@ CURRENT_TAG = $(shell git describe --abbrev=0 --tags)
 all: build-backend-docker
 
 build-backend:
-	cd ../backend && cargo build --release
+	docker run --rm --user "$(shell id -u)":"$(shell id -g)" -v "${PWD}/..":/build \
+		-w /build rust:bullseye cargo build --release --bin backend
 
-install-backend: build-backend
-	cp -v ../target/release/backend bin/
+install-backend:
+	install -m755 -v ../target/release/backend bin/
 
 build-backend-docker: install-backend
 	docker build -t xushaohua/pengzu-backend:latest -f Dockerfile.backend .

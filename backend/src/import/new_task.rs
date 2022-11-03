@@ -58,9 +58,12 @@ fn import_authors(
 
             for author_part in author_parts {
                 let new_author = NewAuthor {
-                    name: author_part.to_owned(),
+                    name: author_part.trim().to_owned(),
                     link: author.link.clone(),
                 };
+                if new_author.name.is_empty() {
+                    continue;
+                }
 
                 if let Err(err) = add_author(pg_conn, &new_author) {
                     match err.kind() {
@@ -200,6 +203,10 @@ fn import_tags(
                 let new_tag = NewTag {
                     name: tag_part.trim().to_owned(),
                 };
+                if new_tag.name.is_empty() {
+                    continue;
+                }
+
                 if let Err(err) = add_tag(pg_conn, &new_tag) {
                     match err.kind() {
                         ErrorKind::DbUniqueViolationError => {

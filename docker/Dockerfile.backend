@@ -1,5 +1,5 @@
 
-FROM debian:sid
+FROM debian:bullseye
 
 RUN rm -f /etc/apt/sources.list.d/*
 RUN echo 'deb http://mirrors.ustc.edu.cn/debian sid main' > /etc/apt/sources.list

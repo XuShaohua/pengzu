@@ -25,6 +25,8 @@ use crate::models::publishers::{add_publisher, NewPublisher};
 use crate::models::series::{add_series, NewSeries};
 use crate::models::tags::{add_tag, NewTag};
 
+const MAX_TAG_NAME_LENGTH: usize = 100;
+
 fn import_authors(
     sqlite_conn: &mut SqliteConnection,
     pg_conn: &mut PgConnection,
@@ -40,18 +42,34 @@ fn import_authors(
         log::info!("authors offset: {:?}", offset);
 
         for author in author_list {
-            let new_author = NewAuthor {
-                name: author.name,
-                link: author.link,
-            };
+            let mut author_parts: Vec<&str> = author.name.split('|').collect();
+            if author_parts.len() == 1 {
+                author_parts = author.name.split(';').collect();
+            }
+            if author_parts.len() == 1 {
+                author_parts = author.name.split('&').collect();
+            }
+            if author_parts.len() == 1 {
+                author_parts = author.name.split('；').collect();
+            }
+            if author_parts.len() == 1 {
+                author_parts = author.name.split('、').collect();
+            }
 
-            if let Err(err) = add_author(pg_conn, &new_author) {
-                match err.kind() {
-                    ErrorKind::DbUniqueViolationError => {
-                        log::info!("author exists: {:?}", new_author);
-                        continue;
+            for author_part in author_parts {
+                let new_author = NewAuthor {
+                    name: author_part.to_owned(),
+                    link: author.link.clone(),
+                };
+
+                if let Err(err) = add_author(pg_conn, &new_author) {
+                    match err.kind() {
+                        ErrorKind::DbUniqueViolationError => {
+                            log::info!("author exists: {:?}", new_author);
+                            continue;
+                        }
+                        _ => return Err(err),
                     }
-                    _ => return Err(err),
                 }
             }
         }
@@ -156,7 +174,6 @@ fn import_tags(
 ) -> Result<(), Error> {
     let limit = 10;
     let mut offset = 0;
-    const MAX_TAG_NAME_LENGTH: usize = 100;
 
     loop {
         let tag_list = get_tags(sqlite_conn, limit, offset)?;
@@ -176,7 +193,7 @@ fn import_tags(
                 tag_parts = tag.name.split("; ").collect();
             }
             if tag_parts.len() == 1 {
-                tag_parts = tag.name.split("；").collect();
+                tag_parts = tag.name.split('；').collect();
             }
 
             for tag_part in tag_parts {

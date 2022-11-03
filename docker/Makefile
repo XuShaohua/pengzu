@@ -22,3 +22,9 @@ install-frontend: build-frontend
 build-frontend-docker: install-frontend
 	docker build -t xushaohua/pengzu-frontend:latest -f Dockerfile.frontend .
 	docker tag xushaohua/pengzu-frontend:latest xushaohua/pengzu-frontend:$(CURRENT_TAG)
+
+push-docker: build-backend-docker build-frontend-docker
+	docker push xushaohua/pengzu-backend:latest
+	docker push xushaohua/pengzu-backend:$(CURRENT_TAG)
+	docker push xushaohua/pengzu-frontend:latest
+	docker push xushaohua/pengzu-frontend:$(CURRENT_TAG)

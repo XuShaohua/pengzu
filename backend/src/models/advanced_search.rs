@@ -17,8 +17,8 @@ pub struct AdvancedSearchQuery {
     pub order: GetBooksOrder,
 
     pub title: Option<String>,
-    pub author: Option<i32>,
-    pub publisher: Option<i32>,
+    pub author: Option<String>,
+    pub publisher: Option<String>,
 }
 
 #[allow(unused_assignments)]
@@ -26,9 +26,11 @@ pub fn get_books_by_advanced_search(
     conn: &mut PgConnection,
     query: &AdvancedSearchQuery,
 ) -> Result<GetBooksResp, Error> {
+    use crate::schema::authors;
     use crate::schema::books;
     use crate::schema::books_authors_link;
     use crate::schema::books_publishers_link;
+    use crate::schema::publishers;
 
     let books_query = GetBooksQuery {
         page: query.page,
@@ -37,25 +39,38 @@ pub fn get_books_by_advanced_search(
 
     let mut book_ids = Vec::new();
     let mut book_id_nil = true;
-    if let Some(author_id) = query.author {
+    if let Some(author_name) = &query.author {
+        book_id_nil = false;
+
+        let author_pattern = format!("%{}%", author_name);
+        let author_ids = authors::table
+            .filter(authors::name.ilike(author_pattern))
+            .select(authors::id)
+            .load::<i32>(conn)?;
+
         book_ids = books_authors_link::table
-            .filter(books_authors_link::author.eq(author_id))
+            .filter(books_authors_link::author.eq_any(author_ids))
             .select(books_authors_link::book)
             .load::<i32>(conn)?;
-        book_id_nil = false;
     }
 
-    if let Some(publisher_id) = query.publisher {
+    if let Some(publisher_name) = &query.publisher {
         book_id_nil = false;
+
+        let publisher_pattern = format!("%{}%", publisher_name);
+        let publisher_ids = publishers::table
+            .filter(publishers::name.ilike(publisher_pattern))
+            .select(publishers::id)
+            .load::<i32>(conn)?;
 
         if book_id_nil {
             book_ids = books_publishers_link::table
-                .filter(books_publishers_link::publisher.eq(publisher_id))
+                .filter(books_publishers_link::publisher.eq_any(publisher_ids))
                 .select(books_publishers_link::book)
                 .load::<i32>(conn)?;
         } else {
             book_ids = books_publishers_link::table
-                .filter(books_publishers_link::publisher.eq(publisher_id))
+                .filter(books_publishers_link::publisher.eq_any(publisher_ids))
                 .filter(books_publishers_link::book.eq_any(book_ids))
                 .select(books_publishers_link::book)
                 .load::<i32>(conn)?;

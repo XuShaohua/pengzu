@@ -1,6 +1,6 @@
 CURRENT_TAG = $(shell git describe --abbrev=0 --tags)
 
-all: push-backend-docker
+all: cleanup-target push-backend-docker push-frontend-docker
 
 build-backend-docker:
 	docker build -t xushaohua/pengzu-backend:latest -f Dockerfile.backend ..

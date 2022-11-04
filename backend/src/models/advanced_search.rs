@@ -7,7 +7,7 @@ use serde::Deserialize;
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksOrder, GetBooksQuery, GetBooksResp};
-use crate::models::page::{default_page_id, PageId, EACH_PAGE};
+use crate::models::page::{default_page_id, PageId};
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct AdvancedSearchQuery {
@@ -82,14 +82,12 @@ pub fn get_books_by_advanced_search(
             book_ids = books::table
                 .filter(books::title.ilike(&title_pattern))
                 .select(books::id)
-                .limit(EACH_PAGE)
                 .load::<i32>(conn)?;
         } else {
             book_ids = books::table
                 .filter(books::title.ilike(&title_pattern))
                 .filter(books::id.eq_any(book_ids))
                 .select(books::id)
-                .limit(EACH_PAGE)
                 .load::<i32>(conn)?;
         }
     }

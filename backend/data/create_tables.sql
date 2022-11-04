@@ -327,7 +327,7 @@ CREATE INDEX IF NOT EXISTS books_series_link_book_idx ON books_series_link (book
 CREATE INDEX IF NOT EXISTS books_tags_link_tag_idx ON books_tags_link (tag);
 CREATE INDEX IF NOT EXISTS books_tags_link_book_idx ON books_tags_link (book);
 CREATE INDEX IF NOT EXISTS comments_book_idx ON comments (book);
-CREATE INDEX IF NOT EXISTS categories_order_INDEX IF NOT EXISTS_idx ON categories (order_INDEX IF NOT EXISTS);
+CREATE INDEX IF NOT EXISTS categories_order_index_idx ON categories (order_index);
 CREATE INDEX IF NOT EXISTS categories_serial_number_idx ON categories (serial_number);
 CREATE INDEX IF NOT EXISTS categories_parent_idx ON categories (parent);
 CREATE INDEX IF NOT EXISTS files_book_idx ON files (book);

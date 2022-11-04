@@ -138,7 +138,11 @@ pub fn login(conn: &mut PgConnection, form: &LoginForm) -> Result<UserInfo, Erro
     log::info!("login() {:?}", form);
     let user = users::table
         .filter(users::name.eq(&form.username))
-        .first::<User>(conn)?;
+        .first::<User>(conn)
+        .map_err(|err| {
+            log::warn!("login failed: {}", err);
+            Error::new(ErrorKind::AuthFailed, "Invalid username or password")
+        })?;
 
     let hash = auth::PasswordHash::from_string(&user.hash)?;
     let salt = auth::Salt::from_string(&user.salt)?;

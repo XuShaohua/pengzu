@@ -5,7 +5,7 @@
 use actix_web::{middleware, web, App, HttpServer};
 use actix_web_httpauth::middleware::HttpAuthentication;
 
-use crate::db::get_connection_pool;
+use crate::db;
 use crate::error::Error;
 use crate::views::auth::auth_validator;
 use crate::views::{
@@ -221,7 +221,12 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
 }
 
 pub async fn run() -> Result<(), Error> {
-    let pool = get_connection_pool()?;
+    let pool = db::get_connection_pool()?;
+    {
+        log::info!("Initialize database tables");
+        let mut conn = pool.get()?;
+        db::create_table_schema(&mut conn)?;
+    }
 
     let server = HttpServer::new(move || {
         App::new()

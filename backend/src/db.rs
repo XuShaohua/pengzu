@@ -2,12 +2,15 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use diesel::connection::SimpleConnection;
 use diesel::pg::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
 
 use crate::error::{Error, ErrorKind};
 
 pub type DbPool = Pool<ConnectionManager<PgConnection>>;
+
+const TABLE_SCHEMAS: &str = include_str!("../data/create_tables.sql");
 
 /// Create postgres database connection pool.
 ///
@@ -37,4 +40,9 @@ pub fn get_connection_pool() -> Result<DbPool, Error> {
                 ),
             )
         })
+}
+
+pub fn create_table_schema(conn: &mut PgConnection) -> Result<(), Error> {
+    conn.batch_execute(TABLE_SCHEMAS)?;
+    Ok(())
 }

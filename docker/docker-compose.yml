@@ -16,8 +16,12 @@ services:
     restart: always
     links:
       - pengzu_db:pengzu_db
+    environment:
+      DATABASE_URL: postgres://postgres:pengzu-password@pengzu_db/pengzu
+      LIBRARY_ROOT_DIR: /opt/PengzuLibrary
+      JWT_SECRET: OaoQu9yoo7eehaht
     volumes:
-      - ./env.example:/opt/pengzu/.env:ro
+      - /local/path/to/PengzuLibrary:/opt/PengzuLibrary
 
   pengzu_nginx:
     image: xushaohua/pengzu-frontend:latest

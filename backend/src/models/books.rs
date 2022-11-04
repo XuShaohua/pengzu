@@ -148,7 +148,7 @@ pub fn book_to_book_cover(book: Book) -> BookWithCover {
     BookWithCover {
         id: book.id,
         title: book.title,
-        path: book.path.clone(),
+        path: file_data::get_book_file(&book.path),
         has_cover: book.has_cover,
         small_cover: file_data::get_small_cover(&book.path, book.has_cover),
         large_cover: file_data::get_large_cover(&book.path, book.has_cover),

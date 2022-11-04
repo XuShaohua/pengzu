@@ -190,11 +190,10 @@ impl actix_web::error::ResponseError for Error {
             | ErrorKind::RingError => StatusCode::INTERNAL_SERVER_ERROR,
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError
-            | ErrorKind::AuthFailed
             | ErrorKind::InvalidToken
             | ErrorKind::IoError => StatusCode::BAD_REQUEST,
             ErrorKind::DbNotFoundError => StatusCode::NOT_FOUND,
-            ErrorKind::JwtError => StatusCode::UNAUTHORIZED,
+            ErrorKind::JwtError | ErrorKind::AuthFailed => StatusCode::UNAUTHORIZED,
         }
     }
 }

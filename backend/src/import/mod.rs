@@ -2,11 +2,11 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-pub mod convert;
+mod convert;
 mod db;
 mod file_util;
 mod import_books;
-pub mod models;
+mod models;
 mod new_task;
 
 use clap::{Arg, ArgAction, ArgMatches, Command, ValueHint};

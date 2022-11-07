@@ -7,21 +7,9 @@ use std::env;
 
 use crate::error::Error;
 use crate::import;
-use crate::routers;
 
 mod add_user;
-
-const CMD_RUN: &str = "run";
-
-fn run_server_cmd() -> Command {
-    Command::new(CMD_RUN).about("Run server")
-}
-
-fn run_server() -> Result<(), Error> {
-    let rt = actix_rt::Runtime::new()?;
-    let handle = rt.spawn(async { routers::run().await });
-    rt.block_on(handle).unwrap()
-}
+mod run_server;
 
 pub fn run() -> Result<(), Error> {
     dotenv::dotenv().ok();
@@ -31,7 +19,7 @@ pub fn run() -> Result<(), Error> {
         .version(env!("VERGEN_GIT_SEMVER"))
         .author("Xu Shaohua <shaohua@biofan.org>")
         .about("Pengzu backend app")
-        .subcommand(run_server_cmd())
+        .subcommand(run_server::run_server_cmd())
         .subcommand(add_user::add_user_cmd())
         .subcommand(import::parse_cmdline());
     let matches = cmd.clone().get_matches();
@@ -39,8 +27,8 @@ pub fn run() -> Result<(), Error> {
     if let Some(matches) = matches.subcommand_matches(add_user::CMD_ADD_USER) {
         return add_user::add_user(matches);
     }
-    if let Some(_matches) = matches.subcommand_matches(CMD_RUN) {
-        return run_server();
+    if let Some(_matches) = matches.subcommand_matches(run_server::CMD_RUN_SERVER) {
+        return run_server::run_server();
     }
     if let Some(matches) = matches.subcommand_matches(import::CMD_IMPORT_LIBRARY) {
         return import::run_daemon(matches);

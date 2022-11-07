@@ -3,9 +3,9 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
-use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_hooks::{use_async, use_async_with_options, UseAsyncOptions};
 use yew_router::history::{History, Location};
-use yew_router::hooks::{use_history, use_location};
+use yew_router::hooks::use_history;
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -27,16 +27,24 @@ pub fn books_of_author(props: &Props) -> Html {
     util::set_document_title(&format!("Author: {}", props.author_id));
 
     let history = use_history().unwrap();
-    let location = use_location().unwrap();
+    let location = history.location();
     let query = location.query::<GetBooksQuery>().unwrap_or_default();
     let book_list = {
         let author_id = props.author_id;
         let query_clone = query.clone();
-        use_async_with_options(
-            async move { fetch_books_by_author(author_id, &query_clone).await },
-            UseAsyncOptions::enable_auto(),
-        )
+        use_async(async move { fetch_books_by_author(author_id, &query_clone).await })
     };
+
+    {
+        let book_list_clone = book_list.clone();
+        use_effect_with_deps(
+            move |_query_clone| {
+                book_list_clone.run();
+                || ()
+            },
+            query.clone(),
+        );
+    }
 
     let author_id = props.author_id;
     let author_info = use_async_with_options(

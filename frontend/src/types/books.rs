@@ -49,7 +49,7 @@ pub struct BookDetail {
     pub pubdate: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct GetBooksQuery {
     #[serde(default = "default_page_id")]
     pub page: PageId,

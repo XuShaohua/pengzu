@@ -3,9 +3,9 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
-use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_hooks::use_async;
 use yew_router::history::{History, Location};
-use yew_router::hooks::{use_history, use_location};
+use yew_router::hooks::use_history;
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -22,17 +22,25 @@ pub fn books_of_simple_search() -> Html {
     util::set_document_title("Search");
 
     let history = use_history().unwrap();
-    let location = use_location().unwrap();
+    let location = history.location();
     let query = location.query::<SimpleSearchQuery>().unwrap_or_default();
     let keyword = query.query.clone();
-    log::info!("keyword: {}", keyword);
+
     let book_list = {
         let query_clone = query.clone();
-        use_async_with_options(
-            async move { fetch_books_by_simple_search(&query_clone).await },
-            UseAsyncOptions::enable_auto(),
-        )
+        use_async(async move { fetch_books_by_simple_search(&query_clone).await })
     };
+
+    {
+        let book_list_clone = book_list.clone();
+        use_effect_with_deps(
+            move |_query_clone| {
+                book_list_clone.run();
+                || ()
+            },
+            query.clone(),
+        );
+    }
 
     let book_filter_onchange = {
         Callback::from(|order: GetBooksOrder| {

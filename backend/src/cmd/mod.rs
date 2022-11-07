@@ -6,9 +6,9 @@ use clap::Command;
 use std::env;
 
 use crate::error::Error;
-use crate::import;
 
 mod add_user;
+mod import_library;
 mod run_server;
 
 pub fn run() -> Result<(), Error> {
@@ -21,7 +21,7 @@ pub fn run() -> Result<(), Error> {
         .about("Pengzu backend app")
         .subcommand(run_server::run_server_cmd())
         .subcommand(add_user::add_user_cmd())
-        .subcommand(import::parse_cmdline());
+        .subcommand(import_library::parse_cmdline());
     let matches = cmd.clone().get_matches();
 
     if let Some(matches) = matches.subcommand_matches(add_user::CMD_ADD_USER) {
@@ -30,8 +30,8 @@ pub fn run() -> Result<(), Error> {
     if let Some(_matches) = matches.subcommand_matches(run_server::CMD_RUN_SERVER) {
         return run_server::run_server();
     }
-    if let Some(matches) = matches.subcommand_matches(import::CMD_IMPORT_LIBRARY) {
-        return import::run_daemon(matches);
+    if let Some(matches) = matches.subcommand_matches(import_library::CMD_IMPORT_LIBRARY) {
+        return import_library::run_daemon(matches);
     }
 
     cmd.print_help().map_err(Into::into)

@@ -20,9 +20,10 @@ pub fn run() -> Result<(), Error> {
         .version(env!("VERGEN_GIT_SEMVER"))
         .author("Xu Shaohua <shaohua@biofan.org>")
         .about("Pengzu backend app")
-        .subcommand(run_server::run_server_cmd())
-        .subcommand(add_user::add_user_cmd())
-        .subcommand(import_library::parse_cmdline());
+        .subcommand(run_server::new_cmd())
+        .subcommand(add_user::new_cmd())
+        .subcommand(import_library::new_cmd())
+        .subcommand(migrate::new_cmd());
     let matches = cmd.clone().get_matches();
 
     if let Some(matches) = matches.subcommand_matches(add_user::CMD_ADD_USER) {
@@ -33,6 +34,9 @@ pub fn run() -> Result<(), Error> {
     }
     if let Some(matches) = matches.subcommand_matches(import_library::CMD_IMPORT_LIBRARY) {
         return import_library::run_daemon(matches);
+    }
+    if let Some(_matches) = matches.subcommand_matches(migrate::CMD_MIGRATE) {
+        return migrate::do_migrate();
     }
 
     cmd.print_help().map_err(Into::into)

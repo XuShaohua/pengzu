@@ -9,8 +9,8 @@ use crate::migrations;
 
 pub const CMD_MIGRATE: &str = "migrate";
 
-pub fn migrate_cmd() -> Command {
-    Command::new(CMD_MIGRATE).about("Migrate to latest version")
+pub fn new_cmd() -> Command {
+    Command::new(CMD_MIGRATE).about("Migrate database to current version")
 }
 
 pub fn do_migrate() -> Result<(), Error> {

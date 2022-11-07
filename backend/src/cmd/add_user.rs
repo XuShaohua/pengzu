@@ -15,7 +15,7 @@ const OPT_PASSWORD: &str = "password";
 const OPT_EMAIL: &str = "email";
 const OPT_DISPLAY_NAME: &str = "display-name";
 
-pub fn add_user_cmd() -> Command {
+pub fn new_cmd() -> Command {
     Command::new(CMD_ADD_USER)
         .about("Add admin user")
         .arg(

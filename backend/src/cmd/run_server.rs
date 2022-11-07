@@ -9,7 +9,7 @@ use crate::routers;
 
 pub const CMD_RUN_SERVER: &str = "run";
 
-pub fn run_server_cmd() -> Command {
+pub fn new_cmd() -> Command {
     Command::new(CMD_RUN_SERVER).about("Run server")
 }
 

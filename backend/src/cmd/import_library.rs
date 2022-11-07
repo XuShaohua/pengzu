@@ -16,7 +16,7 @@ const OPT_MOVE_FILES: &str = "move-files";
 const OPT_CALIBRE_PATH: &str = "calibre_path";
 
 #[must_use]
-pub fn parse_cmdline() -> Command {
+pub fn new_cmd() -> Command {
     Command::new(CMD_IMPORT_LIBRARY)
         .about("Import books from calibra library")
         .arg(
@@ -52,5 +52,5 @@ pub fn run_daemon(matches: &ArgMatches) -> Result<(), Error> {
         return new_task(calibre_path, &library_path, file_action);
     }
 
-    parse_cmdline().print_help().map_err(Into::into)
+    new_cmd().print_help().map_err(Into::into)
 }

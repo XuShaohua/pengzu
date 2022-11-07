@@ -4,9 +4,9 @@ services:
     image: postgres:14.3
     restart: always
     environment:
-      POSTGRES_PASSWORD: pengzu-password
-      POSTGRES_USER: postgres
-      POSTGRES_DB: pengzu
+      - POSTGRES_PASSWORD=pengzu-password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=pengzu
     volumes:
       - /docker/pengzu:/var/lib/postgresql
       - /docker/pengzu/data:/var/lib/postgresql/data
@@ -17,9 +17,9 @@ services:
     links:
       - pengzu_db:pengzu_db
     environment:
-      DATABASE_URL: postgres://postgres:pengzu-password@pengzu_db/pengzu
-      LIBRARY_ROOT_DIR: /opt/PengzuLibrary
-      JWT_SECRET: OaoQu9yoo7eehaht
+      - DATABASE_URL=postgres://postgres:pengzu-password@pengzu_db/pengzu
+      - LIBRARY_ROOT_DIR=/opt/PengzuLibrary
+      - JWT_SECRET=OaoQu9yoo7eehaht
     volumes:
       - /local/path/to/PengzuLibrary:/opt/PengzuLibrary
 

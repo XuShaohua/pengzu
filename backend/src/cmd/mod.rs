@@ -9,6 +9,7 @@ use crate::error::Error;
 
 mod add_user;
 mod import_library;
+mod migrate;
 mod run_server;
 
 pub fn run() -> Result<(), Error> {

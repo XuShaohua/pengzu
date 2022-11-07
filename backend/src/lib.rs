@@ -23,11 +23,12 @@
 #![allow(clippy::extra_unused_lifetimes)]
 
 pub mod cmd;
-pub mod db;
+mod db;
 pub mod error;
-pub mod import;
-pub mod models;
-pub mod routers;
+mod import;
+mod migrations;
+mod models;
+mod routers;
 mod schema;
 mod settings;
 mod views;

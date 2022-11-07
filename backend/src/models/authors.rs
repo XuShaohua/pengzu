@@ -4,7 +4,8 @@
 
 use chrono::NaiveDateTime;
 use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, PgTextExpressionMethods, QueryDsl,
+    Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
 
@@ -94,6 +95,17 @@ pub fn get_author_by_name(conn: &mut PgConnection, author_name: &str) -> Result<
     use crate::schema::authors::dsl::{authors, name};
     authors
         .filter(name.eq(author_name))
+        .first::<Author>(conn)
+        .map_err(Into::into)
+}
+
+pub fn get_author_by_name_pattern(
+    conn: &mut PgConnection,
+    name_pattern: &str,
+) -> Result<Author, Error> {
+    use crate::schema::authors::dsl::{authors, name};
+    authors
+        .filter(name.ilike(name_pattern))
         .first::<Author>(conn)
         .map_err(Into::into)
 }

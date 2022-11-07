@@ -4,7 +4,8 @@
 
 use chrono::NaiveDateTime;
 use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, PgTextExpressionMethods, QueryDsl,
+    Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
 
@@ -42,6 +43,13 @@ pub fn get_tag_by_id(conn: &mut PgConnection, tag_id: i32) -> Result<Tag, Error>
 pub fn get_tag_by_name(conn: &mut PgConnection, tag_name: &str) -> Result<Tag, Error> {
     use crate::schema::tags::dsl::{name, tags};
     tags.filter(name.eq(tag_name))
+        .first(conn)
+        .map_err(Into::into)
+}
+
+pub fn get_tag_by_name_pattern(conn: &mut PgConnection, name_pattern: &str) -> Result<Tag, Error> {
+    use crate::schema::tags::dsl::{name, tags};
+    tags.filter(name.ilike(name_pattern))
         .first(conn)
         .map_err(Into::into)
 }

@@ -4,9 +4,10 @@
 
 use serde::{Deserialize, Serialize};
 
-pub type PageId = i64;
+pub const BOOKS_EACH_PAGE: i64 = 50;
+pub const CATEGORIES_EACH_PAGE: i64 = 90;
 
-pub const EACH_PAGE: i64 = 50;
+pub type PageId = i64;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Page {
@@ -20,6 +21,7 @@ pub const fn default_page_id() -> PageId {
     1
 }
 
+// TODO(Shaohua): Remove this struct.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PageQuery {
     #[serde(default = "default_page_id")]

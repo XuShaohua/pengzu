@@ -14,7 +14,7 @@ use super::page::{default_page_id, Page};
 use crate::error::Error;
 use crate::models::authors::get_authors_by_book_id;
 use crate::models::file_data;
-use crate::models::page::{PageId, EACH_PAGE};
+use crate::models::page::{PageId, BOOKS_EACH_PAGE};
 use crate::schema::books;
 
 #[derive(Debug, Serialize, Queryable)]
@@ -183,12 +183,12 @@ pub fn get_books(conn: &mut PgConnection, query: &GetBooksQuery) -> Result<GetBo
     use crate::schema::books::dsl::{books, id};
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * EACH_PAGE;
+    let offset = page_id * BOOKS_EACH_PAGE;
     let _order_column = query.order.get_column();
 
     let book_list = books
         .order_by(id.asc())
-        .limit(EACH_PAGE)
+        .limit(BOOKS_EACH_PAGE)
         .offset(offset)
         .load::<Book>(conn)?;
     let author_list = get_authors_by_book_id(conn, &book_list)?;
@@ -199,7 +199,7 @@ pub fn get_books(conn: &mut PgConnection, query: &GetBooksQuery) -> Result<GetBo
     Ok(GetBooksResp {
         page: Page {
             page_num: page_id + 1,
-            each_page: EACH_PAGE,
+            each_page: BOOKS_EACH_PAGE,
             total,
         },
         list,
@@ -213,14 +213,14 @@ pub fn get_books_by_ids(
     book_ids: &[i32],
 ) -> Result<GetBooksResp, Error> {
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * EACH_PAGE;
+    let offset = page_id * BOOKS_EACH_PAGE;
     // let order_column = query.order.get_column();
     let total = book_ids.len() as i64;
 
     let book_list = books::table
         .filter(books::id.eq_any(book_ids))
         .order_by(books::id.asc())
-        .limit(EACH_PAGE)
+        .limit(BOOKS_EACH_PAGE)
         .offset(offset)
         .load::<Book>(conn)?;
     let author_list = get_authors_by_book_id(conn, &book_list)?;
@@ -229,7 +229,7 @@ pub fn get_books_by_ids(
     Ok(GetBooksResp {
         page: Page {
             page_num: page_id + 1,
-            each_page: EACH_PAGE,
+            each_page: BOOKS_EACH_PAGE,
             total,
         },
         list,

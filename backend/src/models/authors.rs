@@ -9,9 +9,11 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 
-use super::page::{Page, PageQuery};
+use super::page::Page;
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, AuthorAndBookId, Book, GetBooksQuery, GetBooksResp};
+use crate::models::general_query::GeneralQuery;
+use crate::models::page::CATEGORIES_EACH_PAGE;
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -51,13 +53,13 @@ pub struct GetAuthorsResp {
     pub list: Vec<AuthorAndBook>,
 }
 
-pub fn get_authors(conn: &mut PgConnection, query: &PageQuery) -> Result<GetAuthorsResp, Error> {
+pub fn get_authors(conn: &mut PgConnection, query: &GeneralQuery) -> Result<GetAuthorsResp, Error> {
     use crate::schema::books_authors_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 100;
-    let offset = page_id * each_page;
+    let offset = page_id * CATEGORIES_EACH_PAGE;
 
+    // TODO(Shaohua): Support order.
     let list = authors::table
         .left_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
         .group_by(authors::id)
@@ -67,7 +69,7 @@ pub fn get_authors(conn: &mut PgConnection, query: &PageQuery) -> Result<GetAuth
             authors::link,
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_authors_link.id)"),
         ))
-        .limit(each_page)
+        .limit(CATEGORIES_EACH_PAGE)
         .offset(offset)
         .load::<AuthorAndBook>(conn)?;
 
@@ -76,7 +78,7 @@ pub fn get_authors(conn: &mut PgConnection, query: &PageQuery) -> Result<GetAuth
     Ok(GetAuthorsResp {
         page: Page {
             page_num: page_id + 1,
-            each_page,
+            each_page: CATEGORIES_EACH_PAGE,
             total,
         },
         list,

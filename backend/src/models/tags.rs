@@ -50,8 +50,8 @@ pub fn get_tag_by_name(conn: &mut PgConnection, tag_name: &str) -> Result<Tag, E
 }
 
 pub fn get_tag_by_name_pattern(conn: &mut PgConnection, name_pattern: &str) -> Result<Tag, Error> {
-    use crate::schema::tags::dsl::{name, tags};
-    tags.filter(name.ilike(name_pattern))
+    tags::table
+        .filter(tags::name.ilike(name_pattern))
         .first(conn)
         .map_err(Into::into)
 }
@@ -142,4 +142,9 @@ pub fn get_books_by_tag(
         .load::<i32>(conn)?;
 
     get_books_by_ids(conn, query, &book_ids)
+}
+
+pub fn delete_by_id(conn: &mut PgConnection, id: i32) -> Result<(), Error> {
+    diesel::delete(tags::table.find(id)).execute(conn)?;
+    Ok(())
 }

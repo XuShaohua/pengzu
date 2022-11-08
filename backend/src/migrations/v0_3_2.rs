@@ -25,6 +25,7 @@ fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
         let name_pattern = format!("%{}%", pattern);
         // Step 1: Query tag pattern.
         while let Ok(old_tag) = tags::get_tag_by_name_pattern(conn, &name_pattern) {
+            log::info!("Migrate tag: {}, id: {}", old_tag.name, old_tag.id);
             let parts: Vec<&str> = old_tag.name.split(pattern).collect();
             let mut new_tag_ids = Vec::with_capacity(parts.len());
 
@@ -63,10 +64,13 @@ fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
                         )?;
                     }
 
-                    // Step 4: Finally remove old link.
+                    // Step 4: Remove old link.
                     books_tags::delete_by_id(conn, old_book_tag.id)?;
                 }
             }
+
+            // Step 5: Finally remove old tag
+            tags::delete_by_id(conn, old_tag.id)?;
         }
     }
 

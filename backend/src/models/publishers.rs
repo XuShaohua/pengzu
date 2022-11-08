@@ -8,9 +8,11 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 
-use super::page::{Page, PageQuery};
+use super::page::Page;
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
+use crate::models::general_query::GeneralQuery;
+use crate::models::page::PUBLISHERS_EACH_PAGE;
 use crate::schema::publishers;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -50,13 +52,14 @@ pub struct GetPublishersResp {
 
 pub fn get_publishers(
     conn: &mut PgConnection,
-    query: &PageQuery,
+    query: &GeneralQuery,
 ) -> Result<GetPublishersResp, Error> {
     use crate::schema::books_publishers_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 50;
-    let offset = page_id * each_page;
+    let offset = page_id * PUBLISHERS_EACH_PAGE;
+
+    // TODO(Shaohua): Support query order.
 
     let list = publishers::table
         .left_join(
@@ -68,7 +71,7 @@ pub fn get_publishers(
             publishers::name,
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_publishers_link.id)"),
         ))
-        .limit(each_page)
+        .limit(PUBLISHERS_EACH_PAGE)
         .offset(offset)
         .load::<PublisherAndBook>(conn)?;
 
@@ -77,7 +80,7 @@ pub fn get_publishers(
     Ok(GetPublishersResp {
         page: Page {
             page_num: page_id + 1,
-            each_page,
+            each_page: PUBLISHERS_EACH_PAGE,
             total,
         },
         list,

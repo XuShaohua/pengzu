@@ -6,7 +6,7 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::page::PageQuery;
+use crate::models::general_query::GeneralQuery;
 use crate::models::{books, publishers};
 
 pub async fn add_publisher(
@@ -23,7 +23,7 @@ pub async fn add_publisher(
 
 pub async fn get_publishers(
     pool: web::Data<DbPool>,
-    query: web::Query<PageQuery>,
+    query: web::Query<GeneralQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp_publishers = web::block(move || {
         let mut conn = pool.get()?;

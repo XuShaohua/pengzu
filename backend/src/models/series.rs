@@ -8,9 +8,11 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 
-use super::page::{Page, PageQuery};
+use super::page::Page;
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
+use crate::models::general_query::GeneralQuery;
+use crate::models::page::SERIES_EACH_PAGE;
 use crate::schema::series;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -48,12 +50,16 @@ pub struct GetSeriesResp {
     pub list: Vec<SeriesAndBook>,
 }
 
-pub fn get_series_list(conn: &mut PgConnection, query: &PageQuery) -> Result<GetSeriesResp, Error> {
+pub fn get_series_list(
+    conn: &mut PgConnection,
+    query: &GeneralQuery,
+) -> Result<GetSeriesResp, Error> {
     use crate::schema::books_series_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 50;
-    let offset = page_id * each_page;
+    let offset = page_id * SERIES_EACH_PAGE;
+
+    // TODO(Shaohua): Support query order
 
     let list = series::table
         .left_join(books_series_link::table.on(books_series_link::series.eq(series::id)))
@@ -63,7 +69,7 @@ pub fn get_series_list(conn: &mut PgConnection, query: &PageQuery) -> Result<Get
             series::name,
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_series_link.id)"),
         ))
-        .limit(each_page)
+        .limit(SERIES_EACH_PAGE)
         .offset(offset)
         .load::<SeriesAndBook>(conn)?;
 
@@ -72,7 +78,7 @@ pub fn get_series_list(conn: &mut PgConnection, query: &PageQuery) -> Result<Get
     Ok(GetSeriesResp {
         page: Page {
             page_num: page_id + 1,
-            each_page,
+            each_page: SERIES_EACH_PAGE,
             total,
         },
         list,

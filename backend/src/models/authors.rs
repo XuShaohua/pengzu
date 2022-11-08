@@ -13,7 +13,7 @@ use super::page::Page;
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, AuthorAndBookId, Book, GetBooksQuery, GetBooksResp};
 use crate::models::general_query::GeneralQuery;
-use crate::models::page::CATEGORIES_EACH_PAGE;
+use crate::models::page::AUTHORS_EACH_PAGE;
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -57,7 +57,7 @@ pub fn get_authors(conn: &mut PgConnection, query: &GeneralQuery) -> Result<GetA
     use crate::schema::books_authors_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * CATEGORIES_EACH_PAGE;
+    let offset = page_id * AUTHORS_EACH_PAGE;
 
     // TODO(Shaohua): Support order.
     let list = authors::table
@@ -69,7 +69,7 @@ pub fn get_authors(conn: &mut PgConnection, query: &GeneralQuery) -> Result<GetA
             authors::link,
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_authors_link.id)"),
         ))
-        .limit(CATEGORIES_EACH_PAGE)
+        .limit(AUTHORS_EACH_PAGE)
         .offset(offset)
         .load::<AuthorAndBook>(conn)?;
 
@@ -78,7 +78,7 @@ pub fn get_authors(conn: &mut PgConnection, query: &GeneralQuery) -> Result<GetA
     Ok(GetAuthorsResp {
         page: Page {
             page_num: page_id + 1,
-            each_page: CATEGORIES_EACH_PAGE,
+            each_page: AUTHORS_EACH_PAGE,
             total,
         },
         list,

@@ -9,6 +9,7 @@ pub mod books_meta;
 pub mod categories;
 pub mod file_formats;
 pub mod files;
+pub mod general_query;
 pub mod languages;
 pub mod page;
 pub mod publishers;

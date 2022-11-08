@@ -8,7 +8,7 @@ use diesel::PgConnection;
 
 use crate::db;
 use crate::error::Error;
-use crate::models::{authors, books_tags, tags};
+use crate::models::{authors, books_authors, books_tags, tags};
 
 pub fn migrate() -> Result<(), Error> {
     let db_pool = db::get_connection_pool()?;
@@ -27,7 +27,6 @@ fn split_author_names(conn: &mut PgConnection) -> Result<(), Error> {
         if let Ok(old_tag) = tags::get_tag_by_name_pattern(conn, &name_pattern) {
             let parts: Vec<&str> = old_tag.name.split(pattern).collect();
             let mut new_tag_ids = Vec::with_capacity(parts.len());
-            log::info!("parts: {:?}", parts);
 
             // Step 2: Create new tags.
             for part in parts {
@@ -68,9 +67,45 @@ fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
     let patterns = [";", "&", "；", "、"];
     for pattern in patterns {
         let name_pattern = format!("%{}%", pattern);
-        if let Ok(author) = authors::get_author_by_name_pattern(conn, &name_pattern) {
-            log::info!("find author: {:?}", author);
+        // Step 1: Query author pattern.
+        if let Ok(old_author) = authors::get_author_by_name_pattern(conn, &name_pattern) {
+            let parts: Vec<&str> = old_author.name.split(pattern).collect();
+            let mut new_author_ids = Vec::with_capacity(parts.len());
+
+            // Step 2: Create new authors.
+            for part in parts {
+                let new_author = authors::add_author(
+                    conn,
+                    &authors::NewAuthor {
+                        name: part.to_string(),
+                        link: String::new(),
+                    },
+                )?;
+                new_author_ids.push(new_author.id);
+            }
+
+            // If this old_author is in use, migrate to new authors.
+            if let Ok(old_book_author_list) =
+                books_authors::get_links_by_author(conn, old_author.id)
+            {
+                for old_book_author in &old_book_author_list {
+                    // Step 3: Insert new links.
+                    for author_id in &new_author_ids {
+                        books_authors::add_book_author(
+                            conn,
+                            &books_authors::NewBookAuthor {
+                                book: old_book_author.book,
+                                author: *author_id,
+                            },
+                        )?;
+                    }
+
+                    // Step 4: Finally remove old link.
+                    books_authors::delete_by_id(conn, old_book_author.id)?;
+                }
+            }
         }
     }
-    Ok(())
+
+    todo!()
 }

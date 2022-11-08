@@ -30,12 +30,11 @@ pub struct Author {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_author(conn: &mut PgConnection, new_author: &NewAuthor) -> Result<(), Error> {
-    use crate::schema::authors::dsl::authors;
-    diesel::insert_into(authors)
+pub fn add_author(conn: &mut PgConnection, new_author: &NewAuthor) -> Result<Author, Error> {
+    diesel::insert_into(authors::table)
         .values(new_author)
-        .execute(conn)?;
-    Ok(())
+        .get_result::<Author>(conn)
+        .map_err(Into::into)
 }
 
 #[derive(Debug, Serialize, Queryable)]

@@ -4,10 +4,10 @@
 
 pub mod book_filter;
 pub mod book_list;
-pub mod book_pagination;
 pub mod footer;
 pub mod header;
 mod header_search;
 pub mod left_panel;
 pub mod not_found;
+pub mod pagination;
 pub mod user_context_provider;

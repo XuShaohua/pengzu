@@ -9,7 +9,7 @@ use yew_router::hooks::use_history;
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
-use crate::components::book_pagination::BookPaginationComponent;
+use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::books::fetch_books;
 use crate::types::books::{GetBooksOrder, GetBooksQuery};
@@ -63,7 +63,7 @@ pub fn books() -> Html {
                 <h2>{ "Books" }</h2>
                 <BookFilterComponent onchange={ book_filter_onchange } current_order={query.order} />
                 <BookListComponent books={ book_list.list.clone() } />
-                <BookPaginationComponent current_page={ book_list.page.page_num }
+                <PaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }
                     onclick={ pagination_onclick } />
                 </>

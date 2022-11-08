@@ -13,10 +13,10 @@ pub struct Props {
     pub onclick: Callback<PageId>,
 }
 
-#[function_component(BookPaginationComponent)]
-pub fn book_pagination(props: &Props) -> Html {
-    let style_str = include_str!("book_pagination.css");
-    let style_cls = Style::new(style_str).expect("Invalid style file book_pagination.css");
+#[function_component(PaginationComponent)]
+pub fn pagination(props: &Props) -> Html {
+    let style_str = include_str!("pagination.css");
+    let style_cls = Style::new(style_str).expect("Invalid style file pagination.css");
 
     let has_previous = props.current_page > 1;
     let has_next = props.current_page + 1 < props.total_pages;

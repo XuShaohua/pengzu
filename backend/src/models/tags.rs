@@ -30,10 +30,12 @@ pub struct Tag {
     pub last_modified: NaiveDateTime,
 }
 
-pub fn add_tag(conn: &mut PgConnection, new_tag: &NewTag) -> Result<(), Error> {
+pub fn add_tag(conn: &mut PgConnection, new_tag: &NewTag) -> Result<Tag, Error> {
     use crate::schema::tags::dsl::tags;
-    diesel::insert_into(tags).values(new_tag).execute(conn)?;
-    Ok(())
+    diesel::insert_into(tags)
+        .values(new_tag)
+        .get_result::<Tag>(conn)
+        .map_err(Into::into)
 }
 
 pub fn get_tag_by_id(conn: &mut PgConnection, tag_id: i32) -> Result<Tag, Error> {

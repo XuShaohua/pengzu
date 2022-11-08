@@ -9,6 +9,7 @@ use crate::models::authors::get_authors_by_book_id;
 use crate::models::books::{merge_books_and_authors, Book, GetBooksResp};
 use crate::models::page::{default_page_id, Page, EACH_PAGE};
 
+#[allow(clippy::redundant_pub_crate)]
 pub fn get_books_by_discover(conn: &mut PgConnection) -> Result<GetBooksResp, Error> {
     use crate::schema::books;
 

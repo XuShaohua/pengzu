@@ -7,10 +7,11 @@ use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::{use_history, History, Link, Location};
 
+use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::authors::fetch_authors;
-use crate::types::general_query::GeneralQuery;
+use crate::types::general_query::{GeneralOrder, GeneralQuery};
 use crate::types::page::PageId;
 use crate::views::util;
 
@@ -39,16 +40,25 @@ pub fn home() -> Html {
         );
     }
 
-    let pagination_onclick = Callback::from(move |page_id: PageId| {
-        util::scroll_to_top();
+    let filter_onchange = {
+        Callback::from(|order: GeneralOrder| {
+            log::info!("new order: {:?}", order);
+        })
+    };
 
-        let new_query = GeneralQuery {
-            page: page_id,
-            ..query
-        };
-        let ret = history.push_with_query(Route::Author, &new_query);
-        debug_assert!(ret.is_ok());
-    });
+    let pagination_onclick = {
+        let query_clone = query.clone();
+        Callback::from(move |page_id: PageId| {
+            util::scroll_to_top();
+
+            let new_query = GeneralQuery {
+                page: page_id,
+                ..query_clone
+            };
+            let ret = history.push_with_query(Route::Author, &new_query);
+            debug_assert!(ret.is_ok());
+        })
+    };
 
     author_list.data.as_ref().map_or_else(
         || html! {},
@@ -56,6 +66,7 @@ pub fn home() -> Html {
             html! {
                 <>
                 <h2>{ "Authors" }</h2>
+                <GeneralFilterComponent onchange={ filter_onchange } current_order={ query.order } />
                 <ul class={ style_cls }>
                 {for author_list.list.iter().map(|author| html! {
                     <li class="author-item" key={ author.id }>

@@ -44,16 +44,16 @@ pub fn books() -> Html {
         })
     };
 
-    let pagination_onclick = {
-        Callback::from(move |page_id: PageId| {
-            let new_query = GetBooksQuery {
-                page: page_id,
-                ..query
-            };
-            let ret = history.push_with_query(Route::Book, &new_query);
-            debug_assert!(ret.is_ok());
-        })
-    };
+    let pagination_onclick = Callback::from(move |page_id: PageId| {
+        util::scroll_to_top();
+
+        let new_query = GetBooksQuery {
+            page: page_id,
+            ..query
+        };
+        let ret = history.push_with_query(Route::Book, &new_query);
+        debug_assert!(ret.is_ok());
+    });
 
     book_list.data.as_ref().map_or_else(
         || html! {},

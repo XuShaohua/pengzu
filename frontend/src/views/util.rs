@@ -2,6 +2,8 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use web_sys::{ScrollBehavior, ScrollToOptions, Window};
+
 pub const KILO_BYTES: i32 = 1 << 10;
 pub const MEGA_BYTES: i32 = 1 << 20;
 
@@ -40,4 +42,11 @@ pub fn set_document_title(title: &str) {
         let title = [prefix, title].join(" | ");
         gloo_utils::document().set_title(&title);
     }
+}
+
+pub fn scroll_to_top() {
+    let window: Window = gloo_utils::window();
+    let mut options = ScrollToOptions::new();
+    options.top(0.0).behavior(ScrollBehavior::Instant);
+    window.scroll_to_with_scroll_to_options(&options);
 }

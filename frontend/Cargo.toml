@@ -31,5 +31,7 @@ features = [
     "RequestInit",
     "RequestMode",
     "Response",
+    "ScrollBehavior",
+    "ScrollToOptions",
     "Window",
 ]

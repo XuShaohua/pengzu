@@ -4,15 +4,17 @@
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
+use crate::types::general_query::GeneralQuery;
 use crate::types::publishers::{Publisher, PublisherList};
 
 /// Get publisher list.
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_publishers() -> Result<PublisherList, FetchError> {
-    let url = "/api/publisher";
-    request_get(url).await
+pub async fn fetch_publishers(query: &GeneralQuery) -> Result<PublisherList, FetchError> {
+    let query_str = serde_urlencoded::to_string(query)?;
+    let url = ["/api/publisher", &query_str].join("?");
+    request_get(&url).await
 }
 
 /// Get publisher info.

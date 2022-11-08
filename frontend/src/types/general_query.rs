@@ -29,3 +29,12 @@ pub struct GeneralQuery {
     #[serde(default = "GeneralOrder::default")]
     pub order: GeneralOrder,
 }
+
+impl Default for GeneralQuery {
+    fn default() -> Self {
+        Self {
+            page: default_page_id(),
+            order: GeneralOrder::default(),
+        }
+    }
+}

@@ -5,15 +5,16 @@
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
 use crate::types::authors::{Author, AuthorList};
+use crate::types::general_query::GeneralQuery;
 
 /// Get author list
 ///
 /// # Errors
 /// Returns error if server failed.
-pub async fn fetch_authors() -> Result<AuthorList, FetchError> {
-    // TODO(Shaohua): Add query.
-    let url = "/api/author";
-    request_get(url).await
+pub async fn fetch_authors(query: &GeneralQuery) -> Result<AuthorList, FetchError> {
+    let query_str = serde_urlencoded::to_string(query)?;
+    let url = ["/api/author", &query_str].join("?");
+    request_get(&url).await
 }
 
 /// Get author info

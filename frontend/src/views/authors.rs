@@ -4,11 +4,14 @@
 
 use stylist::Style;
 use yew::prelude::*;
-use yew_hooks::prelude::{use_async_with_options, UseAsyncOptions};
-use yew_router::prelude::Link;
+use yew_hooks::use_async;
+use yew_router::prelude::{use_history, History, Link, Location};
 
+use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::authors::fetch_authors;
+use crate::types::general_query::GeneralQuery;
+use crate::types::page::PageId;
 use crate::views::util;
 
 #[function_component(AuthorsComponent)]
@@ -18,10 +21,34 @@ pub fn home() -> Html {
     let style_str = include_str!("authors.css");
     let style_cls = Style::new(style_str).expect("Invalid style file authors.css");
 
-    let author_list = use_async_with_options(
-        async move { fetch_authors().await },
-        UseAsyncOptions::enable_auto(),
-    );
+    let history = use_history().unwrap();
+    let location = history.location();
+    let query = location.query::<GeneralQuery>().unwrap_or_default();
+    let author_list = {
+        let query_clone = query.clone();
+        use_async(async move { fetch_authors(&query_clone).await })
+    };
+    {
+        let author_list_clone = author_list.clone();
+        use_effect_with_deps(
+            move |_query_clone| {
+                author_list_clone.run();
+                || ()
+            },
+            query.clone(),
+        );
+    }
+
+    let pagination_onclick = Callback::from(move |page_id: PageId| {
+        util::scroll_to_top();
+
+        let new_query = GeneralQuery {
+            page: page_id,
+            ..query
+        };
+        let ret = history.push_with_query(Route::Author, &new_query);
+        debug_assert!(ret.is_ok());
+    });
 
     author_list.data.as_ref().map_or_else(
         || html! {},
@@ -39,6 +66,9 @@ pub fn home() -> Html {
                     </li>
                 })}
                 </ul>
+                <PaginationComponent  current_page={ author_list.page.page_num }
+                    total_pages={ author_list.page.total_pages() }
+                    onclick={ pagination_onclick } />
                 </>
             }
         },

@@ -151,3 +151,8 @@ pub fn get_books_by_author(
 
     get_books_by_ids(conn, query, &book_ids)
 }
+
+pub fn delete_by_id(conn: &mut PgConnection, id: i32) -> Result<(), Error> {
+    diesel::delete(authors::table.find(id)).execute(conn)?;
+    Ok(())
+}

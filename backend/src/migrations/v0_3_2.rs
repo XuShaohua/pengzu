@@ -4,10 +4,12 @@
 
 //! Migrate to v0.3.2
 
+#![allow(dead_code)]
+
 use diesel::PgConnection;
 
 use crate::db;
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
 use crate::models::{authors, books_authors, books_tags, tags};
 
 pub fn migrate() -> Result<(), Error> {
@@ -15,10 +17,11 @@ pub fn migrate() -> Result<(), Error> {
     let mut pg_conn = db_pool.get()?;
 
     split_author_names(&mut pg_conn)?;
-    split_tag_names(&mut pg_conn)
+    // split_tag_names(&mut pg_conn)
+    Ok(())
 }
 
-fn split_author_names(conn: &mut PgConnection) -> Result<(), Error> {
+fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
     // See import_tags() in src/import/new_task.rs
     let patterns = [" & ", "; ", "；"];
     for pattern in patterns {
@@ -59,16 +62,18 @@ fn split_author_names(conn: &mut PgConnection) -> Result<(), Error> {
             }
         }
     }
+
     Ok(())
 }
 
-fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
+fn split_author_names(conn: &mut PgConnection) -> Result<(), Error> {
     // See import_authors() in src/import/new_task.rs
     let patterns = [";", "&", "；", "、"];
     for pattern in patterns {
         let name_pattern = format!("%{}%", pattern);
         // Step 1: Query author pattern.
         if let Ok(old_author) = authors::get_author_by_name_pattern(conn, &name_pattern) {
+            log::info!("Migrate author: {}", old_author.name);
             let parts: Vec<&str> = old_author.name.split(pattern).collect();
             let mut new_author_ids = Vec::with_capacity(parts.len());
 
@@ -80,8 +85,19 @@ fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
                         name: part.to_string(),
                         link: String::new(),
                     },
-                )?;
-                new_author_ids.push(new_author.id);
+                );
+                match new_author {
+                    Ok(new_author) => {
+                        new_author_ids.push(new_author.id);
+                    }
+                    Err(err) => match err.kind() {
+                        ErrorKind::DbUniqueViolationError => {
+                            log::info!("author exists: {:?}", part);
+                            continue;
+                        }
+                        _ => return Err(err),
+                    },
+                }
             }
 
             // If this old_author is in use, migrate to new authors.
@@ -100,12 +116,15 @@ fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
                         )?;
                     }
 
-                    // Step 4: Finally remove old link.
+                    // Step 4: Remove old link.
                     books_authors::delete_by_id(conn, old_book_author.id)?;
                 }
             }
+
+            // Step 5: Finally remove old author
+            authors::delete_by_id(conn, old_author.id)?;
         }
     }
 
-    todo!()
+    Ok(())
 }

@@ -27,7 +27,7 @@ fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
     for pattern in patterns {
         let name_pattern = format!("%{}%", pattern);
         // Step 1: Query tag pattern.
-        if let Ok(old_tag) = tags::get_tag_by_name_pattern(conn, &name_pattern) {
+        while let Ok(old_tag) = tags::get_tag_by_name_pattern(conn, &name_pattern) {
             let parts: Vec<&str> = old_tag.name.split(pattern).collect();
             let mut new_tag_ids = Vec::with_capacity(parts.len());
 
@@ -72,17 +72,22 @@ fn split_author_names(conn: &mut PgConnection) -> Result<(), Error> {
     for pattern in patterns {
         let name_pattern = format!("%{}%", pattern);
         // Step 1: Query author pattern.
-        if let Ok(old_author) = authors::get_author_by_name_pattern(conn, &name_pattern) {
-            log::info!("Migrate author: {}", old_author.name);
+        while let Ok(old_author) = authors::get_author_by_name_pattern(conn, &name_pattern) {
+            log::info!("Migrate author: {}, id: {}", old_author.name, old_author.id);
             let parts: Vec<&str> = old_author.name.split(pattern).collect();
             let mut new_author_ids = Vec::with_capacity(parts.len());
 
             // Step 2: Create new authors.
             for part in parts {
+                let name = part.trim().to_string();
+                if name.is_empty() {
+                    continue;
+                }
+
                 let new_author = authors::add_author(
                     conn,
                     &authors::NewAuthor {
-                        name: part.to_string(),
+                        name: name.clone(),
                         link: String::new(),
                     },
                 );
@@ -92,7 +97,7 @@ fn split_author_names(conn: &mut PgConnection) -> Result<(), Error> {
                     }
                     Err(err) => match err.kind() {
                         ErrorKind::DbUniqueViolationError => {
-                            log::info!("author exists: {:?}", part);
+                            log::info!("author exists: {:?}", name);
                             continue;
                         }
                         _ => return Err(err),

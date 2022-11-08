@@ -5,6 +5,7 @@
 pub mod book_filter;
 pub mod book_list;
 pub mod footer;
+pub mod general_filter;
 pub mod header;
 mod header_search;
 pub mod left_panel;

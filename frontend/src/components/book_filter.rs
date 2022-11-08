@@ -59,7 +59,7 @@ pub fn book_filter(props: &Props) -> Html {
         </button>
         <button class={ get_button_cls(GetBooksOrder::TitleDesc) }
             title={ "Sort titles in reverse alphabetical order" }
-            onclick={ button_onclick(GetBooksOrder::TitleAsc) }>
+            onclick={ button_onclick(GetBooksOrder::TitleDesc) }>
             <span class="glyphicon glyphicon-font" />
             <span class="glyphicon glyphicon-sort-by-alphabet-alt" />
         </button>

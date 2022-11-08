@@ -18,6 +18,7 @@ pub mod discover;
 mod file_data;
 pub mod file_formats;
 pub mod files;
+pub mod general_query;
 pub mod identifier_types;
 pub mod identifiers;
 pub mod languages;

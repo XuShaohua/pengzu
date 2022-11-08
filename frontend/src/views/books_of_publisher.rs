@@ -73,6 +73,8 @@ pub fn books_of_publisher(props: &Props) -> Html {
     let pagination_onclick = {
         let publisher_id = props.publisher_id;
         Callback::from(move |page_id: PageId| {
+            util::scroll_to_top();
+
             let new_query = GetBooksQuery {
                 page: page_id,
                 ..query

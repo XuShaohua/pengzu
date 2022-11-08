@@ -50,6 +50,8 @@ pub fn books_of_advanced_search() -> Html {
     let pagination_onclick = {
         let query_clone = query.clone();
         Callback::from(move |page_id: PageId| {
+            util::scroll_to_top();
+
             let new_query = AdvancedSearchQuery {
                 page: page_id,
                 ..query_clone.clone()

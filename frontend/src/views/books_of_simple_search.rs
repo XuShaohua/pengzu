@@ -51,6 +51,8 @@ pub fn books_of_simple_search() -> Html {
     let pagination_onclick = {
         let query_clone = query.clone();
         Callback::from(move |page_id: PageId| {
+            util::scroll_to_top();
+
             let new_query = SimpleSearchQuery {
                 page: page_id,
                 ..query_clone.clone()

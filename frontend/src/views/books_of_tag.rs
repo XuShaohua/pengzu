@@ -73,6 +73,8 @@ pub fn books_of_tag(props: &Props) -> Html {
     let pagination_onclick = {
         let tag_id = props.tag_id;
         Callback::from(move |page_id: PageId| {
+            util::scroll_to_top();
+
             let new_query = GetBooksQuery {
                 page: page_id,
                 ..query

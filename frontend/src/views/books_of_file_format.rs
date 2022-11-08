@@ -66,6 +66,8 @@ pub fn books_of_file_format(props: &Props) -> Html {
     let pagination_onclick = {
         let format_id = props.format_id;
         Callback::from(move |page_id: PageId| {
+            util::scroll_to_top();
+
             let new_query = GetBooksQuery {
                 page: page_id,
                 ..query

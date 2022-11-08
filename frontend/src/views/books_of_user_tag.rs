@@ -74,6 +74,8 @@ pub fn books_of_user_tag(props: &Props) -> Html {
         let tag_id = props.tag_id;
         let query_clone = query.clone();
         Callback::from(move |page_id: PageId| {
+            util::scroll_to_top();
+
             let new_query = GetBooksQuery {
                 page: page_id,
                 ..query_clone

@@ -4,15 +4,17 @@
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
+use crate::types::general_query::GeneralQuery;
 use crate::types::series::{Series, SeriesList};
 
 /// Get series list.
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_series_list() -> Result<SeriesList, FetchError> {
-    let url = "/api/series";
-    request_get(url).await
+pub async fn fetch_series_list(query: &GeneralQuery) -> Result<SeriesList, FetchError> {
+    let query_str = serde_urlencoded::to_string(query)?;
+    let url = ["/api/series", &query_str].join("?");
+    request_get(&url).await
 }
 
 /// Get series info.

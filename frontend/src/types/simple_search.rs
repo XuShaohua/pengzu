@@ -20,7 +20,7 @@ pub struct SimpleSearchQuery {
 impl Default for SimpleSearchQuery {
     fn default() -> Self {
         Self {
-            query: "".to_owned(),
+            query: String::new(),
             page: default_page_id(),
             order: GetBooksOrder::default(),
         }

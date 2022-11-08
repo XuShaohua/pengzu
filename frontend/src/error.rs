@@ -38,10 +38,10 @@ pub struct FetchError {
 
 impl FetchError {
     #[must_use]
-    pub fn new(kind: ErrorKind) -> Self {
+    pub const fn new(kind: ErrorKind) -> Self {
         Self {
             kind,
-            message: "".to_string(),
+            message: String::new(),
         }
     }
 

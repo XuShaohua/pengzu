@@ -42,6 +42,6 @@ impl AdvancedSearchQuery {
             return author.to_string();
         }
 
-        "".to_string()
+        String::new()
     }
 }

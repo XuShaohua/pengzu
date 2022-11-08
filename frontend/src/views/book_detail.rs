@@ -43,8 +43,9 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
         })
         .collect::<Html>();
 
-    let publisher_element = match &metadata.publisher {
-        Some(publisher) => {
+    let publisher_element = metadata.publisher.as_ref().map_or_else(
+        || html! {<></>},
+        |publisher| {
             html! {
                 <span>
                     { "Publisher: " }
@@ -53,9 +54,8 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
                     </Link<Route>>
                 </span>
             }
-        }
-        None => html! {<></>},
-    };
+        },
+    );
 
     let published_date_element = book.pubdate.as_ref().map_or_else(
         || html! {},

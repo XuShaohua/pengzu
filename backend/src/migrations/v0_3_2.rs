@@ -4,8 +4,6 @@
 
 //! Migrate to v0.3.2
 
-#![allow(dead_code)]
-
 use diesel::PgConnection;
 
 use crate::db;
@@ -17,8 +15,7 @@ pub fn migrate() -> Result<(), Error> {
     let mut pg_conn = db_pool.get()?;
 
     split_author_names(&mut pg_conn)?;
-    // split_tag_names(&mut pg_conn)
-    Ok(())
+    split_tag_names(&mut pg_conn)
 }
 
 fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
@@ -33,13 +30,23 @@ fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
 
             // Step 2: Create new tags.
             for part in parts {
-                let new_tag = tags::add_tag(
-                    conn,
-                    &tags::NewTag {
-                        name: part.to_string(),
+                let name = part.trim().to_string();
+                if name.is_empty() {
+                    continue;
+                }
+                let new_tag = tags::add_tag(conn, &tags::NewTag { name: name.clone() });
+                match new_tag {
+                    Ok(new_tag) => {
+                        new_tag_ids.push(new_tag.id);
+                    }
+                    Err(err) => match err.kind() {
+                        ErrorKind::DbUniqueViolationError => {
+                            log::info!("tag exists: {:?}", name);
+                            continue;
+                        }
+                        _ => return Err(err),
                     },
-                )?;
-                new_tag_ids.push(new_tag.id);
+                }
             }
 
             // If this old_tag is in use, migrate to new tags.

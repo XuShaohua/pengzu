@@ -191,9 +191,9 @@ fn import_tags(
                 log::warn!("Ignore tag name which is too long: {}", tag.name);
                 continue;
             }
-            let mut tag_parts: Vec<&str> = tag.name.split(" & ").collect();
+            let mut tag_parts: Vec<&str> = tag.name.split("&").collect();
             if tag_parts.len() == 1 {
-                tag_parts = tag.name.split("; ").collect();
+                tag_parts = tag.name.split(";").collect();
             }
             if tag_parts.len() == 1 {
                 tag_parts = tag.name.split('；').collect();

@@ -20,7 +20,7 @@ pub fn migrate() -> Result<(), Error> {
 
 fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
     // See import_tags() in src/import/new_task.rs
-    let patterns = [" & ", "; ", "；"];
+    let patterns = ["&", ";", "；"];
     for pattern in patterns {
         let name_pattern = format!("%{}%", pattern);
         // Step 1: Query tag pattern.

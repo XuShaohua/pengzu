@@ -6,12 +6,11 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::user_tags::{GetUserTagsReq, NewUserTag};
-use crate::models::{books, user_tags};
+use crate::models::{books_query, user_tags};
 
 pub async fn add_tag(
     pool: web::Data<DbPool>,
-    new_tag: web::Json<NewUserTag>,
+    new_tag: web::Json<user_tags::NewUserTag>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let mut conn = pool.get()?;
@@ -23,7 +22,7 @@ pub async fn add_tag(
 
 pub async fn get_tags(
     pool: web::Data<DbPool>,
-    query: web::Query<GetUserTagsReq>,
+    query: web::Query<user_tags::GetUserTagsReq>,
 ) -> Result<HttpResponse, Error> {
     let tags_resp = web::block(move || {
         let mut conn = pool.get()?;
@@ -48,7 +47,7 @@ pub async fn get_tag(
 pub async fn update_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
-    new_tag: web::Json<NewUserTag>,
+    new_tag: web::Json<user_tags::NewUserTag>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let mut conn = pool.get()?;
@@ -61,7 +60,7 @@ pub async fn update_tag(
 pub async fn get_books_by_user_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
-    query: web::Query<books::GetBooksQuery>,
+    query: web::Query<books_query::GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;

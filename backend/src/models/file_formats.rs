@@ -10,7 +10,8 @@ use serde::{Deserialize, Serialize};
 
 use super::page::{Page, PageQuery};
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
+use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books_query::GetBooksQuery;
 use crate::schema::file_formats;
 
 #[derive(Debug, Deserialize, Insertable)]

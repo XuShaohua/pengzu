@@ -10,6 +10,7 @@ pub mod books_authors;
 pub mod books_languages;
 pub mod books_meta;
 pub mod books_publishers;
+pub mod books_query;
 pub mod books_series;
 pub mod books_tags;
 pub mod categories;

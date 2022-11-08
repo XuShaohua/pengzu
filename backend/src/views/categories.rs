@@ -6,8 +6,9 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
+use crate::models::books_query::GetBooksQuery;
+use crate::models::categories;
 use crate::models::categories::GetCategoriesReq;
-use crate::models::{books, categories};
 
 pub async fn get_categories(
     pool: web::Data<DbPool>,
@@ -36,7 +37,7 @@ pub async fn get_category(
 pub async fn get_books_by_category(
     pool: web::Data<DbPool>,
     category_id: web::Path<i32>,
-    query: web::Query<books::GetBooksQuery>,
+    query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;

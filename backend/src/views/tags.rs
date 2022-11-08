@@ -6,8 +6,8 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::tags::GetTagsReq;
-use crate::models::{books, tags};
+use crate::models::books_query::GetBooksQuery;
+use crate::models::tags;
 
 pub async fn add_tag(
     pool: web::Data<DbPool>,
@@ -23,7 +23,7 @@ pub async fn add_tag(
 
 pub async fn get_tags(
     pool: web::Data<DbPool>,
-    query: web::Query<GetTagsReq>,
+    query: web::Query<tags::GetTagsReq>,
 ) -> Result<HttpResponse, Error> {
     let tags_resp = web::block(move || {
         let mut conn = pool.get()?;
@@ -61,7 +61,7 @@ pub async fn update_tag(
 pub async fn get_books_by_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
-    query: web::Query<books::GetBooksQuery>,
+    query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;

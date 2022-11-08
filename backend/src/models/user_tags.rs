@@ -10,7 +10,8 @@ use serde::{Deserialize, Serialize};
 
 use super::page::{default_page_id, Page};
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
+use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books_query::GetBooksQuery;
 use crate::schema::user_tags;
 
 #[derive(Debug, Deserialize, Insertable)]

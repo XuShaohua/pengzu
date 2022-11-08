@@ -23,7 +23,6 @@ pub const fn default_page_id() -> PageId {
     1
 }
 
-// TODO(Shaohua): Remove this struct.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PageQuery {
     #[serde(default = "default_page_id")]

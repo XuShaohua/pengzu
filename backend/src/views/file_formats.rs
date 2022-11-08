@@ -6,8 +6,9 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
+use crate::models::books_query::GetBooksQuery;
+use crate::models::file_formats;
 use crate::models::page::PageQuery;
-use crate::models::{books, file_formats};
 
 pub async fn get_formats(
     pool: web::Data<DbPool>,
@@ -36,7 +37,7 @@ pub async fn get_format(
 pub async fn get_books_by_format(
     pool: web::Data<DbPool>,
     format_id: web::Path<i32>,
-    query: web::Query<books::GetBooksQuery>,
+    query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;

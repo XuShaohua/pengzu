@@ -6,8 +6,9 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
+use crate::models::books_query::GetBooksQuery;
 use crate::models::general_query::GeneralQuery;
-use crate::models::{books, series};
+use crate::models::series;
 
 pub async fn add_series(
     pool: web::Data<DbPool>,
@@ -48,7 +49,7 @@ pub async fn get_series(
 pub async fn get_books_by_series(
     pool: web::Data<DbPool>,
     series_id: web::Path<i32>,
-    query: web::Query<books::GetBooksQuery>,
+    query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;

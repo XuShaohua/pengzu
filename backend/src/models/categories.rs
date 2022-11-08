@@ -9,7 +9,8 @@ use diesel::{
 use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
+use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books_query::GetBooksQuery;
 use crate::models::page::{default_page_id, Page};
 use crate::schema::categories;
 

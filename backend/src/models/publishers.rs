@@ -10,7 +10,8 @@ use serde::{Deserialize, Serialize};
 
 use super::page::Page;
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksQuery, GetBooksResp};
+use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books_query::GetBooksQuery;
 use crate::models::general_query::GeneralQuery;
 use crate::models::page::PUBLISHERS_EACH_PAGE;
 use crate::schema::publishers;

@@ -6,6 +6,7 @@ use actix_web::{web, HttpResponse};
 
 use crate::db::DbPool;
 use crate::error::Error;
+use crate::models::books_query::GetBooksQuery;
 use crate::models::{books, books_meta};
 
 pub async fn add_book(
@@ -22,7 +23,7 @@ pub async fn add_book(
 
 pub async fn get_books(
     pool: web::Data<DbPool>,
-    query: web::Query<books::GetBooksQuery>,
+    query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     log::info!("query: {:?}", query);
     let resp = web::block(move || {

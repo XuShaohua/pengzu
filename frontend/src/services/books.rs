@@ -5,7 +5,8 @@
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
 use crate::types::advanced_search::AdvancedSearchQuery;
-use crate::types::books::{BooksList, GetBooksQuery};
+use crate::types::books::BooksList;
+use crate::types::books_query::GetBooksQuery;
 use crate::types::simple_search::SimpleSearchQuery;
 
 /// Get book list.

@@ -3,9 +3,9 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
-use crate::types::page::{default_page_id, Page, PageId};
+use crate::types::page::Page;
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct AuthorAndBookId {
@@ -47,39 +47,4 @@ pub struct BookDetail {
     pub large_cover: Option<String>,
     pub created: NaiveDateTime,
     pub pubdate: NaiveDateTime,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
-pub struct GetBooksQuery {
-    #[serde(default = "default_page_id")]
-    pub page: PageId,
-    #[serde(default = "GetBooksOrder::default")]
-    pub order: GetBooksOrder,
-}
-
-impl Default for GetBooksQuery {
-    fn default() -> Self {
-        Self {
-            page: default_page_id(),
-            order: GetBooksOrder::default(),
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
-pub enum GetBooksOrder {
-    IdDesc,
-    IdAsc,
-    TitleDesc,
-    TitleAsc,
-    AuthorDesc,
-    AuthorAsc,
-    PubdateDesc,
-    PubdateAsc,
-}
-
-impl Default for GetBooksOrder {
-    fn default() -> Self {
-        Self::IdDesc
-    }
 }

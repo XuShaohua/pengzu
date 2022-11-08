@@ -4,25 +4,39 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::books_query::GetBooksOrder;
 use crate::types::page::{default_page_id, PageId};
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct SimpleSearchQuery {
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+pub struct GetBooksQuery {
     #[serde(default = "default_page_id")]
     pub page: PageId,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
-
-    pub query: String,
 }
 
-impl Default for SimpleSearchQuery {
+impl Default for GetBooksQuery {
     fn default() -> Self {
         Self {
-            query: String::new(),
             page: default_page_id(),
             order: GetBooksOrder::default(),
         }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+pub enum GetBooksOrder {
+    IdDesc,
+    IdAsc,
+    TitleDesc,
+    TitleAsc,
+    AuthorDesc,
+    AuthorAsc,
+    PubdateDesc,
+    PubdateAsc,
+}
+
+impl Default for GetBooksOrder {
+    fn default() -> Self {
+        Self::IdDesc
     }
 }

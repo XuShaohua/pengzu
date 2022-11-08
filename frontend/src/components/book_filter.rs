@@ -5,7 +5,7 @@
 use stylist::Style;
 use yew::prelude::*;
 
-use crate::types::books::GetBooksOrder;
+use crate::types::books_query::GetBooksOrder;
 
 #[derive(Debug, PartialEq, Properties)]
 pub struct Props {

@@ -13,7 +13,7 @@ use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::books::fetch_books_by_advanced_search;
 use crate::types::advanced_search::AdvancedSearchQuery;
-use crate::types::books::GetBooksOrder;
+use crate::types::books_query::GetBooksOrder;
 use crate::types::page::PageId;
 use crate::views::util;
 

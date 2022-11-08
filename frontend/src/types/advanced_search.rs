@@ -4,7 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::books::GetBooksOrder;
+use crate::types::books_query::GetBooksOrder;
 use crate::types::page::{default_page_id, PageId};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

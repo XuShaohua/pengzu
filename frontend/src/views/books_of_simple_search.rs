@@ -12,7 +12,7 @@ use crate::components::book_list::BookListComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::books::fetch_books_by_simple_search;
-use crate::types::books::GetBooksOrder;
+use crate::types::books_query::GetBooksOrder;
 use crate::types::page::PageId;
 use crate::types::simple_search::SimpleSearchQuery;
 use crate::views::util;

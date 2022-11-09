@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::use_async;
@@ -12,7 +13,6 @@ use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::series::fetch_series_list;
 use crate::views::util;
-use shared::general_query::{GeneralOrder, GeneralQuery};
 
 #[function_component(SeriesComponent)]
 pub fn series_page() -> Html {

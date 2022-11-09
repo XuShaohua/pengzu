@@ -2,13 +2,13 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::recursive_query::RecursiveQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::Link;
 
 use crate::router::Route;
 use crate::services::tags::fetch_tags;
-use crate::types::recursive_query::RecursiveQuery;
 use crate::types::tags::{TagAndBook, TagList};
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]

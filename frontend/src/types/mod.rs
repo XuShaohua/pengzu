@@ -13,7 +13,6 @@ pub mod files;
 pub mod languages;
 pub mod publishers;
 pub mod ratings;
-pub mod recursive_query;
 pub mod series;
 pub mod simple_search;
 pub mod tags;

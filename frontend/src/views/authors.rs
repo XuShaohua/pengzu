@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::PageId;
 use stylist::Style;
 use yew::prelude::*;
@@ -13,7 +14,6 @@ use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::authors::fetch_authors;
 use crate::views::util;
-use shared::general_query::{GeneralOrder, GeneralQuery};
 
 #[function_component(AuthorsComponent)]
 pub fn home() -> Html {

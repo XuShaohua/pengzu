@@ -2,9 +2,10 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::recursive_query::RecursiveQuery;
+
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::recursive_query::RecursiveQuery;
 use crate::types::tags::{Tag, TagList};
 
 /// Returns tag list.

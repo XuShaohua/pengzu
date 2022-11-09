@@ -2,6 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::general_query::GeneralOrder;
+use shared::page::PageId;
+use shared::recursive_query::RecursiveQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::{use_history, History, Location};
@@ -10,10 +13,7 @@ use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::tags::fetch_tags;
-use crate::types::recursive_query::RecursiveQuery;
 use crate::views::util;
-use shared::general_query::GeneralOrder;
-use shared::page::PageId;
 
 mod tag_item;
 use tag_item::generate_tag_list;

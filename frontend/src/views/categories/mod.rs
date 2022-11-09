@@ -6,9 +6,9 @@ use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use crate::services::categories::fetch_categories;
+use crate::views::util;
 
 mod category_item;
-use crate::views::util;
 use category_item::generate_category_list;
 
 #[function_component(CategoriesComponent)]

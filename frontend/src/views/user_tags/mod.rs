@@ -6,9 +6,9 @@ use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use crate::services::user_tags::fetch_user_tags;
+use crate::views::util;
 
 mod tag_item;
-use crate::views::util;
 use tag_item::generate_tag_list;
 
 #[function_component(UserTagsComponent)]

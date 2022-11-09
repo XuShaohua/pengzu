@@ -6,7 +6,6 @@ pub mod advanced_search;
 pub mod authors;
 pub mod books;
 pub mod books_meta;
-pub mod books_query;
 pub mod categories;
 pub mod file_formats;
 pub mod files;

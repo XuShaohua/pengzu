@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::books_query::{GetBooksOrder, GetBooksQuery};
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::use_async;
@@ -13,7 +14,6 @@ use crate::components::book_list::BookListComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::books::fetch_books;
-use crate::types::books_query::{GetBooksOrder, GetBooksQuery};
 use crate::views::util;
 
 #[function_component(BooksComponent)]

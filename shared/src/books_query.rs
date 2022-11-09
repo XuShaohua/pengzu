@@ -3,7 +3,8 @@
 // that can be found in the LICENSE file.
 
 use serde::{Deserialize, Serialize};
-use shared::page::{default_page_id, PageId};
+
+use crate::page::{default_page_id, PageId};
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct GetBooksQuery {

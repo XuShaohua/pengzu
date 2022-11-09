@@ -4,6 +4,7 @@ members = [
   "backend",
   "calibre",
   "frontend",
+  "shared",
 ]
 
 [profile.release]

@@ -1,0 +1,13 @@
+[package]
+name = "shared"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[features]
+default = []
+use_query = ["diesel"]
+
+[dependencies]
+diesel = { version = "2.0.2", optional = true, default-features = false, features = ["chrono"] }
+serde = { version = "1.0.147", features = ["serde_derive"] }

@@ -66,6 +66,7 @@ pub struct TagAndBook {
     pub name: String,
     pub parent: i32,
     pub count: i64,
+    pub children: i64,
 }
 
 #[derive(Debug, Serialize)]
@@ -80,6 +81,8 @@ pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<GetTa
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let offset = page_id * TAGS_EACH_PAGE;
 
+    // TODO(Shaohua): Get children count.
+
     let list = tags::table
         .filter(tags::parent.eq(query.parent))
         .left_join(books_tags_link::table.on(books_tags_link::tag.eq(tags::id)))
@@ -89,6 +92,7 @@ pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<GetTa
             tags::order_index,
             tags::name,
             tags::parent,
+            diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_tags_link.id)"),
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_tags_link.id)"),
         ))
         .limit(TAGS_EACH_PAGE)

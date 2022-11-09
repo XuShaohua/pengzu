@@ -3,9 +3,8 @@
 // that can be found in the LICENSE file.
 
 use serde::{Deserialize, Serialize};
+use shared::general_query::GeneralOrder;
 use shared::page::{default_page_id, PageId};
-
-use crate::models::general_query::GeneralOrder;
 
 #[must_use]
 pub const fn default_parent_id() -> i32 {

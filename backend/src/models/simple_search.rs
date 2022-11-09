@@ -4,11 +4,11 @@
 
 use diesel::{PgConnection, PgTextExpressionMethods, QueryDsl, RunQueryDsl};
 use serde::Deserialize;
+use shared::books_query::{GetBooksOrder, GetBooksQuery};
 use shared::page::{default_page_id, PageId};
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
-use crate::models::books_query::{GetBooksOrder, GetBooksQuery};
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct SimpleSearchQuery {

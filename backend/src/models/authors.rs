@@ -8,12 +8,12 @@ use diesel::{
     Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared::books_query::GetBooksQuery;
 use shared::general_query::GeneralQuery;
 use shared::page::{Page, AUTHORS_EACH_PAGE};
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, AuthorAndBookId, Book, GetBooksResp};
-use crate::models::books_query::GetBooksQuery;
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]

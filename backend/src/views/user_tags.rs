@@ -3,10 +3,11 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{web, HttpResponse};
+use shared::books_query::GetBooksQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::{books_query, user_tags};
+use crate::models::user_tags;
 
 pub async fn add_tag(
     pool: web::Data<DbPool>,
@@ -60,7 +61,7 @@ pub async fn update_tag(
 pub async fn get_books_by_user_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
-    query: web::Query<books_query::GetBooksQuery>,
+    query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;

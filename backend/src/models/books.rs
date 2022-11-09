@@ -5,11 +5,11 @@
 use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
+use shared::books_query::GetBooksQuery;
 use shared::page::{Page, BOOKS_EACH_PAGE};
 
 use crate::error::Error;
 use crate::models::authors::get_authors_by_book_id;
-use crate::models::books_query::GetBooksQuery;
 use crate::models::file_data;
 use crate::schema::books;
 
@@ -132,7 +132,7 @@ pub fn get_books(conn: &mut PgConnection, query: &GetBooksQuery) -> Result<GetBo
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let offset = page_id * BOOKS_EACH_PAGE;
-    let _order_column = query.order.get_column();
+    // let _order_column = query.order.get_column();
 
     let book_list = books
         .order_by(id.asc())

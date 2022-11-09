@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::recursive_query::RecursiveQuery;
 use shared::user_tags::{UserTagAndBook, UserTagAndBookList};
 use yew::prelude::*;
 use yew_hooks::use_async;
@@ -32,7 +33,14 @@ pub fn tag_item(props: &Props) -> Html {
     let tag = &props.tag;
     let parent_id = tag.id;
 
-    let child_tags = { use_async(async move { fetch_user_tags(parent_id).await }) };
+    let child_tags = use_async(async move {
+        let query = RecursiveQuery {
+            parent: parent_id,
+            fetch_all: true,
+            ..RecursiveQuery::default()
+        };
+        fetch_user_tags(&query).await
+    });
     let onclick = {
         let child_tags = child_tags.clone();
         Callback::from(move |_event| {
@@ -45,7 +53,6 @@ pub fn tag_item(props: &Props) -> Html {
         .as_ref()
         .map_or_else(|| html! {}, generate_tag_list);
 
-    // TODO(Shaohua): Replace with BooksOfUserTag
     html! {
         <>
             <span class="badge">{ tag.count }</span>

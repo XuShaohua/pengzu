@@ -55,7 +55,7 @@ pub fn categories() -> Html {
                 page: page_id,
                 ..query_clone
             };
-            let ret = history.push_with_query(Route::Tag, &new_query);
+            let ret = history.push_with_query(Route::Category, &new_query);
             debug_assert!(ret.is_ok());
         })
     };

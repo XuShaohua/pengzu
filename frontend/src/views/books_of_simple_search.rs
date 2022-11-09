@@ -4,6 +4,7 @@
 
 use shared::books_query::GetBooksOrder;
 use shared::page::PageId;
+use shared::simple_search::SimpleSearchQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::history::{History, Location};
@@ -14,7 +15,6 @@ use crate::components::book_list::BookListComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::books::fetch_books_by_simple_search;
-use crate::types::simple_search::SimpleSearchQuery;
 use crate::views::util;
 
 #[function_component(BooksOfSimpleSearchComponent)]

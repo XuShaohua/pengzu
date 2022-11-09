@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::simple_search::SimpleSearchQuery;
 use std::ops::Deref;
 use web_sys::{FocusEvent, HtmlInputElement};
 use yew::prelude::*;
@@ -9,7 +10,6 @@ use yew_router::history::History;
 use yew_router::hooks::use_history;
 
 use crate::router::Route;
-use crate::types::simple_search::SimpleSearchQuery;
 
 #[function_component(HeaderSearchComponent)]
 pub fn header_search() -> Html {

@@ -13,7 +13,6 @@ pub mod languages;
 pub mod publishers;
 pub mod ratings;
 pub mod series;
-pub mod simple_search;
 pub mod tags;
 pub mod user_tags;
 pub mod users;

@@ -4,8 +4,8 @@
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::general_query::GeneralQuery;
 use crate::types::publishers::{Publisher, PublisherList};
+use shared::general_query::GeneralQuery;
 
 /// Get publisher list.
 ///

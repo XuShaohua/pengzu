@@ -10,9 +10,9 @@ use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::tags::fetch_tags;
-use crate::types::general_query::GeneralOrder;
 use crate::types::recursive_query::RecursiveQuery;
 use crate::views::util;
+use shared::general_query::GeneralOrder;
 use shared::page::PageId;
 
 mod tag_item;

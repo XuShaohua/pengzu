@@ -11,8 +11,8 @@ use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::series::fetch_series_list;
-use crate::types::general_query::{GeneralOrder, GeneralQuery};
 use crate::views::util;
+use shared::general_query::{GeneralOrder, GeneralQuery};
 
 #[function_component(SeriesComponent)]
 pub fn series_page() -> Html {

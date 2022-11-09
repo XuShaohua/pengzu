@@ -11,8 +11,8 @@ use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::publishers::fetch_publishers;
-use crate::types::general_query::{GeneralOrder, GeneralQuery};
 use crate::views::util;
+use shared::general_query::{GeneralOrder, GeneralQuery};
 
 #[function_component(PublishersComponent)]
 pub fn publishers_page() -> Html {

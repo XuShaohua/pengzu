@@ -5,7 +5,7 @@
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
 use crate::types::authors::{Author, AuthorList};
-use crate::types::general_query::GeneralQuery;
+use shared::general_query::GeneralQuery;
 
 /// Get author list
 ///

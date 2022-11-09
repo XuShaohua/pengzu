@@ -2,9 +2,10 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use serde::{Deserialize, Serialize};
+
 use crate::general_query::GeneralOrder;
 use crate::page::{default_page_id, PageId};
-use serde::{Deserialize, Serialize};
 
 #[must_use]
 pub const fn default_parent_id() -> i32 {

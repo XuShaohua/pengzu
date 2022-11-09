@@ -4,8 +4,8 @@
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::general_query::GeneralQuery;
 use crate::types::series::{Series, SeriesList};
+use shared::general_query::GeneralQuery;
 
 /// Get series list.
 ///

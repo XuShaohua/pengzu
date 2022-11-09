@@ -2,13 +2,14 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::categories::{CategoryAndBook, CategoryAndBookList};
+use shared::recursive_query::RecursiveQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::*;
 
 use crate::router::Route;
 use crate::services::categories::fetch_categories;
-use shared::categories::{CategoryAndBook, CategoryAndBookList};
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -32,7 +33,14 @@ pub fn category_item(props: &Props) -> Html {
     let category = &props.category;
     let parent_id = category.id;
 
-    let child_categories = { use_async(async move { fetch_categories(parent_id).await }) };
+    let child_categories = use_async(async move {
+        let query = RecursiveQuery {
+            parent: parent_id,
+            fetch_all: true,
+            ..RecursiveQuery::default()
+        };
+        fetch_categories(&query).await
+    });
     let onclick = {
         let child_categories = child_categories.clone();
         Callback::from(move |_event| {

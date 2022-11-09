@@ -3,10 +3,14 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use serde::Deserialize;
-use shared::page::Page;
+#[cfg(feature = "use_query")]
+use diesel::Queryable;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+use crate::page::Page;
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "use_query", derive(Queryable))]
 pub struct FileFormat {
     pub id: i32,
     pub name: String,
@@ -14,15 +18,16 @@ pub struct FileFormat {
     pub last_modified: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "use_query", derive(Queryable))]
 pub struct FileFormatAndBook {
     pub id: i32,
     pub name: String,
     pub count: i64,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct FileFormatList {
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FileFormatAndBookList {
     pub page: Page,
     pub list: Vec<FileFormatAndBook>,
 }

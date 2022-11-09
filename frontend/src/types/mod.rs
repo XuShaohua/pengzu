@@ -5,6 +5,5 @@
 pub mod authors;
 pub mod books;
 pub mod books_meta;
-pub mod file_formats;
 pub mod files;
 pub mod users;

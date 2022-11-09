@@ -5,6 +5,7 @@
 pub mod advanced_search;
 pub mod books_query;
 pub mod categories;
+pub mod file_formats;
 pub mod general_query;
 pub mod languages;
 pub mod page;

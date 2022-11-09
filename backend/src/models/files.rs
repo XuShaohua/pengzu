@@ -5,10 +5,11 @@
 use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
+use shared::file_formats::FileFormat;
 
 use crate::error::Error;
 use crate::models::books::get_book_path_by_id;
-use crate::models::file_formats::{get_file_format_by_ids, FileFormat};
+use crate::models::file_formats::get_file_format_by_ids;
 use crate::schema::files;
 
 #[derive(Debug, Deserialize, Insertable)]

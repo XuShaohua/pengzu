@@ -2,12 +2,10 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
-};
-use serde::{Deserialize, Serialize};
+use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
+use serde::Deserialize;
 use shared::books_query::GetBooksQuery;
+use shared::file_formats::{FileFormat, FileFormatAndBook, FileFormatAndBookList};
 use shared::page::{Page, PageQuery};
 
 use crate::error::Error;
@@ -18,14 +16,6 @@ use crate::schema::file_formats;
 #[diesel(table_name = file_formats)]
 pub struct NewFileFormat {
     pub name: String,
-}
-
-#[derive(Debug, Default, Serialize, Queryable)]
-pub struct FileFormat {
-    pub id: i32,
-    pub name: String,
-    pub crated: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
 }
 
 pub fn add_file_format(conn: &mut PgConnection, new_format: &NewFileFormat) -> Result<(), Error> {
@@ -62,23 +52,10 @@ pub fn get_file_format_by_ids(
         .map_err(Into::into)
 }
 
-#[derive(Debug, Serialize, Queryable)]
-pub struct FileFormatAndBook {
-    pub id: i32,
-    pub name: String,
-    pub count: i64,
-}
-
-#[derive(Debug, Serialize)]
-pub struct GetFileFormatsResp {
-    pub page: Page,
-    pub list: Vec<FileFormatAndBook>,
-}
-
 pub fn get_formats(
     conn: &mut PgConnection,
     query: &PageQuery,
-) -> Result<GetFileFormatsResp, Error> {
+) -> Result<FileFormatAndBookList, Error> {
     use crate::schema::files;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -99,7 +76,7 @@ pub fn get_formats(
 
     let total = file_formats::table.count().first(conn)?;
 
-    Ok(GetFileFormatsResp {
+    Ok(FileFormatAndBookList {
         page: Page {
             page_num: page_id + 1,
             each_page,

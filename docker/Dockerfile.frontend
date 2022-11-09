@@ -1,4 +1,6 @@
+
 FROM rust:bullseye as cacher
+COPY docker/config.toml /usr/local/cargo/
 RUN cargo install --locked trunk
 RUN cargo install --locked wasm-bindgen-cli
 RUN rustup target add wasm32-unknown-unknown

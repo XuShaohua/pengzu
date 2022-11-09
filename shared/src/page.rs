@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 
 pub const AUTHORS_EACH_PAGE: i64 = 100;
 pub const BOOKS_EACH_PAGE: i64 = 50;
+pub const CATEGORIES_EACH_PAGE: i64 = 100;
 pub const PUBLISHERS_EACH_PAGE: i64 = 100;
 pub const SERIES_EACH_PAGE: i64 = 100;
 pub const TAGS_EACH_PAGE: i64 = 100;

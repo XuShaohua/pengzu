@@ -3,11 +3,12 @@
 // that can be found in the LICENSE file.
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::categories::{Category, CategoryAndBook, CategoryAndBookList};
-use shared::page::{default_page_id, Page};
+use shared::page::{Page, CATEGORIES_EACH_PAGE};
+use shared::recursive_query::RecursiveQuery;
 
 use crate::error::Error;
 use crate::models::books::get_books_by_ids;
@@ -50,28 +51,16 @@ pub fn get_category_by_serial_number(
         .map_err(Into::into)
 }
 
-#[must_use]
-pub const fn default_parent_category_id() -> i32 {
-    0
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct GetCategoriesReq {
-    #[serde(default = "default_parent_category_id")]
-    pub parent: i32,
-    #[serde(default = "default_page_id")]
-    pub page: i64,
-}
-
 pub fn get_categories(
     conn: &mut PgConnection,
-    query: &GetCategoriesReq,
+    query: &RecursiveQuery,
 ) -> Result<CategoryAndBookList, Error> {
     use crate::schema::books_categories_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 100;
-    let offset = page_id * each_page;
+    let offset = page_id * CATEGORIES_EACH_PAGE;
+
+    // TODO(Shaohua): Support query order
 
     let list = categories::table
         .filter(categories::parent.eq(query.parent))
@@ -87,7 +76,7 @@ pub fn get_categories(
             categories::parent,
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_categories_link.id)"),
         ))
-        .limit(each_page)
+        .limit(CATEGORIES_EACH_PAGE)
         .offset(offset)
         .load::<CategoryAndBook>(conn)?;
 
@@ -99,7 +88,7 @@ pub fn get_categories(
     Ok(CategoryAndBookList {
         page: Page {
             page_num: page_id + 1,
-            each_page,
+            each_page: CATEGORIES_EACH_PAGE,
             total,
         },
         list,

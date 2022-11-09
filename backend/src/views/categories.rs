@@ -4,15 +4,15 @@
 
 use actix_web::{web, HttpResponse};
 use shared::books_query::GetBooksQuery;
+use shared::recursive_query::RecursiveQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::categories;
-use crate::models::categories::GetCategoriesReq;
 
 pub async fn get_categories(
     pool: web::Data<DbPool>,
-    query: web::Query<GetCategoriesReq>,
+    query: web::Query<RecursiveQuery>,
 ) -> Result<HttpResponse, Error> {
     let categories_resp = web::block(move || {
         let mut conn = pool.get()?;

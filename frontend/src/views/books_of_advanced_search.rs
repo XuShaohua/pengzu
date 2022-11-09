@@ -14,7 +14,7 @@ use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
-use crate::services::books::fetch_books_by_advanced_search;
+use crate::services::advanced_search::fetch_books_by_advanced_search;
 use crate::views::util;
 
 #[function_component(BooksOfAdvancedSearchComponent)]

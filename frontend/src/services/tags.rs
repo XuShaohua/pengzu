@@ -2,6 +2,8 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::books::BookAndAuthorsList;
+use shared::books_query::GetBooksQuery;
 use shared::recursive_query::RecursiveQuery;
 use shared::tags::{Tag, TagAndBookList};
 
@@ -24,5 +26,18 @@ pub async fn fetch_tags(query: &RecursiveQuery) -> Result<TagAndBookList, FetchE
 /// Returns error if server fails.
 pub async fn fetch_tag(tag_id: i32) -> Result<Tag, FetchError> {
     let url = format!("/api/tag/{}", tag_id);
+    request_get(&url).await
+}
+
+/// Get book list of specific tag `tag_id`.
+///
+/// # Errors
+/// Returns error if server fails.
+pub async fn fetch_books_by_tag(
+    tag_id: i32,
+    query: &GetBooksQuery,
+) -> Result<BookAndAuthorsList, FetchError> {
+    let query_str = serde_urlencoded::to_string(query)?;
+    let url = format!("/api/tag/books/{}?{}", tag_id, query_str);
     request_get(&url).await
 }

@@ -36,7 +36,7 @@ pub fn tag_item(props: &Props) -> Html {
     let child_tags = use_async(async move {
         let query = RecursiveQuery {
             parent: parent_id,
-            fetch_all: false,
+            fetch_all: true,
             ..RecursiveQuery::default()
         };
         fetch_tags(&query).await
@@ -59,7 +59,13 @@ pub fn tag_item(props: &Props) -> Html {
             <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
                 { &tag.name }
             </Link<Route>>
-            <a href="#" {onclick}>{ "˃" }</a>
+            {
+                if tag.children > 0 {
+                    html! { <a href="#" {onclick}>{ "˃" }</a> }
+                } else {
+                    html! {}
+                }
+            }
             { child_items }
         </>
     }

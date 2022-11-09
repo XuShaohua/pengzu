@@ -21,6 +21,7 @@ pub struct TagAndBook {
     pub name: String,
     pub parent: i32,
     pub count: i64,
+    pub children: i64,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]

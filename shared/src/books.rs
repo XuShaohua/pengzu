@@ -19,20 +19,6 @@ pub struct AuthorAndBookId {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "diesel", derive(Queryable))]
-pub struct Book {
-    pub id: i32,
-    pub title: String,
-    pub path: String,
-    pub author_sort: String,
-    pub uuid: String,
-    pub has_cover: bool,
-    pub pubdate: Option<NaiveDateTime>,
-    pub created: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[cfg_attr(feature = "diesel", derive(Queryable))]
 pub struct BookWithCover {
     pub id: i32,
     pub title: String,

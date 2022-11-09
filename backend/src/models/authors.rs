@@ -8,13 +8,13 @@ use diesel::{
 };
 use serde::Deserialize;
 use shared::authors::{Author, AuthorAndBook, AuthorAndBookList};
-use shared::books::{AuthorAndBookId, Book, BookAndAuthorsList};
+use shared::books::{AuthorAndBookId, BookAndAuthorsList};
 use shared::books_query::GetBooksQuery;
 use shared::general_query::GeneralQuery;
 use shared::page::{Page, AUTHORS_EACH_PAGE};
 
 use crate::error::Error;
-use crate::models::books::get_books_by_ids;
+use crate::models::books::{get_books_by_ids, Book};
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]

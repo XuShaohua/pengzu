@@ -9,11 +9,11 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 use shared::page::{Page, TAGS_EACH_PAGE};
+use shared::recursive_query::RecursiveQuery;
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
 use crate::models::books_query::GetBooksQuery;
-use crate::models::recursive_query::RecursiveQuery;
 use crate::schema::tags;
 
 #[derive(Debug, Deserialize, Insertable)]

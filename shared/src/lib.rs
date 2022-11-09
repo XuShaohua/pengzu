@@ -4,3 +4,4 @@
 
 pub mod general_query;
 pub mod page;
+pub mod recursive_query;

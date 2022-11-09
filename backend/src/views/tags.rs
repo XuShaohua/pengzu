@@ -3,11 +3,11 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{web, HttpResponse};
+use shared::recursive_query::RecursiveQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::books_query::GetBooksQuery;
-use crate::models::recursive_query::RecursiveQuery;
 use crate::models::tags;
 
 pub async fn add_tag(

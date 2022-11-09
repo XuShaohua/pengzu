@@ -3,10 +3,14 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use serde::Deserialize;
-use shared::page::Page;
+#[cfg(feature = "use_query")]
+use diesel::Queryable;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+use crate::page::Page;
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "use_query", derive(Queryable))]
 pub struct Category {
     pub id: i32,
     pub order_index: i32,
@@ -19,7 +23,8 @@ pub struct Category {
     pub last_modified: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "use_query", derive(Queryable))]
 pub struct CategoryAndBook {
     pub id: i32,
     pub order_index: i32,
@@ -29,8 +34,8 @@ pub struct CategoryAndBook {
     pub count: i64,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct CategoryList {
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CategoryAndBookList {
     pub page: Page,
     pub list: Vec<CategoryAndBook>,
 }

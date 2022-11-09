@@ -8,14 +8,14 @@ use yew_router::prelude::*;
 
 use crate::router::Route;
 use crate::services::categories::fetch_categories;
-use crate::types::categories::{CategoryAndBook, CategoryList};
+use shared::categories::{CategoryAndBook, CategoryAndBookList};
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub category: CategoryAndBook,
 }
 
-pub fn generate_category_list(category_list: &CategoryList) -> Html {
+pub fn generate_category_list(category_list: &CategoryAndBookList) -> Html {
     html! {
         <ul class="child-categories">
         {for category_list.list.iter().map(|category| html!{

@@ -18,6 +18,7 @@ use crate::schema::publishers;
 pub struct NewPublisher {
     pub name: String,
 }
+
 pub fn add_publisher(conn: &mut PgConnection, new_publisher: &NewPublisher) -> Result<(), Error> {
     use crate::schema::publishers::dsl::publishers;
     diesel::insert_into(publishers)

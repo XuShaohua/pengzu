@@ -12,5 +12,4 @@ pub mod languages;
 pub mod publishers;
 pub mod ratings;
 pub mod series;
-pub mod tags;
 pub mod users;

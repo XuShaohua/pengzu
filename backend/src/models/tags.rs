@@ -2,15 +2,15 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
 use diesel::{
     ExpressionMethods, Insertable, JoinOnDsl, PgConnection, PgTextExpressionMethods, QueryDsl,
-    Queryable, RunQueryDsl,
+    RunQueryDsl,
 };
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use shared::books_query::GetBooksQuery;
 use shared::page::{Page, TAGS_EACH_PAGE};
 use shared::recursive_query::RecursiveQuery;
+use shared::tags::{Tag, TagAndBook, TagAndBookList};
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
@@ -20,16 +20,6 @@ use crate::schema::tags;
 #[diesel(table_name = tags)]
 pub struct NewTag {
     pub name: String,
-}
-
-#[derive(Debug, Serialize, Queryable)]
-pub struct Tag {
-    pub id: i32,
-    pub order_index: i32,
-    pub name: String,
-    pub parent: i32,
-    pub created: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
 }
 
 pub fn add_tag(conn: &mut PgConnection, new_tag: &NewTag) -> Result<Tag, Error> {
@@ -58,23 +48,7 @@ pub fn get_tag_by_name_pattern(conn: &mut PgConnection, name_pattern: &str) -> R
         .map_err(Into::into)
 }
 
-#[derive(Debug, Serialize, Queryable)]
-pub struct TagAndBook {
-    pub id: i32,
-    pub order_index: i32,
-    pub name: String,
-    pub parent: i32,
-    pub count: i64,
-    pub children: i64,
-}
-
-#[derive(Debug, Serialize)]
-pub struct GetTagsResp {
-    pub page: Page,
-    pub list: Vec<TagAndBook>,
-}
-
-pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<GetTagsResp, Error> {
+pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<TagAndBookList, Error> {
     use crate::schema::books_tags_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -103,7 +77,7 @@ pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<GetTa
         .count()
         .first(conn)?;
 
-    Ok(GetTagsResp {
+    Ok(TagAndBookList {
         page: Page {
             page_num: page_id + 1,
             each_page: TAGS_EACH_PAGE,

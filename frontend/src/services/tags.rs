@@ -3,16 +3,16 @@
 // that can be found in the LICENSE file.
 
 use shared::recursive_query::RecursiveQuery;
+use shared::tags::{Tag, TagAndBookList};
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::tags::{Tag, TagList};
 
 /// Returns tag list.
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_tags(query: &RecursiveQuery) -> Result<TagList, FetchError> {
+pub async fn fetch_tags(query: &RecursiveQuery) -> Result<TagAndBookList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
     let url = ["/api/tag", &query_str].join("?");
     request_get(&url).await

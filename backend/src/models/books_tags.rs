@@ -7,9 +7,9 @@ use diesel::{
     ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared::tags::Tag;
 
 use crate::error::Error;
-use crate::models::tags::Tag;
 use crate::schema::books_tags_link;
 
 #[derive(Debug, Deserialize, Insertable)]

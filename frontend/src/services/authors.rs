@@ -3,6 +3,8 @@
 // that can be found in the LICENSE file.
 
 use shared::authors::{Author, AuthorAndBookList};
+use shared::books::BookAndAuthorsList;
+use shared::books_query::GetBooksQuery;
 use shared::general_query::GeneralQuery;
 
 use crate::error::FetchError;
@@ -24,5 +26,18 @@ pub async fn fetch_authors(query: &GeneralQuery) -> Result<AuthorAndBookList, Fe
 /// Returns error if server failed.
 pub async fn fetch_author(author_id: i32) -> Result<Author, FetchError> {
     let url = format!("/api/author/{}", author_id);
+    request_get(&url).await
+}
+
+/// Get book list of specific author `author_id`.
+///
+/// # Errors
+/// Returns error if server fails.
+pub async fn fetch_books_by_author(
+    author_id: i32,
+    query: &GetBooksQuery,
+) -> Result<BookAndAuthorsList, FetchError> {
+    let query_str = serde_urlencoded::to_string(query)?;
+    let url = format!("/api/author/books/{}?{}", author_id, query_str);
     request_get(&url).await
 }

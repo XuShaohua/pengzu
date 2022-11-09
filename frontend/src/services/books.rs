@@ -20,40 +20,6 @@ pub async fn fetch_books(query: &GetBooksQuery) -> Result<BookAndAuthorsList, Fe
     request_get(&url).await
 }
 
-/// Get book list of specific author `author_id`.
-///
-/// # Errors
-/// Returns error if server fails.
-pub async fn fetch_books_by_author(
-    author_id: i32,
-    query: &GetBooksQuery,
-) -> Result<BookAndAuthorsList, FetchError> {
-    let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/author/books/{}?{}", author_id, query_str);
-    request_get(&url).await
-}
-
-/// Get book list of specific category `category_id`.
-///
-/// # Errors
-/// Returns error if server fails.
-pub async fn fetch_books_by_category(
-    category_id: i32,
-    query: &GetBooksQuery,
-) -> Result<BookAndAuthorsList, FetchError> {
-    let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/category/books/{}?{}", category_id, query_str);
-    request_get(&url).await
-}
-
-/// Get random book list.
-///
-/// # Errors
-/// Returns error if server fails.
-pub async fn fetch_books_by_discover() -> Result<BookAndAuthorsList, FetchError> {
-    request_get("/api/discover/books").await
-}
-
 /// Get book list of specific file format `format_id`.
 ///
 /// # Errors

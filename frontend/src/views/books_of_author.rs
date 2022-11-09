@@ -13,8 +13,7 @@ use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
-use crate::services::authors::fetch_author;
-use crate::services::books::fetch_books_by_author;
+use crate::services::authors::{fetch_author, fetch_books_by_author};
 use crate::views::util;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]

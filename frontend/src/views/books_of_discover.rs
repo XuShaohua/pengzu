@@ -6,7 +6,7 @@ use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use crate::components::book_list::BookListComponent;
-use crate::services::books::fetch_books_by_discover;
+use crate::services::discover::fetch_books_by_discover;
 use crate::views::util;
 
 #[function_component(BooksOfDiscoverComponent)]

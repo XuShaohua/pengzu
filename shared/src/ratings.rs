@@ -3,9 +3,12 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use serde::Deserialize;
+#[cfg(feature = "use_query")]
+use diesel::Queryable;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "use_query", derive(Queryable))]
 pub struct Rating {
     pub id: i32,
     pub book: i32,

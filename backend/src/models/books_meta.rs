@@ -4,6 +4,7 @@
 
 use diesel::{PgConnection, Queryable};
 use serde::Serialize;
+use shared::ratings::Rating;
 use shared::series::Series;
 use shared::tags::Tag;
 
@@ -18,7 +19,7 @@ use crate::models::books_tags::get_tags_by_book;
 use crate::models::files::{get_book_files_and_formats, FileWithPath};
 use crate::models::languages::Language;
 use crate::models::publishers::Publisher;
-use crate::models::ratings::{get_rating, Rating};
+use crate::models::ratings::get_rating;
 
 // TODO(Shaohua): Replace subquery with a meta table in postgres.
 #[derive(Debug, Serialize, Queryable)]

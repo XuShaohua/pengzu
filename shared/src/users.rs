@@ -19,7 +19,7 @@ impl Default for UserRole {
     }
 }
 
-#[cfg(feature = "use_query")]
+#[cfg(feature = "diesel")]
 impl diesel::Expression for UserRole {
     type SqlType = diesel::sql_types::Integer;
 }

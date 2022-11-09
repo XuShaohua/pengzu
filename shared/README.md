@@ -3,5 +3,4 @@
 This crate keeps shared structs and other definitions used both in frontend and
 backend crates.
 
-`use_query` feature flag is used in backend, to make struct derive from 
-`Queryable` trait.
+`diesel` feature is used in backend, to make struct derive from `Queryable` trait.

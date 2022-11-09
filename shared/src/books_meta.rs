@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-#[cfg(feature = "use_query")]
+#[cfg(feature = "diesel")]
 use diesel::Queryable;
 use serde::{Deserialize, Serialize};
 
@@ -18,7 +18,7 @@ use crate::tags::Tag;
 // TODO(Shaohua): Replace subquery with a meta table in postgres.
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[cfg_attr(feature = "use_query", derive(Queryable))]
+#[cfg_attr(feature = "diesel", derive(Queryable))]
 pub struct BookMetadata {
     pub book: BookWithCover,
     pub authors: Vec<Author>,

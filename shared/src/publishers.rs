@@ -3,14 +3,14 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-#[cfg(feature = "use_query")]
+#[cfg(feature = "diesel")]
 use diesel::Queryable;
 use serde::{Deserialize, Serialize};
 
 use crate::page::Page;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[cfg_attr(feature = "use_query", derive(Queryable))]
+#[cfg_attr(feature = "diesel", derive(Queryable))]
 pub struct Publisher {
     pub id: i32,
     pub name: String,
@@ -19,7 +19,7 @@ pub struct Publisher {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[cfg_attr(feature = "use_query", derive(Queryable))]
+#[cfg_attr(feature = "diesel", derive(Queryable))]
 pub struct PublisherAndBook {
     pub id: i32,
     pub name: String,

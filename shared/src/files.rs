@@ -3,12 +3,12 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-#[cfg(feature = "use_query")]
+#[cfg(feature = "diesel")]
 use diesel::Queryable;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[cfg_attr(feature = "use_query", derive(Queryable))]
+#[cfg_attr(feature = "diesel", derive(Queryable))]
 pub struct File {
     pub id: i32,
     pub book: i32,
@@ -20,7 +20,7 @@ pub struct File {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[cfg_attr(feature = "use_query", derive(Queryable))]
+#[cfg_attr(feature = "diesel", derive(Queryable))]
 pub struct FileWithPath {
     pub id: i32,
     pub book: i32,

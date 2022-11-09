@@ -7,9 +7,9 @@ use diesel::{
     ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared::series::Series;
 
 use crate::error::{Error, ErrorKind};
-use crate::models::series::Series;
 use crate::schema::books_series_link;
 
 #[derive(Debug, Deserialize, Insertable)]

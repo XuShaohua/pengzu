@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 use serde::Deserialize;
+use shared::series::Series;
 use shared::tags::Tag;
 
 use crate::types::authors::Author;
@@ -11,7 +12,6 @@ use crate::types::files::FileWithPath;
 use crate::types::languages::Language;
 use crate::types::publishers::Publisher;
 use crate::types::ratings::Rating;
-use crate::types::series::Series;
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct BookMetadata {

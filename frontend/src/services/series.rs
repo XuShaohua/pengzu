@@ -3,16 +3,16 @@
 // that can be found in the LICENSE file.
 
 use shared::general_query::GeneralQuery;
+use shared::series::{Series, SeriesAndBookList};
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::series::{Series, SeriesList};
 
 /// Get series list.
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_series_list(query: &GeneralQuery) -> Result<SeriesList, FetchError> {
+pub async fn fetch_series_list(query: &GeneralQuery) -> Result<SeriesAndBookList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
     let url = ["/api/series", &query_str].join("?");
     request_get(&url).await

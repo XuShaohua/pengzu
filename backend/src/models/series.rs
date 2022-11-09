@@ -2,14 +2,12 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
-};
-use serde::{Deserialize, Serialize};
+use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
+use serde::Deserialize;
 use shared::books_query::GetBooksQuery;
 use shared::general_query::GeneralQuery;
 use shared::page::{Page, SERIES_EACH_PAGE};
+use shared::series::{Series, SeriesAndBook, SeriesAndBookList};
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
@@ -21,14 +19,6 @@ pub struct NewSeries {
     pub name: String,
 }
 
-#[derive(Debug, Serialize, Queryable)]
-pub struct Series {
-    pub id: i32,
-    pub name: String,
-    pub crated: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
-}
-
 pub fn add_series(conn: &mut PgConnection, new_series: &NewSeries) -> Result<(), Error> {
     use crate::schema::series::dsl::series;
     diesel::insert_into(series)
@@ -37,23 +27,10 @@ pub fn add_series(conn: &mut PgConnection, new_series: &NewSeries) -> Result<(),
     Ok(())
 }
 
-#[derive(Debug, Serialize, Queryable)]
-pub struct SeriesAndBook {
-    pub id: i32,
-    pub name: String,
-    pub count: i64,
-}
-
-#[derive(Debug, Serialize)]
-pub struct GetSeriesResp {
-    pub page: Page,
-    pub list: Vec<SeriesAndBook>,
-}
-
 pub fn get_series_list(
     conn: &mut PgConnection,
     query: &GeneralQuery,
-) -> Result<GetSeriesResp, Error> {
+) -> Result<SeriesAndBookList, Error> {
     use crate::schema::books_series_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -75,7 +52,7 @@ pub fn get_series_list(
 
     let total = series::dsl::series.count().first(conn)?;
 
-    Ok(GetSeriesResp {
+    Ok(SeriesAndBookList {
         page: Page {
             page_num: page_id + 1,
             each_page: SERIES_EACH_PAGE,

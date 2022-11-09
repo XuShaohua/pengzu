@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{web, HttpResponse};
+use shared::advanced_search::AdvancedSearchQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
@@ -10,7 +11,7 @@ use crate::models::advanced_search;
 
 pub async fn get_books_by_advanced_search(
     pool: web::Data<DbPool>,
-    query: web::Query<advanced_search::AdvancedSearchQuery>,
+    query: web::Query<AdvancedSearchQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;

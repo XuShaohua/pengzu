@@ -3,24 +3,11 @@
 // that can be found in the LICENSE file.
 
 use diesel::{ExpressionMethods, PgConnection, PgTextExpressionMethods, QueryDsl, RunQueryDsl};
-use serde::Deserialize;
-use shared::books_query::{GetBooksOrder, GetBooksQuery};
-use shared::page::{default_page_id, PageId};
+use shared::advanced_search::AdvancedSearchQuery;
+use shared::books_query::GetBooksQuery;
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct AdvancedSearchQuery {
-    #[serde(default = "default_page_id")]
-    pub page: PageId,
-    #[serde(default = "GetBooksOrder::default")]
-    pub order: GetBooksOrder,
-
-    pub title: Option<String>,
-    pub author: Option<String>,
-    pub publisher: Option<String>,
-}
 
 #[allow(unused_assignments)]
 pub fn get_books_by_advanced_search(

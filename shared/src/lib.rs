@@ -8,3 +8,4 @@ pub mod general_query;
 pub mod page;
 pub mod recursive_query;
 pub mod simple_search;
+pub mod user_tags;

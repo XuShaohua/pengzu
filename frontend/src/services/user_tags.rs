@@ -2,9 +2,10 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::user_tags::{UserTag, UserTagList};
+
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::user_tags::{UserTag, UserTagList};
 
 /// Returns user tag list.
 ///

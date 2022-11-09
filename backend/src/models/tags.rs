@@ -7,13 +7,14 @@ use diesel::{
     RunQueryDsl,
 };
 use serde::Deserialize;
+use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::page::{Page, TAGS_EACH_PAGE};
 use shared::recursive_query::RecursiveQuery;
 use shared::tags::{Tag, TagAndBook, TagAndBookList};
 
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books::get_books_by_ids;
 use crate::schema::tags;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -99,7 +100,7 @@ pub fn get_books_by_tag(
     conn: &mut PgConnection,
     tag_id: i32,
     query: &GetBooksQuery,
-) -> Result<GetBooksResp, Error> {
+) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books_tags_link;
 
     let book_ids = books_tags_link::table

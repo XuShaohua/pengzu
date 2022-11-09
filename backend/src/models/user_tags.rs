@@ -4,12 +4,13 @@
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::{Deserialize, Serialize};
+use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::page::{default_page_id, Page};
 use shared::user_tags::{UserTag, UserTagAndBook, UserTagAndBookList};
 
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books::get_books_by_ids;
 use crate::schema::user_tags;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -105,7 +106,7 @@ pub fn get_books_by_user_tag(
     conn: &mut PgConnection,
     tag_id: i32,
     query: &GetBooksQuery,
-) -> Result<GetBooksResp, Error> {
+) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books_user_tags_link;
 
     let book_ids = books_user_tags_link::table

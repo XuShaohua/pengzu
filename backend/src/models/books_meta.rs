@@ -5,6 +5,7 @@
 use diesel::{PgConnection, Queryable};
 use serde::Serialize;
 use shared::authors::Author;
+use shared::books::BookWithCover;
 use shared::files::FileWithPath;
 use shared::languages::Language;
 use shared::publishers::Publisher;
@@ -13,7 +14,7 @@ use shared::series::Series;
 use shared::tags::Tag;
 
 use crate::error::{Error, ErrorKind};
-use crate::models::books::{get_book_by_id, BookWithCover};
+use crate::models::books::get_book_by_id;
 use crate::models::books_authors::get_authors_by_book;
 use crate::models::books_languages::get_language_by_book;
 use crate::models::books_publishers::get_publisher_by_book;

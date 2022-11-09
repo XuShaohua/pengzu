@@ -4,13 +4,14 @@
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::Deserialize;
+use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::general_query::GeneralQuery;
 use shared::page::{Page, SERIES_EACH_PAGE};
 use shared::series::{Series, SeriesAndBook, SeriesAndBookList};
 
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books::get_books_by_ids;
 use crate::schema::series;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -93,7 +94,7 @@ pub fn get_books_by_series(
     conn: &mut PgConnection,
     series_id: i32,
     query: &GetBooksQuery,
-) -> Result<GetBooksResp, Error> {
+) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books_series_link;
 
     let book_ids = books_series_link::table

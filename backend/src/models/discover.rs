@@ -3,14 +3,15 @@
 // that can be found in the LICENSE file.
 
 use diesel::{sql_function, PgConnection, QueryDsl, RunQueryDsl};
+use shared::books::{Book, BookAndAuthorsList};
 use shared::page::{default_page_id, Page, BOOKS_EACH_PAGE};
 
 use crate::error::Error;
 use crate::models::authors::get_authors_by_book_id;
-use crate::models::books::{merge_books_and_authors, Book, GetBooksResp};
+use crate::models::books::merge_books_and_authors;
 
 #[allow(clippy::redundant_pub_crate)]
-pub fn get_books_by_discover(conn: &mut PgConnection) -> Result<GetBooksResp, Error> {
+pub fn get_books_by_discover(conn: &mut PgConnection) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books;
 
     sql_function!(
@@ -26,7 +27,7 @@ pub fn get_books_by_discover(conn: &mut PgConnection) -> Result<GetBooksResp, Er
     let author_list = get_authors_by_book_id(conn, &book_list)?;
     let list = merge_books_and_authors(book_list, &author_list);
 
-    Ok(GetBooksResp {
+    Ok(BookAndAuthorsList {
         page: Page {
             page_num: default_page_id(),
             each_page: BOOKS_EACH_PAGE,

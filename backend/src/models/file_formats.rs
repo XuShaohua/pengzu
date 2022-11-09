@@ -4,12 +4,13 @@
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::Deserialize;
+use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::file_formats::{FileFormat, FileFormatAndBook, FileFormatAndBookList};
 use shared::page::{Page, PageQuery};
 
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books::get_books_by_ids;
 use crate::schema::file_formats;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -90,7 +91,7 @@ pub fn get_books_by_format(
     conn: &mut PgConnection,
     format_id: i32,
     query: &GetBooksQuery,
-) -> Result<GetBooksResp, Error> {
+) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::files;
 
     let book_ids = files::table

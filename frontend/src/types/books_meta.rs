@@ -4,14 +4,13 @@
 
 use serde::Deserialize;
 use shared::authors::Author;
+use shared::books::BookWithCover;
 use shared::files::FileWithPath;
 use shared::languages::Language;
 use shared::publishers::Publisher;
 use shared::ratings::Rating;
 use shared::series::Series;
 use shared::tags::Tag;
-
-use crate::types::books::BookWithCover;
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct BookMetadata {

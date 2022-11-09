@@ -4,16 +4,17 @@
 
 use diesel::{ExpressionMethods, PgConnection, PgTextExpressionMethods, QueryDsl, RunQueryDsl};
 use shared::advanced_search::AdvancedSearchQuery;
+use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books::get_books_by_ids;
 
 #[allow(unused_assignments)]
 pub fn get_books_by_advanced_search(
     conn: &mut PgConnection,
     query: &AdvancedSearchQuery,
-) -> Result<GetBooksResp, Error> {
+) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::authors;
     use crate::schema::books;
     use crate::schema::books_authors_link;

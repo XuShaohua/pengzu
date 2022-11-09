@@ -14,6 +14,7 @@ use calibre::models::data::get_book_data;
 use calibre::models::identifiers::get_identifiers;
 use diesel::{PgConnection, SqliteConnection};
 use serde::Serialize;
+use shared::books::Book;
 use std::fs;
 
 use crate::error::{Error, ErrorKind};
@@ -22,7 +23,7 @@ use crate::import::file_util::{get_book_file_path, get_book_metadata_path};
 use crate::import::models::books::{add_import_book, NewImportBook};
 use crate::import::models::libraries::{update_import_library, ImportLibrary};
 use crate::models::authors::get_author_by_name;
-use crate::models::books::{add_book, Book, NewBook};
+use crate::models::books::{add_book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
 use crate::models::books_languages::{add_book_language, NewBookLanguage};
 use crate::models::books_publishers::{add_book_publisher, NewBookPublisher};

@@ -3,16 +3,17 @@
 // that can be found in the LICENSE file.
 
 use diesel::{PgConnection, PgTextExpressionMethods, QueryDsl, RunQueryDsl};
+use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::simple_search::SimpleSearchQuery;
 
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, GetBooksResp};
+use crate::models::books::get_books_by_ids;
 
 pub fn get_books_by_simple_search(
     conn: &mut PgConnection,
     query: &SimpleSearchQuery,
-) -> Result<GetBooksResp, Error> {
+) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books;
 
     let query_pattern = format!("%{}%", query.query);

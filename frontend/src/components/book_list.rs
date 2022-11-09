@@ -2,20 +2,20 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::books::BookAndAuthors;
 use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::Link;
 
 use crate::router::Route;
-use crate::types::books::Book;
 use crate::views::util::get_cover_image_url;
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
-    pub books: Vec<Book>,
+    pub books: Vec<BookAndAuthors>,
 }
 
-fn generate_book_element(book_resp: &Book) -> Html {
+fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
     let book = &book_resp.book;
     let authors = &book_resp.authors;
     let authors_element = authors

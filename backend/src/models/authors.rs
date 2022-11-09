@@ -8,12 +8,13 @@ use diesel::{
 };
 use serde::Deserialize;
 use shared::authors::{Author, AuthorAndBook, AuthorAndBookList};
+use shared::books::{AuthorAndBookId, Book, BookAndAuthorsList};
 use shared::books_query::GetBooksQuery;
 use shared::general_query::GeneralQuery;
 use shared::page::{Page, AUTHORS_EACH_PAGE};
 
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, AuthorAndBookId, Book, GetBooksResp};
+use crate::models::books::get_books_by_ids;
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -123,7 +124,7 @@ pub fn get_books_by_author(
     conn: &mut PgConnection,
     author_id: i32,
     query: &GetBooksQuery,
-) -> Result<GetBooksResp, Error> {
+) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books_authors_link;
 
     let book_ids = books_authors_link::table

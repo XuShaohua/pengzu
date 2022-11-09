@@ -2,9 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
-use serde::{Deserialize, Serialize};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
+use serde::Deserialize;
+use shared::books::{AuthorAndBookId, Book, BookAndAuthors, BookAndAuthorsList, BookWithCover};
 use shared::books_query::GetBooksQuery;
 use shared::page::{Page, BOOKS_EACH_PAGE};
 
@@ -12,31 +12,6 @@ use crate::error::Error;
 use crate::models::authors::get_authors_by_book_id;
 use crate::models::file_data;
 use crate::schema::books;
-
-#[derive(Debug, Serialize, Queryable)]
-pub struct Book {
-    pub id: i32,
-    pub title: String,
-    pub path: String,
-    pub author_sort: String,
-    pub uuid: String,
-    pub has_cover: bool,
-    pub pubdate: Option<NaiveDateTime>,
-    pub created: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
-}
-
-#[derive(Debug, Clone, Serialize, Queryable)]
-pub struct BookWithCover {
-    pub id: i32,
-    pub title: String,
-    pub path: String,
-    pub has_cover: bool,
-    pub small_cover: Option<String>,
-    pub large_cover: Option<String>,
-    pub pubdate: Option<NaiveDateTime>,
-    pub created: NaiveDateTime,
-}
 
 #[derive(Debug, Deserialize, Insertable)]
 #[diesel(table_name = books)]
@@ -72,25 +47,6 @@ pub fn get_book_path_by_id(conn: &mut PgConnection, book_id: i32) -> Result<Stri
         .map_err(Into::into)
 }
 
-#[derive(Debug, Clone, Serialize, Queryable)]
-pub struct AuthorAndBookId {
-    pub id: i32,
-    pub name: String,
-    pub book: i32,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct BookResp {
-    pub book: BookWithCover,
-    pub authors: Vec<AuthorAndBookId>,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct GetBooksResp {
-    pub page: Page,
-    pub list: Vec<BookResp>,
-}
-
 #[must_use]
 pub fn book_to_book_cover(book: Book) -> BookWithCover {
     BookWithCover {
@@ -109,7 +65,7 @@ pub fn book_to_book_cover(book: Book) -> BookWithCover {
 pub fn merge_books_and_authors(
     book_list: Vec<Book>,
     author_list: &[AuthorAndBookId],
-) -> Vec<BookResp> {
+) -> Vec<BookAndAuthors> {
     let mut list = Vec::with_capacity(book_list.len());
 
     for book in book_list {
@@ -118,7 +74,7 @@ pub fn merge_books_and_authors(
             .filter(|author| author.book == book.id)
             .map(Clone::clone)
             .collect();
-        list.push(BookResp {
+        list.push(BookAndAuthors {
             book: book_to_book_cover(book),
             authors,
         });
@@ -127,7 +83,10 @@ pub fn merge_books_and_authors(
     list
 }
 
-pub fn get_books(conn: &mut PgConnection, query: &GetBooksQuery) -> Result<GetBooksResp, Error> {
+pub fn get_books(
+    conn: &mut PgConnection,
+    query: &GetBooksQuery,
+) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books::dsl::{books, id};
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -144,7 +103,7 @@ pub fn get_books(conn: &mut PgConnection, query: &GetBooksQuery) -> Result<GetBo
 
     let total = books.count().first(conn)?;
 
-    Ok(GetBooksResp {
+    Ok(BookAndAuthorsList {
         page: Page {
             page_num: page_id + 1,
             each_page: BOOKS_EACH_PAGE,
@@ -159,7 +118,7 @@ pub fn get_books_by_ids(
     conn: &mut PgConnection,
     query: &GetBooksQuery,
     book_ids: &[i32],
-) -> Result<GetBooksResp, Error> {
+) -> Result<BookAndAuthorsList, Error> {
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let offset = page_id * BOOKS_EACH_PAGE;
     // let order_column = query.order.get_column();
@@ -174,7 +133,7 @@ pub fn get_books_by_ids(
     let author_list = get_authors_by_book_id(conn, &book_list)?;
     let list = merge_books_and_authors(book_list, &author_list);
 
-    Ok(GetBooksResp {
+    Ok(BookAndAuthorsList {
         page: Page {
             page_num: page_id + 1,
             each_page: BOOKS_EACH_PAGE,

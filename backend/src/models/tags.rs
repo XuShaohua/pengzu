@@ -9,10 +9,12 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 
-use super::page::{default_page_id, Page};
+use super::page::Page;
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
 use crate::models::books_query::GetBooksQuery;
+use crate::models::page::TAGS_EACH_PAGE;
+use crate::models::recursive_query::RecursiveQuery;
 use crate::schema::tags;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -72,25 +74,11 @@ pub struct GetTagsResp {
     pub list: Vec<TagAndBook>,
 }
 
-#[must_use]
-pub const fn default_parent_tag_id() -> i32 {
-    0
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct GetTagsReq {
-    #[serde(default = "default_parent_tag_id")]
-    pub parent: i32,
-    #[serde(default = "default_page_id")]
-    pub page: i64,
-}
-
-pub fn get_tags(conn: &mut PgConnection, query: &GetTagsReq) -> Result<GetTagsResp, Error> {
+pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<GetTagsResp, Error> {
     use crate::schema::books_tags_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 100;
-    let offset = page_id * each_page;
+    let offset = page_id * TAGS_EACH_PAGE;
 
     let list = tags::table
         .filter(tags::parent.eq(query.parent))
@@ -103,7 +91,7 @@ pub fn get_tags(conn: &mut PgConnection, query: &GetTagsReq) -> Result<GetTagsRe
             tags::parent,
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_tags_link.id)"),
         ))
-        .limit(each_page)
+        .limit(TAGS_EACH_PAGE)
         .offset(offset)
         .load::<TagAndBook>(conn)?;
 
@@ -115,7 +103,7 @@ pub fn get_tags(conn: &mut PgConnection, query: &GetTagsReq) -> Result<GetTagsRe
     Ok(GetTagsResp {
         page: Page {
             page_num: page_id + 1,
-            each_page,
+            each_page: TAGS_EACH_PAGE,
             total,
         },
         list,

@@ -27,6 +27,7 @@ pub mod page;
 pub mod publishers;
 pub mod ratings;
 pub mod reading_history;
+pub mod recursive_query;
 pub mod series;
 pub mod simple_search;
 pub mod tags;

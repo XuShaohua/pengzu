@@ -7,6 +7,7 @@ use actix_web::{web, HttpResponse};
 use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::books_query::GetBooksQuery;
+use crate::models::recursive_query::RecursiveQuery;
 use crate::models::tags;
 
 pub async fn add_tag(
@@ -23,7 +24,7 @@ pub async fn add_tag(
 
 pub async fn get_tags(
     pool: web::Data<DbPool>,
-    query: web::Query<tags::GetTagsReq>,
+    query: web::Query<RecursiveQuery>,
 ) -> Result<HttpResponse, Error> {
     let tags_resp = web::block(move || {
         let mut conn = pool.get()?;

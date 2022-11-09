@@ -14,6 +14,7 @@ pub struct SimpleSearchQuery {
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
 
+    /// Search keyword.
     pub query: String,
 }
 

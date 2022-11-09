@@ -3,22 +3,11 @@
 // that can be found in the LICENSE file.
 
 use diesel::{PgConnection, PgTextExpressionMethods, QueryDsl, RunQueryDsl};
-use serde::Deserialize;
-use shared::books_query::{GetBooksOrder, GetBooksQuery};
-use shared::page::{default_page_id, PageId};
+use shared::books_query::GetBooksQuery;
+use shared::simple_search::SimpleSearchQuery;
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct SimpleSearchQuery {
-    #[serde(default = "default_page_id")]
-    pub page: PageId,
-    #[serde(default = "GetBooksOrder::default")]
-    pub order: GetBooksOrder,
-
-    pub query: String,
-}
 
 pub fn get_books_by_simple_search(
     conn: &mut PgConnection,

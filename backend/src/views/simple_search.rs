@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{web, HttpResponse};
+use shared::simple_search::SimpleSearchQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
@@ -10,7 +11,7 @@ use crate::models::simple_search;
 
 pub async fn get_books_by_simple_search(
     pool: web::Data<DbPool>,
-    query: web::Query<simple_search::SimpleSearchQuery>,
+    query: web::Query<SimpleSearchQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;

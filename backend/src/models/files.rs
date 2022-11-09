@@ -2,10 +2,10 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
-use serde::{Deserialize, Serialize};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
+use serde::Deserialize;
 use shared::file_formats::FileFormat;
+use shared::files::{File, FileWithPath};
 
 use crate::error::Error;
 use crate::models::books::get_book_path_by_id;
@@ -19,28 +19,6 @@ pub struct NewFile {
     pub format: i32,
     pub size: i32,
     pub name: String,
-}
-
-#[derive(Debug, Serialize, Queryable)]
-pub struct File {
-    pub id: i32,
-    pub book: i32,
-    pub format: i32,
-    pub size: i32,
-    pub name: String,
-    pub created: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
-}
-
-#[derive(Debug, Serialize, Queryable)]
-pub struct FileWithPath {
-    pub id: i32,
-    pub book: i32,
-    pub size: i32,
-    pub format_id: i32,
-    pub format_name: String,
-    pub name: String,
-    pub path: String,
 }
 
 pub fn add_file(conn: &mut PgConnection, new_file: &NewFile) -> Result<(), Error> {

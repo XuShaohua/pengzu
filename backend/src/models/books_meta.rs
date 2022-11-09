@@ -4,6 +4,7 @@
 
 use diesel::{PgConnection, Queryable};
 use serde::Serialize;
+use shared::files::FileWithPath;
 use shared::languages::Language;
 use shared::publishers::Publisher;
 use shared::ratings::Rating;
@@ -18,7 +19,7 @@ use crate::models::books_languages::get_language_by_book;
 use crate::models::books_publishers::get_publisher_by_book;
 use crate::models::books_series::get_series_by_book;
 use crate::models::books_tags::get_tags_by_book;
-use crate::models::files::{get_book_files_and_formats, FileWithPath};
+use crate::models::files::get_book_files_and_formats;
 use crate::models::ratings::get_rating;
 
 // TODO(Shaohua): Replace subquery with a meta table in postgres.

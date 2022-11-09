@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use shared::user_tags::{UserTagAndBook, UserTagList};
+use shared::user_tags::{UserTagAndBook, UserTagAndBookList};
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::Link;
@@ -15,7 +15,7 @@ pub struct Props {
     pub tag: UserTagAndBook,
 }
 
-pub fn generate_tag_list(tag_list: &UserTagList) -> Html {
+pub fn generate_tag_list(tag_list: &UserTagAndBookList) -> Html {
     html! {
         <ul>
         {for tag_list.list.iter().map(|tag| html!{

@@ -2,13 +2,11 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
-};
+use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 use shared::books_query::GetBooksQuery;
 use shared::page::{default_page_id, Page};
+use shared::user_tags::{UserTag, UserTagAndBook, UserTagAndBookList};
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
@@ -18,17 +16,6 @@ use crate::schema::user_tags;
 #[diesel(table_name = user_tags)]
 pub struct NewUserTag {
     pub name: String,
-}
-
-#[derive(Debug, Serialize, Queryable)]
-pub struct UserTag {
-    pub id: i32,
-    pub user_id: i32,
-    pub order_index: i32,
-    pub name: String,
-    pub parent: i32,
-    pub created: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
 }
 
 pub fn add_tag(conn: &mut PgConnection, new_tag: &NewUserTag) -> Result<(), Error> {
@@ -41,36 +28,23 @@ pub fn add_tag(conn: &mut PgConnection, new_tag: &NewUserTag) -> Result<(), Erro
 pub fn get_tag_by_id(conn: &mut PgConnection, tag_id: i32) -> Result<UserTag, Error> {
     user_tags::table
         .find(tag_id)
-        .first(conn)
+        .first::<UserTag>(conn)
         .map_err(Into::into)
 }
 
 pub fn get_tag_by_name(conn: &mut PgConnection, tag_name: &str) -> Result<UserTag, Error> {
     user_tags::table
         .filter(user_tags::name.eq(tag_name))
-        .first(conn)
+        .first::<UserTag>(conn)
         .map_err(Into::into)
-}
-
-#[derive(Debug, Serialize, Queryable)]
-pub struct UserTagAndBook {
-    pub id: i32,
-    pub order_index: i32,
-    pub name: String,
-    pub parent: i32,
-    pub count: i64,
-}
-
-#[derive(Debug, Serialize)]
-pub struct GetUserTagsResp {
-    pub page: Page,
-    pub list: Vec<UserTagAndBook>,
 }
 
 #[must_use]
 pub const fn default_parent_tag_id() -> i32 {
     0
 }
+
+// TODO(Shaohua): Replace with query
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GetUserTagsReq {
@@ -80,7 +54,10 @@ pub struct GetUserTagsReq {
     pub page: i64,
 }
 
-pub fn get_tags(conn: &mut PgConnection, query: &GetUserTagsReq) -> Result<GetUserTagsResp, Error> {
+pub fn get_tags(
+    conn: &mut PgConnection,
+    query: &GetUserTagsReq,
+) -> Result<UserTagAndBookList, Error> {
     use crate::schema::books_user_tags_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -107,7 +84,7 @@ pub fn get_tags(conn: &mut PgConnection, query: &GetUserTagsReq) -> Result<GetUs
         .count()
         .first(conn)?;
 
-    Ok(GetUserTagsResp {
+    Ok(UserTagAndBookList {
         page: Page {
             page_num: page_id + 1,
             each_page,

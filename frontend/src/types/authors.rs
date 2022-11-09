@@ -4,8 +4,7 @@
 
 use chrono::NaiveDateTime;
 use serde::Deserialize;
-
-use crate::types::page::Page;
+use shared::page::Page;
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Author {

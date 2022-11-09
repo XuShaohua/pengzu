@@ -13,7 +13,7 @@ pub const TAGS_EACH_PAGE: i64 = 100;
 pub type PageId = i64;
 
 /// Used in pagination.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Page {
     /// Current page number of supported query.
     pub page_num: PageId,
@@ -31,6 +31,18 @@ pub struct Page {
 #[must_use]
 pub const fn default_page_id() -> PageId {
     1
+}
+
+impl Page {
+    #[must_use]
+    pub const fn total_pages(&self) -> PageId {
+        let page = self.total / self.each_page;
+        if page * self.each_page < self.total {
+            page + 1
+        } else {
+            page
+        }
+    }
 }
 
 /// Query parameter which only contains page number.

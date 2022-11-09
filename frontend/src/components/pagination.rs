@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::types::page::PageId;
+use shared::page::PageId;
 use stylist::Style;
 use yew::prelude::*;
 

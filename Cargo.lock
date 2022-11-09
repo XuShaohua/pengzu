@@ -732,6 +732,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_urlencoded",
+ "shared",
  "stylist",
  "wasm-bindgen",
  "wasm-bindgen-futures",

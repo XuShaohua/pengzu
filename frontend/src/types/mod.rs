@@ -12,7 +12,6 @@ pub mod file_formats;
 pub mod files;
 pub mod general_query;
 pub mod languages;
-pub mod page;
 pub mod publishers;
 pub mod ratings;
 pub mod recursive_query;

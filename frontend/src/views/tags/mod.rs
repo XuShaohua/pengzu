@@ -11,9 +11,9 @@ use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::tags::fetch_tags;
 use crate::types::general_query::GeneralOrder;
-use crate::types::page::PageId;
 use crate::types::recursive_query::RecursiveQuery;
 use crate::views::util;
+use shared::page::PageId;
 
 mod tag_item;
 use tag_item::generate_tag_list;

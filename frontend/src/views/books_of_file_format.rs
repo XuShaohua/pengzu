@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use yew_router::history::{History, Location};
@@ -14,7 +15,6 @@ use crate::router::Route;
 use crate::services::books::fetch_books_by_file_format;
 use crate::services::file_formats::fetch_file_format;
 use crate::types::books_query::{GetBooksOrder, GetBooksQuery};
-use crate::types::page::PageId;
 use crate::views::util;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]

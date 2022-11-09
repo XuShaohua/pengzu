@@ -3,16 +3,16 @@
 // that can be found in the LICENSE file.
 
 use shared::general_query::GeneralQuery;
+use shared::publishers::{Publisher, PublisherAndBookList};
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
-use crate::types::publishers::{Publisher, PublisherList};
 
 /// Get publisher list.
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_publishers(query: &GeneralQuery) -> Result<PublisherList, FetchError> {
+pub async fn fetch_publishers(query: &GeneralQuery) -> Result<PublisherAndBookList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
     let url = ["/api/publisher", &query_str].join("?");
     request_get(&url).await

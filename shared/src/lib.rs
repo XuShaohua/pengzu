@@ -6,6 +6,7 @@ pub mod advanced_search;
 pub mod books_query;
 pub mod general_query;
 pub mod page;
+pub mod publishers;
 pub mod ratings;
 pub mod recursive_query;
 pub mod series;

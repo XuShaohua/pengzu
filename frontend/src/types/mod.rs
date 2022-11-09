@@ -9,5 +9,4 @@ pub mod categories;
 pub mod file_formats;
 pub mod files;
 pub mod languages;
-pub mod publishers;
 pub mod users;

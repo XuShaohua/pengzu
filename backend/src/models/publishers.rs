@@ -2,14 +2,12 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
-};
-use serde::{Deserialize, Serialize};
+use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
+use serde::Deserialize;
 use shared::books_query::GetBooksQuery;
 use shared::general_query::GeneralQuery;
 use shared::page::{Page, PUBLISHERS_EACH_PAGE};
+use shared::publishers::{Publisher, PublisherAndBook, PublisherAndBookList};
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
@@ -20,15 +18,6 @@ use crate::schema::publishers;
 pub struct NewPublisher {
     pub name: String,
 }
-
-#[derive(Debug, Serialize, Queryable)]
-pub struct Publisher {
-    pub id: i32,
-    pub name: String,
-    pub crated: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
-}
-
 pub fn add_publisher(conn: &mut PgConnection, new_publisher: &NewPublisher) -> Result<(), Error> {
     use crate::schema::publishers::dsl::publishers;
     diesel::insert_into(publishers)
@@ -37,23 +26,10 @@ pub fn add_publisher(conn: &mut PgConnection, new_publisher: &NewPublisher) -> R
     Ok(())
 }
 
-#[derive(Debug, Serialize, Queryable)]
-pub struct PublisherAndBook {
-    pub id: i32,
-    pub name: String,
-    pub count: i64,
-}
-
-#[derive(Debug, Serialize)]
-pub struct GetPublishersResp {
-    pub page: Page,
-    pub list: Vec<PublisherAndBook>,
-}
-
 pub fn get_publishers(
     conn: &mut PgConnection,
     query: &GeneralQuery,
-) -> Result<GetPublishersResp, Error> {
+) -> Result<PublisherAndBookList, Error> {
     use crate::schema::books_publishers_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
@@ -77,7 +53,7 @@ pub fn get_publishers(
 
     let total = publishers::dsl::publishers.count().first(conn)?;
 
-    Ok(GetPublishersResp {
+    Ok(PublisherAndBookList {
         page: Page {
             page_num: page_id + 1,
             each_page: PUBLISHERS_EACH_PAGE,

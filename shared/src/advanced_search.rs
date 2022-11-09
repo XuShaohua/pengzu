@@ -3,8 +3,9 @@
 // that can be found in the LICENSE file.
 
 use serde::{Deserialize, Serialize};
-use shared::books_query::GetBooksOrder;
-use shared::page::{default_page_id, PageId};
+
+use crate::books_query::GetBooksOrder;
+use crate::page::{default_page_id, PageId};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AdvancedSearchQuery {

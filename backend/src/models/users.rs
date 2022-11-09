@@ -5,48 +5,11 @@
 use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
+use shared::users::{LoginForm, UserInfo, UserRole};
 
 use crate::error::{Error, ErrorKind};
 use crate::models::auth;
 use crate::schema::users;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[repr(u8)]
-pub enum UserRole {
-    Nil = 0,
-    User = 1,
-    Admin = 2,
-}
-
-impl Default for UserRole {
-    fn default() -> Self {
-        Self::User
-    }
-}
-
-impl diesel::Expression for UserRole {
-    type SqlType = diesel::sql_types::Integer;
-}
-
-impl From<i32> for UserRole {
-    fn from(role: i32) -> Self {
-        match role {
-            1 => Self::User,
-            2 => Self::Admin,
-            _ => Self::Nil,
-        }
-    }
-}
-
-impl From<UserRole> for i32 {
-    fn from(role: UserRole) -> Self {
-        match role {
-            UserRole::Nil => 0,
-            UserRole::User => 1,
-            UserRole::Admin => 2,
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Queryable)]
 pub struct User {
@@ -60,17 +23,6 @@ pub struct User {
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,
     pub deleted_at: Option<NaiveDateTime>,
-}
-
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct UserInfo {
-    pub id: i32,
-    pub name: String,
-    pub display_name: String,
-    pub email: String,
-    pub role: UserRole,
-    pub created: NaiveDateTime,
-    pub token: String,
 }
 
 fn user_to_user_info(user: User) -> UserInfo {
@@ -126,12 +78,6 @@ pub fn add_user(conn: &mut PgConnection, new_user_req: NewUserReq) -> Result<Use
 pub fn get_users(conn: &mut PgConnection) -> Result<Vec<UserInfo>, Error> {
     let user_list = users::table.load(conn)?;
     Ok(user_list.into_iter().map(user_to_user_info).collect())
-}
-
-#[derive(Debug, Deserialize)]
-pub struct LoginForm {
-    pub username: String,
-    pub password: String,
 }
 
 pub fn login(conn: &mut PgConnection, form: &LoginForm) -> Result<UserInfo, Error> {

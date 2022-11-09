@@ -2,13 +2,13 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::users::UserInfo;
 use yew::prelude::*;
 use yew_hooks::{use_async, use_mount};
 
 use crate::error::ErrorKind;
 use crate::services::auth::{get_token, set_token};
 use crate::services::users::get_user_info;
-use crate::types::users::UserInfo;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {

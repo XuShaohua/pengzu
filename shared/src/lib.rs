@@ -20,3 +20,4 @@ pub mod series;
 pub mod simple_search;
 pub mod tags;
 pub mod user_tags;
+pub mod users;

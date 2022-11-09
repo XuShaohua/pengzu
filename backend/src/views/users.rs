@@ -4,6 +4,7 @@
 
 use actix_web::cookie::Cookie;
 use actix_web::{web, HttpRequest, HttpResponse};
+use shared::users::{LoginForm, UserInfo};
 
 use crate::db::DbPool;
 use crate::error::Error;
@@ -13,9 +14,9 @@ use crate::views::auth::{get_claims_from_request, Claims, UserPermissions, TOKEN
 
 pub async fn login(
     pool: web::Data<DbPool>,
-    form: web::Json<users::LoginForm>,
+    form: web::Json<LoginForm>,
 ) -> Result<HttpResponse, Error> {
-    let mut user_info: users::UserInfo = web::block(move || {
+    let mut user_info: UserInfo = web::block(move || {
         let mut conn = pool.get()?;
         users::login(&mut conn, &form)
     })

@@ -19,6 +19,31 @@ impl Default for UserRole {
     }
 }
 
+#[cfg(feature = "use_query")]
+impl diesel::Expression for UserRole {
+    type SqlType = diesel::sql_types::Integer;
+}
+
+impl From<i32> for UserRole {
+    fn from(role: i32) -> Self {
+        match role {
+            1 => Self::User,
+            2 => Self::Admin,
+            _ => Self::Nil,
+        }
+    }
+}
+
+impl From<UserRole> for i32 {
+    fn from(role: UserRole) -> Self {
+        match role {
+            UserRole::Nil => 0,
+            UserRole::User => 1,
+            UserRole::Admin => 2,
+        }
+    }
+}
+
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UserInfo {
     pub id: i32,

@@ -3,11 +3,12 @@
 // that can be found in the LICENSE file.
 
 use clap::{Arg, ArgMatches, Command};
+use shared::users::UserRole;
 
 use crate::db::get_connection_pool;
 use crate::error::Error;
 use crate::models::users;
-use crate::models::users::{NewUserReq, UserRole};
+use crate::models::users::NewUserReq;
 
 pub const CMD_ADD_USER: &str = "add-user";
 const OPT_NAME: &str = "username";

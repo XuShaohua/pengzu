@@ -10,9 +10,9 @@ use actix_web_httpauth::extractors::bearer::BearerAuth;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
+use shared::users::UserRole;
 
 use crate::error::{Error, ErrorKind};
-use crate::models::users::UserRole;
 use crate::settings::get_jwt_secret;
 
 pub const TOKEN_NAME: &str = "Token";

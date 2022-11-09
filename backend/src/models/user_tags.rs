@@ -7,8 +7,8 @@ use diesel::{
     ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared::page::{default_page_id, Page};
 
-use super::page::{default_page_id, Page};
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
 use crate::models::books_query::GetBooksQuery;

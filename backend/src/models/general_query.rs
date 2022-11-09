@@ -3,8 +3,7 @@
 // that can be found in the LICENSE file.
 
 use serde::{Deserialize, Serialize};
-
-use crate::models::page::{default_page_id, PageId};
+use shared::page::{default_page_id, PageId};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 pub enum GeneralOrder {

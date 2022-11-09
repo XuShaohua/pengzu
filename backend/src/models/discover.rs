@@ -3,11 +3,11 @@
 // that can be found in the LICENSE file.
 
 use diesel::{sql_function, PgConnection, QueryDsl, RunQueryDsl};
+use shared::page::{default_page_id, Page, BOOKS_EACH_PAGE};
 
 use crate::error::Error;
 use crate::models::authors::get_authors_by_book_id;
 use crate::models::books::{merge_books_and_authors, Book, GetBooksResp};
-use crate::models::page::{default_page_id, Page, BOOKS_EACH_PAGE};
 
 #[allow(clippy::redundant_pub_crate)]
 pub fn get_books_by_discover(conn: &mut PgConnection) -> Result<GetBooksResp, Error> {

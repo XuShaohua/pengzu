@@ -5,8 +5,8 @@
 use diesel::expression::expression_types::NotSelectable;
 use diesel::{BoxableExpression, ExpressionMethods};
 use serde::Deserialize;
+use shared::page::{default_page_id, PageId};
 
-use crate::models::page::{default_page_id, PageId};
 use crate::schema::books;
 
 #[derive(Debug, Clone, Copy, Deserialize)]

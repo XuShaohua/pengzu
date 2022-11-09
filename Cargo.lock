@@ -347,6 +347,7 @@ dependencies = [
  "ring",
  "serde",
  "serde_json",
+ "shared",
  "tokio",
  "urlencoding",
  "uuid",
@@ -1788,6 +1789,7 @@ name = "shared"
 version = "0.1.0"
 dependencies = [
  "diesel",
+ "serde",
 ]
 
 [[package]]

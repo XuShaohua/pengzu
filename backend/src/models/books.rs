@@ -5,13 +5,12 @@
 use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
+use shared::page::{Page, BOOKS_EACH_PAGE};
 
-use super::page::Page;
 use crate::error::Error;
 use crate::models::authors::get_authors_by_book_id;
 use crate::models::books_query::GetBooksQuery;
 use crate::models::file_data;
-use crate::models::page::BOOKS_EACH_PAGE;
 use crate::schema::books;
 
 #[derive(Debug, Serialize, Queryable)]

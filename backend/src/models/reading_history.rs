@@ -5,9 +5,9 @@
 use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
+use shared::page::{default_page_id, Page};
 
 use crate::error::Error;
-use crate::models::page::{default_page_id, Page};
 use crate::schema::reading_history;
 
 #[derive(Debug, Serialize, Queryable)]

@@ -7,11 +7,11 @@ use diesel::{
     ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared::page::{default_page_id, Page};
 
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
 use crate::models::books_query::GetBooksQuery;
-use crate::models::page::{default_page_id, Page};
 use crate::schema::categories;
 
 #[derive(Debug, Deserialize, Insertable)]

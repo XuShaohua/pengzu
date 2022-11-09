@@ -8,12 +8,11 @@ use diesel::{
     Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared::page::{Page, TAGS_EACH_PAGE};
 
-use super::page::Page;
 use crate::error::Error;
 use crate::models::books::{get_books_by_ids, GetBooksResp};
 use crate::models::books_query::GetBooksQuery;
-use crate::models::page::TAGS_EACH_PAGE;
 use crate::models::recursive_query::RecursiveQuery;
 use crate::schema::tags;
 

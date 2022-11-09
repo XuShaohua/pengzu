@@ -10,6 +10,7 @@ pub const CATEGORIES_EACH_PAGE: i64 = 100;
 pub const PUBLISHERS_EACH_PAGE: i64 = 100;
 pub const SERIES_EACH_PAGE: i64 = 100;
 pub const TAGS_EACH_PAGE: i64 = 100;
+pub const USER_TAGS_EACH_PAGE: i64 = 100;
 
 pub type PageId = i64;
 

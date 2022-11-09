@@ -3,10 +3,11 @@
 // that can be found in the LICENSE file.
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
-use shared::page::{default_page_id, Page};
+use shared::page::{Page, USER_TAGS_EACH_PAGE};
+use shared::recursive_query::RecursiveQuery;
 use shared::user_tags::{UserTag, UserTagAndBook, UserTagAndBookList};
 
 use crate::error::Error;
@@ -40,30 +41,14 @@ pub fn get_tag_by_name(conn: &mut PgConnection, tag_name: &str) -> Result<UserTa
         .map_err(Into::into)
 }
 
-#[must_use]
-pub const fn default_parent_tag_id() -> i32 {
-    0
-}
-
-// TODO(Shaohua): Replace with query
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct GetUserTagsReq {
-    #[serde(default = "default_parent_tag_id")]
-    pub parent: i32,
-    #[serde(default = "default_page_id")]
-    pub page: i64,
-}
-
 pub fn get_tags(
     conn: &mut PgConnection,
-    query: &GetUserTagsReq,
+    query: &RecursiveQuery,
 ) -> Result<UserTagAndBookList, Error> {
     use crate::schema::books_user_tags_link;
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 100;
-    let offset = page_id * each_page;
+    let offset = page_id * USER_TAGS_EACH_PAGE;
 
     let list = user_tags::table
         .filter(user_tags::parent.eq(query.parent))
@@ -76,7 +61,7 @@ pub fn get_tags(
             user_tags::parent,
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_user_tags_link.id)"),
         ))
-        .limit(each_page)
+        .limit(USER_TAGS_EACH_PAGE)
         .offset(offset)
         .load::<UserTagAndBook>(conn)?;
 
@@ -88,7 +73,7 @@ pub fn get_tags(
     Ok(UserTagAndBookList {
         page: Page {
             page_num: page_id + 1,
-            each_page,
+            each_page: USER_TAGS_EACH_PAGE,
             total,
         },
         list,

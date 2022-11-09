@@ -21,5 +21,4 @@ pub mod error;
 pub mod hooks;
 pub mod router;
 pub mod services;
-pub mod types;
 pub mod views;

@@ -8,6 +8,7 @@ use yew_router::prelude::Link;
 
 use crate::router::Route;
 use crate::services::tags::fetch_tags;
+use crate::types::recursive_query::RecursiveQuery;
 use crate::types::tags::{TagAndBook, TagList};
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
@@ -32,7 +33,14 @@ pub fn tag_item(props: &Props) -> Html {
     let tag = &props.tag;
     let parent_id = tag.id;
 
-    let child_tags = { use_async(async move { fetch_tags(parent_id).await }) };
+    let child_tags = use_async(async move {
+        let query = RecursiveQuery {
+            parent: parent_id,
+            fetch_all: false,
+            ..RecursiveQuery::default()
+        };
+        fetch_tags(&query).await
+    });
     let onclick = {
         let child_tags = child_tags.clone();
         Callback::from(move |_event| {

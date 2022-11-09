@@ -4,14 +4,16 @@
 
 use crate::error::FetchError;
 use crate::services::fetch::request_get;
+use crate::types::recursive_query::RecursiveQuery;
 use crate::types::tags::{Tag, TagList};
 
 /// Returns tag list.
 ///
 /// # Errors
 /// Returns error if server fails.
-pub async fn fetch_tags(parent_tag_id: i32) -> Result<TagList, FetchError> {
-    let url = format!("/api/tag?parent={}", parent_tag_id);
+pub async fn fetch_tags(query: &RecursiveQuery) -> Result<TagList, FetchError> {
+    let query_str = serde_urlencoded::to_string(query)?;
+    let url = ["/api/tag", &query_str].join("?");
     request_get(&url).await
 }
 

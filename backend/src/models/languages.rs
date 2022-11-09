@@ -2,9 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
-use serde::{Deserialize, Serialize};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
+use serde::Deserialize;
+use shared::languages::Language;
 
 use crate::error::Error;
 use crate::schema::languages;
@@ -13,13 +13,6 @@ use crate::schema::languages;
 #[diesel(table_name = languages)]
 pub struct NewLanguage {
     pub lang_code: String,
-}
-
-#[derive(Debug, Serialize, Queryable)]
-pub struct Language {
-    pub id: i32,
-    pub lang_code: String,
-    pub created: NaiveDateTime,
 }
 
 pub fn add_language(conn: &mut PgConnection, new_language: &NewLanguage) -> Result<(), Error> {

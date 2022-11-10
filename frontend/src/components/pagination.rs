@@ -78,11 +78,29 @@ pub fn pagination(props: &Props) -> Html {
         })
         .collect::<Html>();
 
+    let previous_onclick = {
+        let previous_page_id = props.current_page - 1;
+        let props_onclick = props.onclick.clone();
+        Callback::from(move |event: MouseEvent| {
+            event.prevent_default();
+            props_onclick.emit(previous_page_id);
+        })
+    };
+
+    let next_onclick = {
+        let next_page_id = props.current_page + 1;
+        let props_onclick = props.onclick.clone();
+        Callback::from(move |event: MouseEvent| {
+            event.prevent_default();
+            props_onclick.emit(next_page_id);
+        })
+    };
+
     html! {
         <ul class={ style_cls }>
             if has_previous {
                 <li class="page previous">
-                    <button class="btn">{ "« Previous" }</button>
+                    <button class="btn" onclick={ previous_onclick }>{ "« Previous" }</button>
                 </li>
             }
 
@@ -90,7 +108,7 @@ pub fn pagination(props: &Props) -> Html {
 
             if has_next {
                 <li class="page next">
-                    <button class="btn">{ "Next »" }</button>
+                    <button class="btn" onclick={ next_onclick }>{ "Next »" }</button>
                 </li>
             }
         </ul>

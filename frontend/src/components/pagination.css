@@ -2,6 +2,7 @@
 :root {
     clear: both;
     list-style: none;
+    min-height: 35px;
 }
 
 li {

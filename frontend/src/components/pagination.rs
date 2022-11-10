@@ -23,7 +23,9 @@ pub fn pagination(props: &Props) -> Html {
 
     let mut pages = Vec::new();
     let min_pages = 12;
-    if props.total_pages < min_pages {
+    if props.total_pages == 1 {
+        // Do not add any buttons at all.
+    } else if props.total_pages < min_pages {
         for i in 1..=props.total_pages {
             pages.push(Some(i));
         }

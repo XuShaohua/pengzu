@@ -12,6 +12,7 @@ pub mod discover;
 pub mod file_formats;
 pub mod files;
 pub mod identifiers;
+pub mod images;
 pub mod languages;
 pub mod publishers;
 pub mod ratings;

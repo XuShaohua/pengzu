@@ -9,7 +9,7 @@ use crate::db;
 use crate::error::Error;
 use crate::views::auth::auth_validator;
 use crate::views::{
-    advanced_search, authors, books, categories, comments, discover, file_formats, files,
+    advanced_search, authors, books, categories, comments, discover, file_formats, files, images,
     publishers, ratings, series, simple_search, tags, user_tags, users,
 };
 
@@ -85,7 +85,11 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(discover::get_books_by_discover)),
         )
         // For /api/file
-        .service(web::resource("/file").route(web::get().to(files::get_file_by_path)))
+        .service(
+            web::resource("/file")
+                .wrap(auth.clone())
+                .route(web::get().to(files::get_file_by_path)),
+        )
         // For /api/formats
         .service(
             web::resource("/format")
@@ -102,6 +106,8 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .wrap(auth.clone())
                 .route(web::get().to(file_formats::get_books_by_format)),
         )
+        // For /api/image
+        .service(web::resource("/image").route(web::get().to(images::get_image_by_path)))
         // For /api/publisher
         .service(
             web::resource("/publisher")

@@ -8,7 +8,7 @@ use shared::files::FileQuery;
 
 use crate::db::DbPool;
 use crate::error::{Error, ErrorKind};
-use crate::models::files;
+use crate::models::{download_history, files};
 use crate::settings;
 
 pub async fn add_file(
@@ -43,14 +43,11 @@ pub async fn get_file_by_path(
     // 1. check auth token
 
     // 2. check book file exists
+    let book_id = query.book;
+    let format_id = query.format;
     let book_file_path = {
-        let book_id = query.book;
-        let format_id = query.format;
-        web::block(move || {
-            let mut conn = pool.get()?;
-            files::get_book_file_path(&mut conn, book_id, format_id)
-        })
-        .await??
+        let mut conn = pool.get()?;
+        web::block(move || files::get_book_file_path(&mut conn, book_id, format_id)).await??
     };
     if book_file_path != query.path {
         return Err(Error::from_string(
@@ -60,6 +57,20 @@ pub async fn get_file_by_path(
     }
 
     // 3. add download history record
+    let _history_ok = {
+        let mut conn = pool.get()?;
+
+        web::block(move || {
+            // TODO(Shaohua): Get user id
+            let new_history = download_history::NewHistory {
+                user_id: 1,
+                book: book_id,
+                format: format_id,
+            };
+            download_history::add(&mut conn, &new_history)
+        })
+        .await??
+    };
 
     // 4. return real file path
     let root_dir = settings::get_library_root_dir()?;

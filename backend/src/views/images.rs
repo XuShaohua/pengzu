@@ -16,10 +16,9 @@ pub async fn get_image_by_path(
 ) -> Result<NamedFile, Error> {
     let path = query.path.as_path();
     log::info!("filepath: {:?}", path);
-    let valid_extension = match path.extension() {
-        Some(extension) => extension == "webp" || extension == "jpg",
-        None => false,
-    };
+    let valid_extension = path
+        .extension()
+        .map_or(false, |extension| extension == "webp" || extension == "jpg");
     if !valid_extension {
         return Err(Error::from_string(
             ErrorKind::IoError,
@@ -28,7 +27,7 @@ pub async fn get_image_by_path(
     }
 
     let root_dir = settings::get_library_root_dir()?;
-    let filepath = root_dir.join(&path);
+    let filepath = root_dir.join(path);
     if !filepath.starts_with(root_dir) {
         return Err(Error::from_string(
             ErrorKind::IoError,

@@ -97,7 +97,7 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
         .files
         .iter()
         .map(|file| {
-            let url = get_file_format_url(&file);
+            let url = get_file_format_url(file);
             let readable_size = to_readable_size(file.size);
             html! {
                 <li>

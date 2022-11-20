@@ -104,33 +104,6 @@ diesel::table! {
 }
 
 diesel::table! {
-    cips (id) {
-        id -> Int4,
-        cip -> Int4,
-        isbn13 -> Int4,
-        title -> Text,
-        original_title -> Nullable<Text>,
-        category_id -> Text,
-        publisher -> Int4,
-        pubdate -> Text,
-        price -> Nullable<Text>,
-        intro -> Nullable<Text>,
-        created -> Timestamp,
-        last_modified -> Timestamp,
-    }
-}
-
-diesel::table! {
-    cips_authors_link (id) {
-        id -> Int4,
-        cip -> Int4,
-        author -> Int4,
-        created -> Timestamp,
-        last_modified -> Timestamp,
-    }
-}
-
-diesel::table! {
     comments (id) {
         id -> Int4,
         book -> Int4,
@@ -141,74 +114,12 @@ diesel::table! {
 }
 
 diesel::table! {
-    douban_authors (id) {
+    download_history (id) {
         id -> Int4,
-        name -> Text,
-        url -> Text,
-        created -> Timestamp,
-        last_modified -> Timestamp,
-    }
-}
-
-diesel::table! {
-    douban_books (id) {
-        id -> Int4,
-        subject_id -> Int4,
-        title -> Text,
-        url -> Text,
-        small_cover -> Text,
-        isbn -> Text,
-        created -> Timestamp,
-        last_modified -> Timestamp,
-    }
-}
-
-diesel::table! {
-    douban_books_authors_link (id) {
-        id -> Int4,
+        user_id -> Int4,
         book -> Int4,
-        author -> Int4,
+        format -> Int4,
         created -> Timestamp,
-        last_modified -> Timestamp,
-    }
-}
-
-diesel::table! {
-    douban_books_detail (id) {
-        id -> Int4,
-        book_id -> Int4,
-        original_title -> Nullable<Text>,
-        large_cover -> Text,
-        toc -> Nullable<Text>,
-        intro -> Nullable<Text>,
-        publisher -> Nullable<Int4>,
-        rating_number -> Nullable<Float4>,
-        rating_people -> Nullable<Int4>,
-        price -> Nullable<Text>,
-        page -> Nullable<Int4>,
-        pubdate -> Timestamp,
-        created -> Timestamp,
-        last_modified -> Timestamp,
-    }
-}
-
-diesel::table! {
-    douban_books_recommends_link (id) {
-        id -> Int4,
-        book -> Int4,
-        recommend_book -> Int4,
-        created -> Timestamp,
-        last_modified -> Timestamp,
-    }
-}
-
-diesel::table! {
-    douban_publishers (id) {
-        id -> Int4,
-        name -> Text,
-        url -> Text,
-        created -> Timestamp,
-        last_modified -> Timestamp,
     }
 }
 
@@ -378,15 +289,8 @@ diesel::allow_tables_to_appear_in_same_query!(
     books_tags_link,
     books_user_tags_link,
     categories,
-    cips,
-    cips_authors_link,
     comments,
-    douban_authors,
-    douban_books,
-    douban_books_authors_link,
-    douban_books_detail,
-    douban_books_recommends_link,
-    douban_publishers,
+    download_history,
     file_formats,
     files,
     identifier_types,

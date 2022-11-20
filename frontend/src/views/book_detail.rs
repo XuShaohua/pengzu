@@ -11,8 +11,9 @@ use yew_router::prelude::Link;
 use crate::router::Route;
 use crate::services::books_meta::fetch_book_metadata;
 use crate::services::files::get_file_format_url;
+use crate::services::images::get_cover_image_url;
 use crate::views::util;
-use crate::views::util::{get_cover_image_url, to_readable_size};
+use crate::views::util::to_readable_size;
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -111,12 +112,13 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
 
     let style_str = include_str!("book_detail.css");
     let style_cls = Style::new(style_str).expect("Invalid style file book_detail.css");
+    let cover_url = get_cover_image_url(&book.small_cover);
 
     html! {
         <div class={ style_cls }>
             <h2>{ &metadata.book.title }</h2>
             <div class="book-cover">
-                <img class="detail-cover" src={ get_cover_image_url(&book.small_cover) } alt={ book.title.clone() } />
+                <img class="detail-cover" src={ cover_url } alt={ book.title.clone() } />
             </div>
             <div class="book-authors">{ authors_element }</div>
             <div class="book-publishers">{ publisher_element }</div>

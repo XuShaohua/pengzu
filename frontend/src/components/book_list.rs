@@ -8,7 +8,7 @@ use yew::prelude::*;
 use yew_router::prelude::Link;
 
 use crate::router::Route;
-use crate::views::util::get_cover_image_url;
+use crate::services::images::get_cover_image_url;
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -40,11 +40,13 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
         })
         .collect::<Html>();
 
+    let cover_url = get_cover_image_url(&book.small_cover);
+
     html! {
         <div class="book-fluid" key={ book.id }>
             <div class="book-cover">
                 <Link<Route> to={ Route::BookDetail { book_id: book.id } }>
-                    <img src={ get_cover_image_url(&book.small_cover) } alt={ book.title.clone() } />
+                    <img src={ cover_url } alt={ book.title.clone() } />
                 </Link<Route>>
             </div>
             <div class="book-meta">

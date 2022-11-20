@@ -4,21 +4,15 @@
 
 use actix_files::NamedFile;
 use actix_web::web;
-use serde::Deserialize;
-use std::path;
+use shared::images::ImageQuery;
 
 use crate::db::DbPool;
 use crate::error::{Error, ErrorKind};
 use crate::settings;
 
-#[derive(Debug, Deserialize)]
-pub struct FileQuery {
-    pub path: path::PathBuf,
-}
-
 pub async fn get_image_by_path(
     _pool: web::Data<DbPool>,
-    query: web::Query<FileQuery>,
+    query: web::Query<ImageQuery>,
 ) -> Result<NamedFile, Error> {
     log::info!("filepath: {:?}", query.path);
     if !(query.path.ends_with("webp") || query.path.ends_with("jpg")) {

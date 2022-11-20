@@ -4,6 +4,8 @@
 
 use web_sys::{ScrollBehavior, ScrollToOptions, Window};
 
+use crate::services::images::get_cover_url;
+
 pub const KILO_BYTES: i32 = 1 << 10;
 pub const MEGA_BYTES: i32 = 1 << 20;
 
@@ -11,10 +13,15 @@ pub const DEFAULT_COVER_IMG: &str = "/assets/images/book_cover.webp";
 
 #[must_use]
 pub fn get_cover_image_url(cover: &Option<String>) -> String {
-    cover.as_ref().map_or_else(
-        || DEFAULT_COVER_IMG.to_string(),
-        |cover| format!("/api/image?path={}", cover),
-    )
+    if let Some(cover) = &cover {
+        if !cover.is_empty() {
+            if let Ok(url) = get_cover_url(cover) {
+                return url;
+            }
+        }
+    }
+
+    DEFAULT_COVER_IMG.to_string()
 }
 
 #[must_use]

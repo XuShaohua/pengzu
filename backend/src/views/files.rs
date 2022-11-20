@@ -57,7 +57,7 @@ pub async fn get_file_by_path(
     }
 
     // 3. add download history record
-    let _history_ok = {
+    {
         let mut conn = pool.get()?;
 
         web::block(move || {
@@ -69,8 +69,8 @@ pub async fn get_file_by_path(
             };
             download_history::add(&mut conn, &new_history)
         })
-        .await??
-    };
+        .await??;
+    }
 
     // 4. return real file path
     let root_dir = settings::get_library_root_dir()?;

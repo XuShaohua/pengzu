@@ -14,19 +14,25 @@ pub async fn get_image_by_path(
     _pool: web::Data<DbPool>,
     query: web::Query<ImageQuery>,
 ) -> Result<NamedFile, Error> {
-    log::info!("filepath: {:?}", query.path);
-    if !(query.path.ends_with("webp") || query.path.ends_with("jpg")) {
+    let path = query.path.as_path();
+    log::info!("filepath: {:?}", path);
+    let valid_extension = match path.extension() {
+        Some(extension) => extension == "webp" || extension == "jpg",
+        None => false,
+    };
+    if !valid_extension {
         return Err(Error::from_string(
             ErrorKind::IoError,
-            format!("Invalid image format: {:?}", query.path),
+            format!("Invalid image format: {:?}", path),
         ));
     }
+
     let root_dir = settings::get_library_root_dir()?;
-    let filepath = root_dir.join(&query.path);
+    let filepath = root_dir.join(&path);
     if !filepath.starts_with(root_dir) {
         return Err(Error::from_string(
             ErrorKind::IoError,
-            format!("Invalid filepath: {:?}", query.path),
+            format!("Invalid filepath: {:?}", path),
         ));
     }
     let file = NamedFile::open(filepath)?;

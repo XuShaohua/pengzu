@@ -3,8 +3,9 @@
 // that can be found in the LICENSE file.
 
 use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct ImageQuery<'a> {
-    pub path: &'a str,
+pub struct ImageQuery {
+    pub path: PathBuf,
 }

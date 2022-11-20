@@ -9,7 +9,7 @@ use shared::files::{File, FileWithPath};
 
 use crate::error::Error;
 use crate::models::books::get_book_path_by_id;
-use crate::models::file_formats::get_file_format_by_ids;
+use crate::models::file_formats::{get_file_format_by_id, get_file_format_by_ids};
 use crate::schema::files;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -27,6 +27,32 @@ pub fn add_file(conn: &mut PgConnection, new_file: &NewFile) -> Result<(), Error
     Ok(())
 }
 
+#[must_use]
+fn get_book_format_path(book_path: &str, file_name: &str, format_name: &str) -> String {
+    format!(
+        "{}/{}.{}",
+        book_path,
+        file_name,
+        format_name.to_ascii_lowercase()
+    )
+}
+
+pub fn get_book_file_path(
+    conn: &mut PgConnection,
+    book_id: i32,
+    format_id: i32,
+) -> Result<String, Error> {
+    // TODO(Shaohua): Replace with multiple inner join query.
+    let book_path = get_book_path_by_id(conn, book_id)?;
+    let file: File = files::table
+        .filter(files::book.eq(book_id))
+        .filter(files::format.eq(format_id))
+        .first::<File>(conn)?;
+    let format = get_file_format_by_id(conn, file.format)?;
+    let path = get_book_format_path(&book_path, &file.name, &format.name);
+    Ok(path)
+}
+
 pub fn get_book_files_and_formats(
     conn: &mut PgConnection,
     book_id: i32,
@@ -34,7 +60,7 @@ pub fn get_book_files_and_formats(
     let list = files::table
         .filter(files::book.eq(book_id))
         .load::<File>(conn)?;
-    let path = get_book_path_by_id(conn, book_id)?;
+    let book_path = get_book_path_by_id(conn, book_id)?;
     let format_id_list: Vec<i32> = list.iter().map(|file| file.format).collect();
     let formats = get_file_format_by_ids(conn, &format_id_list)?;
     let default_format = FileFormat::default();
@@ -46,12 +72,7 @@ pub fn get_book_files_and_formats(
                 .iter()
                 .find(|format| format.id == file.format)
                 .unwrap_or(&default_format);
-            let path = format!(
-                "{}/{}.{}",
-                path,
-                file.name,
-                format.name.to_ascii_lowercase()
-            );
+            let path = get_book_format_path(&book_path, &file.name, &format.name);
             FileWithPath {
                 id: file.id,
                 book: book_id,

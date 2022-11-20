@@ -4,8 +4,7 @@
 
 use actix_files::NamedFile;
 use actix_web::{web, HttpResponse};
-use serde::Deserialize;
-use std::path;
+use shared::files::FileQuery;
 
 use crate::db::DbPool;
 use crate::error::{Error, ErrorKind};
@@ -36,16 +35,33 @@ pub async fn get_book_files(
     Ok(HttpResponse::Ok().json(resp_files))
 }
 
-#[derive(Debug, Deserialize)]
-pub struct FileQuery {
-    pub path: path::PathBuf,
-}
-
 pub async fn get_file_by_path(
-    _pool: web::Data<DbPool>,
+    pool: web::Data<DbPool>,
     query: web::Query<FileQuery>,
 ) -> Result<NamedFile, Error> {
     log::info!("filepath: {:?}", query.path);
+    // 1. check auth token
+
+    // 2. check book file exists
+    let book_file_path = {
+        let book_id = query.book;
+        let format_id = query.format;
+        web::block(move || {
+            let mut conn = pool.get()?;
+            files::get_book_file_path(&mut conn, book_id, format_id)
+        })
+        .await??
+    };
+    if book_file_path != query.path {
+        return Err(Error::from_string(
+            ErrorKind::IoError,
+            format!("Invalid filepath: {:?}", query),
+        ));
+    }
+
+    // 3. add download history record
+
+    // 4. return real file path
     let root_dir = settings::get_library_root_dir()?;
     let filepath = root_dir.join(&query.path);
     log::info!("real path: {:?}", filepath);

@@ -11,6 +11,7 @@ pub mod categories;
 pub mod discover;
 pub mod fetch;
 pub mod file_formats;
+pub mod files;
 pub mod images;
 pub mod publishers;
 pub mod series;

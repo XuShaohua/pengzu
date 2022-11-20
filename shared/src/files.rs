@@ -30,3 +30,10 @@ pub struct FileWithPath {
     pub name: String,
     pub path: String,
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct FileQuery {
+    pub book: i32,
+    pub format: i32,
+    pub path: String,
+}

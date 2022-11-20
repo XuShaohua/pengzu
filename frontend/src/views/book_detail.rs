@@ -10,8 +10,9 @@ use yew_router::prelude::Link;
 
 use crate::router::Route;
 use crate::services::books_meta::fetch_book_metadata;
+use crate::services::files::get_file_format_url;
 use crate::views::util;
-use crate::views::util::{get_cover_image_url, get_file_format_url, to_readable_size};
+use crate::views::util::{get_cover_image_url, to_readable_size};
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -95,7 +96,7 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
         .files
         .iter()
         .map(|file| {
-            let url = get_file_format_url(&file.path);
+            let url = get_file_format_url(&file);
             let readable_size = to_readable_size(file.size);
             html! {
                 <li>

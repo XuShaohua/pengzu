@@ -25,11 +25,6 @@ pub fn get_cover_image_url(cover: &Option<String>) -> String {
 }
 
 #[must_use]
-pub fn get_file_format_url(path: &str) -> String {
-    format!("/api/file?path={}", path,)
-}
-
-#[must_use]
 #[allow(clippy::cast_precision_loss)]
 pub fn to_readable_size(size: i32) -> String {
     if size > MEGA_BYTES {

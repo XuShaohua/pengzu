@@ -35,5 +35,6 @@ pub struct FileWithPath {
 pub struct FileQuery {
     pub book: i32,
     pub file: i32,
+    pub format: i32,
     pub path: String,
 }

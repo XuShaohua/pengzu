@@ -3,13 +3,14 @@
 // that can be found in the LICENSE file.
 
 use actix_files::NamedFile;
-use actix_web::{web, HttpResponse};
+use actix_web::{web, HttpRequest, HttpResponse};
 use shared::files::FileQuery;
 
 use crate::db::DbPool;
 use crate::error::{Error, ErrorKind};
 use crate::models::{download_history, files};
 use crate::settings;
+use crate::views::auth::get_claims_from_cookie;
 
 pub async fn add_file(
     pool: web::Data<DbPool>,
@@ -37,10 +38,14 @@ pub async fn get_book_files(
 
 pub async fn get_file_by_path(
     pool: web::Data<DbPool>,
+    req: HttpRequest,
     query: web::Query<FileQuery>,
 ) -> Result<NamedFile, Error> {
     log::info!("filepath: {:?}", query.path);
+
     // 1. check auth token
+    let claims = get_claims_from_cookie(&req)?;
+    let user_id = claims.id();
 
     // 2. check book file exists
     let book_id = query.book;
@@ -59,11 +64,9 @@ pub async fn get_file_by_path(
     // 3. add download history record
     {
         let mut conn = pool.get()?;
-
         web::block(move || {
-            // TODO(Shaohua): Get user id
             let new_history = download_history::NewHistory {
-                user_id: 1,
+                user_id,
                 book: book_id,
                 file: file_id,
             };

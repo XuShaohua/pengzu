@@ -10,7 +10,7 @@ use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::users;
 use crate::models::users::NewUserReq;
-use crate::views::auth::{get_claims_from_request, Claims, UserPermissions, TOKEN_NAME};
+use crate::views::auth::{get_claims_from_auth, Claims, UserPermissions, TOKEN_NAME};
 
 pub async fn login(
     pool: web::Data<DbPool>,
@@ -42,7 +42,7 @@ pub async fn get_user_info(
     pool: web::Data<DbPool>,
     req: HttpRequest,
 ) -> Result<HttpResponse, Error> {
-    let claims = get_claims_from_request(&req)?;
+    let claims = get_claims_from_auth(&req)?;
     let user_id = claims.id();
     let user_info = web::block(move || {
         let mut conn = pool.get()?;

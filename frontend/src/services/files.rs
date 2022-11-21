@@ -9,6 +9,7 @@ pub fn get_file_format_url(file: &FileWithPath) -> String {
     let query = FileQuery {
         book: file.book,
         file: file.id,
+        format: file.format_id,
         path: file.path.clone(),
     };
     let query_str = serde_urlencoded::to_string(query).unwrap_or_default();

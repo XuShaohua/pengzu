@@ -118,7 +118,7 @@ pub async fn auth_validator(
     }
 }
 
-pub fn get_claims_from_request(req: &HttpRequest) -> Result<Claims, Error> {
+pub fn get_claims_from_auth(req: &HttpRequest) -> Result<Claims, Error> {
     let header = req.headers().get("Authorization").unwrap();
     let invalid_token_error = Error::from_string(
         ErrorKind::InvalidToken,
@@ -136,4 +136,11 @@ pub fn get_claims_from_request(req: &HttpRequest) -> Result<Claims, Error> {
     }
     let token = parts.next().ok_or(invalid_token_error)?;
     Claims::decode(token)
+}
+
+pub fn get_claims_from_cookie(req: &HttpRequest) -> Result<Claims, Error> {
+    req.cookie("Token").map_or_else(
+        || Err(Error::new(ErrorKind::InvalidToken, "invalid token")),
+        |cookie| Claims::decode(cookie.value()),
+    )
 }

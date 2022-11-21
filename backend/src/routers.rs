@@ -85,11 +85,8 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(discover::get_books_by_discover)),
         )
         // For /api/file
-        .service(
-            web::resource("/file")
-                .wrap(auth.clone())
-                .route(web::get().to(files::get_file_by_path)),
-        )
+        // Note that authentication is checked in callback explicitly.
+        .service(web::resource("/file").route(web::get().to(files::get_file_by_path)))
         // For /api/formats
         .service(
             web::resource("/format")

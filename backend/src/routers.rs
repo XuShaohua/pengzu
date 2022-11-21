@@ -9,8 +9,9 @@ use crate::db;
 use crate::error::Error;
 use crate::views::auth::auth_validator;
 use crate::views::{
-    advanced_search, authors, books, categories, comments, discover, file_formats, files, images,
-    publishers, ratings, series, simple_search, tags, user_tags, users,
+    advanced_search, authors, books, categories, comments, discover, download_history,
+    file_formats, files, images, publishers, ratings, series, simple_search, tags, user_tags,
+    users,
 };
 
 const CONTENT_TYPE: &str = "content-type";
@@ -83,6 +84,12 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
             web::resource("/discover/books")
                 .wrap(auth.clone())
                 .route(web::get().to(discover::get_books_by_discover)),
+        )
+        // For /api/download
+        .service(
+            web::resource("/download/books")
+                .wrap(auth.clone())
+                .route(web::get().to(download_history::get_books)),
         )
         // For /api/file
         // Note that authentication is checked in callback explicitly.

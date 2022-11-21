@@ -3,10 +3,13 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{Insertable, PgConnection, Queryable, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
+use shared::books::BookAndAuthorsList;
+use shared::books_query::GetBooksQuery;
 
 use crate::error::Error;
+use crate::models::books::get_books_by_ids;
 use crate::schema::download_history;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Queryable)]
@@ -32,4 +35,18 @@ pub fn add(conn: &mut PgConnection, new_history: &NewHistory) -> Result<(), Erro
         .execute(conn)
         .map(drop)
         .map_err(Into::into)
+}
+
+pub fn get_books(
+    conn: &mut PgConnection,
+    user_id: i32,
+    query: &GetBooksQuery,
+) -> Result<BookAndAuthorsList, Error> {
+    // TODO(Shaohua): Apply query.
+    let book_ids = download_history::table
+        .filter(download_history::user_id.eq(user_id))
+        .select(download_history::book)
+        .load::<i32>(conn)?;
+
+    get_books_by_ids(conn, query, &book_ids)
 }

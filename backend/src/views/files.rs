@@ -44,10 +44,10 @@ pub async fn get_file_by_path(
 
     // 2. check book file exists
     let book_id = query.book;
-    let format_id = query.format;
+    let file_id = query.file;
     let book_file_path = {
         let mut conn = pool.get()?;
-        web::block(move || files::get_book_file_path(&mut conn, book_id, format_id)).await??
+        web::block(move || files::get_book_file_path(&mut conn, book_id, file_id)).await??
     };
     if book_file_path != query.path {
         return Err(Error::from_string(
@@ -65,7 +65,7 @@ pub async fn get_file_by_path(
             let new_history = download_history::NewHistory {
                 user_id: 1,
                 book: book_id,
-                format: format_id,
+                file: file_id,
             };
             download_history::add(&mut conn, &new_history)
         })

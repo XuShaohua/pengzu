@@ -40,13 +40,13 @@ fn get_book_format_path(book_path: &str, file_name: &str, format_name: &str) -> 
 pub fn get_book_file_path(
     conn: &mut PgConnection,
     book_id: i32,
-    format_id: i32,
+    file_id: i32,
 ) -> Result<String, Error> {
     // TODO(Shaohua): Replace with multiple inner join query.
     let book_path = get_book_path_by_id(conn, book_id)?;
     let file: File = files::table
         .filter(files::book.eq(book_id))
-        .filter(files::format.eq(format_id))
+        .filter(files::id.eq(file_id))
         .first::<File>(conn)?;
     let format = get_file_format_by_id(conn, file.format)?;
     let path = get_book_format_path(&book_path, &file.name, &format.name);

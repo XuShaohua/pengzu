@@ -118,7 +118,7 @@ diesel::table! {
         id -> Int4,
         user_id -> Int4,
         book -> Int4,
-        format -> Int4,
+        file -> Int4,
         created -> Timestamp,
     }
 }

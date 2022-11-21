@@ -14,7 +14,7 @@ pub struct DownloadHistory {
     pub id: i32,
     pub user_id: i32,
     pub book: i32,
-    pub format: i32,
+    pub file: i32,
     pub created: NaiveDateTime,
 }
 
@@ -23,7 +23,7 @@ pub struct DownloadHistory {
 pub struct NewHistory {
     pub user_id: i32,
     pub book: i32,
-    pub format: i32,
+    pub file: i32,
 }
 
 pub fn add(conn: &mut PgConnection, new_history: &NewHistory) -> Result<(), Error> {

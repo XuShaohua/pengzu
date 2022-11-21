@@ -8,7 +8,7 @@ use shared::files::{FileQuery, FileWithPath};
 pub fn get_file_format_url(file: &FileWithPath) -> String {
     let query = FileQuery {
         book: file.book,
-        format: file.format_id,
+        file: file.id,
         path: file.path.clone(),
     };
     let query_str = serde_urlencoded::to_string(query).unwrap_or_default();

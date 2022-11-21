@@ -14,6 +14,7 @@ use crate::views::books_of_advanced_search::BooksOfAdvancedSearchComponent;
 use crate::views::books_of_author::BooksOfAuthorComponent;
 use crate::views::books_of_category::BooksOfCategoryComponent;
 use crate::views::books_of_discover::BooksOfDiscoverComponent;
+use crate::views::books_of_download_history::BooksOfDownloadHistoryComponent;
 use crate::views::books_of_file_format::BooksOfFileFormatComponent;
 use crate::views::books_of_publisher::BooksOfPublisherComponent;
 use crate::views::books_of_series::BooksOfSeriesComponent;
@@ -74,6 +75,9 @@ pub enum Route {
     #[at("/user-tag")]
     UserTag,
 
+    #[at("/download/books")]
+    BooksOfDownloadHistory,
+
     #[at("/advanced-search/books")]
     BooksOfAdvancedSearch,
     #[at("/advanced-search")]
@@ -129,6 +133,8 @@ pub fn switch_route(routes: &Route) -> Html {
 
         Route::BooksOfUserTag { tag_id } => html! { <BooksOfUserTagComponent tag_id={ *tag_id }/> },
         Route::UserTag => html! { <UserTagsComponent /> },
+
+        Route::BooksOfDownloadHistory => html! { <BooksOfDownloadHistoryComponent /> },
 
         Route::BooksOfAdvancedSearch => html! { <BooksOfAdvancedSearchComponent /> },
         Route::AdvancedSearch => html! { <AdvancedSearchComponent /> },

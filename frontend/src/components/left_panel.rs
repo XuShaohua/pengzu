@@ -59,6 +59,10 @@ pub fn left_panel() -> Html {
                     <span class="glyphicon glyphicon-tag" />
                     { "My Tags" }
                 </Link<Route>></li>
+                <li><Link<Route> to={ Route::BooksOfDownloadHistory }>
+                    <span class="glyphicon glyphicon-download" />
+                    { "My Downloads" }
+                </Link<Route>></li>
             </ul>
         </div>
     }

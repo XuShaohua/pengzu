@@ -10,6 +10,7 @@ pub mod books_of_advanced_search;
 pub mod books_of_author;
 pub mod books_of_category;
 pub mod books_of_discover;
+pub mod books_of_download_history;
 pub mod books_of_file_format;
 pub mod books_of_publisher;
 pub mod books_of_series;

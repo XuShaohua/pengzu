@@ -3,13 +3,17 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{
+    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
+};
 use serde::{Deserialize, Serialize};
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
+use shared::page::{Page, BOOKS_EACH_PAGE};
 
 use crate::error::Error;
-use crate::models::books::get_books_by_ids;
+use crate::models::authors::get_authors_by_book_id;
+use crate::models::books::{merge_books_and_authors, Book};
 use crate::schema::download_history;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Queryable)]
@@ -42,12 +46,50 @@ pub fn get_books(
     user_id: i32,
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, Error> {
-    // TODO(Shaohua): Apply query.
-    let book_ids = download_history::table
-        .filter(download_history::user_id.eq(user_id))
-        .select(download_history::book)
-        .order_by(download_history::id.desc())
-        .load::<i32>(conn)?;
+    use crate::schema::books;
 
-    get_books_by_ids(conn, query, &book_ids)
+    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
+    let offset = page_id * BOOKS_EACH_PAGE;
+
+    // -- get download books
+    // SELECT books.* FROM books
+    // INNER JOIN download_history
+    //     ON download_history.book = books.id
+    // WHERE download_history.user_id = 1
+    // ORDER BY download_history.id DESC
+    // LIMIT 50;
+    let book_list = books::table
+        .inner_join(download_history::table.on(download_history::book.eq(books::id)))
+        .filter(download_history::user_id.eq(user_id))
+        .order_by(download_history::id.desc())
+        .select((
+            books::id,
+            books::title,
+            books::path,
+            books::author_sort,
+            books::uuid,
+            books::has_cover,
+            books::pubdate,
+            books::created,
+            books::last_modified,
+        ))
+        .offset(offset)
+        .limit(BOOKS_EACH_PAGE)
+        .load::<Book>(conn)?;
+
+    let total = download_history::table
+        .filter(download_history::user_id.eq(user_id))
+        .count()
+        .first::<i64>(conn)?;
+    let author_list = get_authors_by_book_id(conn, &book_list)?;
+    let list = merge_books_and_authors(book_list, &author_list);
+
+    Ok(BookAndAuthorsList {
+        page: Page {
+            page_num: page_id + 1,
+            each_page: BOOKS_EACH_PAGE,
+            total,
+        },
+        list,
+    })
 }

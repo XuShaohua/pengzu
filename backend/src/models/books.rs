@@ -127,7 +127,6 @@ pub fn get_books(
     })
 }
 
-// TODO(Shaohua): Remove this method
 pub fn get_books_by_ids(
     conn: &mut PgConnection,
     query: &GetBooksQuery,
@@ -138,6 +137,7 @@ pub fn get_books_by_ids(
     // let order_column = query.order.get_column();
     let total = book_ids.len() as i64;
 
+    // TODO(Shaohua): Apply query order
     let book_list = books::table
         .filter(books::id.eq_any(book_ids))
         .order_by(books::id.asc())

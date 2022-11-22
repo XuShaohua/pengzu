@@ -2,14 +2,14 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::Deserialize;
 use shared::file_formats::FileFormat;
 use shared::files::{File, FileWithPath};
 
 use crate::error::Error;
 use crate::models::books::get_book_path_by_id;
-use crate::models::file_formats::{get_file_format_by_id, get_file_format_by_ids};
+use crate::models::file_formats::get_file_format_by_ids;
 use crate::schema::files;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -42,14 +42,16 @@ pub fn get_book_file_path(
     book_id: i32,
     file_id: i32,
 ) -> Result<String, Error> {
-    // TODO(Shaohua): Replace with multiple inner join query.
-    let book_path = get_book_path_by_id(conn, book_id)?;
-    let file: File = files::table
-        .filter(files::book.eq(book_id))
+    use crate::schema::{books, file_formats};
+
+    let (book_path, file_name, format_name) = files::table
         .filter(files::id.eq(file_id))
-        .first::<File>(conn)?;
-    let format = get_file_format_by_id(conn, file.format)?;
-    let path = get_book_format_path(&book_path, &file.name, &format.name);
+        .filter(files::book.eq(book_id))
+        .inner_join(books::table.on(books::id.eq(files::book)))
+        .inner_join(file_formats::table.on(file_formats::id.eq(files::format)))
+        .select((books::path, files::name, file_formats::name))
+        .first::<(String, String, String)>(conn)?;
+    let path = get_book_format_path(&book_path, &file_name, &format_name);
     Ok(path)
 }
 

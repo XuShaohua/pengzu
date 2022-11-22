@@ -4,14 +4,11 @@
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::Deserialize;
-use shared::books::BookAndAuthorsList;
-use shared::books_query::GetBooksQuery;
 use shared::page::{Page, USER_TAGS_EACH_PAGE};
 use shared::recursive_query::RecursiveQuery;
 use shared::user_tags::{UserTag, UserTagAndBook, UserTagAndBookList};
 
 use crate::error::Error;
-use crate::models::books::get_books_by_ids;
 use crate::schema::user_tags;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -85,19 +82,4 @@ pub fn update_tag(conn: &mut PgConnection, tag_id: i32, new_tag: &NewUserTag) ->
         .set(user_tags::name.eq(new_tag.name.as_str()))
         .execute(conn)?;
     Ok(())
-}
-
-pub fn get_books_by_user_tag(
-    conn: &mut PgConnection,
-    tag_id: i32,
-    query: &GetBooksQuery,
-) -> Result<BookAndAuthorsList, Error> {
-    use crate::schema::books_user_tags_link;
-
-    let book_ids = books_user_tags_link::table
-        .filter(books_user_tags_link::tag.eq(tag_id))
-        .select(books_user_tags_link::book)
-        .load::<i32>(conn)?;
-
-    get_books_by_ids(conn, query, &book_ids)
 }

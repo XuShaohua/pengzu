@@ -12,6 +12,7 @@ pub mod books_meta;
 pub mod books_publishers;
 pub mod books_series;
 pub mod books_tags;
+pub mod books_user_tags;
 pub mod categories;
 pub mod comments;
 pub mod discover;

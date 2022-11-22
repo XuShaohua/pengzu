@@ -26,6 +26,8 @@ pub fn get_books_by_advanced_search(
         order: query.order,
     };
 
+    // TODO(Shaohua): Tuning query, replace with a subquery.
+
     let mut book_ids = Vec::new();
     let mut book_id_nil = true;
     if let Some(author_name) = &query.author {

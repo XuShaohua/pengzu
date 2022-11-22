@@ -5,21 +5,37 @@
 use diesel::{ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl};
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
+use shared::page::BOOKS_EACH_PAGE;
 
 use crate::error::Error;
-use crate::models::books::get_books_by_ids;
+use crate::models::books::{book_list_to_book_authors, Book};
+use crate::schema::books_user_tags_link;
 
 pub fn get_books(
     conn: &mut PgConnection,
     tag_id: i32,
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, Error> {
-    use crate::schema::books_user_tags_link;
+    use crate::schema::books;
 
-    let book_ids = books_user_tags_link::table
+    let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
+    let total = books_user_tags_link::table
         .filter(books_user_tags_link::tag.eq(tag_id))
-        .select(books_user_tags_link::book)
-        .load::<i32>(conn)?;
+        .count()
+        .first::<i64>(conn)?;
 
-    get_books_by_ids(conn, query, &book_ids)
+    // Get book list based on a subquery.
+    let book_list = books::table
+        .filter(
+            books::id.eq_any(
+                books_user_tags_link::table
+                    .filter(books_user_tags_link::tag.eq(tag_id))
+                    .select(books_user_tags_link::book),
+            ),
+        )
+        .limit(BOOKS_EACH_PAGE)
+        .offset(offset)
+        .load::<Book>(conn)?;
+
+    book_list_to_book_authors(conn, book_list, query, total)
 }

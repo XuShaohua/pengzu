@@ -97,7 +97,6 @@ pub fn get_books_by_author(
     use crate::schema::books;
 
     let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
-
     let total = books_authors_link::table
         .filter(books_authors_link::author.eq(author_id))
         .count()

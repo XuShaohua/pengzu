@@ -311,6 +311,15 @@ CREATE TABLE IF NOT EXISTS reading_history
     UNIQUE (book, user_id)
 );
 
+-- download_history table.
+CREATE TABLE IF NOT EXISTS download_history
+(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    book INTEGER NOT NULL,
+    file INTEGER NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Index.
 CREATE INDEX IF NOT EXISTS books_title_idx ON books (title);

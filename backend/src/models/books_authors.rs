@@ -3,9 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
-};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 use shared::authors::Author;
 use shared::books::BookAndAuthorsList;
@@ -66,15 +64,13 @@ pub fn get_authors_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Vec<
     use crate::schema::authors;
 
     authors::table
-        .inner_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
-        .filter(books_authors_link::book.eq(book_id))
-        .select((
-            authors::id,
-            authors::name,
-            authors::link,
-            authors::created,
-            authors::last_modified,
-        ))
+        .filter(
+            authors::id.eq_any(
+                books_authors_link::table
+                    .filter(books_authors_link::book.eq(book_id))
+                    .select(books_authors_link::author),
+            ),
+        )
         .load::<Author>(conn)
         .map_err(Into::into)
 }

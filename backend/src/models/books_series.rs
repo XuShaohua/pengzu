@@ -3,9 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
-};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
@@ -60,14 +58,13 @@ pub fn get_series_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Optio
     use crate::schema::series;
 
     let series: Result<Series, Error> = series::table
-        .inner_join(books_series_link::table.on(books_series_link::series.eq(series::id)))
-        .filter(books_series_link::book.eq(book_id))
-        .select((
-            series::id,
-            series::name,
-            series::created,
-            series::last_modified,
-        ))
+        .filter(
+            series::id.eq_any(
+                books_series_link::table
+                    .filter(books_series_link::book.eq(book_id))
+                    .select(books_series_link::series),
+            ),
+        )
         .first::<Series>(conn)
         .map_err(Into::into);
 

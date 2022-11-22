@@ -3,9 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
-};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
@@ -35,26 +33,23 @@ pub fn add_book_publisher(
     conn: &mut PgConnection,
     new_book_publisher: &NewBookPublisher,
 ) -> Result<(), Error> {
-    use crate::schema::books_publishers_link::dsl::books_publishers_link;
-    diesel::insert_into(books_publishers_link)
+    diesel::insert_into(books_publishers_link::table)
         .values(new_book_publisher)
         .execute(conn)?;
     Ok(())
 }
 
 pub fn get_book_publisher(conn: &mut PgConnection, book_id: i32) -> Result<BookPublisher, Error> {
-    use crate::schema::books_publishers_link::dsl::{book, books_publishers_link};
-    books_publishers_link
-        .filter(book.eq(book_id))
+    books_publishers_link::table
+        .filter(books_publishers_link::book.eq(book_id))
         .first::<BookPublisher>(conn)
         .map_err(Into::into)
 }
 
 pub fn delete_book_publisher(conn: &mut PgConnection, book_id: i32) -> Result<(), Error> {
-    use crate::schema::books_publishers_link::dsl::{book, books_publishers_link};
     let _link = get_book_publisher(conn, book_id)?;
-    diesel::delete(books_publishers_link)
-        .filter(book.eq(book_id))
+    diesel::delete(books_publishers_link::table)
+        .filter(books_publishers_link::book.eq(book_id))
         .execute(conn)?;
     Ok(())
 }
@@ -66,16 +61,13 @@ pub fn get_publisher_by_book(
     use crate::schema::publishers;
 
     let publisher: Result<Publisher, Error> = publishers::table
-        .inner_join(
-            books_publishers_link::table.on(books_publishers_link::publisher.eq(publishers::id)),
+        .filter(
+            publishers::id.eq_any(
+                books_publishers_link::table
+                    .filter(books_publishers_link::book.eq(book_id))
+                    .select(books_publishers_link::publisher),
+            ),
         )
-        .filter(books_publishers_link::book.eq(book_id))
-        .select((
-            publishers::id,
-            publishers::name,
-            publishers::created,
-            publishers::last_modified,
-        ))
         .first::<Publisher>(conn)
         .map_err(Into::into);
 

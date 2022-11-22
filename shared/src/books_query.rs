@@ -8,10 +8,28 @@ use crate::page::{default_page_id, PageId};
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct GetBooksQuery {
+    /// Human readable page id, used in frontend.
     #[serde(default = "default_page_id")]
     pub page: PageId,
     #[serde(default = "GetBooksOrder::default")]
     pub order: GetBooksOrder,
+}
+
+impl GetBooksQuery {
+    pub fn backend_page_id(&self) -> PageId {
+        if self.page < 1 {
+            0
+        } else {
+            self.page - 1
+        }
+    }
+    pub fn frontend_page_id(&self) -> PageId {
+        if self.page < 1 {
+            0
+        } else {
+            self.page
+        }
+    }
 }
 
 impl Default for GetBooksQuery {

@@ -14,14 +14,14 @@ use crate::schema::books_languages_link;
 #[diesel(table_name = books_languages_link)]
 pub struct NewBookLanguage {
     pub book: i32,
-    pub lang_code: i32,
+    pub language: i32,
 }
 
 #[derive(Debug, Serialize, Queryable)]
 pub struct BookLanguage {
     pub id: i32,
     pub book: i32,
-    pub lang_code: i32,
+    pub language: i32,
     pub created: NaiveDateTime,
 }
 
@@ -55,13 +55,12 @@ pub fn get_language_by_book(
 ) -> Result<Option<Language>, Error> {
     use crate::schema::languages;
 
-    // TODO(Shaohua): Rename lang_code to language column
     let language: Result<Language, Error> = languages::table
         .filter(
             languages::id.eq_any(
                 books_languages_link::table
                     .filter(books_languages_link::book.eq(book_id))
-                    .select(books_languages_link::lang_code),
+                    .select(books_languages_link::language),
             ),
         )
         .first::<Language>(conn)

@@ -141,7 +141,7 @@ fn import_language(
             let language = get_language_by_name(pg_conn, &calibre_language.lang_code)?;
             let new_language = NewBookLanguage {
                 book: book_id,
-                lang_code: language.id,
+                language: language.id,
             };
             add_book_language(pg_conn, &new_language)
         }

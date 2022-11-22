@@ -11,7 +11,7 @@
 CREATE TABLE books_languages_link (
     id SERIAL PRIMARY KEY,
     book INTEGER NOT NULL,
-    lang_code INTEGER NOT NULL,
+    language INTEGER NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (book, lang_code)
+    UNIQUE (book, language)
 )

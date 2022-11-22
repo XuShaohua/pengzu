@@ -16,8 +16,7 @@ pub struct NewLanguage {
 }
 
 pub fn add_language(conn: &mut PgConnection, new_language: &NewLanguage) -> Result<(), Error> {
-    use crate::schema::languages::dsl::languages;
-    diesel::insert_into(languages)
+    diesel::insert_into(languages::table)
         .values(new_language)
         .execute(conn)?;
     Ok(())
@@ -27,14 +26,12 @@ pub fn get_language_by_name(
     conn: &mut PgConnection,
     language_name: &str,
 ) -> Result<Language, Error> {
-    use crate::schema::languages::dsl::{lang_code, languages};
-    languages
-        .filter(lang_code.eq(language_name))
+    languages::table
+        .filter(languages::lang_code.eq(language_name))
         .first(conn)
         .map_err(Into::into)
 }
 
 pub fn get_all_languages(conn: &mut PgConnection) -> Result<Vec<Language>, Error> {
-    use crate::schema::languages::dsl::languages;
-    languages.load::<Language>(conn).map_err(Into::into)
+    languages::table.load::<Language>(conn).map_err(Into::into)
 }

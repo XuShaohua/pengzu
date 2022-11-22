@@ -91,9 +91,9 @@ CREATE TABLE IF NOT EXISTS languages
 CREATE TABLE IF NOT EXISTS books_languages_link (
     id SERIAL PRIMARY KEY,
     book INTEGER NOT NULL,
-    lang_code INTEGER NOT NULL,
+    language INTEGER NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (book, lang_code)
+    UNIQUE (book, language)
 );
 
 
@@ -318,7 +318,7 @@ CREATE INDEX IF NOT EXISTS books_authors_link_author_idx ON books_authors_link (
 CREATE INDEX IF NOT EXISTS books_authors_link_book_idx ON books_authors_link (book);
 CREATE INDEX IF NOT EXISTS books_categories_link_book_idx ON books_categories_link (book);
 CREATE INDEX IF NOT EXISTS books_categories_link_category_idx ON books_categories_link (category);
-CREATE INDEX IF NOT EXISTS books_languages_link_lang_idx ON books_languages_link (lang_code);
+CREATE INDEX IF NOT EXISTS books_languages_link_lang_idx ON books_languages_link (language);
 CREATE INDEX IF NOT EXISTS books_languages_link_book_idx ON books_languages_link (book);
 CREATE INDEX IF NOT EXISTS books_publishers_link_publisher_idx ON books_publishers_link (publisher);
 CREATE INDEX IF NOT EXISTS books_publishers_link_book_idx ON books_publishers_link (book);

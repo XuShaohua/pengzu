@@ -5,7 +5,7 @@ CREATE INDEX books_authors_link_author_idx ON books_authors_link (author);
 CREATE INDEX books_authors_link_book_idx ON books_authors_link (book);
 CREATE INDEX books_categories_link_book_idx ON books_categories_link (book);
 CREATE INDEX books_categories_link_category_idx ON books_categories_link (category);
-CREATE INDEX books_languages_link_lang_idx ON books_languages_link (lang_code);
+CREATE INDEX books_languages_link_lang_idx ON books_languages_link (language);
 CREATE INDEX books_languages_link_book_idx ON books_languages_link (book);
 CREATE INDEX books_publishers_link_publisher_idx ON books_publishers_link (publisher);
 CREATE INDEX books_publishers_link_book_idx ON books_publishers_link (book);

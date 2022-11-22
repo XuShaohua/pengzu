@@ -47,7 +47,7 @@ diesel::table! {
     books_languages_link (id) {
         id -> Int4,
         book -> Int4,
-        lang_code -> Int4,
+        language -> Int4,
         created -> Timestamp,
     }
 }

@@ -105,7 +105,6 @@ pub fn get_books(
 
     let page_id = if query.page < 1 { 0 } else { query.page - 1 };
     let offset = page_id * BOOKS_EACH_PAGE;
-    // let _order_column = query.order.get_column();
 
     let book_list = books
         .order_by(id.asc())
@@ -132,7 +131,7 @@ pub fn get_books_by_ids(
     query: &GetBooksQuery,
     book_ids: &[i32],
 ) -> Result<BookAndAuthorsList, Error> {
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
+    let page_id = query.backend_page_id();
     let offset = page_id * BOOKS_EACH_PAGE;
     // let order_column = query.order.get_column();
     let total = book_ids.len() as i64;

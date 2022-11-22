@@ -8,13 +8,12 @@ use diesel::{
 };
 use serde::Deserialize;
 use shared::authors::{Author, AuthorAndBook, AuthorAndBookList};
-use shared::books::{AuthorAndBookId, BookAndAuthorsList};
-use shared::books_query::GetBooksQuery;
+use shared::books::AuthorAndBookId;
 use shared::general_query::GeneralQuery;
 use shared::page::{Page, AUTHORS_EACH_PAGE};
 
 use crate::error::Error;
-use crate::models::books::{get_books_by_ids, Book};
+use crate::models::books::Book;
 use crate::schema::authors;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -118,21 +117,6 @@ pub fn get_authors_by_book_id(
         .select((authors::id, authors::name, books_authors_link::book))
         .load::<AuthorAndBookId>(conn)
         .map_err(Into::into)
-}
-
-pub fn get_books_by_author(
-    conn: &mut PgConnection,
-    author_id: i32,
-    query: &GetBooksQuery,
-) -> Result<BookAndAuthorsList, Error> {
-    use crate::schema::books_authors_link;
-
-    let book_ids = books_authors_link::table
-        .filter(books_authors_link::author.eq(author_id))
-        .select(books_authors_link::book)
-        .load::<i32>(conn)?;
-
-    get_books_by_ids(conn, query, &book_ids)
 }
 
 pub fn delete_by_id(conn: &mut PgConnection, id: i32) -> Result<(), Error> {

@@ -3,13 +3,12 @@
 // that can be found in the LICENSE file.
 
 use crate::router::Route;
-use shared::books_query::{GetBooksOrder, GetBooksQuery};
+use shared::books_query::GetBooksQuery;
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::{use_history, use_location, History, Location};
 
-use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::services::download_history::fetch_books_by_download_history;
@@ -35,20 +34,13 @@ pub fn books_of_user_tag() -> Html {
         );
     }
 
-    let book_filter_onchange = {
-        Callback::from(|order: GetBooksOrder| {
-            log::info!("new order: {:?}", order);
-        })
-    };
-
     let pagination_onclick = {
-        let query_clone = query.clone();
         Callback::from(move |page_id: PageId| {
             util::scroll_to_top();
 
             let new_query = GetBooksQuery {
                 page: page_id,
-                ..query_clone
+                ..query
             };
             let ret = history.push_with_query(Route::BooksOfDownloadHistory, &new_query);
             debug_assert!(ret.is_ok());
@@ -61,7 +53,6 @@ pub fn books_of_user_tag() -> Html {
             html! {
                 <>
                 <h2>{ "Download history" }</h2>
-                <BookFilterComponent onchange={ book_filter_onchange } current_order={ query.order } />
                 <BookListComponent books={ book_list.list.clone() } />
                 <PaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }

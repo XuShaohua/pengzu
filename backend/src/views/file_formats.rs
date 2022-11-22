@@ -34,14 +34,14 @@ pub async fn get_format(
     Ok(HttpResponse::Ok().json(resp))
 }
 
-pub async fn get_books_by_format(
+pub async fn get_books(
     pool: web::Data<DbPool>,
     format_id: web::Path<i32>,
     query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;
-        file_formats::get_books_by_format(&mut conn, format_id.into_inner(), &query)
+        file_formats::get_books(&mut conn, format_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

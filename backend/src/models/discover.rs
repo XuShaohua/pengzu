@@ -11,7 +11,7 @@ use crate::models::authors::get_authors_by_book_id;
 use crate::models::books::{merge_books_and_authors, Book};
 
 #[allow(clippy::redundant_pub_crate)]
-pub fn get_books_by_discover(conn: &mut PgConnection) -> Result<BookAndAuthorsList, Error> {
+pub fn get_books(conn: &mut PgConnection) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books;
 
     sql_function!(

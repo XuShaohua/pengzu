@@ -83,7 +83,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/discover/books")
                 .wrap(auth.clone())
-                .route(web::get().to(discover::get_books_by_discover)),
+                .route(web::get().to(discover::get_books)),
         )
         // For /api/download
         .service(
@@ -108,7 +108,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/format/books/{format_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(file_formats::get_books_by_format)),
+                .route(web::get().to(file_formats::get_books)),
         )
         // For /api/image
         .service(web::resource("/image").route(web::get().to(images::get_image_by_path)))

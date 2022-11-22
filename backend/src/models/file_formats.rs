@@ -7,10 +7,10 @@ use serde::Deserialize;
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::file_formats::{FileFormat, FileFormatAndBook, FileFormatAndBookList};
-use shared::page::{Page, PageQuery};
+use shared::page::{Page, PageQuery, BOOKS_EACH_PAGE};
 
 use crate::error::Error;
-use crate::models::books::get_books_by_ids;
+use crate::models::books::{book_list_to_book_authors, Book};
 use crate::schema::file_formats;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -87,17 +87,31 @@ pub fn get_formats(
     })
 }
 
-pub fn get_books_by_format(
+pub fn get_books(
     conn: &mut PgConnection,
     format_id: i32,
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, Error> {
-    use crate::schema::files;
+    use crate::schema::{books, files};
 
-    let book_ids = files::table
+    let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
+    let total = files::table
         .filter(files::format.eq(format_id))
-        .select(files::book)
-        .load::<i32>(conn)?;
+        .count()
+        .first::<i64>(conn)?;
 
-    get_books_by_ids(conn, query, &book_ids)
+    // Get book list based on a subquery.
+    let book_list = books::table
+        .filter(
+            books::id.eq_any(
+                files::table
+                    .filter(files::format.eq(format_id))
+                    .select(files::book),
+            ),
+        )
+        .limit(BOOKS_EACH_PAGE)
+        .offset(offset)
+        .load::<Book>(conn)?;
+
+    book_list_to_book_authors(conn, book_list, query, total)
 }

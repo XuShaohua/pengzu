@@ -46,6 +46,7 @@ pub fn get_books(
     let book_ids = download_history::table
         .filter(download_history::user_id.eq(user_id))
         .select(download_history::book)
+        .order_by(download_history::id.desc())
         .load::<i32>(conn)?;
 
     get_books_by_ids(conn, query, &book_ids)

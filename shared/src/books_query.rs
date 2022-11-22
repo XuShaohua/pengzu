@@ -25,7 +25,7 @@ impl GetBooksQuery {
     }
     pub fn frontend_page_id(&self) -> PageId {
         if self.page < 1 {
-            0
+            1
         } else {
             self.page
         }

@@ -9,11 +9,10 @@ use diesel::{
 use serde::{Deserialize, Serialize};
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
-use shared::page::{Page, BOOKS_EACH_PAGE};
+use shared::page::BOOKS_EACH_PAGE;
 
 use crate::error::Error;
-use crate::models::authors::get_authors_by_book_id;
-use crate::models::books::{merge_books_and_authors, Book};
+use crate::models::books::{book_list_to_book_authors, Book};
 use crate::schema::download_history;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Queryable)]
@@ -80,15 +79,6 @@ pub fn get_books(
         .filter(download_history::user_id.eq(user_id))
         .count()
         .first::<i64>(conn)?;
-    let author_list = get_authors_by_book_id(conn, &book_list)?;
-    let list = merge_books_and_authors(book_list, &author_list);
 
-    Ok(BookAndAuthorsList {
-        page: Page {
-            page_num: query.frontend_page_id(),
-            each_page: BOOKS_EACH_PAGE,
-            total,
-        },
-        list,
-    })
+    book_list_to_book_authors(conn, book_list, query, total)
 }

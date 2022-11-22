@@ -131,9 +131,7 @@ pub fn get_books_by_ids(
     query: &GetBooksQuery,
     book_ids: &[i32],
 ) -> Result<BookAndAuthorsList, Error> {
-    let page_id = query.backend_page_id();
-    let offset = page_id * BOOKS_EACH_PAGE;
-    // let order_column = query.order.get_column();
+    let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
     let total = book_ids.len() as i64;
 
     // TODO(Shaohua): Apply query order
@@ -148,7 +146,26 @@ pub fn get_books_by_ids(
 
     Ok(BookAndAuthorsList {
         page: Page {
-            page_num: page_id + 1,
+            page_num: query.frontend_page_id(),
+            each_page: BOOKS_EACH_PAGE,
+            total,
+        },
+        list,
+    })
+}
+
+pub fn book_list_to_book_authors(
+    conn: &mut PgConnection,
+    book_list: Vec<Book>,
+    query: &GetBooksQuery,
+    total: i64,
+) -> Result<BookAndAuthorsList, Error> {
+    let author_list = get_authors_by_book_id(conn, &book_list)?;
+    let list = merge_books_and_authors(book_list, &author_list);
+
+    Ok(BookAndAuthorsList {
+        page: Page {
+            page_num: query.frontend_page_id(),
             each_page: BOOKS_EACH_PAGE,
             total,
         },

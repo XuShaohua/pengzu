@@ -31,8 +31,7 @@ pub fn get_series_list(
 ) -> Result<SeriesAndBookList, Error> {
     use crate::schema::books_series_link;
 
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * SERIES_EACH_PAGE;
+    let offset = query.backend_page_id() * SERIES_EACH_PAGE;
 
     // TODO(Shaohua): Support query order
 
@@ -52,7 +51,7 @@ pub fn get_series_list(
 
     Ok(SeriesAndBookList {
         page: Page {
-            page_num: page_id + 1,
+            page_num: query.frontend_page_id(),
             each_page: SERIES_EACH_PAGE,
             total,
         },

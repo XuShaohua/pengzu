@@ -7,7 +7,9 @@ use serde::{Deserialize, Serialize};
 pub const AUTHORS_EACH_PAGE: i64 = 100;
 pub const BOOKS_EACH_PAGE: i64 = 50;
 pub const CATEGORIES_EACH_PAGE: i64 = 100;
+pub const FILE_FORMATS_EACH_PAGE: i64 = 100;
 pub const PUBLISHERS_EACH_PAGE: i64 = 100;
+pub const READING_HISTORY_EACH_PAGE: i64 = 100;
 pub const SERIES_EACH_PAGE: i64 = 100;
 pub const TAGS_EACH_PAGE: i64 = 100;
 pub const USER_TAGS_EACH_PAGE: i64 = 100;
@@ -52,4 +54,22 @@ impl Page {
 pub struct PageQuery {
     #[serde(default = "default_page_id")]
     pub page: PageId,
+}
+
+impl PageQuery {
+    pub fn backend_page_id(&self) -> PageId {
+        if self.page < 1 {
+            0
+        } else {
+            self.page - 1
+        }
+    }
+
+    pub fn frontend_page_id(&self) -> PageId {
+        if self.page < 1 {
+            1
+        } else {
+            self.page
+        }
+    }
 }

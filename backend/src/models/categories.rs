@@ -54,8 +54,7 @@ pub fn get_categories(
 ) -> Result<CategoryAndBookList, Error> {
     use crate::schema::books_categories_link;
 
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * CATEGORIES_EACH_PAGE;
+    let offset = query.backend_page_id() * CATEGORIES_EACH_PAGE;
 
     // TODO(Shaohua): Support query order
 
@@ -84,7 +83,7 @@ pub fn get_categories(
 
     Ok(CategoryAndBookList {
         page: Page {
-            page_num: page_id + 1,
+            page_num: query.frontend_page_id(),
             each_page: CATEGORIES_EACH_PAGE,
             total,
         },

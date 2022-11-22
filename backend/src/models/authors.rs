@@ -36,8 +36,7 @@ pub fn get_authors(
 ) -> Result<AuthorAndBookList, Error> {
     use crate::schema::books_authors_link;
 
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * AUTHORS_EACH_PAGE;
+    let offset = query.backend_page_id() * AUTHORS_EACH_PAGE;
 
     // TODO(Shaohua): Support order.
     let list = authors::table
@@ -57,7 +56,7 @@ pub fn get_authors(
 
     Ok(AuthorAndBookList {
         page: Page {
-            page_num: page_id + 1,
+            page_num: query.frontend_page_id(),
             each_page: AUTHORS_EACH_PAGE,
             total,
         },

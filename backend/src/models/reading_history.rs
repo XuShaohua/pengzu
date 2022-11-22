@@ -5,7 +5,8 @@
 use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
-use shared::page::{default_page_id, Page};
+use shared::books_query::GetBooksQuery;
+use shared::page::{Page, READING_HISTORY_EACH_PAGE};
 
 use crate::error::Error;
 use crate::schema::reading_history;
@@ -27,23 +28,14 @@ pub struct GetHistoryResp {
     pub list: Vec<History>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct GetHistoryReq {
-    pub user_id: i32,
-    #[serde(default = "default_page_id")]
-    pub page: i64,
-}
-
 pub fn get_history_list(
     conn: &mut PgConnection,
-    query: &GetHistoryReq,
+    query: &GetBooksQuery,
 ) -> Result<GetHistoryResp, Error> {
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 100;
-    let offset = page_id * each_page;
+    let offset = query.backend_page_id() * READING_HISTORY_EACH_PAGE;
 
     let list = reading_history::table
-        .limit(each_page)
+        .limit(READING_HISTORY_EACH_PAGE)
         .offset(offset)
         .load::<History>(conn)?;
 
@@ -51,8 +43,8 @@ pub fn get_history_list(
 
     Ok(GetHistoryResp {
         page: Page {
-            page_num: page_id + 1,
-            each_page,
+            page_num: query.frontend_page_id(),
+            each_page: READING_HISTORY_EACH_PAGE,
             total,
         },
         list,

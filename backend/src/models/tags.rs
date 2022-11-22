@@ -49,8 +49,7 @@ pub fn get_tag_by_name_pattern(conn: &mut PgConnection, name_pattern: &str) -> R
 pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<TagAndBookList, Error> {
     use crate::schema::books_tags_link;
 
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * TAGS_EACH_PAGE;
+    let offset = query.backend_page_id() * TAGS_EACH_PAGE;
 
     // TODO(Shaohua): Get children count.
 
@@ -77,7 +76,7 @@ pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<TagAn
 
     Ok(TagAndBookList {
         page: Page {
-            page_num: page_id + 1,
+            page_num: query.frontend_page_id(),
             each_page: TAGS_EACH_PAGE,
             total,
         },

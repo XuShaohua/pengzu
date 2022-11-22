@@ -44,8 +44,7 @@ pub fn get_tags(
 ) -> Result<UserTagAndBookList, Error> {
     use crate::schema::books_user_tags_link;
 
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * USER_TAGS_EACH_PAGE;
+    let offset = query.backend_page_id() * USER_TAGS_EACH_PAGE;
 
     let list = user_tags::table
         .filter(user_tags::parent.eq(query.parent))
@@ -69,7 +68,7 @@ pub fn get_tags(
 
     Ok(UserTagAndBookList {
         page: Page {
-            page_num: page_id + 1,
+            page_num: query.frontend_page_id(),
             each_page: USER_TAGS_EACH_PAGE,
             total,
         },

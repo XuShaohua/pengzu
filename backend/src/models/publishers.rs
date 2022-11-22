@@ -31,8 +31,7 @@ pub fn get_publishers(
 ) -> Result<PublisherAndBookList, Error> {
     use crate::schema::books_publishers_link;
 
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * PUBLISHERS_EACH_PAGE;
+    let offset = query.backend_page_id() * PUBLISHERS_EACH_PAGE;
 
     // TODO(Shaohua): Support query order.
 
@@ -54,7 +53,7 @@ pub fn get_publishers(
 
     Ok(PublisherAndBookList {
         page: Page {
-            page_num: page_id + 1,
+            page_num: query.frontend_page_id(),
             each_page: PUBLISHERS_EACH_PAGE,
             total,
         },

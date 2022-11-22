@@ -103,8 +103,7 @@ pub fn get_books(
 ) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books::dsl::{books, id};
 
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let offset = page_id * BOOKS_EACH_PAGE;
+    let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
 
     let book_list = books
         .order_by(id.asc())
@@ -118,7 +117,7 @@ pub fn get_books(
 
     Ok(BookAndAuthorsList {
         page: Page {
-            page_num: page_id + 1,
+            page_num: query.frontend_page_id(),
             each_page: BOOKS_EACH_PAGE,
             total,
         },

@@ -7,7 +7,7 @@ use serde::Deserialize;
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::file_formats::{FileFormat, FileFormatAndBook, FileFormatAndBookList};
-use shared::page::{Page, PageQuery, BOOKS_EACH_PAGE};
+use shared::page::{Page, PageQuery, BOOKS_EACH_PAGE, FILE_FORMATS_EACH_PAGE};
 
 use crate::error::Error;
 use crate::models::books::{book_list_to_book_authors, Book};
@@ -59,9 +59,7 @@ pub fn get_formats(
 ) -> Result<FileFormatAndBookList, Error> {
     use crate::schema::files;
 
-    let page_id = if query.page < 1 { 0 } else { query.page - 1 };
-    let each_page = 100;
-    let offset = page_id * each_page;
+    let offset = query.backend_page_id() * FILE_FORMATS_EACH_PAGE;
 
     let list = file_formats::table
         .left_join(files::table.on(files::format.eq(file_formats::id)))
@@ -71,7 +69,7 @@ pub fn get_formats(
             file_formats::name,
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(files.id)"),
         ))
-        .limit(each_page)
+        .limit(FILE_FORMATS_EACH_PAGE)
         .offset(offset)
         .load::<FileFormatAndBook>(conn)?;
 
@@ -79,8 +77,8 @@ pub fn get_formats(
 
     Ok(FileFormatAndBookList {
         page: Page {
-            page_num: page_id + 1,
-            each_page,
+            page_num: query.frontend_page_id(),
+            each_page: FILE_FORMATS_EACH_PAGE,
             total,
         },
         list,

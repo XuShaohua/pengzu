@@ -38,3 +38,21 @@ impl Default for GeneralQuery {
         }
     }
 }
+
+impl GeneralQuery {
+    pub fn backend_page_id(&self) -> PageId {
+        if self.page < 1 {
+            0
+        } else {
+            self.page - 1
+        }
+    }
+
+    pub fn frontend_page_id(&self) -> PageId {
+        if self.page < 1 {
+            1
+        } else {
+            self.page
+        }
+    }
+}

@@ -7,7 +7,6 @@ RUN apt install -y libsqlite3-0 libssl3 libpq5
 RUN apt clean
 
 FROM rust:bullseye as builder-cacher
-COPY docker/config.toml /usr/local/cargo/
 RUN cargo install --locked cargo-watch
 
 FROM builder-cacher as builder

@@ -3,9 +3,7 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{
-    ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
-};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
@@ -41,18 +39,17 @@ pub fn add_book_tag(conn: &mut PgConnection, new_book_tag: &NewBookTag) -> Resul
 
 pub fn get_tags_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Vec<Tag>, Error> {
     use crate::schema::tags;
-    // TODO(Shaohua): Replace with `SELECT *`
+    log::info!("book id: {}", book_id);
+
+    // Replace INNER JOIN with a subquery.
     tags::table
-        .inner_join(books_tags_link::table.on(books_tags_link::tag.eq(tags::id)))
-        .filter(books_tags_link::book.eq(book_id))
-        .select((
-            tags::id,
-            tags::order_index,
-            tags::name,
-            tags::parent,
-            tags::created,
-            tags::last_modified,
-        ))
+        .filter(
+            tags::id.eq_any(
+                books_tags_link::table
+                    .filter(books_tags_link::book.eq(book_id))
+                    .select(books_tags_link::tag),
+            ),
+        )
         .load::<Tag>(conn)
         .map_err(Into::into)
 }

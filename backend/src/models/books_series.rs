@@ -7,9 +7,13 @@ use diesel::{
     ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared::books::BookAndAuthorsList;
+use shared::books_query::GetBooksQuery;
+use shared::page::BOOKS_EACH_PAGE;
 use shared::series::Series;
 
 use crate::error::{Error, ErrorKind};
+use crate::models::books::{book_list_to_book_authors, Book};
 use crate::schema::books_series_link;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -31,26 +35,23 @@ pub fn add_book_series(
     conn: &mut PgConnection,
     new_book_series: &NewBookSeries,
 ) -> Result<(), Error> {
-    use crate::schema::books_series_link::dsl::books_series_link;
-    diesel::insert_into(books_series_link)
+    diesel::insert_into(books_series_link::table)
         .values(new_book_series)
         .execute(conn)?;
     Ok(())
 }
 
 pub fn get_book_series(conn: &mut PgConnection, book_id: i32) -> Result<BookSeries, Error> {
-    use crate::schema::books_series_link::dsl::{book, books_series_link};
-    books_series_link
-        .filter(book.eq(book_id))
+    books_series_link::table
+        .filter(books_series_link::book.eq(book_id))
         .first::<BookSeries>(conn)
         .map_err(Into::into)
 }
 
 pub fn delete_book_series(conn: &mut PgConnection, book_id: i32) -> Result<(), Error> {
-    use crate::schema::books_series_link::dsl::{book, books_series_link};
     let _link = get_book_series(conn, book_id)?;
-    diesel::delete(books_series_link)
-        .filter(book.eq(book_id))
+    diesel::delete(books_series_link::table)
+        .filter(books_series_link::book.eq(book_id))
         .execute(conn)?;
     Ok(())
 }
@@ -77,4 +78,33 @@ pub fn get_series_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Optio
             _ => Err(err),
         },
     }
+}
+
+pub fn get_books(
+    conn: &mut PgConnection,
+    series_id: i32,
+    query: &GetBooksQuery,
+) -> Result<BookAndAuthorsList, Error> {
+    use crate::schema::books;
+
+    let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
+    let total = books_series_link::table
+        .filter(books_series_link::series.eq(series_id))
+        .count()
+        .first::<i64>(conn)?;
+
+    // Get book list based on a subquery.
+    let book_list = books::table
+        .filter(
+            books::id.eq_any(
+                books_series_link::table
+                    .filter(books_series_link::series.eq(series_id))
+                    .select(books_series_link::book),
+            ),
+        )
+        .limit(BOOKS_EACH_PAGE)
+        .offset(offset)
+        .load::<Book>(conn)?;
+
+    book_list_to_book_authors(conn, book_list, query, total)
 }

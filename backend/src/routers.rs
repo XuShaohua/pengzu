@@ -156,7 +156,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/series/books/{series_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(series::get_books_by_series)),
+                .route(web::get().to(series::get_books)),
         )
         // For /api/tag
         .service(

@@ -50,6 +50,8 @@ pub fn get_books(
     let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
 
     // TODO(Shaohua): Replace with `SELECT *`
+    // NOTE(Shaohua): Subquery does not keep download order as expected,
+    // so that inner join is used here.
     // -- get download books
     // SELECT books.* FROM books
     // INNER JOIN download_history

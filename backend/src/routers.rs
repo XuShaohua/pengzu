@@ -127,7 +127,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/publisher/books/{publisher_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(publishers::get_books_by_publisher)),
+                .route(web::get().to(publishers::get_books)),
         )
         // For /api/rating
         .service(

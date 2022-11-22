@@ -7,9 +7,13 @@ use diesel::{
     ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, Queryable, RunQueryDsl,
 };
 use serde::{Deserialize, Serialize};
+use shared::books::BookAndAuthorsList;
+use shared::books_query::GetBooksQuery;
+use shared::page::BOOKS_EACH_PAGE;
 use shared::publishers::Publisher;
 
 use crate::error::{Error, ErrorKind};
+use crate::models::books::{book_list_to_book_authors, Book};
 use crate::schema::books_publishers_link;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -82,4 +86,33 @@ pub fn get_publisher_by_book(
             _ => Err(err),
         },
     }
+}
+
+pub fn get_books(
+    conn: &mut PgConnection,
+    publisher_id: i32,
+    query: &GetBooksQuery,
+) -> Result<BookAndAuthorsList, Error> {
+    use crate::schema::books;
+
+    let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
+    let total = books_publishers_link::table
+        .filter(books_publishers_link::publisher.eq(publisher_id))
+        .count()
+        .first::<i64>(conn)?;
+
+    // Get book list based on a subquery.
+    let book_list = books::table
+        .filter(
+            books::id.eq_any(
+                books_publishers_link::table
+                    .filter(books_publishers_link::publisher.eq(publisher_id))
+                    .select(books_publishers_link::book),
+            ),
+        )
+        .limit(BOOKS_EACH_PAGE)
+        .offset(offset)
+        .load::<Book>(conn)?;
+
+    book_list_to_book_authors(conn, book_list, query, total)
 }

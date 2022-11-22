@@ -10,9 +10,10 @@ use serde::{Deserialize, Serialize};
 use shared::authors::Author;
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
+use shared::page::BOOKS_EACH_PAGE;
 
 use crate::error::Error;
-use crate::models::books::get_books_by_ids;
+use crate::models::books::{book_list_to_book_authors, Book};
 use crate::schema::books_authors_link;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -93,10 +94,27 @@ pub fn get_books_by_author(
     author_id: i32,
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, Error> {
-    let book_ids = books_authors_link::table
-        .filter(books_authors_link::author.eq(author_id))
-        .select(books_authors_link::book)
-        .load::<i32>(conn)?;
+    use crate::schema::books;
 
-    get_books_by_ids(conn, query, &book_ids)
+    let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
+
+    let total = books_authors_link::table
+        .filter(books_authors_link::author.eq(author_id))
+        .count()
+        .first::<i64>(conn)?;
+
+    // Get book list based on a subquery.
+    let book_list = books::table
+        .filter(
+            books::id.eq_any(
+                books_authors_link::table
+                    .filter(books_authors_link::author.eq(author_id))
+                    .select(books_authors_link::book),
+            ),
+        )
+        .limit(BOOKS_EACH_PAGE)
+        .offset(offset)
+        .load::<Book>(conn)?;
+
+    book_list_to_book_authors(conn, book_list, query, total)
 }

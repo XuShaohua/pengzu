@@ -8,7 +8,7 @@ use shared::recursive_query::RecursiveQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::tags;
+use crate::models::{books_tags, tags};
 
 pub async fn add_tag(
     pool: web::Data<DbPool>,
@@ -59,14 +59,14 @@ pub async fn update_tag(
     Ok(HttpResponse::Ok().finish())
 }
 
-pub async fn get_books_by_tag(
+pub async fn get_books(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
     query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;
-        tags::get_books_by_tag(&mut conn, tag_id.into_inner(), &query)
+        books_tags::get_books(&mut conn, tag_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

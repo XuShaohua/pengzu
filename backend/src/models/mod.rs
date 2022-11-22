@@ -7,6 +7,7 @@ pub mod auth;
 pub mod authors;
 pub mod books;
 pub mod books_authors;
+pub mod books_categories;
 pub mod books_languages;
 pub mod books_meta;
 pub mod books_publishers;

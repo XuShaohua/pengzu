@@ -8,7 +8,7 @@ use shared::recursive_query::RecursiveQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
-use crate::models::categories;
+use crate::models::{books_categories, categories};
 
 pub async fn get_categories(
     pool: web::Data<DbPool>,
@@ -34,14 +34,14 @@ pub async fn get_category(
     Ok(HttpResponse::Ok().json(category_resp))
 }
 
-pub async fn get_books_by_category(
+pub async fn get_books(
     pool: web::Data<DbPool>,
     category_id: web::Path<i32>,
     query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;
-        categories::get_books_by_category(&mut conn, category_id.into_inner(), &query)
+        books_categories::get_books(&mut conn, category_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

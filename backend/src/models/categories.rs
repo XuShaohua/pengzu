@@ -4,14 +4,11 @@
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::Deserialize;
-use shared::books::BookAndAuthorsList;
-use shared::books_query::GetBooksQuery;
 use shared::categories::{Category, CategoryAndBook, CategoryAndBookList};
 use shared::page::{Page, CATEGORIES_EACH_PAGE};
 use shared::recursive_query::RecursiveQuery;
 
 use crate::error::Error;
-use crate::models::books::get_books_by_ids;
 use crate::schema::categories;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -93,19 +90,4 @@ pub fn get_categories(
         },
         list,
     })
-}
-
-pub fn get_books_by_category(
-    conn: &mut PgConnection,
-    category_id: i32,
-    query: &GetBooksQuery,
-) -> Result<BookAndAuthorsList, Error> {
-    use crate::schema::books_categories_link;
-
-    let book_ids = books_categories_link::table
-        .filter(books_categories_link::category.eq(category_id))
-        .select(books_categories_link::book)
-        .load::<i32>(conn)?;
-
-    get_books_by_ids(conn, query, &book_ids)
 }

@@ -36,7 +36,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/author/books/{author_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(authors::get_books)),
+                .route(web::get().to(authors::get_books_by_author)),
         )
         // For /api/book
         .service(
@@ -64,7 +64,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/category/books/{category_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(categories::get_books)),
+                .route(web::get().to(categories::get_books_by_category)),
         )
         // For /api/comment
         .service(
@@ -108,7 +108,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/format/books/{format_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(file_formats::get_books)),
+                .route(web::get().to(file_formats::get_books_by_file_format)),
         )
         // For /api/image
         .service(web::resource("/image").route(web::get().to(images::get_image_by_path)))
@@ -127,7 +127,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/publisher/books/{publisher_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(publishers::get_books)),
+                .route(web::get().to(publishers::get_books_by_publisher)),
         )
         // For /api/rating
         .service(
@@ -156,7 +156,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/series/books/{series_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(series::get_books)),
+                .route(web::get().to(series::get_books_by_series)),
         )
         // For /api/tag
         .service(
@@ -173,7 +173,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/tag/books/{tag_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(tags::get_books)),
+                .route(web::get().to(tags::get_books_by_tag)),
         )
         .service(
             web::resource("/tag/{tag_id}")
@@ -195,7 +195,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/user-tag/books/{tag_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(user_tags::get_books)),
+                .route(web::get().to(user_tags::get_books_by_user_tag)),
         )
         // For /api/search
         .service(

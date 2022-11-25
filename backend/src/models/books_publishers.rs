@@ -80,7 +80,7 @@ pub fn get_publisher_by_book(
     }
 }
 
-pub fn get_books(
+pub fn get_books_by_publisher(
     conn: &mut PgConnection,
     publisher_id: i32,
     query: &GetBooksQuery,

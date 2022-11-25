@@ -78,7 +78,7 @@ pub fn delete_by_id(conn: &mut PgConnection, id: i32) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn get_books(
+pub fn get_books_by_tag(
     conn: &mut PgConnection,
     tag_id: i32,
     query: &GetBooksQuery,

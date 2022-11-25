@@ -59,14 +59,14 @@ pub async fn update_tag(
     Ok(HttpResponse::Ok().finish())
 }
 
-pub async fn get_books(
+pub async fn get_books_by_user_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
     query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;
-        books_user_tags::get_books(&mut conn, tag_id.into_inner(), &query)
+        books_user_tags::get_books_by_user_tag(&mut conn, tag_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

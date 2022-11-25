@@ -11,7 +11,7 @@ use crate::error::Error;
 use crate::models::books::{book_list_to_book_authors, Book};
 use crate::schema::books_categories_link;
 
-pub fn get_books(
+pub fn get_books_by_category(
     conn: &mut PgConnection,
     category_id: i32,
     query: &GetBooksQuery,

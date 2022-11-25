@@ -46,7 +46,7 @@ pub async fn get_author(
     Ok(HttpResponse::Ok().json(resp))
 }
 
-pub async fn get_books(
+pub async fn get_books_by_author(
     pool: web::Data<DbPool>,
     author_id: web::Path<i32>,
     query: web::Query<GetBooksQuery>,

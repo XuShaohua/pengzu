@@ -85,7 +85,7 @@ pub fn get_formats(
     })
 }
 
-pub fn get_books(
+pub fn get_books_by_file_format(
     conn: &mut PgConnection,
     format_id: i32,
     query: &GetBooksQuery,

@@ -77,7 +77,7 @@ pub fn get_series_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Optio
     }
 }
 
-pub fn get_books(
+pub fn get_books_by_series(
     conn: &mut PgConnection,
     series_id: i32,
     query: &GetBooksQuery,

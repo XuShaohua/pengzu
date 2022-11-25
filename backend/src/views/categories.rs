@@ -34,14 +34,14 @@ pub async fn get_category(
     Ok(HttpResponse::Ok().json(category_resp))
 }
 
-pub async fn get_books(
+pub async fn get_books_by_category(
     pool: web::Data<DbPool>,
     category_id: web::Path<i32>,
     query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;
-        books_categories::get_books(&mut conn, category_id.into_inner(), &query)
+        books_categories::get_books_by_category(&mut conn, category_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

@@ -46,14 +46,14 @@ pub async fn get_publisher(
     Ok(HttpResponse::Ok().json(resp_publisher))
 }
 
-pub async fn get_books(
+pub async fn get_books_by_publisher(
     pool: web::Data<DbPool>,
     publisher_id: web::Path<i32>,
     query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
     let resp = web::block(move || {
         let mut conn = pool.get()?;
-        books_publishers::get_books(&mut conn, publisher_id.into_inner(), &query)
+        books_publishers::get_books_by_publisher(&mut conn, publisher_id.into_inner(), &query)
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))

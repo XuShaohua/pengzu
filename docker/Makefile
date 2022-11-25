@@ -1,4 +1,4 @@
-CURRENT_TAG = $(shell git describe --abbrev=0 --tags)
+CURRENT_TAG = $(shell git describe --abbrev=0 --tags | sed 's/v//')
 
 all: build-backend-docker push-backend-docker build-frontend-docker push-frontend-docker
 
@@ -17,3 +17,6 @@ build-frontend-docker:
 push-frontend-docker:
 	docker push xushaohua/pengzu-frontend:latest
 	docker push xushaohua/pengzu-frontend:$(CURRENT_TAG)
+
+show-tag:
+	echo $(CURRENT_TAG)

@@ -13,11 +13,11 @@ actix-web-grants = "3.0.1"
 actix-web-httpauth = "0.8.0"
 calibre = { path = "../calibre" }
 chrono = { version = "0.4.23", default-features = false, features = ["serde", "std"] }
-clap = "4.0.26"
+clap = "4.0.27"
 data-encoding = "2.3.2"
 diesel = { version = "2.0.2", default-features = false, features = ["chrono", "postgres", "r2d2"] }
 dotenv = "0.15.0"
-env_logger = "0.9.3"
+env_logger = "0.10.0"
 futures = "0.3.25"
 hmac = "0.12.1"
 image = { version = "0.24.5", default-features = false, features = ["jpeg", "png", "scoped_threadpool", "webp", "webp-encoder"] }
@@ -26,7 +26,7 @@ log = "0.4.17"
 r2d2 = "0.8.10"
 ring = { version = "0.16.20", features = ["std"] }
 serde = { version = "1.0.147", features = ["serde_derive"] }
-serde_json = "1.0.88"
+serde_json = "1.0.89"
 shared = { path = "../shared", features = ["diesel"] }
 tokio = { version = "1.22.0", features = [ "full", ] }
 uuid = { version = "1.2.2", features = ["serde", "v4"] }

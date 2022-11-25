@@ -11,6 +11,7 @@ use shared::page::{Page, BOOKS_EACH_PAGE};
 
 use crate::error::Error;
 use crate::models::authors::get_authors_by_book_id;
+use crate::models::books_query::sort_books_by_column;
 use crate::models::file_data;
 use crate::schema::books;
 
@@ -101,19 +102,16 @@ pub fn get_books(
     conn: &mut PgConnection,
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, Error> {
-    use crate::schema::books::dsl::{books, id};
-
     let offset = query.backend_page_id() * BOOKS_EACH_PAGE;
 
-    let book_list = books
-        .order_by(id.asc())
+    let book_list = sort_books_by_column(query.order)
         .limit(BOOKS_EACH_PAGE)
         .offset(offset)
         .load::<Book>(conn)?;
     let author_list = get_authors_by_book_id(conn, &book_list)?;
     let list = merge_books_and_authors(book_list, &author_list);
 
-    let total = books.count().first(conn)?;
+    let total = books::table.count().first(conn)?;
 
     Ok(BookAndAuthorsList {
         page: Page {

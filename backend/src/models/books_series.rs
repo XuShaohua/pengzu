@@ -12,6 +12,7 @@ use shared::series::Series;
 
 use crate::error::{Error, ErrorKind};
 use crate::models::books::{book_list_to_book_authors, Book};
+use crate::models::books_query::sort_books_by_column;
 use crate::schema::books_series_link;
 
 #[derive(Debug, Deserialize, Insertable)]
@@ -91,7 +92,7 @@ pub fn get_books_by_series(
         .first::<i64>(conn)?;
 
     // Get book list based on a subquery.
-    let book_list = books::table
+    let book_list = sort_books_by_column(query.order)
         .filter(
             books::id.eq_any(
                 books_series_link::table

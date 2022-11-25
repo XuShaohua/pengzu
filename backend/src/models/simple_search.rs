@@ -22,6 +22,7 @@ pub fn get_books_by_simple_search(
         order: query.order,
     };
 
+    // TODO(Shaohua): Remove get_books_by_ids()
     let book_ids = books::table
         .filter(books::title.ilike(&query_pattern))
         .select(books::id)

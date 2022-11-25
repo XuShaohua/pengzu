@@ -11,6 +11,7 @@ pub mod books_categories;
 pub mod books_languages;
 pub mod books_meta;
 pub mod books_publishers;
+mod books_query;
 pub mod books_series;
 pub mod books_tags;
 pub mod books_user_tags;

@@ -23,12 +23,15 @@
 #![allow(clippy::extra_unused_lifetimes)]
 
 pub mod cmd;
-mod db;
+pub mod db;
 pub mod error;
 mod import;
 mod migrations;
-mod models;
+pub mod models;
 mod routers;
 mod schema;
 mod settings;
 mod views;
+
+#[cfg(feature = "mongodb")]
+pub mod categories;

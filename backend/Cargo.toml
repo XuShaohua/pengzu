@@ -23,6 +23,7 @@ hmac = "0.12.1"
 image = { version = "0.24.5", default-features = false, features = ["jpeg", "png", "scoped_threadpool", "webp", "webp-encoder"] }
 jsonwebtoken = "8.1.1"
 log = "0.4.17"
+mongodb = { version = "2.3.1", optional = true }
 r2d2 = "0.8.10"
 ring = { version = "0.16.20", features = ["std"] }
 serde = { version = "1.0.148", features = ["serde_derive"] }

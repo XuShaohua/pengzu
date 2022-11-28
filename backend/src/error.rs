@@ -33,6 +33,8 @@ pub enum ErrorKind {
     HttpError,
 }
 
+unsafe impl Send for ErrorKind {}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct Error {
     kind: ErrorKind,
@@ -148,6 +150,20 @@ impl From<calibre::error::Error> for Error {
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
         Self::from_string(ErrorKind::JsonError, format!("{}", err))
+    }
+}
+
+#[cfg(feature = "mongodb")]
+impl From<mongodb::error::Error> for Error {
+    fn from(err: mongodb::error::Error) -> Self {
+        Self::from_string(ErrorKind::MongoDbError, format!("{:?}", err))
+    }
+}
+
+#[cfg(feature = "mongodb")]
+impl From<mongodb::bson::document::ValueAccessError> for Error {
+    fn from(err: mongodb::bson::document::ValueAccessError) -> Self {
+        Self::from_string(ErrorKind::MongoDbValueAccessError, format!("{:?}", err))
     }
 }
 

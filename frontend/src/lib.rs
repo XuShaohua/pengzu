@@ -9,11 +9,8 @@
     clippy::nursery,
     clippy::pedantic
 )]
-#![allow(
-    clippy::module_name_repetitions,
-    clippy::use_self,
-    clippy::future_not_send
-)]
+// wasi v0.10 and v0.11
+#![allow(clippy::multiple_crate_versions)]
 
 pub mod app;
 pub mod components;

@@ -7,8 +7,8 @@ use std::fmt;
 use std::fmt::Formatter;
 use std::ops::Deref;
 use yew::prelude::*;
-use yew_router::history::{AnyHistory, History};
-use yew_router::prelude::use_history;
+use yew_router::hooks::use_navigator;
+use yew_router::prelude::Navigator;
 
 use crate::router::Route;
 use crate::services::auth::set_token;
@@ -17,20 +17,20 @@ use crate::services::auth::set_token;
 #[derive(Clone)]
 pub struct UseUserContextHandle {
     inner: UseStateHandle<UserInfo>,
-    history: AnyHistory,
+    navigator: Navigator,
 }
 
 impl UseUserContextHandle {
     pub fn login(&self, info: UserInfo) {
         set_token(Some(&info.token));
         self.inner.set(info);
-        self.history.push(Route::Home);
+        self.navigator.push(&Route::Home);
     }
 
     pub fn logout(&self) {
         set_token(None);
         self.inner.set(UserInfo::default());
-        self.history.push(Route::Home);
+        self.navigator.push(&Route::Home);
     }
 
     pub fn is_login(&self) -> bool {
@@ -65,9 +65,10 @@ impl fmt::Debug for UseUserContextHandle {
 /// # Panics
 /// Raise panic if failed to get history object.
 #[must_use]
+#[hook]
 pub fn use_user_context() -> UseUserContextHandle {
-    let inner = use_context::<UseStateHandle<UserInfo>>().unwrap();
-    let history = use_history().unwrap();
+    let inner: UseStateHandle<UserInfo> = use_context::<UseStateHandle<UserInfo>>().unwrap();
+    let navigator = use_navigator().unwrap();
 
-    UseUserContextHandle { inner, history }
+    UseUserContextHandle { inner, navigator }
 }

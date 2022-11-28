@@ -33,7 +33,7 @@ use crate::views::user_info::UserInfoComponent;
 use crate::views::user_tags::UserTagsComponent;
 use crate::views::users::UsersComponent;
 
-#[derive(Debug, Clone, PartialEq, Eq, Routable)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Routable)]
 pub enum Route {
     #[at("/")]
     Home,
@@ -102,36 +102,38 @@ pub enum Route {
 #[must_use]
 #[allow(clippy::cognitive_complexity)]
 #[allow(clippy::let_unit_value)]
-pub fn switch_route(routes: &Route) -> Html {
-    match routes {
-        Route::BookDetail { book_id } => html! { <BookDetailComponent book_id={ * book_id }/> },
+pub fn switch_route(routes: Route) -> Html {
+    match &routes {
+        Route::BookDetail { book_id } => html! { <BookDetailComponent book_id={ *book_id } /> },
         Route::Book | Route::Home => html! { <BooksComponent /> },
         Route::BooksOfAuthor { author_id } => {
-            html! { <BooksOfAuthorComponent author_id={ *author_id }/> }
+            html! { <BooksOfAuthorComponent author_id={ *author_id } /> }
         }
         Route::Author => html! { <AuthorsComponent /> },
         Route::BooksOfCategory { category_id } => {
-            html! { <BooksOfCategoryComponent category_id={ *category_id }/> }
+            html! { <BooksOfCategoryComponent category_id={ *category_id } /> }
         }
         Route::Category => html! { <CategoriesComponent /> },
-        Route::BooksOfTag { tag_id } => html! { <BooksOfTagComponent tag_id={ *tag_id }/>},
+        Route::BooksOfTag { tag_id } => html! { <BooksOfTagComponent tag_id={ *tag_id } />},
         Route::Tag => html! { <TagsComponent /> },
         Route::BooksOfPublisher { publisher_id } => {
-            html! { <BooksOfPublisherComponent publisher_id={ *publisher_id }/> }
+            html! { <BooksOfPublisherComponent publisher_id={ *publisher_id } /> }
         }
         Route::Publisher => html! { <PublishersComponent /> },
         Route::BooksOfSeries { series_id } => {
-            html! { <BooksOfSeriesComponent series_id={ *series_id }/> }
+            html! { <BooksOfSeriesComponent series_id={ *series_id } /> }
         }
         Route::Series => html! { <SeriesComponent /> },
         Route::BooksOfDiscover => html! { <BooksOfDiscoverComponent /> },
         Route::BooksOfFileFormat { format_id } => {
-            html! { <BooksOfFileFormatComponent format_id={ *format_id }/> }
+            html! { <BooksOfFileFormatComponent format_id={ *format_id } /> }
         }
         Route::FileFormat => html! { <FileFormatsComponent /> },
         Route::Rating => html! { <RatingsComponent /> },
 
-        Route::BooksOfUserTag { tag_id } => html! { <BooksOfUserTagComponent tag_id={ *tag_id }/> },
+        Route::BooksOfUserTag { tag_id } => {
+            html! { <BooksOfUserTagComponent tag_id={ *tag_id } /> }
+        }
         Route::UserTag => html! { <UserTagsComponent /> },
 
         Route::BooksOfDownloadHistory => html! { <BooksOfDownloadHistoryComponent /> },

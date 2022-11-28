@@ -7,8 +7,7 @@ use shared::books_query::GetBooksOrder;
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::history::{History, Location};
-use yew_router::hooks::use_history;
+use yew_router::hooks::{use_location, use_navigator};
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -19,8 +18,8 @@ use crate::views::util;
 
 #[function_component(BooksOfAdvancedSearchComponent)]
 pub fn books_of_advanced_search() -> Html {
-    let history = use_history().unwrap();
-    let location = history.location();
+    let navigator = use_navigator().unwrap();
+    let location = use_location().unwrap();
     let query = location.query::<AdvancedSearchQuery>().unwrap_or_default();
     let query_desc = query.desc();
     util::set_document_title(&format!("Advanced Search: {}", query_desc));
@@ -56,7 +55,7 @@ pub fn books_of_advanced_search() -> Html {
                 page: page_id,
                 ..query_clone.clone()
             };
-            let ret = history.push_with_query(Route::BooksOfAdvancedSearch, &new_query);
+            let ret = navigator.push_with_query(&Route::BooksOfAdvancedSearch, &new_query);
             debug_assert!(ret.is_ok());
         })
     };

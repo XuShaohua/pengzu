@@ -6,8 +6,7 @@ use shared::books_query::{GetBooksOrder, GetBooksQuery};
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::history::{History, Location};
-use yew_router::hooks::use_history;
+use yew_router::hooks::{use_location, use_navigator};
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -20,8 +19,8 @@ use crate::views::util;
 pub fn books() -> Html {
     util::set_document_title("Books");
 
-    let history = use_history().unwrap();
-    let location = history.location();
+    let navigator = use_navigator().unwrap();
+    let location = use_location().unwrap();
     let query = location.query::<GetBooksQuery>().unwrap_or_default();
     let book_list = {
         let query_clone = query.clone();
@@ -51,7 +50,7 @@ pub fn books() -> Html {
             page: page_id,
             ..query
         };
-        let ret = history.push_with_query(Route::Book, &new_query);
+        let ret = navigator.push_with_query(&Route::Book, &new_query);
         debug_assert!(ret.is_ok());
     });
 

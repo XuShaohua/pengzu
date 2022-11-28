@@ -33,7 +33,7 @@ pub fn login_page() -> Html {
     );
 
     let onsubmit = {
-        Callback::from(move |e: FocusEvent| {
+        Callback::from(move |e: SubmitEvent| {
             e.prevent_default();
             user_login.run();
         })
@@ -61,7 +61,7 @@ pub fn login_page() -> Html {
 
     html! {
         <div class="login-form">
-            <form {onsubmit}>
+            <form { onsubmit }>
                 <div class="form-item">
                     <label for="username">{ "Username" }</label>
                     <input name="username" type="text"

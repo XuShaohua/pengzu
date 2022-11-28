@@ -6,5 +6,5 @@ use frontend::app::AppComponent;
 
 fn main() {
     wasm_logger::init(wasm_logger::Config::default());
-    yew::start_app::<AppComponent>();
+    yew::Renderer::<AppComponent>::new().render();
 }

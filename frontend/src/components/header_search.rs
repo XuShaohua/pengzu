@@ -4,17 +4,16 @@
 
 use shared::simple_search::SimpleSearchQuery;
 use std::ops::Deref;
-use web_sys::{FocusEvent, HtmlInputElement};
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
-use yew_router::history::History;
-use yew_router::hooks::use_history;
+use yew_router::hooks::use_navigator;
 
 use crate::router::Route;
 
 #[function_component(HeaderSearchComponent)]
 pub fn header_search() -> Html {
     let input_ref = use_node_ref();
-    let history = use_history().expect("History object is invalid");
+    let navigator = use_navigator().expect("Navigator object is invalid");
     let query_state = use_state(String::new);
 
     use_effect_with_deps(
@@ -25,7 +24,7 @@ pub fn header_search() -> Html {
                     query,
                     ..Default::default()
                 };
-                let ret = history.push_with_query(Route::BooksOfSimpleSearch, &query_obj);
+                let ret = navigator.push_with_query(&Route::BooksOfSimpleSearch, &query_obj);
                 debug_assert!(ret.is_ok());
             }
             || ()
@@ -36,7 +35,7 @@ pub fn header_search() -> Html {
     let search_onsubmit = {
         let input_ref_clone = input_ref.clone();
         let query_state_clone = query_state.clone();
-        Callback::from(move |event: FocusEvent| {
+        Callback::from(move |event: SubmitEvent| {
             event.prevent_default();
             if let Some(input) = input_ref_clone.cast::<HtmlInputElement>() {
                 query_state_clone.set(input.value());

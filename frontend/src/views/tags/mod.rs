@@ -7,7 +7,7 @@ use shared::page::PageId;
 use shared::recursive_query::RecursiveQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::prelude::{use_history, History, Location};
+use yew_router::hooks::{use_location, use_navigator};
 
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
@@ -22,8 +22,8 @@ use tag_item::generate_tag_list;
 pub fn tags_page() -> Html {
     util::set_document_title("Tags");
 
-    let history = use_history().unwrap();
-    let location = history.location();
+    let navigator = use_navigator().unwrap();
+    let location = use_location().unwrap();
     let query = location.query::<RecursiveQuery>().unwrap_or_default();
     let tag_list = {
         let query_clone = query.clone();
@@ -55,7 +55,7 @@ pub fn tags_page() -> Html {
                 page: page_id,
                 ..query_clone
             };
-            let ret = history.push_with_query(Route::Tag, &new_query);
+            let ret = navigator.push_with_query(&Route::Tag, &new_query);
             debug_assert!(ret.is_ok());
         })
     };

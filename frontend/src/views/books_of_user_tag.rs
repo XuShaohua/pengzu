@@ -6,8 +6,7 @@ use shared::books_query::{GetBooksOrder, GetBooksQuery};
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::{use_async, use_async_with_options, UseAsyncOptions};
-use yew_router::history::{History, Location};
-use yew_router::hooks::{use_history, use_location};
+use yew_router::hooks::{use_location, use_navigator};
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -25,7 +24,7 @@ pub struct Props {
 pub fn books_of_user_tag(props: &Props) -> Html {
     util::set_document_title(&format!("User Tag: {}", props.tag_id));
 
-    let history = use_history().unwrap();
+    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<GetBooksQuery>().unwrap_or_default();
     let book_list = {
@@ -79,7 +78,7 @@ pub fn books_of_user_tag(props: &Props) -> Html {
                 page: page_id,
                 ..query_clone
             };
-            let ret = history.push_with_query(Route::BooksOfUserTag { tag_id }, &new_query);
+            let ret = navigator.push_with_query(&Route::BooksOfUserTag { tag_id }, &new_query);
             debug_assert!(ret.is_ok());
         })
     };

@@ -6,7 +6,7 @@ use shared::advanced_search::AdvancedSearchQuery;
 use stylist::Style;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
-use yew_router::prelude::{use_history, History};
+use yew_router::hooks::use_navigator;
 
 use crate::router::Route;
 use crate::views::util;
@@ -18,7 +18,7 @@ pub fn advanced_search() -> Html {
     let style_str = include_str!("advanced_search.css");
     let style_cls = Style::new(style_str).expect("Invalid style file advanced_search.css");
 
-    let history = use_history().expect("History object is invalid");
+    let navigator = use_navigator().unwrap();
     let title_input_ref = use_node_ref();
     let author_input_ref = use_node_ref();
     let publisher_input_ref = use_node_ref();
@@ -28,7 +28,7 @@ pub fn advanced_search() -> Html {
         let author_input_ref_clone = author_input_ref.clone();
         let publisher_input_ref_clone = publisher_input_ref.clone();
 
-        Callback::from(move |event: FocusEvent| {
+        Callback::from(move |event: SubmitEvent| {
             event.prevent_default();
 
             let mut query = AdvancedSearchQuery::default();
@@ -51,7 +51,7 @@ pub fn advanced_search() -> Html {
                 }
             }
 
-            let ret = history.push_with_query(Route::BooksOfAdvancedSearch, &query);
+            let ret = navigator.push_with_query(&Route::BooksOfAdvancedSearch, &query);
             debug_assert!(ret.is_ok());
         })
     };

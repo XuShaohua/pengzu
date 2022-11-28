@@ -7,7 +7,7 @@ use shared::books_query::GetBooksQuery;
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::prelude::{use_history, use_location, History, Location};
+use yew_router::prelude::{use_location, use_navigator};
 
 use crate::components::book_list::BookListComponent;
 use crate::components::pagination::PaginationComponent;
@@ -16,7 +16,7 @@ use crate::views::util;
 
 #[function_component(BooksOfDownloadHistoryComponent)]
 pub fn books_of_user_tag() -> Html {
-    let history = use_history().unwrap();
+    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<GetBooksQuery>().unwrap_or_default();
     let book_list = {
@@ -42,7 +42,7 @@ pub fn books_of_user_tag() -> Html {
                 page: page_id,
                 ..query
             };
-            let ret = history.push_with_query(Route::BooksOfDownloadHistory, &new_query);
+            let ret = navigator.push_with_query(&Route::BooksOfDownloadHistory, &new_query);
             debug_assert!(ret.is_ok());
         })
     };

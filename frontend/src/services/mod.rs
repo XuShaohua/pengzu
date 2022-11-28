@@ -2,6 +2,11 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+// fetch() related functions.
+#![allow(clippy::future_not_send)]
+// functions in each mod.
+#![allow(clippy::module_name_repetitions)]
+
 pub mod advanced_search;
 pub mod auth;
 pub mod authors;

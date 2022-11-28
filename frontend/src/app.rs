@@ -28,7 +28,7 @@ pub fn app() -> Html {
                     <div class="row-fluid">
                         <LeftPanelComponent />
                         <div class="content-area">
-                            <Switch<Route> render={Switch::render(switch_route)} />
+                            <Switch<Route> render={ switch_route } />
                         </div>
                     </div>
                 </div>

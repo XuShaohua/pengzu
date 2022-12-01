@@ -7,7 +7,7 @@ publish = false
 [dependencies]
 chrono = { version = "0.4.23", features = ["serde"] }
 gloo-storage = "0.2.2"
-gloo-utils = "0.1.5"
+gloo-utils = "0.1.6"
 log = "0.4.17"
 serde = { version = "1.0.148", features = ["serde_derive"] }
 serde_json = "1.0.89"

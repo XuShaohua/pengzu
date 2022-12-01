@@ -63,8 +63,19 @@ pub fn books_of_category(props: &Props) -> Html {
     );
 
     let book_filter_onchange = {
-        Callback::from(|order: GetBooksOrder| {
-            log::info!("new order: {:?}", order);
+        let query_clone = query.clone();
+        let navigator_clone = navigator.clone();
+        let category_id = props.category_id;
+        Callback::from(move |order: GetBooksOrder| {
+            util::scroll_to_top();
+
+            let new_query = GetBooksQuery {
+                order,
+                ..query_clone
+            };
+            let ret = navigator_clone
+                .push_with_query(&Route::BooksOfCategory { category_id }, &new_query);
+            debug_assert!(ret.is_ok());
         })
     };
 

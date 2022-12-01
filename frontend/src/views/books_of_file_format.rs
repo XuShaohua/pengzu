@@ -5,7 +5,7 @@
 use shared::books_query::{GetBooksOrder, GetBooksQuery};
 use shared::page::PageId;
 use yew::prelude::*;
-use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_hooks::{use_async, use_async_with_options, UseAsyncOptions};
 use yew_router::hooks::{use_location, use_navigator};
 
 use crate::components::book_filter::BookFilterComponent;
@@ -30,10 +30,7 @@ pub fn books_of_file_format(props: &Props) -> Html {
     let book_list = {
         let format_id = props.format_id;
         let query_clone = query.clone();
-        use_async_with_options(
-            async move { fetch_books_by_file_format(format_id, &query_clone).await },
-            UseAsyncOptions::enable_auto(),
-        )
+        use_async(async move { fetch_books_by_file_format(format_id, &query_clone).await })
     };
 
     let format_info = {
@@ -56,8 +53,19 @@ pub fn books_of_file_format(props: &Props) -> Html {
     );
 
     let book_filter_onchange = {
-        Callback::from(|order: GetBooksOrder| {
-            log::info!("new order: {:?}", order);
+        let query_clone = query.clone();
+        let navigator_clone = navigator.clone();
+        let format_id = props.format_id;
+        Callback::from(move |order: GetBooksOrder| {
+            util::scroll_to_top();
+
+            let new_query = GetBooksQuery {
+                order,
+                ..query_clone
+            };
+            let ret = navigator_clone
+                .push_with_query(&Route::BooksOfFileFormat { format_id }, &new_query);
+            debug_assert!(ret.is_ok());
         })
     };
 

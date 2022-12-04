@@ -4,13 +4,36 @@
 
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use std::fmt;
+use std::fmt::Formatter;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum UserRole {
     Nil = 0,
     User = 1,
     Admin = 2,
+}
+
+impl fmt::Debug for UserRole {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            Self::Nil => "Invalid User Role",
+            Self::User => "Normal User",
+            Self::Admin => "Administrator",
+        };
+        write!(f, "{}", s)
+    }
+}
+
+impl ToString for UserRole {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Nil => "Invalid User Role".to_owned(),
+            Self::User => "Normal User".to_owned(),
+            Self::Admin => "Administrator".to_owned(),
+        }
+    }
 }
 
 impl Default for UserRole {

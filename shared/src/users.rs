@@ -83,3 +83,12 @@ pub struct LoginForm {
     pub username: String,
     pub password: String,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NewUserReq {
+    pub name: String,
+    pub display_name: String,
+    pub email: String,
+    pub role: UserRole,
+    pub password: String,
+}

@@ -5,7 +5,7 @@
 use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
-use shared::users::{LoginForm, UserInfo, UserRole};
+use shared::users::{LoginForm, NewUserReq, UserInfo};
 
 use crate::error::{Error, ErrorKind};
 use crate::models::auth;
@@ -35,16 +35,6 @@ fn user_to_user_info(user: User) -> UserInfo {
         created: user.created,
         token: String::new(),
     }
-}
-
-// TODO(Shaohua): Replace String with &'a str.
-#[derive(Debug, Serialize, Deserialize)]
-pub struct NewUserReq {
-    pub name: String,
-    pub display_name: String,
-    pub email: String,
-    pub role: UserRole,
-    pub password: String,
 }
 
 #[derive(Debug, Deserialize, Insertable)]

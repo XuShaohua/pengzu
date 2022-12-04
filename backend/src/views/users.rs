@@ -4,12 +4,11 @@
 
 use actix_web::cookie::Cookie;
 use actix_web::{web, HttpRequest, HttpResponse};
-use shared::users::{LoginForm, UserInfo};
+use shared::users::{LoginForm, NewUserReq, UserInfo};
 
 use crate::db::DbPool;
 use crate::error::Error;
 use crate::models::users;
-use crate::models::users::NewUserReq;
 use crate::views::auth::{get_claims_from_auth, Claims, UserPermissions, TOKEN_NAME};
 
 pub async fn login(

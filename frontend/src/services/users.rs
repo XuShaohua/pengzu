@@ -40,6 +40,13 @@ pub async fn get_user_info() -> Result<UserInfo, FetchError> {
     request_get(url).await
 }
 
+/// Create a new user account.
+///
+/// # Errors
+/// Returns error if:
+/// - required field is missing
+/// - invalid user role
+/// - server error
 pub async fn add_user(query: &NewUserReq) -> Result<UserInfo, FetchError> {
     let url = "/api/users";
     request_post(url, query).await

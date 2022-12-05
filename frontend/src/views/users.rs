@@ -25,11 +25,11 @@ pub fn users_page() -> Html {
 
     let new_user_form = use_state(NewUserReq::default);
     let new_user_request = {
-        let new_user_form = new_user_form.clone();
+        let new_user_form_clone = new_user_form.clone();
         use_async(async move {
             // TODO(Shaohua): Clear form
             // TODO(Shaohua): Reload users list
-            add_user(&new_user_form).await
+            add_user(&new_user_form_clone).await
         })
     };
 
@@ -37,12 +37,11 @@ pub fn users_page() -> Html {
         let username_ref_clone = username_ref.clone();
         let email_ref_clone = email_ref.clone();
         let password_ref_clone = password_ref.clone();
-        let new_user_form_clone = new_user_form.clone();
 
         Callback::from(move |event: SubmitEvent| {
             event.prevent_default();
 
-            let mut form: NewUserReq = (*new_user_form_clone).clone();
+            let mut form: NewUserReq = (*new_user_form).clone();
             form.role = UserRole::User;
             if let Some(input) = username_ref_clone.cast::<HtmlInputElement>() {
                 let value = input.value();
@@ -66,7 +65,7 @@ pub fn users_page() -> Html {
                 }
             }
 
-            new_user_form_clone.set(form);
+            new_user_form.set(form);
             new_user_request.run();
         })
     };

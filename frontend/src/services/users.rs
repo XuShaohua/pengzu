@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use shared::users::{LoginForm, UserInfo};
+use shared::users::{LoginForm, NewUserReq, UserInfo};
 
 use crate::error::FetchError;
 use crate::services::fetch::{request_get, request_post};
@@ -38,4 +38,9 @@ pub async fn fetch_users() -> Result<Vec<UserInfo>, FetchError> {
 pub async fn get_user_info() -> Result<UserInfo, FetchError> {
     let url = "/api/user";
     request_get(url).await
+}
+
+pub async fn add_user(query: &NewUserReq) -> Result<UserInfo, FetchError> {
+    let url = "/api/users";
+    request_post(url, query).await
 }

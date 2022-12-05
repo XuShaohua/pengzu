@@ -84,7 +84,7 @@ pub struct LoginForm {
     pub password: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct NewUserReq {
     pub name: String,
     pub display_name: String,

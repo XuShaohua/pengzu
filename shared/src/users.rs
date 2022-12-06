@@ -19,10 +19,7 @@ impl UserRole {
     /// Check user role is valid.
     #[must_use]
     pub const fn is_valid(&self) -> bool {
-        match self {
-            Self::Admin | Self::User => true,
-            _ => false,
-        }
+        matches!(self, Self::Admin | Self::User)
     }
 }
 

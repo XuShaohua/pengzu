@@ -33,15 +33,20 @@ pub fn edit_metadata(props: &Props) -> Html {
             event.prevent_default();
             let mut query_form = (*query).clone();
 
+            let mut metadata_changed = false;
+
             if let Some(input) = edit_title_ref_clone.cast::<HtmlInputElement>() {
                 let value = input.value();
-                if !value.is_empty() {
+                if !value.is_empty() && value != query_form.title {
                     query_form.title = value;
+                    metadata_changed = true;
                 }
             }
 
-            query.set(query_form);
-            update_book_wrapper.run();
+            if metadata_changed {
+                query.set(query_form);
+                update_book_wrapper.run();
+            }
         })
     };
 

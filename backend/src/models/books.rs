@@ -191,6 +191,7 @@ pub fn update_book(
 
     diesel::update(books::table.find(book_id))
         .set(books::title.eq(query.title.as_str()))
+        // .set(books::last_modified.eq())
         .execute(conn)?;
     Ok(())
 }

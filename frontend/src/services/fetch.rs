@@ -47,6 +47,26 @@ where
     request("POST", url, body).await
 }
 
+/// Wrap fetch() api in browser, for PUT requests.
+///
+/// Response body is returned as string.
+///
+/// Request body is serialized json string.
+/// And content-type is set to `application/json`.
+///
+/// Note that response status code is not check currently.
+///
+/// # Errors
+///
+/// Returns error if failed to construct request or failed to read response body.
+pub async fn request_put<T, B>(url: &str, body: B) -> Result<T, FetchError>
+where
+    T: DeserializeOwned + std::fmt::Debug,
+    B: Serialize + std::fmt::Debug,
+{
+    request("PUT", url, body).await
+}
+
 async fn request<T, B>(method: &str, url: &str, body: B) -> Result<T, FetchError>
 where
     T: DeserializeOwned + std::fmt::Debug,

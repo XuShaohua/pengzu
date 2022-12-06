@@ -15,11 +15,15 @@ use crate::services::images::get_cover_image_url;
 use crate::views::util;
 use crate::views::util::to_readable_size;
 
+mod edit_metadata;
+use edit_metadata::EditMetadataComponent;
+
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
     pub book_id: i32,
 }
 
+// TODO(Shaohua): Replace with components
 fn generate_metadata_element(metadata: &BookMetadata) -> Html {
     let book = &metadata.book;
 
@@ -126,6 +130,9 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             <div class="book-tags">{ tags_element }</div>
             <div class="book-series">{ series_element }</div>
             <ul class="book-formats">{ formats_element }</ul>
+
+            <EditMetadataComponent book_id={ book.id } title={ book.title.clone() } />
+
         </div>
     }
 }

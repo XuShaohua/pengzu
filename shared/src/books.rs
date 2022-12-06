@@ -53,7 +53,7 @@ pub struct BookDetail {
     pub pubdate: NaiveDateTime,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct BookUpdateReq {
     pub id: i32,
     pub title: String,

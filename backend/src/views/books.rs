@@ -13,7 +13,6 @@ pub async fn add_book(
     pool: web::Data<DbPool>,
     new_book: web::Json<books::NewBook>,
 ) -> Result<HttpResponse, Error> {
-    // TODO(Shaohua): Check user role.
     web::block(move || {
         let mut conn = pool.get()?;
         books::add_book(&mut conn, &new_book)

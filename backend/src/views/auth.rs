@@ -132,8 +132,16 @@ pub async fn admin_auth_validator(
     // We just get permissions from JWT
     match Claims::decode(credentials.token()) {
         Ok(claims) => {
-            req.attach(vec![claims.permission()]);
-            Ok(req)
+            if claims.role() == UserRole::Admin {
+                req.attach(vec![claims.permission()]);
+                Ok(req)
+            } else {
+                let err = Error::from_string(
+                    ErrorKind::AuthFailed,
+                    format!("Invalid user role, {:?}", claims.role),
+                );
+                Err((actix_web::Error::from(err), req))
+            }
         }
         Err(err) => Err((err.into(), req)),
     }

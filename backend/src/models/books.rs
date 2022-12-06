@@ -189,9 +189,14 @@ pub fn update_book(
         return Err(Error::new(ErrorKind::RequestFormError, "Invalid book id"));
     }
 
+    let now = chrono::offset::Local::now();
+    let updated = NaiveDateTime::new(now.date_naive(), now.time());
+
     diesel::update(books::table.find(book_id))
-        .set(books::title.eq(query.title.as_str()))
-        // .set(books::last_modified.eq())
+        .set((
+            books::title.eq(query.title.as_str()),
+            books::last_modified.eq(updated),
+        ))
         .execute(conn)?;
     Ok(())
 }

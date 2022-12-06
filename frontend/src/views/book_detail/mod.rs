@@ -106,7 +106,6 @@ fn generate_publisher_element(publisher: &Option<Publisher>) -> Html {
     )
 }
 
-// TODO(Shaohua): Replace with components
 fn generate_metadata_element(metadata: &BookMetadata) -> Html {
     let book = &metadata.book;
 

@@ -2,7 +2,13 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+mod edit_metadata;
+mod navigation;
+
+use shared::authors::Author;
 use shared::books_meta::BookMetadata;
+use shared::files::FileWithPath;
+use shared::tags::Tag;
 use stylist::Style;
 use yew::prelude::*;
 use yew_hooks::prelude::{use_async_with_options, UseAsyncOptions};
@@ -14,23 +20,17 @@ use crate::services::files::get_file_format_url;
 use crate::services::images::get_cover_image_url;
 use crate::views::util;
 use crate::views::util::to_readable_size;
-
-mod edit_metadata;
-mod navigation;
 use edit_metadata::EditMetadataComponent;
 use navigation::NavigationComponent;
+use shared::publishers::Publisher;
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
     pub book_id: i32,
 }
 
-// TODO(Shaohua): Replace with components
-fn generate_metadata_element(metadata: &BookMetadata) -> Html {
-    let book = &metadata.book;
-
-    let authors = &metadata.authors;
-    let authors_element = authors
+fn generate_author_element(authors: &[Author]) -> Html {
+    authors
         .iter()
         .enumerate()
         .map(|(index, author)| {
@@ -49,33 +49,11 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
                 </>
             }
         })
-        .collect::<Html>();
+        .collect::<Html>()
+}
 
-    let publisher_element = metadata.publisher.as_ref().map_or_else(
-        || html! {<></>},
-        |publisher| {
-            html! {
-                <span>
-                    { "Publisher: " }
-                    <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id }}>
-                        { &publisher.name }
-                    </Link<Route>>
-                </span>
-            }
-        },
-    );
-
-    let published_date_element = book.pubdate.as_ref().map_or_else(
-        || html! {},
-        |pubdate| {
-            html! {
-                <span>{ format!("Published At: {:?}", pubdate) }</span>
-            }
-        },
-    );
-
-    let tags = &metadata.tags;
-    let tags_element = tags
+fn generate_tags_element(tags: &[Tag]) -> Html {
+    tags
         .iter()
         .enumerate()
         .map(|(index, tag)| {
@@ -91,16 +69,11 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
                 </span>
             }
         })
-        .collect::<Html>();
+        .collect::<Html>()
+}
 
-    let series_element = metadata.series.as_ref().map_or_else(|| html!{},
-        |series|
-        html! {
-            <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>{ &series.name }</Link<Route>>
-        });
-
-    let formats_element = metadata
-        .files
+fn generate_formats_element(files: &[FileWithPath]) -> Html {
+    files
         .iter()
         .map(|file| {
             let url = get_file_format_url(file);
@@ -114,7 +87,48 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
                 </li>
             }
         })
-        .collect::<Html>();
+        .collect::<Html>()
+}
+
+fn generate_publisher_element(publisher: &Option<Publisher>) -> Html {
+    publisher.as_ref().map_or_else(
+        || html! {<></>},
+        |publisher| {
+            html! {
+                <span>
+                    { "Publisher: " }
+                    <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id }}>
+                        { &publisher.name }
+                    </Link<Route>>
+                </span>
+            }
+        },
+    )
+}
+
+// TODO(Shaohua): Replace with components
+fn generate_metadata_element(metadata: &BookMetadata) -> Html {
+    let book = &metadata.book;
+
+    let authors_element = generate_author_element(&metadata.authors);
+    let publisher_element = generate_publisher_element(&metadata.publisher);
+    let tags_element = generate_tags_element(&metadata.tags);
+    let formats_element = generate_formats_element(&metadata.files);
+
+    let published_date_element = book.pubdate.as_ref().map_or_else(
+        || html! {},
+        |pubdate| {
+            html! {
+                <span>{ format!("Published At: {:?}", pubdate) }</span>
+            }
+        },
+    );
+
+    let series_element = metadata.series.as_ref().map_or_else(|| html!{},
+        |series|
+        html! {
+            <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>{ &series.name }</Link<Route>>
+        });
 
     let style_str = include_str!("book_detail.css");
     let style_cls = Style::new(style_str).expect("Invalid style file book_detail.css");

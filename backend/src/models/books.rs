@@ -5,11 +5,13 @@
 use chrono::NaiveDateTime;
 use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
 use serde::{Deserialize, Serialize};
-use shared::books::{AuthorAndBookId, BookAndAuthors, BookAndAuthorsList, BookWithCover};
+use shared::books::{
+    AuthorAndBookId, BookAndAuthors, BookAndAuthorsList, BookUpdateReq, BookWithCover,
+};
 use shared::books_query::GetBooksQuery;
 use shared::page::{Page, BOOKS_EACH_PAGE};
 
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
 use crate::models::authors::get_authors_by_book_id;
 use crate::models::books_query::sort_books_by_column;
 use crate::models::file_data;
@@ -168,4 +170,27 @@ pub fn book_list_to_book_authors(
         },
         list,
     })
+}
+
+pub fn update_book(
+    conn: &mut PgConnection,
+    book_id: i32,
+    query: &BookUpdateReq,
+) -> Result<(), Error> {
+    if query.title.is_empty() {
+        log::warn!("Book title is empty");
+        return Err(Error::new(
+            ErrorKind::RequestFormError,
+            "Invalid book title",
+        ));
+    }
+    if book_id != query.id {
+        log::warn!("Book id not match, expected {}, got {}", book_id, query.id);
+        return Err(Error::new(ErrorKind::RequestFormError, "Invalid book id"));
+    }
+
+    diesel::update(books::table.find(book_id))
+        .set(books::title.eq(query.title.as_str()))
+        .execute(conn)?;
+    Ok(())
 }

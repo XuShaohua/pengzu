@@ -93,7 +93,7 @@ impl Claims {
             Ok(token_data.claims)
         } else {
             Err(Error::from_string(
-                ErrorKind::AuthFailed,
+                ErrorKind::InvalidToken,
                 format!("Invalid user role: {:?}", token_data.claims.role),
             ))
         }

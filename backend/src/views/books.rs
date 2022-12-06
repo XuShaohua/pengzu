@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 use actix_web::{web, HttpResponse};
+use shared::books::BookUpdateReq;
 use shared::books_query::GetBooksQuery;
 
 use crate::db::DbPool;
@@ -48,8 +49,15 @@ pub async fn get_book_detail(
 }
 
 pub async fn update_book(
-    _pool: web::Data<DbPool>,
-    _book_id: web::Path<i32>,
+    pool: web::Data<DbPool>,
+    book_id: web::Path<i32>,
+    req: web::Json<BookUpdateReq>,
 ) -> Result<HttpResponse, Error> {
-    todo!()
+    web::block(move || {
+        let mut conn = pool.get()?;
+        books::update_book(&mut conn, book_id.into_inner(), &req)
+    })
+    .await??;
+
+    Ok(HttpResponse::Ok().finish())
 }

@@ -31,6 +31,9 @@ pub enum ErrorKind {
     MongoDbError,
     MongoDbValueAccessError,
     HttpError,
+
+    // Invalid form request.
+    RequestFormError,
 }
 
 unsafe impl Send for ErrorKind {}
@@ -207,6 +210,7 @@ impl actix_web::error::ResponseError for Error {
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError
             | ErrorKind::InvalidToken
+            | ErrorKind::RequestFormError
             | ErrorKind::IoError => StatusCode::BAD_REQUEST,
             ErrorKind::DbNotFoundError => StatusCode::NOT_FOUND,
             ErrorKind::JwtError | ErrorKind::AuthFailed => StatusCode::UNAUTHORIZED,

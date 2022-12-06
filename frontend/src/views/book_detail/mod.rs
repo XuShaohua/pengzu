@@ -16,7 +16,9 @@ use crate::views::util;
 use crate::views::util::to_readable_size;
 
 mod edit_metadata;
+mod navigation;
 use edit_metadata::EditMetadataComponent;
+use navigation::NavigationComponent;
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -120,6 +122,7 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
 
     html! {
         <div class={ style_cls }>
+
             <h2>{ &metadata.book.title }</h2>
             <div class="book-cover">
                 <img class="detail-cover" src={ cover_url } alt={ book.title.clone() } />
@@ -131,8 +134,9 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             <div class="book-series">{ series_element }</div>
             <ul class="book-formats">{ formats_element }</ul>
 
-            <EditMetadataComponent book_id={ book.id } title={ book.title.clone() } />
+            <NavigationComponent previous_book={ metadata.previous_book } next_book={ metadata.next_book } />
 
+            <EditMetadataComponent book_id={ book.id } title={ book.title.clone() } />
         </div>
     }
 }

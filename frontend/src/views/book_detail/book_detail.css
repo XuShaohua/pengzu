@@ -1,4 +1,21 @@
 
+.button-group {
+}
+
+.previous-button {
+    position: relative;
+    float: left;
+}
+
+.next-button {
+    position: relative;
+    float: right;
+}
+
+h2 {
+    clear: both;
+}
+
 .book-cover {
     height: 225px;
     position: relative;

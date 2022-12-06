@@ -4,8 +4,9 @@
 
 use actix_web::cookie::time::OffsetDateTime;
 use actix_web::dev::ServiceRequest;
+use actix_web::guard::{Guard, GuardContext};
 use actix_web::HttpRequest;
-use actix_web_grants::permissions::AttachPermissions;
+use actix_web_grants::permissions::{AttachPermissions, AuthDetails};
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
@@ -92,6 +93,7 @@ impl Claims {
         if token_data.claims.role.is_valid() {
             Ok(token_data.claims)
         } else {
+            log::warn!("Invalid use role: {:?}", token_data.claims.role);
             Err(Error::from_string(
                 ErrorKind::InvalidToken,
                 format!("Invalid user role: {:?}", token_data.claims.role),
@@ -125,28 +127,27 @@ pub async fn auth_validator(
     }
 }
 
-pub async fn admin_auth_validator(
-    req: ServiceRequest,
-    credentials: BearerAuth,
-) -> Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
-    // We just get permissions from JWT
-    match Claims::decode(credentials.token()) {
-        Ok(claims) => {
-            if claims.role() == UserRole::Admin {
-                req.attach(vec![claims.permission()]);
-                Ok(req)
-            } else {
-                let err = Error::from_string(
-                    ErrorKind::AuthFailed,
-                    format!("Invalid user role, {:?}", claims.role),
-                );
-                Err((actix_web::Error::from(err), req))
-            }
-        }
-        Err(err) => Err((err.into(), req)),
+pub struct UserRoleGuard(UserRole);
+
+impl Guard for UserRoleGuard {
+    fn check(&self, ctx: &GuardContext<'_>) -> bool {
+        ctx.req_data()
+            .get::<AuthDetails<UserPermissions>>()
+            .map_or(false, |user_perm| {
+                user_perm
+                    .permissions
+                    .iter()
+                    .any(|perm| perm.role == UserRole::Admin)
+            })
     }
 }
 
+/// Check whether user role in token is admin.
+pub fn admin_guard() -> impl Guard {
+    UserRoleGuard(UserRole::Admin)
+}
+
+// TODO(Shaohua): Replace with extractor.
 pub fn get_claims_from_auth(req: &HttpRequest) -> Result<Claims, Error> {
     let header = req.headers().get("Authorization").unwrap();
     let invalid_token_error = Error::from_string(

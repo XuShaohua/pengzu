@@ -7,7 +7,7 @@ use actix_web_httpauth::middleware::HttpAuthentication;
 
 use crate::db;
 use crate::error::Error;
-use crate::views::auth::{admin_auth_validator, auth_validator};
+use crate::views::auth::{admin_guard, auth_validator};
 use crate::views::{
     advanced_search, authors, books, categories, comments, discover, download_history,
     file_formats, files, images, publishers, ratings, series, simple_search, tags, user_tags,
@@ -20,19 +20,14 @@ const APPLICATION_JSON: &str = "application/json";
 #[allow(clippy::too_many_lines)]
 fn scoped_config(cfg: &mut web::ServiceConfig) {
     let auth = HttpAuthentication::bearer(auth_validator);
-    let admin_auth = HttpAuthentication::bearer(admin_auth_validator);
 
     cfg
         // For /api/author
         .service(
             web::resource("/author")
                 .wrap(auth.clone())
-                .route(web::get().to(authors::get_authors)),
-        )
-        .service(
-            web::resource("/author")
-                .wrap(admin_auth.clone())
-                .route(web::post().to(authors::add_author)),
+                .route(web::get().to(authors::get_authors))
+                .route(web::post().guard(admin_guard()).to(authors::add_author)),
         )
         .service(
             web::resource("/author/{author_id}")
@@ -48,22 +43,14 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/book")
                 .wrap(auth.clone())
-                .route(web::get().to(books::get_books)),
-        )
-        .service(
-            web::resource("/book")
-                .wrap(admin_auth.clone())
-                .route(web::post().to(books::add_book)),
+                .route(web::get().to(books::get_books))
+                .route(web::post().guard(admin_guard()).to(books::add_book)),
         )
         .service(
             web::resource("/book/{book_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(books::get_book_detail)),
-        )
-        .service(
-            web::resource("/book/{book_id}")
-                .wrap(admin_auth.clone())
-                .route(web::put().to(books::update_book)),
+                .route(web::get().to(books::get_book_detail))
+                .route(web::put().guard(admin_guard()).to(books::update_book)),
         )
         // For /api/categories
         .service(
@@ -84,8 +71,8 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         // For /api/comment
         .service(
             web::resource("/comment")
-                .wrap(admin_auth.clone())
-                .route(web::post().to(comments::add_comment)),
+                .wrap(auth.clone())
+                .route(web::post().guard(admin_guard()).to(comments::add_comment)),
         )
         .service(
             web::resource("/comment/{book_id}")
@@ -94,9 +81,12 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         )
         .service(
             web::resource("/comment/{book_id}")
-                .wrap(admin_auth.clone())
-                .route(web::put().to(comments::update_comment))
-                .route(web::delete().to(comments::delete_comment)),
+                .route(web::put().guard(admin_guard()).to(comments::update_comment))
+                .route(
+                    web::delete()
+                        .guard(admin_guard())
+                        .to(comments::delete_comment),
+                ),
         )
         // For /api/discover
         .service(
@@ -135,12 +125,12 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/publisher")
                 .wrap(auth.clone())
-                .route(web::get().to(publishers::get_publishers)),
-        )
-        .service(
-            web::resource("/publisher")
-                .wrap(admin_auth.clone())
-                .route(web::post().to(publishers::add_publisher)),
+                .route(web::get().to(publishers::get_publishers))
+                .route(
+                    web::post()
+                        .guard(admin_guard())
+                        .to(publishers::add_publisher),
+                ),
         )
         .service(
             web::resource("/publisher/{publisher_id}")
@@ -155,30 +145,26 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         // For /api/rating
         .service(
             web::resource("/rating")
-                .wrap(admin_auth.clone())
-                .route(web::post().to(ratings::add_rating)),
+                .wrap(auth.clone())
+                .route(web::post().guard(admin_guard()).to(ratings::add_rating)),
         )
         .service(
             web::resource("/rating/{book_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(ratings::get_ratings)),
-        )
-        .service(
-            web::resource("/rating/{book_id}")
-                .wrap(admin_auth.clone())
-                .route(web::put().to(ratings::update_rating))
-                .route(web::delete().to(ratings::delete_rating)),
+                .route(web::get().to(ratings::get_ratings))
+                .route(web::put().guard(admin_guard()).to(ratings::update_rating))
+                .route(
+                    web::delete()
+                        .guard(admin_guard())
+                        .to(ratings::delete_rating),
+                ),
         )
         // For /api/series
         .service(
             web::resource("/series")
                 .wrap(auth.clone())
-                .route(web::get().to(series::get_series_list)),
-        )
-        .service(
-            web::resource("/series")
-                .wrap(admin_auth.clone())
-                .route(web::post().to(series::add_series)),
+                .route(web::get().to(series::get_series_list))
+                .route(web::post().guard(admin_guard()).to(series::add_series)),
         )
         .service(
             web::resource("/series/{series_id}")
@@ -194,12 +180,8 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/tag")
                 .wrap(auth.clone())
-                .route(web::get().to(tags::get_tags)),
-        )
-        .service(
-            web::resource("/tag")
-                .wrap(admin_auth.clone())
-                .route(web::post().to(tags::add_tag)),
+                .route(web::get().to(tags::get_tags))
+                .route(web::post().guard(admin_guard()).to(tags::add_tag)),
         )
         .service(
             web::resource("/tag/{tag_id}")
@@ -209,19 +191,15 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/tag/books/{tag_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(tags::get_books_by_tag)),
-        )
-        .service(
-            web::resource("/tag/{tag_id}")
-                .wrap(admin_auth.clone())
-                .route(web::put().to(tags::update_tag)),
+                .route(web::get().to(tags::get_books_by_tag))
+                .route(web::put().guard(admin_guard()).to(tags::update_tag)),
         )
         // For /api/user-tag
         .service(
             web::resource("/user-tag")
                 .wrap(auth.clone())
                 .route(web::get().to(user_tags::get_tags))
-                .route(web::post().to(user_tags::add_tag)),
+                .route(web::post().guard(admin_guard()).to(user_tags::add_tag)),
         )
         .service(
             web::resource("/user-tag/{tag_id}")
@@ -249,20 +227,20 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .route("/user/login", web::post().to(users::login))
         .service(
             web::resource("/user")
-                .wrap(auth)
+                .wrap(auth.clone())
                 .route(web::get().to(users::get_user_info)),
         )
         // For /api/users
         .service(
             web::resource("/users")
-                .wrap(admin_auth.clone())
-                .route(web::get().to(users::get_users))
-                .route(web::post().to(users::add_user)),
+                .wrap(auth.clone())
+                .route(web::get().guard(admin_guard()).to(users::get_users))
+                .route(web::post().guard(admin_guard()).to(users::add_user)),
         )
         .service(
             web::resource("/users/{user_id}")
-                .wrap(admin_auth)
-                .route(web::delete().to(users::delete_user)),
+                .wrap(auth)
+                .route(web::delete().guard(admin_guard()).to(users::delete_user)),
         );
 }
 

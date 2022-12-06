@@ -6,7 +6,7 @@ use diesel::PgConnection;
 use shared::books_meta::BookMetadata;
 
 use crate::error::{Error, ErrorKind};
-use crate::models::books::get_book_by_id;
+use crate::models::books::{get_book_by_id, get_next_book, get_previous_book};
 use crate::models::books_authors::get_authors_by_book;
 use crate::models::books_languages::get_language_by_book;
 use crate::models::books_publishers::get_publisher_by_book;
@@ -15,6 +15,7 @@ use crate::models::books_tags::get_tags_by_book;
 use crate::models::files::get_book_files_and_formats;
 use crate::models::ratings::get_rating;
 
+// TODO(Shaohua): Replace subquery with a meta table in postgres.
 pub fn get_book_metadata(conn: &mut PgConnection, book_id: i32) -> Result<BookMetadata, Error> {
     let book = get_book_by_id(conn, book_id)?;
     let authors = get_authors_by_book(conn, book_id)?;
@@ -30,6 +31,8 @@ pub fn get_book_metadata(conn: &mut PgConnection, book_id: i32) -> Result<BookMe
         },
     };
     let lang = get_language_by_book(conn, book_id)?;
+    let previous_book = get_previous_book(conn, book_id).ok();
+    let next_book = get_next_book(conn, book_id).ok();
 
     Ok(BookMetadata {
         book,
@@ -40,5 +43,7 @@ pub fn get_book_metadata(conn: &mut PgConnection, book_id: i32) -> Result<BookMe
         series,
         lang,
         rating,
+        previous_book,
+        next_book,
     })
 }

@@ -15,9 +15,7 @@ use crate::ratings::Rating;
 use crate::series::Series;
 use crate::tags::Tag;
 
-// TODO(Shaohua): Replace subquery with a meta table in postgres.
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "diesel", derive(Queryable))]
 pub struct BookMetadata {
     pub book: BookWithCover,
@@ -28,4 +26,6 @@ pub struct BookMetadata {
     pub series: Option<Series>,
     pub lang: Option<Language>,
     pub rating: Option<Rating>,
+    pub previous_book: Option<i32>,
+    pub next_book: Option<i32>,
 }

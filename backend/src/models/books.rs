@@ -195,3 +195,21 @@ pub fn update_book(
         .execute(conn)?;
     Ok(())
 }
+
+pub fn get_previous_book(conn: &mut PgConnection, book_id: i32) -> Result<i32, Error> {
+    let previous_id = books::table
+        .filter(books::id.lt(book_id))
+        .order_by(books::id.desc())
+        .select(books::id)
+        .first::<i32>(conn)?;
+    Ok(previous_id)
+}
+
+pub fn get_next_book(conn: &mut PgConnection, book_id: i32) -> Result<i32, Error> {
+    let next_id = books::table
+        .filter(books::id.gt(book_id))
+        .order_by(books::id.asc())
+        .select(books::id)
+        .first::<i32>(conn)?;
+    Ok(next_id)
+}

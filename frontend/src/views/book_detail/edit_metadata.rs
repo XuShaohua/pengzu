@@ -24,6 +24,7 @@ pub fn edit_metadata(props: &Props) -> Html {
     });
     let update_book_wrapper = {
         let query_clone = query.clone();
+        // TODO(Shaohua): Show response status.
         use_async(async move { update_book(&query_clone).await })
     };
 

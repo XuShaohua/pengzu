@@ -17,7 +17,7 @@ pub struct AuthorAndBookId {
     pub book: i32,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "diesel", derive(Queryable))]
 pub struct BookWithCover {
     pub id: i32,

@@ -89,7 +89,14 @@ impl Claims {
             &Validation::default(),
         )?;
 
-        Ok(token_data.claims)
+        if token_data.claims.role.is_valid() {
+            Ok(token_data.claims)
+        } else {
+            Err(Error::from_string(
+                ErrorKind::AuthFailed,
+                format!("Invalid user role: {:?}", token_data.claims.role),
+            ))
+        }
     }
 
     pub fn encode(&self) -> Result<String, Error> {
@@ -105,6 +112,20 @@ impl Claims {
 }
 
 pub async fn auth_validator(
+    req: ServiceRequest,
+    credentials: BearerAuth,
+) -> Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
+    // We just get permissions from JWT
+    match Claims::decode(credentials.token()) {
+        Ok(claims) => {
+            req.attach(vec![claims.permission()]);
+            Ok(req)
+        }
+        Err(err) => Err((err.into(), req)),
+    }
+}
+
+pub async fn admin_auth_validator(
     req: ServiceRequest,
     credentials: BearerAuth,
 ) -> Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {

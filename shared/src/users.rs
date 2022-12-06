@@ -15,6 +15,17 @@ pub enum UserRole {
     Admin = 2,
 }
 
+impl UserRole {
+    /// Check user role is valid.
+    #[must_use]
+    pub const fn is_valid(&self) -> bool {
+        match self {
+            Self::Admin | Self::User => true,
+            _ => false,
+        }
+    }
+}
+
 impl fmt::Debug for UserRole {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let s = match self {

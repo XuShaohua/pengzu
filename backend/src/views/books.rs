@@ -13,6 +13,7 @@ pub async fn add_book(
     pool: web::Data<DbPool>,
     new_book: web::Json<books::NewBook>,
 ) -> Result<HttpResponse, Error> {
+    // TODO(Shaohua): Check user role.
     web::block(move || {
         let mut conn = pool.get()?;
         books::add_book(&mut conn, &new_book)
@@ -45,4 +46,11 @@ pub async fn get_book_detail(
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp_book))
+}
+
+pub async fn update_book(
+    _pool: web::Data<DbPool>,
+    _book_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    todo!()
 }

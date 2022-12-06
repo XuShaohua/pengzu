@@ -48,7 +48,8 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         .service(
             web::resource("/book/{book_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(books::get_book_detail)),
+                .route(web::get().to(books::get_book_detail))
+                .route(web::put().to(books::update_book)),
         )
         // For /api/categories
         .service(

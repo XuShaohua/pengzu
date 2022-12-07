@@ -41,13 +41,14 @@ pub fn books_of_simple_search() -> Html {
         );
     }
 
-    let book_filter_onchange = {
+    // TODO(Shaohua): Support oder
+    let on_book_filter_change = {
         Callback::from(|order: GetBooksOrder| {
             log::info!("new order: {:?}", order);
         })
     };
 
-    let pagination_onclick = {
+    let on_pagination_click = {
         let query_clone = query.clone();
         Callback::from(move |page_id: PageId| {
             util::scroll_to_top();
@@ -71,11 +72,11 @@ pub fn books_of_simple_search() -> Html {
             html! {
                 <>
                 <h2>{ book_list.page.total }{ " Results for \""}{ &keyword }{"\""}</h2>
-                <BookFilterComponent onchange={ book_filter_onchange } current_order={ query.order } />
+                <BookFilterComponent onchange={ on_book_filter_change } current_order={ query.order } />
                 <BookListComponent books={ book_list.list.clone() } />
                 <PaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }
-                    onclick={ pagination_onclick } />
+                    onclick={ on_pagination_click } />
                 </>
             }
         },

@@ -62,7 +62,7 @@ pub fn books_of_publisher(props: &Props) -> Html {
         },
     );
 
-    let book_filter_onchange = {
+    let on_book_filter_change = {
         let query_clone = query.clone();
         let navigator_clone = navigator.clone();
         let publisher_id = props.publisher_id;
@@ -79,7 +79,7 @@ pub fn books_of_publisher(props: &Props) -> Html {
         })
     };
 
-    let pagination_onclick = {
+    let on_pagination_click = {
         let publisher_id = props.publisher_id;
         Callback::from(move |page_id: PageId| {
             util::scroll_to_top();
@@ -100,11 +100,11 @@ pub fn books_of_publisher(props: &Props) -> Html {
             html! {
                 <>
                 { title_element }
-                <BookFilterComponent onchange={ book_filter_onchange } current_order={ query.order } />
+                <BookFilterComponent onchange={ on_book_filter_change } current_order={ query.order } />
                 <BookListComponent books={ book_list.list.clone() } />
                 <PaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }
-                    onclick={ pagination_onclick } />
+                    onclick={ on_pagination_click } />
                 </>
             }
         },

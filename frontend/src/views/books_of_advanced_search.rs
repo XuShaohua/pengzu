@@ -46,7 +46,7 @@ pub fn books_of_advanced_search() -> Html {
         })
     };
 
-    let pagination_onclick = {
+    let on_pagination_click = {
         let query_clone = query.clone();
         Callback::from(move |page_id: PageId| {
             util::scroll_to_top();
@@ -74,7 +74,7 @@ pub fn books_of_advanced_search() -> Html {
                 <BookListComponent books={ book_list.list.clone() } />
                 <PaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }
-                    onclick={ pagination_onclick } />
+                    onclick={ on_pagination_click } />
                 </>
             }
         },

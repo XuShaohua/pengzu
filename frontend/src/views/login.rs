@@ -32,14 +32,14 @@ pub fn login_page() -> Html {
         user_login.clone(),
     );
 
-    let onsubmit = {
+    let on_form_submit = {
         Callback::from(move |e: SubmitEvent| {
             e.prevent_default();
             user_login.run();
         })
     };
 
-    let oninput_username = {
+    let on_input_username = {
         let login_form = login_form.clone();
         Callback::from(move |e: InputEvent| {
             let input: HtmlInputElement = e.target_unchecked_into();
@@ -49,7 +49,7 @@ pub fn login_page() -> Html {
         })
     };
 
-    let oninput_password = {
+    let on_input_password = {
         let login_form = login_form.clone();
         Callback::from(move |e: InputEvent| {
             let input: HtmlInputElement = e.target_unchecked_into();
@@ -61,17 +61,17 @@ pub fn login_page() -> Html {
 
     html! {
         <div class="login-form">
-            <form { onsubmit }>
+            <form onsubmit={ on_form_submit }>
                 <div class="form-item">
                     <label for="username">{ "Username" }</label>
                     <input name="username" type="text"
-                        oninput={ oninput_username }
+                        oninput={ on_input_username }
                         value={ login_form.username.clone() } />
                 </div>
                 <div class="form-item">
                     <label for="password">{ "Password" }</label>
                     <input name="password" type="password"
-                        oninput={ oninput_password }
+                        oninput={ on_input_password }
                         value={ login_form.password.clone() } />
                 </div>
                 <button>{ "Login" }</button>

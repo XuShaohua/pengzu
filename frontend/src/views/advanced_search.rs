@@ -23,7 +23,7 @@ pub fn advanced_search() -> Html {
     let author_input_ref = use_node_ref();
     let publisher_input_ref = use_node_ref();
 
-    let search_onsubmit = {
+    let on_search_submit = {
         let title_input_ref_clone = title_input_ref.clone();
         let author_input_ref_clone = author_input_ref.clone();
         let publisher_input_ref_clone = publisher_input_ref.clone();
@@ -57,7 +57,7 @@ pub fn advanced_search() -> Html {
     };
 
     html! {
-        <form class={ style_cls } onsubmit={ search_onsubmit }>
+        <form class={ style_cls } onsubmit={ on_search_submit }>
         <div class="form-group">
             <label for="book_title">{ "Book Title" }</label>
             <input id="book_title"

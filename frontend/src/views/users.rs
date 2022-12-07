@@ -33,7 +33,7 @@ pub fn users_page() -> Html {
         })
     };
 
-    let form_onsubmit = {
+    let on_form_submit = {
         let username_ref_clone = username_ref.clone();
         let email_ref_clone = email_ref.clone();
         let password_ref_clone = password_ref.clone();
@@ -84,7 +84,7 @@ pub fn users_page() -> Html {
                 })}
                 </ul>
 
-                <form onsubmit={ form_onsubmit }>
+                <form onsubmit={ on_form_submit }>
                     <div>
                     <label for="new-username" class="form-label">{ "Username" }</label>
                     <input id="new-username" class="form-control"

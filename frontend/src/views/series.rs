@@ -43,7 +43,7 @@ pub fn series_page() -> Html {
         })
     };
 
-    let pagination_onclick = {
+    let on_pagination_click = {
         let query_clone = query.clone();
         Callback::from(move |page_id: PageId| {
             util::scroll_to_top();
@@ -77,7 +77,7 @@ pub fn series_page() -> Html {
                 </ul>
                 <PaginationComponent  current_page={ series_list.page.page_num }
                     total_pages={ series_list.page.total_pages() }
-                    onclick={ pagination_onclick } />
+                    onclick={ on_pagination_click } />
                 </>
             }
         },

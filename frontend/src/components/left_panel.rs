@@ -17,46 +17,46 @@ pub fn left_panel() -> Html {
         <div class={ style_cls }>
             <ul>
                 <li><Link<Route> to={ Route::Home }>
-                    <span class="glyphicon glyphicon-book" />
+                    <i class="bi bi-book"></i>
                     { "Books" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::Author }>
-                    <span class="glyphicon glyphicon-user" />
+                    <i class="bi bi-people"></i>
                     { "Authors" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::Category }>
-                    <span class="glyphicon glyphicon-inbox" />
+                    <i class="bi bi-inbox"></i>
                     { "Categories" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::Tag }>
-                    <span class="glyphicon glyphicon-tags" />
+                    <i class="bi bi-tags"></i>
                     { "Tags" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::Publisher }>
-                    <span class="glyphicon glyphicon-text-size" />
+                    <i class="bi bi-file-font"></i>
                     { "Publishers" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::Series }>
-                    <span class="glyphicon glyphicon-th" />
+                    <i class="bi bi-grid-3x3-gap"></i>
                     { "Series" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::BooksOfDiscover }>
-                    <span class="glyphicon glyphicon-random" />
+                    <i class="bi bi-shuffle"></i>
                     { "Discover" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::FileFormat }>
-                    <span class="glyphicon glyphicon-file" />
+                    <i class="bi bi-file-earmark"></i>
                     { "File Formats" }
                 </Link<Route>></li>
             </ul>
             <br />
             <ul>
                 <li><Link<Route> to={ Route::UserTag }>
-                    <span class="glyphicon glyphicon-tag" />
+                    <i class="bi bi-tags"></i>
                     { "My Tags" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::BooksOfDownloadHistory }>
-                    <span class="glyphicon glyphicon-download" />
+                    <i class="bi bi-download"></i>
                     { "My Downloads" }
                 </Link<Route>></li>
             </ul>

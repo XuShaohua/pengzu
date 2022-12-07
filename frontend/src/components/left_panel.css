@@ -5,11 +5,11 @@
     float: left;
     position: relative;
     padding-right: 15px;
-    padding-left: 15px;
+    padding-left: 5px;
     min-height: 1px;
 }
 
-span {
+i.bi {
     margin-right: 10px;
 }
 

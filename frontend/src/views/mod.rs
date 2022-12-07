@@ -22,7 +22,6 @@ pub mod file_formats;
 pub mod login;
 pub mod logout;
 pub mod publishers;
-pub mod ratings;
 pub mod series;
 pub mod tags;
 pub mod user_info;

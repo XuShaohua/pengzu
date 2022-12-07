@@ -26,7 +26,6 @@ use crate::views::file_formats::FileFormatsComponent;
 use crate::views::login::LoginComponent;
 use crate::views::logout::LogoutComponent;
 use crate::views::publishers::PublishersComponent;
-use crate::views::ratings::RatingsComponent;
 use crate::views::series::SeriesComponent;
 use crate::views::tags::TagsComponent;
 use crate::views::user_info::UserInfoComponent;
@@ -67,8 +66,6 @@ pub enum Route {
     BooksOfFileFormat { format_id: i32 },
     #[at("/format")]
     FileFormat,
-    #[at("/rating")]
-    Rating,
 
     #[at("/user-tag/books/:tag_id")]
     BooksOfUserTag { tag_id: i32 },
@@ -129,7 +126,6 @@ pub fn switch_route(routes: Route) -> Html {
             html! { <BooksOfFileFormatComponent format_id={ *format_id } /> }
         }
         Route::FileFormat => html! { <FileFormatsComponent /> },
-        Route::Rating => html! { <RatingsComponent /> },
 
         Route::BooksOfUserTag { tag_id } => {
             html! { <BooksOfUserTagComponent tag_id={ *tag_id } /> }

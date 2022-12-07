@@ -48,10 +48,6 @@ pub fn left_panel() -> Html {
                     <span class="glyphicon glyphicon-file" />
                     { "File Formats" }
                 </Link<Route>></li>
-                <li><Link<Route> to={ Route::Rating }>
-                    <span class="glyphicon glyphicon-star-empty" />
-                    { "Ratings" }
-                </Link<Route>></li>
             </ul>
             <br />
             <ul>

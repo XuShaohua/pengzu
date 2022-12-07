@@ -4,7 +4,6 @@
 
 #![allow(clippy::let_unit_value)]
 
-use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::Link;
 
@@ -16,40 +15,46 @@ use crate::router::Route;
 pub fn header() -> Html {
     let user_ctx = use_user_context();
 
-    let style_str = include_str!("header.css");
-    let style_cls = Style::new(style_str).expect("Invalid style file");
-
     html! {
-        <header class={ style_cls }>
+        <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
             <Link<Route> to={ Route::Home } classes="navbar-brand">
+                <img src="/assets/images/pengzu.svg" alt="Logo" width="30" height="24"
+                    class="d-inline-block align-text-top" />
                 { "Pengzu Library" }
             </Link<Route>>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#header-search-area"
+                aria-controls="header-search-area"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <HeaderSearchComponent />
+            <div class="collapse navbar-collapse" id="header-search-area">
+                <div class="navbar-nav">
+                    <HeaderSearchComponent />
 
-            <Link<Route> to={ Route::AdvancedSearch }
-                classes="navbar-advanced-search">
-                <span class="glyphicon glyphicon-search" />
-                <span>{ "Advanced Search" }</span>
-            </Link<Route>>
+                    <Link<Route> to={ Route::AdvancedSearch }
+                        classes="nav-link">
+                        <span>{ "Advanced Search" }</span>
+                    </Link<Route>>
+                </div>
+            </div>
 
-            <ul class="user-container">
+            <ul class="navbar-nav">
             if user_ctx.is_login() {
-                <li><Link<Route> to={ Route::UserInfo }>
-                    <span class="glyphicon glyphicon-user" />
-                    { &user_ctx.name }
-                </Link<Route>></li>
-                <li><Link<Route> to={ Route::Logout }>
-                    <span class="glyphicon glyphicon-log-out" />
-                    { "Logout" }
-                </Link<Route>></li>
-            } else {
-                <li><Link<Route> to={ Route::Login }>
-                    <span class="glyphicon glyphicon-log-in" />
-                    { "Login" }
-                </Link<Route>></li>
+                <li class="nav-item">
+                    <Link<Route> to={ Route::UserInfo } classes="nav-link">
+                        { &user_ctx.name }
+                    </Link<Route>></li>
+                <li class="nav-item">
+                    <Link<Route> to={ Route::Logout } classes="nav-link">
+                        { "Logout" }
+                    </Link<Route>>
+                </li>
             }
             </ul>
-        </header>
+        </div>
+        </nav>
     }
 }

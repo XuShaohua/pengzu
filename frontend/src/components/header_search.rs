@@ -57,13 +57,18 @@ pub fn header_search() -> Html {
     };
 
     html! {
-       <form class="navbar-search input-group" onsubmit={ search_onsubmit }>
-            <input class="form-control"
-                ref={input_ref}
-                onkeydown={ input_onkeydown }
-                type="text"
-                placeholder={ "Search Library" } />
-            <button class="btn btn-default" type="submit">{ "Search" }</button>
+       <form class="d-flex" onsubmit={ search_onsubmit } role="search">
+           <div class="input-group">
+               <div class="input-group-text"><i class="bi bi-search"></i></div>
+               <input class="form-control me-2"
+                   type="search" placeholder={ "Search Library" }
+                   ref={ input_ref }
+                   onkeydown={ input_onkeydown } />
+           </div>
+
+           <button class="btn btn-primary" type="submit">
+               { "Search" }
+           </button>
         </form>
     }
 }

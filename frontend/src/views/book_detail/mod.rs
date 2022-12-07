@@ -81,7 +81,7 @@ fn generate_formats_element(files: &[FileWithPath]) -> Html {
             html! {
                 <li>
                     <a class="book-format" target="_blank" href={ url }>
-                        <span class="glyphicon glyphicon-download" />
+                        <i class="bi bi-download"></i>
                         { format!("{} ({})", file.format_name, readable_size) }
                     </a>
                 </li>

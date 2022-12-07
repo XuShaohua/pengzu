@@ -60,22 +60,21 @@ pub fn login_page() -> Html {
     };
 
     html! {
-        <div class="login-form">
-            <form onsubmit={ on_form_submit }>
-                <div class="form-item">
-                    <label for="username">{ "Username" }</label>
-                    <input name="username" type="text"
-                        oninput={ on_input_username }
-                        value={ login_form.username.clone() } />
-                </div>
-                <div class="form-item">
-                    <label for="password">{ "Password" }</label>
-                    <input name="password" type="password"
-                        oninput={ on_input_password }
-                        value={ login_form.password.clone() } />
-                </div>
-                <button>{ "Login" }</button>
-            </form>
-        </div>
+        <form onsubmit={ on_form_submit }>
+            <div class="mb-3">
+                <label for="username" class="form-label">{ "Username" }</label>
+                <input name="username" type="text" class="form-control"
+                    oninput={ on_input_username }
+                    value={ login_form.username.clone() } />
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">{ "Password" }</label>
+                <input name="password" type="password" class="form-control"
+                    oninput={ on_input_password }
+                    value={ login_form.password.clone() } />
+            </div>
+            <button type="submit" class="btn btn-primary">{ "Login" }</button>
+        </form>
     }
 }

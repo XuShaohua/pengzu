@@ -4,14 +4,12 @@
 
 mod category_item;
 
-use shared::general_query::GeneralOrder;
 use shared::page::PageId;
 use shared::recursive_query::RecursiveQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::hooks::{use_location, use_navigator};
 
-use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::categories::fetch_categories;
@@ -40,20 +38,13 @@ pub fn categories() -> Html {
         );
     }
 
-    let filter_onchange = {
-        Callback::from(|order: GeneralOrder| {
-            log::info!("new order: {:?}", order);
-        })
-    };
-
     let pagination_onclick = {
-        let query_clone = query.clone();
         Callback::from(move |page_id: PageId| {
             util::scroll_to_top();
 
             let new_query = RecursiveQuery {
                 page: page_id,
-                ..query_clone
+                ..query
             };
             let ret = navigator.push_with_query(&Route::Category, &new_query);
             debug_assert!(ret.is_ok());
@@ -66,7 +57,6 @@ pub fn categories() -> Html {
             html! {
                 <>
                 <h2>{ "Categories" }</h2>
-                <GeneralFilterComponent onchange={ filter_onchange } current_order={ query.order } />
                 { generate_category_list(category_list) }
                 <PaginationComponent  current_page={ category_list.page.page_num }
                     total_pages={ category_list.page.total_pages() }

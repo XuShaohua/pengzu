@@ -15,7 +15,7 @@ pub fn app() -> Html {
     html! {
         <UserContextProvider>
             <BrowserRouter>
-            <MainContentComponent />
+                <MainContentComponent />
             </BrowserRouter>
         </UserContextProvider>
     }

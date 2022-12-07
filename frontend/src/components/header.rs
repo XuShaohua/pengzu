@@ -41,10 +41,6 @@ pub fn header() -> Html {
                 <li><Link<Route> to={ Route::Logout }>
                     { "Logout" }
                 </Link<Route>></li>
-            } else {
-                <li><Link<Route> to={ Route::Login }>
-                    { "Login" }
-                </Link<Route>></li>
             }
             </ul>
         </header>

@@ -23,7 +23,6 @@ use crate::views::books_of_tag::BooksOfTagComponent;
 use crate::views::books_of_user_tag::BooksOfUserTagComponent;
 use crate::views::categories::CategoriesComponent;
 use crate::views::file_formats::FileFormatsComponent;
-use crate::views::login::LoginComponent;
 use crate::views::logout::LogoutComponent;
 use crate::views::publishers::PublishersComponent;
 use crate::views::series::SeriesComponent;
@@ -86,8 +85,6 @@ pub enum Route {
     UserInfo,
     #[at("/users")]
     Users,
-    #[at("/login")]
-    Login,
     #[at("/logout")]
     Logout,
 
@@ -140,7 +137,6 @@ pub fn switch_route(routes: Route) -> Html {
 
         Route::UserInfo => html! { <UserInfoComponent /> },
         Route::Users => html! { <UsersComponent /> },
-        Route::Login => html! { <LoginComponent /> },
         Route::Logout => html! { <LogoutComponent /> },
 
         Route::NotFound => html! { <NotFoundComponent /> },

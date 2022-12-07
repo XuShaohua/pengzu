@@ -29,23 +29,20 @@ pub fn header() -> Html {
 
             <Link<Route> to={ Route::AdvancedSearch }
                 classes="navbar-advanced-search">
-                <span class="glyphicon glyphicon-search" />
+                <i class="bi bi-search"></i>
                 <span>{ "Advanced Search" }</span>
             </Link<Route>>
 
             <ul class="user-container">
             if user_ctx.is_login() {
                 <li><Link<Route> to={ Route::UserInfo }>
-                    <span class="glyphicon glyphicon-user" />
                     { &user_ctx.name }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::Logout }>
-                    <span class="glyphicon glyphicon-log-out" />
                     { "Logout" }
                 </Link<Route>></li>
             } else {
                 <li><Link<Route> to={ Route::Login }>
-                    <span class="glyphicon glyphicon-log-in" />
                     { "Login" }
                 </Link<Route>></li>
             }

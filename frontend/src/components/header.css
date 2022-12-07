@@ -32,7 +32,7 @@
     color: #777;
 }
 
-.navbar-advanced-search span {
+.navbar-advanced-search .bi {
     padding-right: 5px;
 }
 
@@ -54,6 +54,6 @@
     color: #777;
 }
 
-.user-container span {
+.user-container .bi {
     margin-right: 5px;
 }

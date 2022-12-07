@@ -32,7 +32,9 @@ pub fn main_content() -> Html {
             <FooterComponent/>
             </>
         } else {
-            <LoginComponent />
+            <div class="container">
+                <LoginComponent />
+            </div>
         }
     }
 }

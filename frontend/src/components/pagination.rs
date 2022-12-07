@@ -16,6 +16,7 @@ pub struct Props {
 pub fn pagination(props: &Props) -> Html {
     let has_previous = props.current_page > 1;
     let has_next = props.current_page < props.total_pages;
+    let has_no_page = props.total_pages == 0;
 
     let mut pages = Vec::new();
     let min_pages = 12;
@@ -92,12 +93,16 @@ pub fn pagination(props: &Props) -> Html {
         })
     };
 
-    let previous_class = if has_previous {
+    let previous_class = if has_no_page {
+        "page-item invisible"
+    } else if has_previous {
         "page-item"
     } else {
         "page-item disabled"
     };
-    let next_class = if has_next {
+    let next_class = if has_no_page {
+        "page-item invisible"
+    } else if has_next {
         "page-item"
     } else {
         "page-item disabled"

@@ -42,36 +42,36 @@ pub fn general_filter(props: &Props) -> Html {
         <button class={ get_button_cls(GeneralOrder::IdAsc) }
             title={ "Sort according to book date, newest first" }
             onclick={ button_onclick(GeneralOrder::IdAsc) }>
-            <span class="glyphicon glyphicon-sort-by-order" />
+            <i class="bi bi-sort-numeric-down"></i>
         </button>
         <button class={ get_button_cls(GeneralOrder::IdDesc) }
             title={ "Sort according to book date, oldest first" }
             onclick={ button_onclick(GeneralOrder::IdDesc) }>
-            <span class="glyphicon glyphicon-sort-by-order-alt" />
+            <i class="bi bi-sort-numeric-down-alt"></i>
         </button>
 
         <button class={ get_button_cls(GeneralOrder::TitleAsc) }
             title={ "Sort titles in alphabetical order" }
             onclick={ button_onclick(GeneralOrder::TitleAsc) }>
-            <span class="glyphicon glyphicon-sort-by-alphabet" />
+            <i class="bi bi-sort-alpha-down"></i>
         </button>
         <button class={ get_button_cls(GeneralOrder::TitleDesc) }
             title={ "Sort titles in reverse alphabetical order" }
             onclick={ button_onclick(GeneralOrder::TitleDesc) }>
-            <span class="glyphicon glyphicon-sort-by-alphabet-alt" />
+            <i class="bi bi-sort-alpha-down-alt"></i>
         </button>
 
         <button class={ get_button_cls(GeneralOrder::NumberAsc) }
             title={ "Sort according to number of books, newest first" }
             onclick={ button_onclick(GeneralOrder::NumberAsc) }>
-            <span class="glyphicon glyphicon-book" />
-            <span class="glyphicon glyphicon-sort-by-order" />
+            <i class="bi bi-book"></i>
+            <i class="bi bi-sort-numeric-down"></i>
         </button>
         <button class={ get_button_cls(GeneralOrder::NumberDesc) }
             title={ "Sort according to number of books, oldest first" }
             onclick={ button_onclick(GeneralOrder::NumberDesc) }>
-            <span class="glyphicon glyphicon-book" />
-            <span class="glyphicon glyphicon-sort-by-order-alt" />
+            <i class="bi bi-book"></i>
+            <i class="bi bi-sort-numeric-down-alt"></i>
         </button>
 
         </div>

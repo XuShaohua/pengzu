@@ -42,51 +42,49 @@ pub fn book_filter(props: &Props) -> Html {
         <button class={ get_button_cls(GetBooksOrder::IdAsc) }
             title={ "Sort according to book date, newest first" }
             onclick={ button_onclick(GetBooksOrder::IdAsc) }>
-            <span class="glyphicon glyphicon-sort-by-order" />
+            <i class="bi bi-sort-numeric-down"></i>
         </button>
         <button class={ get_button_cls(GetBooksOrder::IdDesc) }
             title={ "Sort according to book date, oldest first" }
             onclick={ button_onclick(GetBooksOrder::IdDesc) }>
-            <span class="glyphicon glyphicon-sort-by-order-alt" />
+            <i class="bi bi-sort-numeric-down-alt"></i>
         </button>
 
         <button class={ get_button_cls(GetBooksOrder::TitleAsc) }
             title={ "Sort titles in alphabetical order" }
             onclick={ button_onclick(GetBooksOrder::TitleAsc) }>
-            <span class="glyphicon glyphicon-font" />
-            <span class="glyphicon glyphicon-sort-by-alphabet" />
+            <i class="bi bi-sort-alpha-down"></i>
         </button>
         <button class={ get_button_cls(GetBooksOrder::TitleDesc) }
             title={ "Sort titles in reverse alphabetical order" }
             onclick={ button_onclick(GetBooksOrder::TitleDesc) }>
-            <span class="glyphicon glyphicon-font" />
-            <span class="glyphicon glyphicon-sort-by-alphabet-alt" />
+            <i class="bi bi-sort-alpha-down-alt"></i>
         </button>
 
         <button class={ get_button_cls(GetBooksOrder::AuthorAsc) }
             title={ "Sort authors in alphabetical order" }
             onclick={ button_onclick(GetBooksOrder::AuthorAsc) }>
-            <span class="glyphicon glyphicon-user" />
-            <span class="glyphicon glyphicon-sort-by-alphabet" />
+            <i class="bi bi-person"></i>
+            <i class="bi bi-sort-alpha-down-alt"></i>
         </button>
         <button class={ get_button_cls(GetBooksOrder::AuthorDesc) }
             title={ "Sort authors in reverse alphabetical order" }
             onclick={ button_onclick(GetBooksOrder::AuthorDesc) }>
-            <span class="glyphicon glyphicon-user" />
-            <span class="glyphicon glyphicon-sort-by-alphabet-alt" />
+            <i class="bi bi-person"></i>
+            <i class="bi bi-sort-alpha-down-alt"></i>
         </button>
 
         <button class={ get_button_cls(GetBooksOrder::PubdateAsc) }
             title={ "Sort according to publishing date, newest first" }
             onclick={ button_onclick(GetBooksOrder::PubdateAsc) }>
-            <span class="glyphicon glyphicon-calender" />
-            <span class="glyphicon glyphicon-sort-by-order" />
+            <i class="bi bi-calendar-date"></i>
+            <i class="bi bi-sort-numeric-down"></i>
         </button>
         <button class={ get_button_cls(GetBooksOrder::PubdateDesc) }
             title={ "Sort according to publishing date, oldest first" }
             onclick={ button_onclick(GetBooksOrder::PubdateDesc) }>
-            <span class="glyphicon glyphicon-calendar" />
-            <span class="glyphicon glyphicon-sort-by-order-alt" />
+            <i class="bi bi-calendar-date"></i>
+            <i class="bi bi-sort-numeric-down-alt"></i>
         </button>
 
         </div>

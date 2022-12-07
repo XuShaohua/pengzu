@@ -29,7 +29,7 @@ pub fn left_panel() -> Html {
                     { "Categories" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::Tag }>
-                    <span class="glyphicon glyphicon-tags" />
+                    <i class="bi bi-tags"></i>
                     { "Tags" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::Publisher }>
@@ -41,7 +41,7 @@ pub fn left_panel() -> Html {
                     { "Series" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::BooksOfDiscover }>
-                    <span class="glyphicon glyphicon-random" />
+                    <i class="bi bi-shuffle"></i>
                     { "Discover" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::FileFormat }>
@@ -52,11 +52,11 @@ pub fn left_panel() -> Html {
             <br />
             <ul>
                 <li><Link<Route> to={ Route::UserTag }>
-                    <span class="glyphicon glyphicon-tag" />
+                    <i class="bi bi-tags"></i>
                     { "My Tags" }
                 </Link<Route>></li>
                 <li><Link<Route> to={ Route::BooksOfDownloadHistory }>
-                    <span class="glyphicon glyphicon-download" />
+                    <i class="bi bi-download"></i>
                     { "My Downloads" }
                 </Link<Route>></li>
             </ul>

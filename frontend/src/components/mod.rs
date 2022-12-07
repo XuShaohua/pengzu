@@ -9,6 +9,7 @@ pub mod general_filter;
 pub mod header;
 mod header_search;
 pub mod left_panel;
+pub mod main_content;
 pub mod not_found;
 pub mod pagination;
 pub mod user_context_provider;

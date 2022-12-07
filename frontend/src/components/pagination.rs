@@ -3,7 +3,6 @@
 // that can be found in the LICENSE file.
 
 use shared::page::PageId;
-use stylist::Style;
 use yew::prelude::*;
 
 #[derive(Debug, Clone, PartialEq, Properties)]
@@ -15,11 +14,8 @@ pub struct Props {
 
 #[function_component(PaginationComponent)]
 pub fn pagination(props: &Props) -> Html {
-    let style_str = include_str!("pagination.css");
-    let style_cls = Style::new(style_str).expect("Invalid style file pagination.css");
-
     let has_previous = props.current_page > 1;
-    let has_next = props.current_page + 1 < props.total_pages;
+    let has_next = props.current_page < props.total_pages;
 
     let mut pages = Vec::new();
     let min_pages = 12;
@@ -50,8 +46,8 @@ pub fn pagination(props: &Props) -> Html {
             page_id.map_or_else(
                 || {
                     html! {
-                        <li class="page">
-                            <button class="btn" disabled={true}>{ ".." }</button>
+                        <li class="page-item">
+                            <span class="page-link disabled">{ ".." }</span>
                         </li>
                     }
                 },
@@ -63,14 +59,14 @@ pub fn pagination(props: &Props) -> Html {
                     });
 
                     let button_cls = if page_id == props.current_page {
-                        "page active"
+                        "page-item active"
                     } else {
-                        "page"
+                        "page-item"
                     };
 
                     html! {
                         <li class={ button_cls }>
-                            <button onclick={onclick} class="btn">{ page_id }</button>
+                            <a onclick={onclick} href="#" class="page-link">{ page_id }</a>
                         </li>
                     }
                 },
@@ -96,21 +92,30 @@ pub fn pagination(props: &Props) -> Html {
         })
     };
 
+    let previous_class = if has_previous {
+        "page-item"
+    } else {
+        "page-item disabled"
+    };
+    let next_class = if has_next {
+        "page-item"
+    } else {
+        "page-item disabled"
+    };
+
     html! {
-        <ul class={ style_cls }>
-            if has_previous {
-                <li class="page previous">
-                    <button class="btn" onclick={ previous_onclick }>{ "« Previous" }</button>
-                </li>
-            }
+        <nav aria-label="Pagination">
+        <ul class="pagination">
+            <li class={ previous_class }>
+                <a class="page-link" href="#" onclick={ previous_onclick }>{ "« Previous" }</a>
+            </li>
 
             { buttons }
 
-            if has_next {
-                <li class="page next">
-                    <button class="btn" onclick={ next_onclick }>{ "Next »" }</button>
-                </li>
-            }
+            <li class={ next_class }>
+                <a class="page-link" href="#" onclick={ next_onclick }>{ "Next »" }</a>
+            </li>
         </ul>
+        </nav>
     }
 }

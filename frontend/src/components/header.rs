@@ -4,7 +4,6 @@
 
 #![allow(clippy::let_unit_value)]
 
-use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::Link;
 
@@ -16,33 +15,40 @@ use crate::router::Route;
 pub fn header() -> Html {
     let user_ctx = use_user_context();
 
-    let style_str = include_str!("header.css");
-    let style_cls = Style::new(style_str).expect("Invalid style file");
-
     html! {
-        <header class={ style_cls }>
+        <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
             <Link<Route> to={ Route::Home } classes="navbar-brand">
+                <img src="/assets/images/pengzu.svg" alt="Logo" width="30" height="24"
+                    class="d-inline-block align-text-top" />
                 { "Pengzu Library" }
             </Link<Route>>
 
-            <HeaderSearchComponent />
 
-            <Link<Route> to={ Route::AdvancedSearch }
-                classes="navbar-advanced-search">
-                <i class="bi bi-search"></i>
-                <span>{ "Advanced Search" }</span>
-            </Link<Route>>
+            <div class="navbar-nav">
+                <HeaderSearchComponent />
 
-            <ul class="user-container">
+                <Link<Route> to={ Route::AdvancedSearch }
+                    classes="nav-link">
+                    <span>{ "Advanced Search" }</span>
+                </Link<Route>>
+            </div>
+
+            <ul class="navbar-nav">
             if user_ctx.is_login() {
-                <li><Link<Route> to={ Route::UserInfo }>
-                    { &user_ctx.name }
-                </Link<Route>></li>
-                <li><Link<Route> to={ Route::Logout }>
-                    { "Logout" }
-                </Link<Route>></li>
+                <li class="navbar-item">
+                    <Link<Route> to={ Route::UserInfo } classes="nav-link">
+                        { &user_ctx.name }
+                    </Link<Route>></li>
+                <li class="navbar-item">
+                    <Link<Route> to={ Route::Logout } classes="nav-link">
+                        { "Logout" }
+                    </Link<Route>>
+                </li>
             }
             </ul>
-        </header>
+
+        </div>
+        </nav>
     }
 }

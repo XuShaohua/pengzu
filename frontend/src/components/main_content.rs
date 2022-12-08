@@ -24,7 +24,7 @@ pub fn main_content() -> Html {
 
             <div class="container-fluid d-flex">
                 <LeftPanelComponent />
-                <div class="content-area">
+                <div class="ms-4">
                     <Switch<Route> render={ switch_route } />
                 </div>
             </div>

@@ -54,7 +54,7 @@ pub fn advanced_search() -> Html {
 
     html! {
         <div style="width: 400px">
-        <h2 class="mb-3">{ "Advanced Search" }</h2>
+        <h2>{ "Advanced Search" }</h2>
 
         <form onsubmit={ on_search_submit }>
         <div class="mb-3">

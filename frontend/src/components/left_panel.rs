@@ -10,7 +10,7 @@ use crate::router::Route;
 #[function_component(LeftPanelComponent)]
 pub fn left_panel() -> Html {
     html! {
-        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 260px">
+        <div class="col-sm-2">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <Link<Route> to={ Route::Home } classes="nav-link active">

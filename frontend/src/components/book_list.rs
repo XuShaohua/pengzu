@@ -3,7 +3,6 @@
 // that can be found in the LICENSE file.
 
 use shared::books::BookAndAuthors;
-use stylist::Style;
 use yew::prelude::*;
 use yew_router::prelude::Link;
 
@@ -29,13 +28,14 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
             };
 
             html! {
-                <>
-                <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } }>
-                    { &author.name }
-                </Link<Route>>
+                <div class="col-12 text-wrap fw-light">
+                    <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } }
+                        classes="text-body">
+                        { &author.name }
+                    </Link<Route>>
 
-                { delimiter }
-                </>
+                    { delimiter }
+                </div >
             }
         })
         .collect::<Html>();
@@ -43,18 +43,23 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
     let cover_url = get_cover_image_url(&book.small_cover);
 
     html! {
-        <div class="book-fluid" key={ book.id }>
-            <div class="book-cover">
-                <Link<Route> to={ Route::BookDetail { book_id: book.id } }>
-                    <img src={ cover_url } alt={ book.title.clone() } />
-                </Link<Route>>
-            </div>
-            <div class="book-meta">
-                <Link<Route> to={ Route::BookDetail { book_id: book.id } }>
-                    <span class="book-title" title={ book.title.clone() }>{ &book.title }</span>
-                </Link<Route>>
+        <div class="me-3" key={ book.id }>
+            <Link<Route> to={ Route::BookDetail { book_id: book.id } }
+                classes="d-block p-2 mb-3">
+                <img src={ cover_url } alt={ book.title.clone() }
+                    style="border: 1px solid #fff; box-shadow: 0 5px 8px -6px #777;"
+                    width="135" height="200" />
+            </Link<Route>>
 
-                <div class="book-authors">{ authors_element }</div>
+            <div class="row">
+                <div class="col-12">
+                <Link<Route> to={ Route::BookDetail { book_id: book.id } }
+                    classes="text-body mb-2">
+                    <span class="" title={ book.title.clone() }>{ &book.title }</span>
+                </Link<Route>>
+                </div>
+
+                { authors_element }
             </div>
         </div>
     }
@@ -62,9 +67,6 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
 
 #[function_component(BookListComponent)]
 pub fn book_list(props: &Props) -> Html {
-    let style_str = include_str!("book_list.css");
-    let style_cls = Style::new(style_str).expect("Invalid style file book_list.css");
-
     let book_elements = props
         .books
         .iter()
@@ -72,7 +74,7 @@ pub fn book_list(props: &Props) -> Html {
         .collect::<Html>();
 
     html! {
-        <div class={ style_cls }>
+        <div class="d-flex flex-wrap p-2 justify-content-start align-items-start">
             { book_elements }
         </div>
     }

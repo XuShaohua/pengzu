@@ -2,9 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use shared::authors::AuthorAndBook;
 use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::PageId;
-use stylist::Style;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::hooks::{use_location, use_navigator};
@@ -16,12 +16,24 @@ use crate::router::Route;
 use crate::services::authors::fetch_authors;
 use crate::views::util;
 
+fn generate_list(author_list: &[AuthorAndBook]) -> Html {
+    html! {
+        <div class="col-xs-12 col-sm-6">
+            {for author_list.iter().map(|author| html! {
+                <div class="mb-2" key={ author.id }>
+                    <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ author.count }</span>
+                    <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id }}>
+                        { &author.name }
+                    </Link<Route>>
+                </div>
+            })}
+        </div>
+    }
+}
+
 #[function_component(AuthorsComponent)]
 pub fn home() -> Html {
     util::set_document_title("Authors");
-
-    let style_str = include_str!("authors.css");
-    let style_cls = Style::new(style_str).expect("Invalid style file authors.css");
 
     let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
@@ -64,20 +76,20 @@ pub fn home() -> Html {
     author_list.data.as_ref().map_or_else(
         || html! {},
         |author_list| {
+            let half_list = author_list.list.len() / 2;
+
             html! {
                 <>
                 <h2>{ "Authors" }</h2>
                 <GeneralFilterComponent onchange={ filter_onchange } current_order={ query.order } />
-                <ul class={ style_cls }>
-                {for author_list.list.iter().map(|author| html! {
-                    <li class="author-item" key={ author.id }>
-                        <span class="badge">{ author.count }</span>
-                        <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } } >
-                            { &author.name }
-                        </Link<Route>>
-                    </li>
-                })}
-                </ul>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        { generate_list(&author_list.list[..half_list]) }
+                        { generate_list(&author_list.list[half_list..]) }
+                    </div>
+                </div>
+
                 <PaginationComponent  current_page={ author_list.page.page_num }
                     total_pages={ author_list.page.total_pages() }
                     onclick={ on_pagination_click } />

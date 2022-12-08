@@ -110,7 +110,7 @@ pub fn pagination(props: &Props) -> Html {
 
     html! {
         <nav aria-label="Pagination">
-        <ul class="pagination">
+        <ul class="pagination justify-content-center">
             <li class={ previous_class }>
                 <a class="page-link" href="#" onclick={ previous_onclick }>{ "« Previous" }</a>
             </li>

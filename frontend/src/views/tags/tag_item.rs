@@ -20,7 +20,7 @@ pub fn generate_tag_list(tag_list: &TagAndBookList) -> Html {
     html! {
         <ul class="list-unstyled">
         {for tag_list.list.iter().map(|tag| html!{
-            <li class="tag-item" key={ tag.id }>
+            <li class="mb-3" key={ tag.id }>
             <TagItemComponent tag={ tag.clone() } />
             </li>
         })}

@@ -3,7 +3,6 @@
 // that can be found in the LICENSE file.
 
 use shared::advanced_search::AdvancedSearchQuery;
-use stylist::Style;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_router::hooks::use_navigator;
@@ -14,9 +13,6 @@ use crate::views::util;
 #[function_component(AdvancedSearchComponent)]
 pub fn advanced_search() -> Html {
     util::set_document_title("Advanced Search");
-
-    let style_str = include_str!("advanced_search.css");
-    let style_cls = Style::new(style_str).expect("Invalid style file advanced_search.css");
 
     let navigator = use_navigator().unwrap();
     let title_input_ref = use_node_ref();
@@ -57,9 +53,9 @@ pub fn advanced_search() -> Html {
     };
 
     html! {
-        <form class={ style_cls } onsubmit={ on_search_submit }>
-        <div class="form-group">
-            <label for="book_title">{ "Book Title" }</label>
+        <form class="container" onsubmit={ on_search_submit }>
+        <div class="mb-3">
+            <label for="book_title" class="form-label">{ "Book Title" }</label>
             <input id="book_title"
                 class="form-control"
                 ref={ title_input_ref }
@@ -67,8 +63,8 @@ pub fn advanced_search() -> Html {
                 type="text" />
         </div>
 
-        <div class="form-group">
-            <label for="book_author">{ "Author" }</label>
+        <div class="mb-3">
+            <label for="book_author" class="form-label">{ "Author" }</label>
             <input id="book_author"
                 class="form-control"
                 ref={ author_input_ref }
@@ -76,8 +72,8 @@ pub fn advanced_search() -> Html {
                 type="text" />
         </div>
 
-        <div class="form-group">
-            <label for="book_publisher">{ "Publisher" }</label>
+        <div class="mb-3">
+            <label for="book_publisher" class="form-label">{ "Publisher" }</label>
             <input id="book_publisher"
                 class="form-control"
                 ref={ publisher_input_ref }
@@ -85,10 +81,7 @@ pub fn advanced_search() -> Html {
                 type="text" />
         </div>
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-default">{ "Search" }</button>
-        </div>
-
+        <button type="submit" class="btn btn-primary">{ "Search" }</button>
         </form>
     }
 }

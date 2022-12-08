@@ -11,7 +11,7 @@ use crate::router::Route;
 pub fn left_panel() -> Html {
     html! {
         <div class="col-sm-2">
-            <ul class="nav nav-pills flex-column mb-auto">
+            <ul class="nav nav-pills flex-column mb-auto bg-light">
                 <li class="nav-item">
                     <Link<Route> to={ Route::Home } classes="nav-link active">
                         <i class="bi bi-book pe-2"></i>

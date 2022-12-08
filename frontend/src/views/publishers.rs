@@ -4,6 +4,7 @@
 
 use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::PageId;
+use shared::publishers::PublisherAndBook;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::hooks::{use_location, use_navigator};
@@ -14,6 +15,21 @@ use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::publishers::fetch_publishers;
 use crate::views::util;
+
+fn generate_publisher_tag(publisher_list: &[PublisherAndBook]) -> Html {
+    html! {
+        <div class="col-xs-12 col-sm-6">
+            {for publisher_list.iter().map(|publisher| html! {
+                <div class="mb-3" key={ publisher.id }>
+                    <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ publisher.count }</span>
+                    <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id } }>
+                        { &publisher.name }
+                    </Link<Route>>
+                </div>
+            })}
+        </div>
+    }
+}
 
 #[function_component(PublishersComponent)]
 pub fn publishers_page() -> Html {
@@ -60,20 +76,19 @@ pub fn publishers_page() -> Html {
     publisher_list.data.as_ref().map_or_else(
         || html! {},
         |publisher_list| {
+            let half_list = publisher_list.list.len() / 2;
             html! {
                 <>
                 <h2>{ "Publishers" }</h2>
                 <GeneralFilterComponent onchange={ filter_onchange } current_order={ query.order } />
-                <ul class="publisher-list">
-                {for publisher_list.list.iter().map(|publisher| html!{
-                    <li class="publisher-item" key={ publisher.id }>
-                        <span class="badge">{ publisher.count }</span>
-                        <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id } }>
-                            { &publisher.name }
-                        </Link<Route>>
-                    </li>
-                })}
-                </ul>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        { generate_publisher_tag(&publisher_list.list[..half_list]) }
+                        { generate_publisher_tag(&publisher_list.list[half_list..]) }
+                    </div>
+                </div>
+
                 <PaginationComponent  current_page={ publisher_list.page.page_num }
                     total_pages={ publisher_list.page.total_pages() }
                     onclick={ on_pagination_click } />

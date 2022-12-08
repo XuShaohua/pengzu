@@ -18,16 +18,16 @@ use crate::views::util;
 
 fn generate_author_list(author_list: &[AuthorAndBook]) -> Html {
     html! {
-        <div class="col-xs-12 col-sm-6">
+        <ul class="col-xs-12 col-sm-6 list-unstyled">
             {for author_list.iter().map(|author| html! {
-                <div class="mb-2" key={ author.id }>
+                <li class="mb-2" key={ author.id }>
                     <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ author.count }</span>
                     <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id }}>
                         { &author.name }
                     </Link<Route>>
-                </div>
+                </li>
             })}
-        </div>
+        </ul>
     }
 }
 

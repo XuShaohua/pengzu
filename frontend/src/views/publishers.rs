@@ -16,18 +16,18 @@ use crate::router::Route;
 use crate::services::publishers::fetch_publishers;
 use crate::views::util;
 
-fn generate_publisher_tag(publisher_list: &[PublisherAndBook]) -> Html {
+fn generate_publisher_list(publisher_list: &[PublisherAndBook]) -> Html {
     html! {
-        <div class="col-xs-12 col-sm-6">
+        <ul class="col-xs-12 col-sm-6 list-unstyled">
             {for publisher_list.iter().map(|publisher| html! {
-                <div class="mb-3" key={ publisher.id }>
+                <li class="mb-3" key={ publisher.id }>
                     <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ publisher.count }</span>
                     <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id } }>
                         { &publisher.name }
                     </Link<Route>>
-                </div>
+                </li>
             })}
-        </div>
+        </ul>
     }
 }
 
@@ -84,8 +84,8 @@ pub fn publishers_page() -> Html {
 
                 <div class="container-fluid">
                     <div class="row">
-                        { generate_publisher_tag(&publisher_list.list[..half_list]) }
-                        { generate_publisher_tag(&publisher_list.list[half_list..]) }
+                        { generate_publisher_list(&publisher_list.list[..half_list]) }
+                        { generate_publisher_list(&publisher_list.list[half_list..]) }
                     </div>
                 </div>
 

@@ -4,6 +4,7 @@
 
 use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::PageId;
+use shared::series::SeriesAndBook;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::hooks::{use_location, use_navigator};
@@ -14,6 +15,21 @@ use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::series::fetch_series_list;
 use crate::views::util;
+
+fn generate_series_list(series_list: &[SeriesAndBook]) -> Html {
+    html! {
+        <ul class="col-xs-12 col-sm-6 list-unstyled">
+        {for series_list.iter().map(|series| html!{
+            <li class="mb-3" key={ series.id }>
+                <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ series.count }</span>
+                <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>
+                    { &series.name }
+                </Link<Route>>
+            </li>
+        })}
+        </ul>
+    }
+}
 
 #[function_component(SeriesComponent)]
 pub fn series_page() -> Html {
@@ -60,21 +76,19 @@ pub fn series_page() -> Html {
     series_list.data.as_ref().map_or_else(
         || html! {},
         |series_list| {
+            let half_list = series_list.list.len() / 2;
             html! {
                 <>
                 <h2>{ "Series" }</h2>
                 <GeneralFilterComponent onchange={ filter_onchange } current_order={ query.order } />
 
-                <ul>
-                {for series_list.list.iter().map(|series| html!{
-                    <li class="series-item" key={ series.id }>
-                    <span class="badge">{ series.count }</span>
-                    <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>
-                    { &series.name }
-                    </Link<Route>>
-                    </li>
-                })}
-                </ul>
+                <div class="container-fluid">
+                    <div class="row">
+                        { generate_series_list(&series_list.list[..half_list]) }
+                        { generate_series_list(&series_list.list[half_list..]) }
+                    </div>
+                </div>
+
                 <PaginationComponent  current_page={ series_list.page.page_num }
                     total_pages={ series_list.page.total_pages() }
                     onclick={ on_pagination_click } />

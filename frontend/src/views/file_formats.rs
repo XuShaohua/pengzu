@@ -25,13 +25,14 @@ pub fn file_formats_page() -> Html {
             html! {
                 <>
                 <h2>{ "File Formats" }</h2>
-                <ul>
+
+                <ul class="list-unstyled">
                     {for file_formats.list.iter().map(|file_format| html!{
-                        <li key={ file_format.id }>
-                        <span class="badge">{ file_format.count }</span>
-                        <Link<Route> to={ Route::BooksOfFileFormat{ format_id: { file_format.id }}}>
-                        { &file_format.name }
-                        </Link<Route>>
+                        <li class="mb-3" key={ file_format.id }>
+                            <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ file_format.count }</span>
+                            <Link<Route> to={ Route::BooksOfFileFormat{ format_id: { file_format.id }}}>
+                                { &file_format.name }
+                            </Link<Route>>
                         </li>
                     })}
                 </ul>

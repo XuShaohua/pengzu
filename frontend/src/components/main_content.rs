@@ -31,7 +31,7 @@ pub fn main_content() -> Html {
                 </div>
             </div>
 
-            <FooterComponent/>
+            <FooterComponent />
             </>
         } else {
             <div class="container">

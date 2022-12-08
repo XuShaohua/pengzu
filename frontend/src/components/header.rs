@@ -23,23 +23,23 @@ pub fn header() -> Html {
                     class="d-inline-block align-text-top" />
                 { "Pengzu Library" }
             </Link<Route>>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#header-search-area"
-                aria-controls="header-search-area"
-                aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            // <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            //     data-bs-target="#header-search-area"
+            //     aria-controls="header-search-area"
+            //     aria-expanded="false" aria-label="Toggle navigation">
+            //     <span class="navbar-toggler-icon"></span>
+            // </button>
 
-            <div class="collapse navbar-collapse" id="header-search-area">
-                <div class="navbar-nav">
-                    <HeaderSearchComponent />
+            // <div class="collapse navbar-collapse" id="header-search-area">
+            <div class="navbar-nav">
+                <HeaderSearchComponent />
 
-                    <Link<Route> to={ Route::AdvancedSearch }
-                        classes="nav-link">
-                        <span>{ "Advanced Search" }</span>
-                    </Link<Route>>
-                </div>
+                <Link<Route> to={ Route::AdvancedSearch }
+                    classes="nav-link">
+                    <span>{ "Advanced Search" }</span>
+                </Link<Route>>
             </div>
+            // </div>
 
             <ul class="navbar-nav">
             if user_ctx.is_login() {

@@ -1,5 +1,19 @@
 /** Main Style **/
 
+/** book_list **/
 a {
   text-decoration: none;
+}
+
+a:focus, a:hover {
+  color: #23527c;
+  text-decoration: underline;
+}
+
+.wrap-text-l3 {
+  display: -webkit-box;
+  width: 12rem;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }

@@ -41,18 +41,6 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
         .collect::<Html>();
 
     let cover_url = get_cover_image_url(&book.small_cover);
-    let ellipse_threshold = 32;
-    let ellipse_threshold_hard = 38;
-    let title_ellipse = if book.title.len() <= ellipse_threshold_hard {
-        book.title.clone()
-    } else {
-        book.title
-            .chars()
-            .into_iter()
-            .take(ellipse_threshold)
-            .collect::<String>()
-            + " [..]"
-    };
 
     html! {
         <div class="col-lg-2 col-sm-4 col-xs-6" key={ book.id }>
@@ -67,8 +55,7 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
                 <div class="col-12">
                 <Link<Route> to={ Route::BookDetail { book_id: book.id } }
                     classes="text-body mb-2">
-                    <span class="d-block text-wrap" title={ book.title.clone() }
-                        style="width: 180px;">{ title_ellipse }</span>
+                    <span class="wrap-text-l3" title={ book.title.clone() }>{ &book.title }</span>
                 </Link<Route>>
                 </div>
 
@@ -87,7 +74,7 @@ pub fn book_list(props: &Props) -> Html {
         .collect::<Html>();
 
     html! {
-        <div class="d-flex flex-wrap mb-5">
+        <div class="d-flex flex-wrap mb-5 book-list">
             { book_elements }
         </div>
     }

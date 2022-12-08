@@ -16,7 +16,7 @@ use crate::router::Route;
 use crate::services::authors::fetch_authors;
 use crate::views::util;
 
-fn generate_list(author_list: &[AuthorAndBook]) -> Html {
+fn generate_author_list(author_list: &[AuthorAndBook]) -> Html {
     html! {
         <div class="col-xs-12 col-sm-6">
             {for author_list.iter().map(|author| html! {
@@ -85,8 +85,8 @@ pub fn home() -> Html {
 
                 <div class="container-fluid">
                     <div class="row">
-                        { generate_list(&author_list.list[..half_list]) }
-                        { generate_list(&author_list.list[half_list..]) }
+                        { generate_author_list(&author_list.list[..half_list]) }
+                        { generate_author_list(&author_list.list[half_list..]) }
                     </div>
                 </div>
 

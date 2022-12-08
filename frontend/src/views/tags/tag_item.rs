@@ -18,7 +18,7 @@ pub struct Props {
 
 pub fn generate_tag_list(tag_list: &TagAndBookList) -> Html {
     html! {
-        <ul>
+        <ul class="list-unstyled">
         {for tag_list.list.iter().map(|tag| html!{
             <li class="tag-item" key={ tag.id }>
             <TagItemComponent tag={ tag.clone() } />
@@ -55,13 +55,13 @@ pub fn tag_item(props: &Props) -> Html {
 
     html! {
         <>
-            <span class="badge">{ tag.count }</span>
+            <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ tag.count }</span>
             <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
                 { &tag.name }
             </Link<Route>>
             {
                 if tag.children > 0 {
-                    html! { <a href="#" {onclick}>{ "˃" }</a> }
+                    html! { <a href="#" {onclick}><i class="bi bi-caret-right"></i></a> }
                 } else {
                     html! {}
                 }

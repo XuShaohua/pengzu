@@ -60,7 +60,11 @@ pub fn login_page() -> Html {
     };
 
     html! {
-        <form onsubmit={ on_form_submit }>
+        <div class="container">
+        <div class="row justify-content-md-center">
+
+        <h2 class="text-center mt-5 mt-3">{ "Login"}</h2>
+        <form class="col-lg-6 col-md-9 col-sm-12" onsubmit={ on_form_submit }>
             <div class="mb-3">
                 <label for="username" class="form-label">{ "Username" }</label>
                 <input name="username" type="text" class="form-control"
@@ -76,5 +80,8 @@ pub fn login_page() -> Html {
             </div>
             <button type="submit" class="btn btn-primary">{ "Login" }</button>
         </form>
+
+        </div>
+        </div>
     }
 }

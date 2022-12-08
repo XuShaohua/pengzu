@@ -22,7 +22,7 @@ pub fn main_content() -> Html {
             <>
             <HeaderComponent />
 
-            <div class="container-fluid">
+            <div class="container-fluid d-flex">
                 <LeftPanelComponent />
                 <div class="content-area">
                     <Switch<Route> render={ switch_route } />

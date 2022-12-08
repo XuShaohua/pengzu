@@ -41,9 +41,21 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
         .collect::<Html>();
 
     let cover_url = get_cover_image_url(&book.small_cover);
+    let ellipse_threshold = 32;
+    let ellipse_threshold_hard = 38;
+    let title_ellipse = if book.title.len() <= ellipse_threshold_hard {
+        book.title.clone()
+    } else {
+        book.title
+            .chars()
+            .into_iter()
+            .take(ellipse_threshold)
+            .collect::<String>()
+            + " [..]"
+    };
 
     html! {
-        <div class="me-3" key={ book.id }>
+        <div class="col-lg-2 col-sm-4 col-xs-6" key={ book.id }>
             <Link<Route> to={ Route::BookDetail { book_id: book.id } }
                 classes="d-block p-2 mb-3">
                 <img src={ cover_url } alt={ book.title.clone() }
@@ -55,7 +67,8 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
                 <div class="col-12">
                 <Link<Route> to={ Route::BookDetail { book_id: book.id } }
                     classes="text-body mb-2">
-                    <span class="" title={ book.title.clone() }>{ &book.title }</span>
+                    <span class="d-block text-wrap" title={ book.title.clone() }
+                        style="width: 180px;">{ title_ellipse }</span>
                 </Link<Route>>
                 </div>
 
@@ -74,7 +87,7 @@ pub fn book_list(props: &Props) -> Html {
         .collect::<Html>();
 
     html! {
-        <div class="d-flex flex-wrap p-2 justify-content-start align-items-start">
+        <div class="d-flex flex-wrap mb-5">
             { book_elements }
         </div>
     }

@@ -53,10 +53,11 @@ pub fn advanced_search() -> Html {
     };
 
     html! {
-        <div style="width: 400px">
+        <>
         <h2>{ "Advanced Search" }</h2>
 
-        <form onsubmit={ on_search_submit }>
+        <div class="container-fluid">
+        <form onsubmit={ on_search_submit } class="col-lg-6 col-md-9 col-sm-12">
         <div class="mb-3">
             <label for="book_title" class="form-label">{ "Book Title" }</label>
             <input id="book_title"
@@ -86,7 +87,8 @@ pub fn advanced_search() -> Html {
 
         <button type="submit" class="btn btn-primary">{ "Search" }</button>
         </form>
-
         </div>
+
+        </>
     }
 }

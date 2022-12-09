@@ -57,7 +57,6 @@ pub fn get_categories(
     let offset = query.backend_page_id() * CATEGORIES_EACH_PAGE;
 
     // TODO(Shaohua): Support query order
-
     let list = categories::table
         .filter(categories::parent.eq(query.parent))
         .left_join(
@@ -72,6 +71,7 @@ pub fn get_categories(
             categories::parent,
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_categories_link.id)"),
         ))
+        .order_by(categories::id.asc())
         .limit(CATEGORIES_EACH_PAGE)
         .offset(offset)
         .load::<CategoryAndBook>(conn)?;

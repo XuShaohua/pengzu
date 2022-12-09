@@ -40,7 +40,7 @@ pub fn books_of_simple_search() -> Html {
         );
     }
 
-    // TODO(Shaohua): Support oder
+    // TODO(Shaohua): Support order
     let on_book_filter_change = {
         Callback::from(|order: GetBooksOrder| {
             log::info!("new order: {:?}", order);

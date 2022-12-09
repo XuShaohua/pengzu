@@ -22,7 +22,7 @@ pub fn main_content() -> Html {
             <>
             <HeaderComponent />
 
-            <div class="container-fluid">
+            <div class="container-xl">
                 <div class="row">
                     <LeftPanelComponent />
                     <div class="col-sm-10">

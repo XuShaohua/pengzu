@@ -9,7 +9,7 @@ use shared::page::PageId;
 use shared::recursive_query::RecursiveQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::hooks::{use_location, use_navigator};
+use yew_router::prelude::{use_location, Link};
 
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
@@ -22,7 +22,6 @@ use tag_item::generate_tag_list;
 pub fn user_tags_page() -> Html {
     util::set_document_title("User Tags");
 
-    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<RecursiveQuery>().unwrap_or_default();
     let tag_list = {
@@ -46,18 +45,22 @@ pub fn user_tags_page() -> Html {
         })
     };
 
-    let on_pagination_click = {
+    let pagination_link = {
         let query_clone = query.clone();
-        Callback::from(move |page_id: PageId| {
-            util::scroll_to_top();
-
-            let new_query = RecursiveQuery {
-                page: page_id,
-                ..query_clone
-            };
-            let ret = navigator.push_with_query(&Route::UserTag, &new_query);
-            debug_assert!(ret.is_ok());
-        })
+        Callback::from(
+            move |(page_id, classes, title): (PageId, &'static str, String)| -> Html {
+                let new_query = RecursiveQuery {
+                    page: page_id,
+                    ..query_clone
+                };
+                html! {
+                    <Link<Route, RecursiveQuery> to={ Route::UserTag }
+                        query={ Some(new_query) } classes={ classes }>
+                        { title }
+                    </Link<Route, RecursiveQuery>>
+                }
+            },
+        )
     };
 
     tag_list.data.as_ref().map_or_else(
@@ -72,7 +75,7 @@ pub fn user_tags_page() -> Html {
 
                 <PaginationComponent  current_page={ tag_list.page.page_num }
                     total_pages={ tag_list.page.total_pages() }
-                    onclick={ on_pagination_click } />
+                    link={ pagination_link } />
                 </>
             }
         },

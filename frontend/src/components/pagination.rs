@@ -9,7 +9,7 @@ use yew::prelude::*;
 pub struct Props {
     pub current_page: PageId,
     pub total_pages: PageId,
-    pub onclick: Callback<PageId>,
+    pub link: Callback<(PageId, &'static str, String), Html>,
 }
 
 #[function_component(PaginationComponent)]
@@ -53,12 +53,6 @@ pub fn pagination(props: &Props) -> Html {
                     }
                 },
                 |page_id| {
-                    let props_onclick = props.onclick.clone();
-                    let onclick = Callback::from(move |event: MouseEvent| {
-                        event.prevent_default();
-                        props_onclick.emit(page_id);
-                    });
-
                     let button_cls = if page_id == props.current_page {
                         "page-item active"
                     } else {
@@ -67,31 +61,13 @@ pub fn pagination(props: &Props) -> Html {
 
                     html! {
                         <li class={ button_cls }>
-                            <a onclick={onclick} href="#" class="page-link">{ page_id }</a>
+                            { props.link.emit((page_id, "page-link", page_id.to_string()))}
                         </li>
                     }
                 },
             )
         })
         .collect::<Html>();
-
-    let previous_onclick = {
-        let previous_page_id = props.current_page - 1;
-        let props_onclick = props.onclick.clone();
-        Callback::from(move |event: MouseEvent| {
-            event.prevent_default();
-            props_onclick.emit(previous_page_id);
-        })
-    };
-
-    let next_onclick = {
-        let next_page_id = props.current_page + 1;
-        let props_onclick = props.onclick.clone();
-        Callback::from(move |event: MouseEvent| {
-            event.prevent_default();
-            props_onclick.emit(next_page_id);
-        })
-    };
 
     let previous_class = if has_no_page {
         "page-item invisible"
@@ -107,18 +83,32 @@ pub fn pagination(props: &Props) -> Html {
     } else {
         "page-item disabled"
     };
+    let previous_link = if has_previous {
+        props
+            .link
+            .emit((props.current_page - 1, "page-link", "« Previous".to_owned()))
+    } else {
+        html! {<span class="page-link disabled">{ "« Previous" }</span>}
+    };
+    let next_link = if has_next {
+        props
+            .link
+            .emit((props.current_page + 1, "page-link", "Next »".to_owned()))
+    } else {
+        html! {<span class="page-link disabled">{ "Next »" }</span>}
+    };
 
     html! {
         <nav aria-label="Pagination">
         <ul class="pagination justify-content-center">
             <li class={ previous_class }>
-                <a class="page-link" href="#" onclick={ previous_onclick }>{ "« Previous" }</a>
+                { previous_link }
             </li>
 
             { buttons }
 
             <li class={ next_class }>
-                <a class="page-link" href="#" onclick={ next_onclick }>{ "Next »" }</a>
+                { next_link }
             </li>
         </ul>
         </nav>

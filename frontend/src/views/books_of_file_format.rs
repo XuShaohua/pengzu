@@ -6,7 +6,7 @@ use shared::books_query::{GetBooksOrder, GetBooksQuery};
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::{use_async, use_async_with_options, UseAsyncOptions};
-use yew_router::hooks::{use_location, use_navigator};
+use yew_router::prelude::{use_location, use_navigator, Link};
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -30,7 +30,10 @@ pub fn books_of_file_format(props: &Props) -> Html {
     let book_list = {
         let format_id = props.format_id;
         let query_clone = query.clone();
-        use_async(async move { fetch_books_by_file_format(format_id, &query_clone).await })
+        use_async(async move {
+            util::scroll_to_top();
+            fetch_books_by_file_format(format_id, &query_clone).await
+        })
     };
 
     let format_info = {
@@ -54,34 +57,35 @@ pub fn books_of_file_format(props: &Props) -> Html {
 
     let on_book_filter_change = {
         let query_clone = query.clone();
-        let navigator_clone = navigator.clone();
         let format_id = props.format_id;
         Callback::from(move |order: GetBooksOrder| {
-            util::scroll_to_top();
-
             let new_query = GetBooksQuery {
                 order,
                 ..query_clone
-            };
-            let ret = navigator_clone
-                .push_with_query(&Route::BooksOfFileFormat { format_id }, &new_query);
-            debug_assert!(ret.is_ok());
-        })
-    };
-
-    let on_pagination_click = {
-        let format_id = props.format_id;
-        Callback::from(move |page_id: PageId| {
-            util::scroll_to_top();
-
-            let new_query = GetBooksQuery {
-                page: page_id,
-                ..query
             };
             let ret =
                 navigator.push_with_query(&Route::BooksOfFileFormat { format_id }, &new_query);
             debug_assert!(ret.is_ok());
         })
+    };
+
+    let pagination_link = {
+        let format_id = props.format_id;
+        Callback::from(
+            move |(page_id, classes, title): (PageId, &'static str, String)| -> Html {
+                let new_query = GetBooksQuery {
+                    page: page_id,
+                    ..query
+                };
+
+                html! {
+                    <Link<Route, GetBooksQuery> to={ Route::BooksOfFileFormat { format_id } }
+                        query={ Some(new_query) } classes={ classes }>
+                        { title }
+                    </Link<Route, GetBooksQuery>>
+                }
+            },
+        )
     };
 
     book_list.data.as_ref().map_or_else(
@@ -94,7 +98,7 @@ pub fn books_of_file_format(props: &Props) -> Html {
                 <BookListComponent books={ book_list.list.clone() } />
                 <PaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }
-                    onclick={ on_pagination_click } />
+                    link={ pagination_link } />
                 </>
             }
         },

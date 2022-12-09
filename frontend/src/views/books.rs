@@ -6,7 +6,7 @@ use shared::books_query::{GetBooksOrder, GetBooksQuery};
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::hooks::{use_location, use_navigator};
+use yew_router::prelude::{use_location, use_navigator, Link};
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -24,7 +24,10 @@ pub fn books() -> Html {
     let query = location.query::<GetBooksQuery>().unwrap_or_default();
     let book_list = {
         let query_clone = query.clone();
-        use_async(async move { fetch_books(&query_clone).await })
+        use_async(async move {
+            util::scroll_to_top();
+            fetch_books(&query_clone).await
+        })
     };
     {
         let book_list_clone = book_list.clone();
@@ -39,29 +42,30 @@ pub fn books() -> Html {
 
     let on_book_filter_change = {
         let query_clone = query.clone();
-        let navigator_clone = navigator.clone();
         Callback::from(move |order: GetBooksOrder| {
-            util::scroll_to_top();
-
             let new_query = GetBooksQuery {
                 order,
                 ..query_clone
             };
-            let ret = navigator_clone.push_with_query(&Route::Book, &new_query);
+            let ret = navigator.push_with_query(&Route::Book, &new_query);
             debug_assert!(ret.is_ok());
         })
     };
 
-    let pagination_onclick = Callback::from(move |page_id: PageId| {
-        util::scroll_to_top();
-
-        let new_query = GetBooksQuery {
-            page: page_id,
-            ..query
-        };
-        let ret = navigator.push_with_query(&Route::Book, &new_query);
-        debug_assert!(ret.is_ok());
-    });
+    let pagination_link = Callback::from(
+        move |(page_id, classes, title): (PageId, &'static str, String)| -> Html {
+            let new_query = GetBooksQuery {
+                page: page_id,
+                ..query
+            };
+            html! {
+                <Link<Route, GetBooksQuery> to={ Route::Book }
+                    query={ Some(new_query) } classes={ classes }>
+                    { title }
+                </Link<Route, GetBooksQuery>>
+            }
+        },
+    );
 
     book_list.data.as_ref().map_or_else(
         || html! {},
@@ -73,7 +77,7 @@ pub fn books() -> Html {
                 <BookListComponent books={ book_list.list.clone() } />
                 <PaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }
-                    onclick={ pagination_onclick } />
+                    link={ pagination_link } />
                 </>
             }
         },

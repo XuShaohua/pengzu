@@ -27,9 +27,18 @@ pub fn user_info() -> Html {
             html! {
                 <>
                 <h2>{ "User Info" }</h2>
-                <p>{ "Username:" }<span>{ &user_info.name }</span></p>
-                <p>{ "Email:" }<span>{ &user_info.email }</span></p>
-                <p>{ "Role:" }<span>{ user_info.role }</span></p>
+                <div>
+                    <span class="fw-bold text-end me-2">{ "Username:" }</span>
+                    <span>{ &user_info.name }</span>
+                </div>
+                <div>
+                    <span class="fw-bold text-end me-2">{ "Email:" }</span>
+                    <span>{ &user_info.email }</span>
+                </div>
+                <div>
+                    <span class="fw-bold text-end me-2">{ "Role:" }</span>
+                    <span>{ user_info.role }</span>
+                </div>
                 </>
             }
         },

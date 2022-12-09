@@ -12,6 +12,9 @@ pub struct Props {
     pub link: Callback<(PageId, &'static str, String), Html>,
 }
 
+const MIN_PAGES: PageId = 12;
+const PER_SIDE: PageId = 5;
+
 #[function_component(PaginationComponent)]
 pub fn pagination(props: &Props) -> Html {
     if props.total_pages == 0 {
@@ -19,25 +22,36 @@ pub fn pagination(props: &Props) -> Html {
     }
 
     let mut pages = Vec::new();
-    let min_pages = 12;
     if props.total_pages == 1 {
-        // Do not add any buttons at all.
-    } else if props.total_pages < min_pages {
+        // Do not add any links at all.
+    } else if props.total_pages < MIN_PAGES {
+        // Show all links.
         for i in 1..=props.total_pages {
             pages.push(Some(i));
         }
     } else {
-        let left_page = 5;
-        if props.current_page < left_page && props.total_pages > left_page {
-            for i in 1..=left_page {
+        let right_page = props.total_pages - PER_SIDE;
+        if props.current_page < PER_SIDE {
+            for i in 1..=PER_SIDE {
                 pages.push(Some(i));
             }
-        }
-        pages.push(None);
 
-        let right_page = props.total_pages - left_page;
-        for i in right_page..props.total_pages {
-            pages.push(Some(i));
+            pages.push(None);
+            pages.push(Some(props.total_pages));
+        } else if props.current_page > right_page {
+            pages.push(Some(1));
+            pages.push(None);
+            for i in right_page..=props.total_pages {
+                pages.push(Some(i));
+            }
+        } else {
+            pages.push(Some(1));
+            pages.push(None);
+            for i in props.current_page - 2..=props.current_page + 2 {
+                pages.push(Some(i));
+            }
+            pages.push(None);
+            pages.push(Some(props.total_pages));
         }
     }
 
@@ -53,15 +67,15 @@ pub fn pagination(props: &Props) -> Html {
                     }
                 },
                 |page_id| {
-                    let button_cls = if page_id == props.current_page {
-                        "page-item active"
+                    let link_cls = if page_id == props.current_page {
+                        "page-link active"
                     } else {
-                        "page-item"
+                        "page-link"
                     };
 
                     html! {
-                        <li class={ button_cls }>
-                            { props.link.emit((page_id, "page-link", page_id.to_string()))}
+                        <li class="page-item">
+                            { props.link.emit((page_id, link_cls, page_id.to_string()))}
                         </li>
                     }
                 },
@@ -77,7 +91,7 @@ pub fn pagination(props: &Props) -> Html {
         }
     } else {
         html! {
-            <li class="page-item disabled">
+            <li class="page-item">
                 <span class="page-link disabled">{ "« Previous" }</span>
             </li>
         }
@@ -90,7 +104,7 @@ pub fn pagination(props: &Props) -> Html {
         }
     } else {
         html! {
-            <li class="page-item disabled">
+            <li class="page-item">
                 <span class="page-link disabled">{ "Next »" }</span>
             </li>
         }

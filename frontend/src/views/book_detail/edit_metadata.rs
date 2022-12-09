@@ -51,10 +51,20 @@ pub fn edit_metadata(props: &Props) -> Html {
         })
     };
 
+    let on_input_focus = {
+        let edit_title_ref_clone = edit_title_ref.clone();
+        Callback::from(move |_event: FocusEvent| {
+            if let Some(input) = edit_title_ref_clone.cast::<HtmlInputElement>() {
+                input.select();
+            }
+        })
+    };
+
     html! {
         <div class="edit-book">
             <form onsubmit={ on_form_submit }>
                 <input type="text" class="form-control"
+                    onfocus={ on_input_focus }
                     ref={ edit_title_ref }
                     name="title" value={ props.title.clone() } />
                 <button type="submit" class="btn btn-primary">{ "Update" }</button>

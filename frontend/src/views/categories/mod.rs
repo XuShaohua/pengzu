@@ -8,7 +8,7 @@ use shared::page::PageId;
 use shared::recursive_query::RecursiveQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::hooks::{use_location, use_navigator};
+use yew_router::prelude::{use_location, Link};
 
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
@@ -20,7 +20,6 @@ use category_item::generate_category_list;
 pub fn categories() -> Html {
     util::set_document_title("Categories");
 
-    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<RecursiveQuery>().unwrap_or_default();
     let category_list = {
@@ -38,17 +37,21 @@ pub fn categories() -> Html {
         );
     }
 
-    let on_pagination_click = {
-        Callback::from(move |page_id: PageId| {
-            util::scroll_to_top();
-
-            let new_query = RecursiveQuery {
-                page: page_id,
-                ..query
-            };
-            let ret = navigator.push_with_query(&Route::Category, &new_query);
-            debug_assert!(ret.is_ok());
-        })
+    let pagination_link = {
+        Callback::from(
+            move |(page_id, classes, title): (PageId, &'static str, String)| -> Html {
+                let new_query = RecursiveQuery {
+                    page: page_id,
+                    ..query
+                };
+                html! {
+                    <Link<Route, RecursiveQuery> to={ Route::Category }
+                        query={ Some(new_query) } classes={ classes }>
+                        { title }
+                    </Link<Route, RecursiveQuery>>
+                }
+            },
+        )
     };
 
     category_list.data.as_ref().map_or_else(
@@ -60,7 +63,7 @@ pub fn categories() -> Html {
                 { generate_category_list(category_list) }
                 <PaginationComponent  current_page={ category_list.page.page_num }
                     total_pages={ category_list.page.total_pages() }
-                    onclick={ on_pagination_click } />
+                    link={ pagination_link } />
                 </>
             }
         },

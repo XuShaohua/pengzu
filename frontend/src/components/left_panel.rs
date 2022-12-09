@@ -25,7 +25,7 @@ pub fn left_panel() -> Html {
         <div class="col-sm-4 col-lg-2">
             <ul class="nav nav-pills flex-column mb-auto bg-light">
                 <li class="nav-item">
-                    <Link<Route> to={ Route::Home } classes={ link_cls(Route::Home) }>
+                    <Link<Route> to={ Route::Book } classes={ link_cls(Route::Book) }>
                         <i class="bi bi-book pe-2"></i>
                         { "Books" }
                     </Link<Route>>

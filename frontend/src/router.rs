@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
-use yew_router::Routable;
+use yew_router::prelude::{Redirect, Routable};
 
 use crate::components::not_found::NotFoundComponent;
 use crate::views::advanced_search::AdvancedSearchComponent;
@@ -98,8 +98,9 @@ pub enum Route {
 #[allow(clippy::let_unit_value)]
 pub fn switch_route(routes: Route) -> Html {
     match &routes {
+        Route::Home => html! { <Redirect<Route> to={ Route::Book } /> },
         Route::BookDetail { book_id } => html! { <BookDetailComponent book_id={ *book_id } /> },
-        Route::Book | Route::Home => html! { <BooksComponent /> },
+        Route::Book => html! { <BooksComponent /> },
         Route::BooksOfAuthor { author_id } => {
             html! { <BooksOfAuthorComponent author_id={ *author_id } /> }
         }

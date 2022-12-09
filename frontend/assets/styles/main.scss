@@ -17,3 +17,8 @@ a:focus, a:hover {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
+
+.wrap-text-no-line {
+  display: block;
+  width: 10rem;
+}

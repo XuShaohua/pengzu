@@ -28,7 +28,7 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
             };
 
             html! {
-                <div class="col-12 text-wrap fw-light">
+                <div class="fw-light wrap-text-no-line">
                     <Link<Route> to={ Route::BooksOfAuthor { author_id: author.id } }
                         classes="text-body">
                         { &author.name }
@@ -51,8 +51,8 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
                     width="135" height="200" />
             </Link<Route>>
 
-            <div class="">
-                <div class="col-12">
+            <div class="ms-1">
+                <div class="">
                 <Link<Route> to={ Route::BookDetail { book_id: book.id } }
                     classes="text-body mb-2">
                     <span class="wrap-text-l3" title={ book.title.clone() }>{ &book.title }</span>
@@ -74,7 +74,7 @@ pub fn book_list(props: &Props) -> Html {
         .collect::<Html>();
 
     html! {
-        <div class="d-flex flex-wrap mb-5 book-list">
+        <div class="d-flex flex-wrap mb-5">
             { book_elements }
         </div>
     }

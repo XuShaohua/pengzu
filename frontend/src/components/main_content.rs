@@ -25,7 +25,7 @@ pub fn main_content() -> Html {
             <div class="container-xl">
                 <div class="row">
                     <LeftPanelComponent />
-                    <div class="col-sm-10">
+                    <div class="col-sm-8 col-lg-10">
                         <Switch<Route> render={ switch_route } />
                     </div>
                 </div>

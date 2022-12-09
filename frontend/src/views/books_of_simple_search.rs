@@ -7,7 +7,7 @@ use shared::page::PageId;
 use shared::simple_search::SimpleSearchQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::hooks::{use_location, use_navigator};
+use yew_router::prelude::{use_location, Link};
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -20,7 +20,6 @@ use crate::views::util;
 pub fn books_of_simple_search() -> Html {
     util::set_document_title("Search");
 
-    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<SimpleSearchQuery>().unwrap_or_default();
     let keyword = query.query.clone();
@@ -48,18 +47,22 @@ pub fn books_of_simple_search() -> Html {
         })
     };
 
-    let on_pagination_click = {
+    let pagination_link = {
         let query_clone = query.clone();
-        Callback::from(move |page_id: PageId| {
-            util::scroll_to_top();
-
-            let new_query = SimpleSearchQuery {
-                page: page_id,
-                ..query_clone.clone()
-            };
-            let ret = navigator.push_with_query(&Route::BooksOfSimpleSearch, &new_query);
-            debug_assert!(ret.is_ok());
-        })
+        Callback::from(
+            move |(page_id, classes, title): (PageId, &'static str, String)| -> Html {
+                let new_query = SimpleSearchQuery {
+                    page: page_id,
+                    ..query_clone.clone()
+                };
+                html! {
+                    <Link<Route, SimpleSearchQuery> to={ Route::BooksOfSimpleSearch }
+                        query={ Some(new_query) } classes={ classes }>
+                        { title }
+                    </Link<Route, SimpleSearchQuery>>
+                }
+            },
+        )
     };
 
     book_list.data.as_ref().map_or_else(
@@ -76,7 +79,7 @@ pub fn books_of_simple_search() -> Html {
                 <BookListComponent books={ book_list.list.clone() } />
                 <PaginationComponent current_page={ book_list.page.page_num }
                     total_pages={ book_list.page.total_pages() }
-                    onclick={ on_pagination_click } />
+                    link={ pagination_link } />
                 </>
             }
         },

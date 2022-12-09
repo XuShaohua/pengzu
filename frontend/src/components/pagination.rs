@@ -14,9 +14,9 @@ pub struct Props {
 
 #[function_component(PaginationComponent)]
 pub fn pagination(props: &Props) -> Html {
-    let has_previous = props.current_page > 1;
-    let has_next = props.current_page < props.total_pages;
-    let has_no_page = props.total_pages == 0;
+    if props.total_pages == 0 {
+        return html! {};
+    }
 
     let mut pages = Vec::new();
     let min_pages = 12;
@@ -41,7 +41,7 @@ pub fn pagination(props: &Props) -> Html {
         }
     }
 
-    let buttons = pages
+    let link_elements = pages
         .iter()
         .map(|page_id| {
             page_id.map_or_else(
@@ -69,47 +69,39 @@ pub fn pagination(props: &Props) -> Html {
         })
         .collect::<Html>();
 
-    let previous_class = if has_no_page {
-        "page-item invisible"
-    } else if has_previous {
-        "page-item"
+    let previous_element = if props.current_page > 1 {
+        html! {
+            <li class="page-item">
+                { props.link.emit((props.current_page - 1, "page-link", "« Previous".to_owned())) }
+            </li>
+        }
     } else {
-        "page-item disabled"
+        html! {
+            <li class="page-item disabled">
+                <span class="page-link disabled">{ "« Previous" }</span>
+            </li>
+        }
     };
-    let next_class = if has_no_page {
-        "page-item invisible"
-    } else if has_next {
-        "page-item"
+    let next_element = if props.current_page < props.total_pages {
+        html! {
+            <li class="page-item">
+                { props.link.emit((props.current_page + 1, "page-link", "Next »".to_owned())) }
+            </li>
+        }
     } else {
-        "page-item disabled"
-    };
-    let previous_link = if has_previous {
-        props
-            .link
-            .emit((props.current_page - 1, "page-link", "« Previous".to_owned()))
-    } else {
-        html! {<span class="page-link disabled">{ "« Previous" }</span>}
-    };
-    let next_link = if has_next {
-        props
-            .link
-            .emit((props.current_page + 1, "page-link", "Next »".to_owned()))
-    } else {
-        html! {<span class="page-link disabled">{ "Next »" }</span>}
+        html! {
+            <li class="page-item disabled">
+                <span class="page-link disabled">{ "Next »" }</span>
+            </li>
+        }
     };
 
     html! {
         <nav aria-label="Pagination">
         <ul class="pagination justify-content-center">
-            <li class={ previous_class }>
-                { previous_link }
-            </li>
-
-            { buttons }
-
-            <li class={ next_class }>
-                { next_link }
-            </li>
+            { previous_element }
+            { link_elements }
+            { next_element }
         </ul>
         </nav>
     }

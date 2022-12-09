@@ -51,7 +51,7 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
                     width="135" height="200" />
             </Link<Route>>
 
-            <div class="row">
+            <div class="">
                 <div class="col-12">
                 <Link<Route> to={ Route::BookDetail { book_id: book.id } }
                     classes="text-body mb-2">

@@ -4,7 +4,7 @@
 
 use shared::books::BookAndAuthors;
 use yew::prelude::*;
-use yew_router::prelude::Link;
+use yew_router::prelude::{Link, Routable};
 
 use crate::router::Route;
 use crate::services::images::get_cover_image_url;
@@ -41,22 +41,21 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
         .collect::<Html>();
 
     let cover_url = get_cover_image_url(&book.small_cover);
+    let detail_url = Route::BookDetail { book_id: book.id }.to_path();
 
     html! {
         <div class="col-lg-2 col-sm-4 col-xs-6" key={ book.id }>
-            <Link<Route> to={ Route::BookDetail { book_id: book.id } }
-                classes="d-block p-2 mb-3">
+            <a href={ detail_url.clone() } class="d-block p-2 mb-3" target="_blank">
                 <img src={ cover_url } alt={ book.title.clone() }
                     style="border: 1px solid #fff; box-shadow: 0 5px 8px -6px #777;"
                     width="135" height="200" />
-            </Link<Route>>
+            </a>
 
             <div class="ms-1">
                 <div class="">
-                <Link<Route> to={ Route::BookDetail { book_id: book.id } }
-                    classes="text-body mb-2">
+                <a href={ detail_url } class="text-body mb-2" target="_blank">
                     <span class="wrap-text-l3" title={ book.title.clone() }>{ &book.title }</span>
-                </Link<Route>>
+                </a>
                 </div>
 
                 { authors_element }

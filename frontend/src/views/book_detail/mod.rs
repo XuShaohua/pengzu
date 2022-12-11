@@ -81,8 +81,8 @@ fn generate_formats_element(files: &[FileWithPath]) -> Html {
             html! {
                 <li>
                     <a class="book-format" target="_blank" href={ url }>
-                        <i class="bi bi-download me-1"></i>
                         { format!("{} ({})", file.format_name, readable_size) }
+                        <i class="bi bi-download ms-1"></i>
                     </a>
                 </li>
             }
@@ -95,12 +95,9 @@ fn generate_publisher_element(publisher: &Option<Publisher>) -> Html {
         || html! {<></>},
         |publisher| {
             html! {
-                <span>
-                    { "Publisher: " }
-                    <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id }}>
-                        { &publisher.name }
-                    </Link<Route>>
-                </span>
+                <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id }}>
+                    { &publisher.name }
+                </Link<Route>>
             }
         },
     )
@@ -114,14 +111,10 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
     let tags_element = generate_tags_element(&metadata.tags);
     let formats_element = generate_formats_element(&metadata.files);
 
-    let published_date_element = book.pubdate.as_ref().map_or_else(
-        || html! {},
-        |pubdate| {
-            html! {
-                <span>{ format!("Published At: {:?}", pubdate) }</span>
-            }
-        },
-    );
+    let published_date = book
+        .pubdate
+        .as_ref()
+        .map_or_else(|| "".to_owned(), |pubdate| format!("{}", pubdate));
 
     let series_element = metadata.series.as_ref().map_or_else(|| html!{},
         |series|
@@ -140,12 +133,38 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             <div class="book-cover">
                 <img class="detail-cover" src={ cover_url } alt={ book.title.clone() } />
             </div>
-            <div class="book-authors">{ authors_element }</div>
-            <div class="book-publishers">{ publisher_element }</div>
-            <div class="book-published-date">{ published_date_element }</div>
-            <div class="book-tags">{ tags_element }</div>
-            <div class="book-series">{ series_element }</div>
-            <ul class="book-formats">{ formats_element }</ul>
+
+            <div class="book-authors">
+                <span class="me-2 fw-bold">{ "Authors:" }</span>
+                { authors_element }
+            </div>
+
+            <div class="book-tags">
+                <span class="me-2 fw-bold">{ "Tags:" }</span>
+                { tags_element }
+            </div>
+
+            <div class="book-publishers">
+                <span class="me-2 fw-bold">{ "Publisher:" }</span>
+                { publisher_element }
+            </div>
+
+            <div class="book-published-date">
+                <span class="me-2 fw-bold">{ "Published At:" }</span>
+                { published_date }
+            </div>
+
+            <div class="book-series">
+                <span class="me-2 fw-bold">{ "Series:" }</span>
+                { series_element }
+            </div>
+
+            <div class="mt-2">
+                <span class="d-block me-2 fw-bold">{ "File Formats" }</span>
+                <ol class="book-formats ms-3">
+                    { formats_element }
+                </ol>
+            </div>
 
             <NavigationComponent previous_book={ metadata.previous_book } next_book={ metadata.next_book } />
 

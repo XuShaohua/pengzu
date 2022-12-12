@@ -9,7 +9,6 @@ use shared::authors::Author;
 use shared::books_meta::BookMetadata;
 use shared::files::FileWithPath;
 use shared::tags::Tag;
-use stylist::Style;
 use yew::prelude::*;
 use yew_hooks::prelude::{use_async_with_options, UseAsyncOptions};
 use yew_router::prelude::Link;
@@ -95,7 +94,8 @@ fn generate_publisher_element(publisher: &Option<Publisher>) -> Html {
         || html! {<></>},
         |publisher| {
             html! {
-                <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id }}>
+                <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id }}
+                    classes="col-sm-10">
                     { &publisher.name }
                 </Link<Route>>
             }
@@ -122,39 +122,37 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
             <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>{ &series.name }</Link<Route>>
         });
 
-    let style_str = include_str!("book_detail.css");
-    let style_cls = Style::new(style_str).expect("Invalid style file book_detail.css");
     let cover_url = get_cover_image_url(&book.small_cover);
 
     html! {
-        <div class={ style_cls }>
+        <div class="container">
 
             <h2>{ &metadata.book.title }</h2>
-            <div class="book-cover">
-                <img class="detail-cover" src={ cover_url } alt={ book.title.clone() } />
+            <div class="mt-2 mb-2">
+                <img class="" src={ cover_url } alt={ book.title.clone() } />
             </div>
 
-            <div class="book-authors">
-                <span class="me-2 fw-bold">{ "Authors:" }</span>
+            <div>
+                <span class="me-2 text-align-end fw-bold">{ "Authors:" }</span>
                 { authors_element }
             </div>
 
-            <div class="book-tags">
+            <div>
                 <span class="me-2 fw-bold">{ "Tags:" }</span>
                 { tags_element }
             </div>
 
-            <div class="book-publishers">
+            <div>
                 <span class="me-2 fw-bold">{ "Publisher:" }</span>
                 { publisher_element }
             </div>
 
-            <div class="book-published-date">
+            <div>
                 <span class="me-2 fw-bold">{ "Published At:" }</span>
                 { published_date }
             </div>
 
-            <div class="book-series">
+            <div>
                 <span class="me-2 fw-bold">{ "Series:" }</span>
                 { series_element }
             </div>

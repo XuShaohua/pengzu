@@ -3,15 +3,15 @@
 // that can be found in the LICENSE file.
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use shared::categories::{Category, CategoryAndBook, CategoryAndBookList};
-use shared::page::{Page, CATEGORIES_EACH_PAGE};
+use shared::page::Page;
 use shared::recursive_query::RecursiveQuery;
 
 use crate::error::Error;
 use crate::schema::categories;
 
-#[derive(Debug, Deserialize, Insertable)]
+#[derive(Debug, Serialize, Deserialize, Insertable)]
 #[diesel(table_name = categories)]
 pub struct NewCategory<'a> {
     pub order_index: i32,
@@ -54,8 +54,6 @@ pub fn get_categories(
 ) -> Result<CategoryAndBookList, Error> {
     use crate::schema::books_categories_link;
 
-    let offset = query.backend_page_id() * CATEGORIES_EACH_PAGE;
-
     // TODO(Shaohua): Support query order
     let list = categories::table
         .filter(categories::parent.eq(query.parent))
@@ -72,21 +70,10 @@ pub fn get_categories(
             diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_categories_link.id)"),
         ))
         .order_by(categories::id.asc())
-        .limit(CATEGORIES_EACH_PAGE)
-        .offset(offset)
         .load::<CategoryAndBook>(conn)?;
 
-    let total = categories::table
-        .filter(categories::parent.eq(query.parent))
-        .count()
-        .first(conn)?;
-
     Ok(CategoryAndBookList {
-        page: Page {
-            page_num: query.frontend_page_id(),
-            each_page: CATEGORIES_EACH_PAGE,
-            total,
-        },
+        page: Page::default(),
         list,
     })
 }

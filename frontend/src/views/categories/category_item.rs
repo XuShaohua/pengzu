@@ -18,13 +18,13 @@ pub struct Props {
 
 pub fn generate_category_list(category_list: &CategoryAndBookList) -> Html {
     html! {
-        <ul class="list-unstyled">
+        <ol class="">
         {for category_list.list.iter().map(|category| html!{
-            <li class="" key={ category.id }>
-            <CategoryItemComponent category={ category.clone() } />
+            <li class="mb-2" key={ category.id }>
+                <CategoryItemComponent category={ category.clone() } />
             </li>
         })}
-        </ul>
+        </ol>
     }
 }
 
@@ -56,7 +56,7 @@ pub fn category_item(props: &Props) -> Html {
     html! {
         <>
             <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ category.count }</span>
-            <span>{ &category.serial_number }</span>
+            <span class="me-1">{ "[" }{ &category.serial_number }{ "]" }</span>
             <Link<Route> to={ Route::BooksOfCategory { category_id: category.id }}>
                 { &category.name }
             </Link<Route>>

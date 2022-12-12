@@ -7,8 +7,8 @@ use yew::prelude::*;
 #[function_component(FooterComponent)]
 pub fn footer() -> Html {
     html! {
-        <footer class="mt-3 fw-light">
-            {"© 2022 Shaohua"}
+        <footer class="mt-3 fw-light text-center">
+            {"© 2022 Pengzu Library"}
         </footer>
     }
 }

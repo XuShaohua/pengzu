@@ -4,14 +4,11 @@
 
 mod category_item;
 
-use shared::page::PageId;
 use shared::recursive_query::RecursiveQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::prelude::{use_location, Link};
+use yew_router::prelude::use_location;
 
-use crate::components::pagination::PaginationComponent;
-use crate::router::Route;
 use crate::services::categories::fetch_categories;
 use crate::views::util;
 use category_item::generate_category_list;
@@ -33,26 +30,9 @@ pub fn categories() -> Html {
                 category_list_clone.run();
                 || ()
             },
-            query.clone(),
+            query,
         );
     }
-
-    let pagination_link = {
-        Callback::from(
-            move |(page_id, classes, title): (PageId, &'static str, String)| -> Html {
-                let new_query = RecursiveQuery {
-                    page: page_id,
-                    ..query
-                };
-                html! {
-                    <Link<Route, RecursiveQuery> to={ Route::Category }
-                        query={ Some(new_query) } classes={ classes }>
-                        { title }
-                    </Link<Route, RecursiveQuery>>
-                }
-            },
-        )
-    };
 
     category_list.data.as_ref().map_or_else(
         || html! {},
@@ -61,9 +41,6 @@ pub fn categories() -> Html {
                 <>
                 <h2>{ "Categories" }</h2>
                 { generate_category_list(category_list) }
-                <PaginationComponent  current_page={ category_list.page.page_num }
-                    total_pages={ category_list.page.total_pages() }
-                    link={ pagination_link } />
                 </>
             }
         },

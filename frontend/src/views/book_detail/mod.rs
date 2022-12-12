@@ -10,7 +10,7 @@ use shared::books_meta::BookMetadata;
 use shared::files::FileWithPath;
 use shared::tags::Tag;
 use yew::prelude::*;
-use yew_hooks::prelude::{use_async_with_options, UseAsyncOptions};
+use yew_hooks::use_async;
 use yew_router::prelude::Link;
 
 use crate::hooks::use_user_context;
@@ -181,11 +181,20 @@ pub fn book_detail(props: &Props) -> Html {
     let user_ctx = use_user_context();
     let is_admin = user_ctx.is_admin();
 
-    let book_id = props.book_id;
-    let book_metadata = use_async_with_options(
-        async move { fetch_book_metadata(book_id).await },
-        UseAsyncOptions::enable_auto(),
-    );
+    let book_metadata = {
+        let book_id = props.book_id;
+        use_async(async move { fetch_book_metadata(book_id).await })
+    };
+    {
+        let book_metadata_clone = book_metadata.clone();
+        use_effect_with_deps(
+            move |_book_id| {
+                book_metadata_clone.run();
+                || ()
+            },
+            props.book_id,
+        );
+    }
 
     book_metadata.data.as_ref().map_or_else(
         || html! {},

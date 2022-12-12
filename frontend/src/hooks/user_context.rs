@@ -36,6 +36,10 @@ impl UseUserContextHandle {
     pub fn is_login(&self) -> bool {
         self.inner.id > 0 && self.inner.role != UserRole::Nil
     }
+
+    pub fn is_admin(&self) -> bool {
+        self.inner.id > 0 && self.inner.role == UserRole::Admin
+    }
 }
 
 impl Deref for UseUserContextHandle {

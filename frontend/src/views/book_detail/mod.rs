@@ -13,6 +13,7 @@ use yew::prelude::*;
 use yew_hooks::prelude::{use_async_with_options, UseAsyncOptions};
 use yew_router::prelude::Link;
 
+use crate::hooks::use_user_context;
 use crate::router::Route;
 use crate::services::books_meta::fetch_book_metadata;
 use crate::services::files::get_file_format_url;
@@ -103,7 +104,7 @@ fn generate_publisher_element(publisher: &Option<Publisher>) -> Html {
     )
 }
 
-fn generate_metadata_element(metadata: &BookMetadata) -> Html {
+fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
     let book = &metadata.book;
 
     let authors_element = generate_author_element(&metadata.authors);
@@ -114,7 +115,7 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
     let published_date = book
         .pubdate
         .as_ref()
-        .map_or_else(|| "".to_owned(), |pubdate| format!("{}", pubdate));
+        .map_or_else(String::new, |pubdate| format!("{}", pubdate));
 
     let series_element = metadata.series.as_ref().map_or_else(|| html!{},
         |series|
@@ -166,7 +167,9 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
 
             <NavigationComponent previous_book={ metadata.previous_book } next_book={ metadata.next_book } />
 
-            <EditMetadataComponent book_id={ book.id } title={ book.title.clone() } />
+            <div class={ if is_admin { "mt-3" } else { "d-none" }}>
+                <EditMetadataComponent book_id={ book.id } title={ book.title.clone() } />
+            </div>
         </div>
     }
 }
@@ -174,6 +177,9 @@ fn generate_metadata_element(metadata: &BookMetadata) -> Html {
 #[function_component(BookDetailComponent)]
 pub fn book_detail(props: &Props) -> Html {
     util::set_document_title(&format!("Book: {}", props.book_id));
+
+    let user_ctx = use_user_context();
+    let is_admin = user_ctx.is_admin();
 
     let book_id = props.book_id;
     let book_metadata = use_async_with_options(
@@ -186,7 +192,7 @@ pub fn book_detail(props: &Props) -> Html {
         |book_metadata| {
             util::set_document_title(&format!("Book: {}", book_metadata.book.title));
 
-            generate_metadata_element(book_metadata)
+            generate_metadata_element(book_metadata, is_admin)
         },
     )
 }

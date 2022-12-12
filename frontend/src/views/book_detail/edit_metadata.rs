@@ -61,14 +61,12 @@ pub fn edit_metadata(props: &Props) -> Html {
     };
 
     html! {
-        <div class="edit-book">
-            <form onsubmit={ on_form_submit }>
-                <input type="text" class="form-control"
-                    onfocus={ on_input_focus }
-                    ref={ edit_title_ref }
-                    name="title" value={ props.title.clone() } />
-                <button type="submit" class="btn btn-primary">{ "Update" }</button>
-            </form>
-        </div>
+        <form onsubmit={ on_form_submit }>
+            <input type="text" class="form-control"
+                onfocus={ on_input_focus }
+                ref={ edit_title_ref }
+                name="title" value={ props.title.clone() } />
+            <button type="submit" class="btn btn-primary">{ "Update" }</button>
+        </form>
     }
 }

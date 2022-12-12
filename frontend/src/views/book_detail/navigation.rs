@@ -16,30 +16,34 @@ pub struct Props {
 #[function_component(NavigationComponent)]
 pub fn navigation(props: &Props) -> Html {
     let previous_button = props.previous_book.map_or_else(
-        || html! {},
+        || html! { <span class="page-link disabled">{ "« Previous" }</span> },
         |book_id| {
             html! {
-                <div class="previous-button">
-                    <Link<Route> to={ Route::BookDetail { book_id } }>{ "« Previous" }</Link<Route>>
-                </div>
+                <Link<Route> to={ Route::BookDetail { book_id } } classes="page-link">
+                    { "« Previous" }
+                </Link<Route>>
             }
         },
     );
     let next_button = props.next_book.map_or_else(
-        || html! {},
+        || html! { <span class="page-link disabled">{ "Next »" }</span> },
         |book_id| {
             html! {
-                <div class="next-button">
-                    <Link<Route> to={ Route::BookDetail { book_id } }>{ "Next »" }</Link<Route>>
-                </div>
+                <Link<Route> to={ Route::BookDetail { book_id } } classes="page-link" >
+                    { "Next »" }
+                </Link<Route>>
             }
         },
     );
 
     html! {
-        <div class="button-group">
-            { previous_button }
-            { next_button }
-        </div>
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                { previous_button }
+            </li>
+            <li class="page-item">
+                { next_button }
+            </li>
+        </ul>
     }
 }

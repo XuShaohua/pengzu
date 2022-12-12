@@ -31,6 +31,7 @@ pub struct CategoryAndBook {
     pub serial_number: String,
     pub name: String,
     pub parent: i32,
+    /// Number of books belongs to this category.
     pub count: i64,
 }
 

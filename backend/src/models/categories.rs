@@ -54,7 +54,18 @@ pub fn get_categories(
 ) -> Result<CategoryAndBookList, Error> {
     use crate::schema::books_categories_link;
 
-    // TODO(Shaohua): Support query order
+    // TODO(Shaohua): Support multiple joins.
+    // Expected sql query is:
+    // ```sql
+    // SELECT categories.id, categories.order_index, categories.serial_number,
+    //        categories.name, categories.parent, count(c2.id) children, COUNT(bcl.id) books
+    // FROM categories
+    // LEFT JOIN categories c2 ON categories.id = c2.parent
+    // LEFT JOIN books_categories_link bcl ON categories.id = bcl.category
+    // WHERE categories.parent = 0
+    // GROUP BY categories.id
+    // ORDER BY categories.id;
+    // ```
     let list = categories::table
         .filter(categories::parent.eq(query.parent))
         .left_join(

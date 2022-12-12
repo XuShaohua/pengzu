@@ -43,7 +43,8 @@ pub fn category_item(props: &Props) -> Html {
     });
     let onclick = {
         let child_categories = child_categories.clone();
-        Callback::from(move |_event| {
+        Callback::from(move |event: MouseEvent| {
+            event.prevent_default();
             child_categories.run();
         })
     };

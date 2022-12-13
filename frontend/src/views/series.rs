@@ -82,7 +82,7 @@ pub fn series_page() -> Html {
     series_list.data.as_ref().map_or_else(
         || html! {},
         |series_list| {
-            let half_list = series_list.list.len() / 2;
+            let half_list = (series_list.list.len() + 1) / 2;
             html! {
                 <>
                 <h2>{ "Series" }</h2>

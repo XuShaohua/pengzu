@@ -81,7 +81,7 @@ pub fn home() -> Html {
     author_list.data.as_ref().map_or_else(
         || html! {},
         |author_list| {
-            let half_list = author_list.list.len() / 2;
+            let half_list = (author_list.list.len() + 1) / 2;
 
             html! {
                 <>

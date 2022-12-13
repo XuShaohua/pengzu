@@ -81,7 +81,7 @@ pub fn publishers_page() -> Html {
     publisher_list.data.as_ref().map_or_else(
         || html! {},
         |publisher_list| {
-            let half_list = publisher_list.list.len() / 2;
+            let half_list = (publisher_list.list.len() + 1)/ 2;
             html! {
                 <>
                 <h2>{ "Publishers" }</h2>

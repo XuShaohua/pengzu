@@ -112,10 +112,9 @@ fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
     let tags_element = generate_tags_element(&metadata.tags);
     let formats_element = generate_formats_element(&metadata.files);
 
-    let published_date = book
-        .pubdate
-        .as_ref()
-        .map_or_else(String::new, |pubdate| format!("{}", pubdate));
+    let published_date = book.pubdate.as_ref().map_or_else(String::new, |pubdate| {
+        pubdate.date().format("%Y-%m-%d").to_string()
+    });
 
     let series_element = metadata.series.as_ref().map_or_else(|| html!{},
         |series|

@@ -7,7 +7,7 @@ use shared::page::PageId;
 use shared::series::SeriesAndBook;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::prelude::{use_location, Link};
+use yew_router::prelude::{use_location, use_navigator, Link};
 
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
@@ -34,6 +34,7 @@ fn generate_series_list(series_list: &[SeriesAndBook]) -> Html {
 pub fn series_page() -> Html {
     util::set_document_title("Series");
 
+    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<GeneralQuery>().unwrap_or_default();
     let series_list = {
@@ -54,10 +55,15 @@ pub fn series_page() -> Html {
         );
     }
 
-    let filter_onchange = {
-        Callback::from(|order: GeneralOrder| {
-            log::info!("new order: {:?}", order);
-            // TODO(Shaohua):
+    let on_filter_change = {
+        let query_clone = query.clone();
+        Callback::from(move |order: GeneralOrder| {
+            let new_query = GeneralQuery {
+                order,
+                ..query_clone
+            };
+            let ret = navigator.push_with_query(&Route::Series, &new_query);
+            debug_assert!(ret.is_ok());
         })
     };
 
@@ -86,7 +92,7 @@ pub fn series_page() -> Html {
             html! {
                 <>
                 <h2>{ "Series" }</h2>
-                <GeneralFilterComponent onchange={ filter_onchange } current_order={ query.order } />
+                <GeneralFilterComponent onchange={ on_filter_change } current_order={ query.order } />
 
                 <div class="container-fluid">
                     <div class="row">

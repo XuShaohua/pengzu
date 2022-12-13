@@ -35,6 +35,16 @@ pub fn books_of_file_format(props: &Props) -> Html {
             fetch_books_by_file_format(format_id, &query_clone).await
         })
     };
+    {
+        let book_list_clone = book_list.clone();
+        use_effect_with_deps(
+            move |_query_clone| {
+                book_list_clone.run();
+                || ()
+            },
+            query.clone(),
+        );
+    }
 
     let format_info = {
         let format_id = props.format_id;
@@ -89,7 +99,7 @@ pub fn books_of_file_format(props: &Props) -> Html {
     };
 
     book_list.data.as_ref().map_or_else(
-        || html! {},
+        || html! { <h2>{ "Books of format" }</h2> },
         |book_list| {
             html! {
                 <>

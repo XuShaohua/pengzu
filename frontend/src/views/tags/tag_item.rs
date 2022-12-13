@@ -34,6 +34,7 @@ pub fn tag_item(props: &Props) -> Html {
     let parent_id = tag.id;
 
     let child_tags = use_async(async move {
+        // Always fetch all tags.
         let query = RecursiveQuery {
             parent: parent_id,
             fetch_all: true,

@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use yew::prelude::*;
-use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_hooks::{use_async, use_mount};
 
 use crate::components::book_list::BookListComponent;
 use crate::services::discover::fetch_books_by_discover;
@@ -14,10 +14,24 @@ pub fn books_of_discover() -> Html {
     let title = "Discover (Random Books)";
     util::set_document_title(title);
 
-    let book_list = use_async_with_options(
-        async move { fetch_books_by_discover().await },
-        UseAsyncOptions::enable_auto(),
-    );
+    let book_list = use_async(async move {
+        util::scroll_to_top();
+        fetch_books_by_discover().await
+    });
+    {
+        let book_list_clone = book_list.clone();
+        use_mount(move || {
+            book_list_clone.run();
+        });
+    }
+
+    let on_refresh_click = {
+        let book_list_clone = book_list.clone();
+        Callback::from(move |event: MouseEvent| {
+            event.prevent_default();
+            book_list_clone.run();
+        })
+    };
 
     book_list.data.as_ref().map_or_else(
         || {
@@ -30,6 +44,12 @@ pub fn books_of_discover() -> Html {
                 <>
                 <h2>{ title }</h2>
                 <BookListComponent books={ book_list.list.clone() } />
+
+                <ul class="mt-3 pagination justify-content-center">
+                    <li class="page-item">
+                        <a href="#" onclick={ on_refresh_click } class="page-link active">{ "Refresh" }</a>
+                    </li>
+                </ul>
                 </>
             }
         },

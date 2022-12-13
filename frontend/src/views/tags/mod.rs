@@ -71,7 +71,7 @@ pub fn tags_page() -> Html {
                 <h2>{ "Tags" }</h2>
                 <GeneralFilterComponent onchange={ filter_onchange } current_order={ query.order } />
 
-                { generate_tag_list(tag_list) }
+                { generate_tag_list(&tag_list.list) }
 
                 <PaginationComponent  current_page={ tag_list.page.page_num }
                     total_pages={ tag_list.page.total_pages() }

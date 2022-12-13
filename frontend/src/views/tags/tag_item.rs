@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use shared::recursive_query::RecursiveQuery;
-use shared::tags::{TagAndBook, TagAndBookList};
+use shared::tags::TagAndBook;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::Link;
@@ -16,15 +16,15 @@ pub struct Props {
     pub tag: TagAndBook,
 }
 
-pub fn generate_tag_list(tag_list: &TagAndBookList) -> Html {
+pub fn generate_tag_list(tag_list: &[TagAndBook]) -> Html {
     html! {
-        <ul class="list-unstyled">
-        {for tag_list.list.iter().map(|tag| html!{
-            <li class="mb-3" key={ tag.id }>
+        <ol class="">
+        {for tag_list.iter().map(|tag| html!{
+            <li class="mb-2" key={ tag.id }>
             <TagItemComponent tag={ tag.clone() } />
             </li>
         })}
-        </ul>
+        </ol>
     }
 }
 
@@ -43,7 +43,8 @@ pub fn tag_item(props: &Props) -> Html {
     });
     let onclick = {
         let child_tags = child_tags.clone();
-        Callback::from(move |_event| {
+        Callback::from(move |event: MouseEvent| {
+            event.prevent_default();
             child_tags.run();
         })
     };
@@ -51,7 +52,7 @@ pub fn tag_item(props: &Props) -> Html {
     let child_items = child_tags
         .data
         .as_ref()
-        .map_or_else(|| html! {}, generate_tag_list);
+        .map_or_else(|| html! {}, |tag_list| generate_tag_list(&tag_list.list));
 
     html! {
         <>

@@ -68,13 +68,13 @@ pub fn books_of_simple_search() -> Html {
     book_list.data.as_ref().map_or_else(
         || {
             html! {
-                <h2>{ "Result for \"" }{ &keyword }{ "\""}</h2>
+                <h2>{ "Result for search \"" }{ &keyword }{ "\""}</h2>
             }
         },
         |book_list| {
             html! {
                 <>
-                <h2>{ book_list.page.total }{ " Results for \""}{ &keyword }{"\""}</h2>
+                <h2>{ book_list.page.total }{ " results of search \""}{ &keyword }{"\""}</h2>
                 <BookFilterComponent onchange={ on_book_filter_change } current_order={ query.order } />
                 <BookListComponent books={ book_list.list.clone() } />
                 <PaginationComponent current_page={ book_list.page.page_num }

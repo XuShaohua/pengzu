@@ -60,7 +60,7 @@ pub fn books_of_file_format(props: &Props) -> Html {
             util::set_document_title(&format!("Format: {}", format_info.name));
 
             html! {
-                <h2>{ format!("Books of \"{}\"", format_info.name) }</h2>
+                <h2>{ format!("Books of format \"{}\"", format_info.name) }</h2>
             }
         },
     );

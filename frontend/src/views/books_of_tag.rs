@@ -60,7 +60,7 @@ pub fn books_of_tag(props: &Props) -> Html {
             util::set_document_title(&format!("Tag: {}", tag_info.name));
 
             html! {
-                <h2>{ format!("Books of \"{}\"", tag_info.name) }</h2>
+                <h2>{ format!("Books of tag \"{}\"", tag_info.name) }</h2>
             }
         },
     );
@@ -97,7 +97,7 @@ pub fn books_of_tag(props: &Props) -> Html {
     };
 
     book_list.data.as_ref().map_or_else(
-        || html! {},
+        || html! { <h2>{ "Books of tag" }</h2> },
         |book_list| {
             html! {
                 <>

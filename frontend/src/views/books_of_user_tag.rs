@@ -57,7 +57,7 @@ pub fn books_of_user_tag(props: &Props) -> Html {
             util::set_document_title(&format!("User Tag: {}", tag_info.name));
 
             html! {
-                <h2>{ format!("Result of \"{}\"", tag_info.name) }</h2>
+                <h2>{ format!("Result of user tag \"{}\"", tag_info.name) }</h2>
             }
         },
     );
@@ -97,7 +97,7 @@ pub fn books_of_user_tag(props: &Props) -> Html {
     };
 
     book_list.data.as_ref().map_or_else(
-        || html! {},
+        || html! { <h2>{ "Result of user tag" }</h2> },
         |book_list| {
             html! {
                 <>

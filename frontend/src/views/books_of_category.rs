@@ -60,7 +60,7 @@ pub fn books_of_category(props: &Props) -> Html {
             util::set_document_title(&format!("Category: {}", category_info.name));
 
             html! {
-                <h2>{ format!("Books of \"{}\"", category_info.name) }</h2>
+                <h2>{ format!("Books of category \"{}\"", category_info.name) }</h2>
             }
         },
     );
@@ -98,7 +98,7 @@ pub fn books_of_category(props: &Props) -> Html {
     };
 
     book_list.data.as_ref().map_or_else(
-        || html! {},
+        || html! { <h2>{ "Books of category" }</h2> },
         |book_list| {
             html! {
                 <>

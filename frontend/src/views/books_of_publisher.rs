@@ -60,7 +60,7 @@ pub fn books_of_publisher(props: &Props) -> Html {
             util::set_document_title(&format!("Publisher: {}", publisher_info.name));
 
             html! {
-                <h2>{ format!("Books of \"{}\"", publisher_info.name) }</h2>
+                <h2>{ format!("Books of publisher \"{}\"", publisher_info.name) }</h2>
             }
         },
     );
@@ -98,7 +98,7 @@ pub fn books_of_publisher(props: &Props) -> Html {
     };
 
     book_list.data.as_ref().map_or_else(
-        || html! {},
+        || html! { <h2>{ "Books of publisher" }</h2> },
         |book_list| {
             html! {
                 <>

@@ -7,7 +7,7 @@ use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::prelude::{use_location, Link};
+use yew_router::prelude::{use_location, use_navigator, Link};
 
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
@@ -34,6 +34,7 @@ fn generate_author_list(author_list: &[AuthorAndBook]) -> Html {
 pub fn home() -> Html {
     util::set_document_title("Authors");
 
+    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<GeneralQuery>().unwrap_or_default();
     let author_list = {
@@ -54,9 +55,15 @@ pub fn home() -> Html {
         );
     }
 
-    let filter_onchange = {
-        Callback::from(|order: GeneralOrder| {
-            log::info!("new order: {:?}", order);
+    let on_filter_change = {
+        let query_clone = query.clone();
+        Callback::from(move |order: GeneralOrder| {
+            let new_query = GeneralQuery {
+                order,
+                ..query_clone
+            };
+            let ret = navigator.push_with_query(&Route::Author, &new_query);
+            debug_assert!(ret.is_ok());
         })
     };
 
@@ -86,7 +93,7 @@ pub fn home() -> Html {
             html! {
                 <>
                 <h2>{ "Authors" }</h2>
-                <GeneralFilterComponent onchange={ filter_onchange } current_order={ query.order } />
+                <GeneralFilterComponent onchange={ on_filter_change } current_order={ query.order } />
 
                 <div class="container-fluid">
                     <div class="row">

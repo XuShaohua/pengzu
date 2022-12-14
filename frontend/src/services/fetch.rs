@@ -67,6 +67,22 @@ where
     request("PUT", url, body).await
 }
 
+/// Wrap fetch() api in browser, for DEELETE requests.
+///
+/// Response body is returned as string.
+///
+/// Note that response status code is not check currently.
+///
+/// # Errors
+///
+/// Returns error if failed to construct request or failed to read response body.
+pub async fn request_delete<T>(url: &str) -> Result<T, FetchError>
+where
+    T: DeserializeOwned + std::fmt::Debug,
+{
+    request("DELETE", url, ()).await
+}
+
 async fn request<T, B>(method: &str, url: &str, body: B) -> Result<T, FetchError>
 where
     T: DeserializeOwned + std::fmt::Debug,

@@ -56,10 +56,13 @@ pub fn edit_tag_item(props: &Props) -> Html {
 
     let delete_tag_task = {
         let tag_id = tag.id;
-        let is_deleted_clone = is_deleted.clone();
         use_async(async move {
-            is_deleted_clone.set(true);
-            delete_tag(tag_id).await
+            if *is_deleted {
+                delete_tag(tag_id).await
+            } else {
+                is_deleted.set(true);
+                Ok(())
+            }
         })
     };
     let on_delete_button_click = {
@@ -81,8 +84,7 @@ pub fn edit_tag_item(props: &Props) -> Html {
             <button class="btn btn-secondary me-2" onclick={ on_edit_button_click }>{ "Edit" }</button>
             <button class="btn btn-danger me-2" onclick={ on_delete_button_click }>{ "Delete" }</button>
             <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ tag.count }</span>
-            <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}
-                classes={ if *is_deleted { "disabled" } else {""} }>
+            <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
                 { &tag.name }
             </Link<Route>>
             {

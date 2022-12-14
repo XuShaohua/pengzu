@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+mod edit_series_item;
 mod series_item;
 
 use shared::general_query::{GeneralOrder, GeneralQuery};
@@ -12,15 +13,18 @@ use yew_router::prelude::{use_location, use_navigator, Link};
 
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
+use crate::hooks::use_user_context;
 use crate::router::Route;
 use crate::services::series::fetch_series_list;
 use crate::views::util;
+use edit_series_item::generate_edit_series_list;
 use series_item::generate_series_list;
 
 #[function_component(SeriesComponent)]
 pub fn series_page() -> Html {
     util::set_document_title("Series");
 
+    let user_ctx = use_user_context();
     let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<GeneralQuery>().unwrap_or_default();
@@ -83,8 +87,16 @@ pub fn series_page() -> Html {
 
                 <div class="container-fluid">
                     <div class="row">
-                        { generate_series_list(&series_list.list[..half_list]) }
-                        { generate_series_list(&series_list.list[half_list..]) }
+                        {if user_ctx.is_admin() {
+                            generate_edit_series_list(&series_list.list[..half_list])
+                        } else {
+                            generate_series_list(&series_list.list[..half_list])
+                        }}
+                       {if user_ctx.is_admin() {
+                            generate_edit_series_list(&series_list.list[half_list..])
+                        } else {
+                            generate_series_list(&series_list.list[half_list..])
+                        }}
                     </div>
                 </div>
 

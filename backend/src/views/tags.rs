@@ -65,7 +65,9 @@ pub async fn delete_tag(
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let mut conn = pool.get()?;
-        tags::delete_by_id(&mut conn, tag_id.into_inner())
+        let tag_id = tag_id.into_inner();
+        books_tags::delete_by_tag_id(&mut conn, tag_id)?;
+        tags::delete_by_id(&mut conn, tag_id)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())

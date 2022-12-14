@@ -62,20 +62,13 @@ pub fn get_links_by_tag(conn: &mut PgConnection, tag_id: i32) -> Result<Vec<Book
         .map_err(Into::into)
 }
 
-pub fn delete_book_tag(conn: &mut PgConnection, new_book_tag: &NewBookTag) -> Result<(), Error> {
-    use crate::schema::books_tags_link::dsl::{book, books_tags_link, tag};
-    // TODO(Shaohua): Check exists
-    diesel::delete(
-        books_tags_link
-            .filter(book.eq(new_book_tag.book))
-            .filter(tag.eq(new_book_tag.tag)),
-    )
-    .execute(conn)?;
+pub fn delete_by_id(conn: &mut PgConnection, id: i32) -> Result<(), Error> {
+    diesel::delete(books_tags_link::table.find(id)).execute(conn)?;
     Ok(())
 }
 
-pub fn delete_by_id(conn: &mut PgConnection, id: i32) -> Result<(), Error> {
-    diesel::delete(books_tags_link::table.find(id)).execute(conn)?;
+pub fn delete_by_tag_id(conn: &mut PgConnection, tag_id: i32) -> Result<(), Error> {
+    diesel::delete(books_tags_link::table.filter(books_tags_link::tag.eq(tag_id))).execute(conn)?;
     Ok(())
 }
 

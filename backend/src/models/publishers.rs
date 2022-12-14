@@ -90,3 +90,8 @@ pub fn update_publisher(
         .execute(conn)?;
     Ok(())
 }
+
+pub fn delete_by_id(conn: &mut PgConnection, publisher_id: i32) -> Result<(), Error> {
+    diesel::delete(publishers::table.find(publisher_id)).execute(conn)?;
+    Ok(())
+}

@@ -55,6 +55,14 @@ pub fn delete_book_publisher(conn: &mut PgConnection, book_id: i32) -> Result<()
     Ok(())
 }
 
+pub fn delete_by_publisher_id(conn: &mut PgConnection, publisher_id: i32) -> Result<(), Error> {
+    diesel::delete(
+        books_publishers_link::table.filter(books_publishers_link::publisher.eq(publisher_id)),
+    )
+    .execute(conn)?;
+    Ok(())
+}
+
 pub fn get_publisher_by_book(
     conn: &mut PgConnection,
     book_id: i32,

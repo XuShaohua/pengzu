@@ -17,6 +17,7 @@ pub struct AdvancedSearchQuery {
     pub title: Option<String>,
     pub author: Option<String>,
     pub publisher: Option<String>,
+    pub isbn: Option<String>,
 }
 
 impl Default for AdvancedSearchQuery {
@@ -27,6 +28,7 @@ impl Default for AdvancedSearchQuery {
             title: None,
             author: None,
             publisher: None,
+            isbn: None,
         }
     }
 }
@@ -40,6 +42,12 @@ impl AdvancedSearchQuery {
         }
         if let Some(author) = &self.author {
             return author.to_string();
+        }
+        if let Some(publisher) = &self.publisher {
+            return publisher.to_string();
+        }
+        if let Some(isbn) = &self.isbn {
+            return isbn.to_string();
         }
 
         String::new()

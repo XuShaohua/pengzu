@@ -18,11 +18,13 @@ pub fn advanced_search() -> Html {
     let title_input_ref = use_node_ref();
     let author_input_ref = use_node_ref();
     let publisher_input_ref = use_node_ref();
+    let isbn_input_ref = use_node_ref();
 
     let on_search_submit = {
         let title_input_ref_clone = title_input_ref.clone();
         let author_input_ref_clone = author_input_ref.clone();
         let publisher_input_ref_clone = publisher_input_ref.clone();
+        let isbn_input_ref_clone = isbn_input_ref.clone();
 
         Callback::from(move |event: SubmitEvent| {
             event.prevent_default();
@@ -46,6 +48,12 @@ pub fn advanced_search() -> Html {
                     query.publisher = Some(value);
                 }
             }
+            if let Some(input) = isbn_input_ref_clone.cast::<HtmlInputElement>() {
+                let value = input.value();
+                if !value.is_empty() {
+                    query.isbn = Some(value);
+                }
+            }
 
             let ret = navigator.push_with_query(&Route::BooksOfAdvancedSearch, &query);
             debug_assert!(ret.is_ok());
@@ -59,8 +67,8 @@ pub fn advanced_search() -> Html {
         <div class="container-fluid">
         <form onsubmit={ on_search_submit } class="col-lg-6 col-md-9 col-sm-12">
         <div class="mb-3">
-            <label for="book_title" class="form-label">{ "Book Title" }</label>
-            <input id="book_title"
+            <label for="book-title" class="form-label">{ "Book Title" }</label>
+            <input id="book-title"
                 class="form-control"
                 ref={ title_input_ref }
                 name="book_title"
@@ -68,8 +76,8 @@ pub fn advanced_search() -> Html {
         </div>
 
         <div class="mb-3">
-            <label for="book_author" class="form-label">{ "Author" }</label>
-            <input id="book_author"
+            <label for="book-author" class="form-label">{ "Author" }</label>
+            <input id="book-author"
                 class="form-control"
                 ref={ author_input_ref }
                 name="book_author"
@@ -77,11 +85,20 @@ pub fn advanced_search() -> Html {
         </div>
 
         <div class="mb-3">
-            <label for="book_publisher" class="form-label">{ "Publisher" }</label>
-            <input id="book_publisher"
+            <label for="book-publisher" class="form-label">{ "Publisher" }</label>
+            <input id="book-publisher"
                 class="form-control"
                 ref={ publisher_input_ref }
                 name="book_publisher"
+                type="text" />
+        </div>
+
+        <div class="mb-3">
+            <label for="book-isbn" class="form-label">{ "ISBN" }</label>
+            <input id="book-isbn"
+                class="form-control"
+                ref={ isbn_input_ref }
+                name="book_isbn"
                 type="text" />
         </div>
 

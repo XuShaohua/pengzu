@@ -46,6 +46,20 @@ pub async fn get_series(
     Ok(HttpResponse::Ok().json(resp))
 }
 
+pub async fn delete_series(
+    pool: web::Data<DbPool>,
+    series_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        let series_id = series_id.into_inner();
+        books_series::delete_by_series_id(&mut conn, series_id)?;
+        series::delete_by_id(&mut conn, series_id)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}
+
 pub async fn get_books_by_series(
     pool: web::Data<DbPool>,
     series_id: web::Path<i32>,

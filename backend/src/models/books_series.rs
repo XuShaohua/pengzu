@@ -55,6 +55,12 @@ pub fn delete_book_series(conn: &mut PgConnection, book_id: i32) -> Result<(), E
     Ok(())
 }
 
+pub fn delete_by_series_id(conn: &mut PgConnection, series_id: i32) -> Result<(), Error> {
+    diesel::delete(books_series_link::table.filter(books_series_link::series.eq(series_id)))
+        .execute(conn)?;
+    Ok(())
+}
+
 pub fn get_series_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Option<Series>, Error> {
     use crate::schema::series;
 

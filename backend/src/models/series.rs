@@ -85,3 +85,8 @@ pub fn update_series(
         .execute(conn)?;
     Ok(())
 }
+
+pub fn delete_by_id(conn: &mut PgConnection, series_id: i32) -> Result<(), Error> {
+    diesel::delete(series::table.find(series_id)).execute(conn)?;
+    Ok(())
+}

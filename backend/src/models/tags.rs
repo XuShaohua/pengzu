@@ -92,7 +92,7 @@ pub fn update_tag(conn: &mut PgConnection, tag_id: i32, new_tag: &NewTag) -> Res
     Ok(())
 }
 
-pub fn delete_by_id(conn: &mut PgConnection, id: i32) -> Result<(), Error> {
-    diesel::delete(tags::table.find(id)).execute(conn)?;
+pub fn delete_by_id(conn: &mut PgConnection, tag_id: i32) -> Result<(), Error> {
+    diesel::delete(tags::table.find(tag_id)).execute(conn)?;
     Ok(())
 }

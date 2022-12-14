@@ -59,6 +59,18 @@ pub async fn update_tag(
     Ok(HttpResponse::Ok().finish())
 }
 
+pub async fn delete_tag(
+    pool: web::Data<DbPool>,
+    tag_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        tags::delete_by_id(&mut conn, tag_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}
+
 pub async fn get_books_by_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,

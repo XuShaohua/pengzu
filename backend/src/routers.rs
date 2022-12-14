@@ -226,19 +226,18 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         // For /api/user
         .route("/user/login", web::post().to(users::login))
         .service(
-            web::resource("/user")
+            web::resource("/user/self")
                 .wrap(auth.clone())
                 .route(web::get().to(users::get_user_info)),
         )
-        // For /api/users
         .service(
-            web::resource("/users")
+            web::resource("/user")
                 .wrap(auth.clone())
                 .route(web::get().guard(admin_guard()).to(users::get_users))
                 .route(web::post().guard(admin_guard()).to(users::add_user)),
         )
         .service(
-            web::resource("/users/{user_id}")
+            web::resource("/user/{user_id}")
                 .wrap(auth)
                 .route(web::delete().guard(admin_guard()).to(users::delete_user)),
         );

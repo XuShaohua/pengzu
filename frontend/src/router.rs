@@ -81,9 +81,9 @@ pub enum Route {
     #[at("/search/books")]
     BooksOfSimpleSearch,
 
-    #[at("/user-info")]
+    #[at("/user/self")]
     UserInfo,
-    #[at("/users")]
+    #[at("/user/all")]
     Users,
     #[at("/logout")]
     Logout,

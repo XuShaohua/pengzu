@@ -25,7 +25,7 @@ pub async fn login(form: &LoginForm) -> Result<UserInfo, FetchError> {
 /// - Current user has no root-rule
 /// - server error
 pub async fn fetch_users() -> Result<Vec<UserInfo>, FetchError> {
-    request_get("/api/users").await
+    request_get("/api/user").await
 }
 
 /// Get current user info.
@@ -36,7 +36,7 @@ pub async fn fetch_users() -> Result<Vec<UserInfo>, FetchError> {
 /// - invalid user
 /// - server error
 pub async fn get_user_info() -> Result<UserInfo, FetchError> {
-    let url = "/api/user";
+    let url = "/api/user/self";
     request_get(url).await
 }
 
@@ -48,6 +48,6 @@ pub async fn get_user_info() -> Result<UserInfo, FetchError> {
 /// - invalid user role
 /// - server error
 pub async fn add_user(query: &NewUserReq) -> Result<UserInfo, FetchError> {
-    let url = "/api/users";
+    let url = "/api/user";
     request_post(url, query).await
 }

@@ -81,8 +81,8 @@ pub fn edit_tag_item(props: &Props) -> Html {
 
     html! {
         <>
-            <button class="btn btn-secondary me-2" onclick={ on_edit_button_click }>{ "Edit" }</button>
-            <button class="btn btn-danger me-2" onclick={ on_delete_button_click }>{ "Delete" }</button>
+            <button class="btn btn-secondary btn-sm me-2" onclick={ on_edit_button_click }>{ "Edit" }</button>
+            <button class="btn btn-danger btn-sm me-2" onclick={ on_delete_button_click }>{ "Delete" }</button>
             <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ tag.count }</span>
             <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
                 { &tag.name }

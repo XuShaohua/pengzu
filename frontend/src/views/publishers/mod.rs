@@ -2,9 +2,10 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+mod publisher_item;
+
 use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::PageId;
-use shared::publishers::PublisherAndBook;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::{use_location, use_navigator, Link};
@@ -14,21 +15,7 @@ use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::publishers::fetch_publishers;
 use crate::views::util;
-
-fn generate_publisher_list(publisher_list: &[PublisherAndBook]) -> Html {
-    html! {
-        <ul class="col-xs-12 col-sm-6 list-unstyled">
-            {for publisher_list.iter().map(|publisher| html! {
-                <li class="mb-3" key={ publisher.id }>
-                    <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ publisher.count }</span>
-                    <Link<Route> to={ Route::BooksOfPublisher { publisher_id: publisher.id } }>
-                        { &publisher.name }
-                    </Link<Route>>
-                </li>
-            })}
-        </ul>
-    }
-}
+use publisher_item::generate_publisher_list;
 
 #[function_component(PublishersComponent)]
 pub fn publishers_page() -> Html {

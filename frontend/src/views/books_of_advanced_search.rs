@@ -21,7 +21,7 @@ pub fn books_of_advanced_search() -> Html {
     let location = use_location().unwrap();
     let query = location.query::<AdvancedSearchQuery>().unwrap_or_default();
     let query_desc = query.desc();
-    util::set_document_title(&format!("Advanced Search: {}", query_desc));
+    util::set_document_title(&format!("Advanced Search: {query_desc}"));
 
     let book_list = {
         let query_clone = query.clone();

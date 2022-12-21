@@ -91,7 +91,7 @@ where
     let mut opts = RequestInit::new();
     let headers = Headers::new()?;
     if let Some(token) = get_token() {
-        headers.set("Authorization", &format!("Bearer {}", token))?;
+        headers.set("Authorization", &format!("Bearer {token}"))?;
     }
     headers.set("Content-Type", "application/json")?;
     opts.method(method)

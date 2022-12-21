@@ -16,6 +16,6 @@ pub async fn fetch_books_by_advanced_search(
     query: &AdvancedSearchQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let s: String = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/advanced-search/books?{}", s);
+    let url = format!("/api/advanced-search/books?{s}");
     request_get(&url).await
 }

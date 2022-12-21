@@ -16,6 +16,6 @@ pub async fn fetch_books_by_simple_search(
     query: &SimpleSearchQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let s: String = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/search/books?{}", s);
+    let url = format!("/api/search/books?{s}");
     request_get(&url).await
 }

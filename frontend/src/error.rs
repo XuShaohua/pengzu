@@ -73,18 +73,18 @@ impl error::Error for FetchError {}
 
 impl From<JsValue> for FetchError {
     fn from(value: JsValue) -> Self {
-        Self::from_string(ErrorKind::JsError, format!("{:?}", value))
+        Self::from_string(ErrorKind::JsError, format!("{value:?}"))
     }
 }
 
 impl From<serde_json::Error> for FetchError {
     fn from(err: serde_json::Error) -> Self {
-        Self::from_string(ErrorKind::DeserializeError, format!("{:?}", err))
+        Self::from_string(ErrorKind::DeserializeError, err.to_string())
     }
 }
 
 impl From<serde_urlencoded::ser::Error> for FetchError {
     fn from(err: serde_urlencoded::ser::Error) -> Self {
-        Self::from_string(ErrorKind::UrlParamError, format!("{:?}", err))
+        Self::from_string(ErrorKind::UrlParamError, err.to_string())
     }
 }

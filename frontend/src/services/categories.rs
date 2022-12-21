@@ -25,7 +25,7 @@ pub async fn fetch_categories(query: &RecursiveQuery) -> Result<CategoryAndBookL
 /// # Errors
 /// Returns error if server fails.
 pub async fn fetch_category(category_id: i32) -> Result<Category, FetchError> {
-    let url = format!("/api/category/{}", category_id);
+    let url = format!("/api/category/{category_id}");
     request_get(&url).await
 }
 
@@ -38,6 +38,6 @@ pub async fn fetch_books_by_category(
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/category/books/{}?{}", category_id, query_str);
+    let url = format!("/api/category/books/{category_id}?{query_str}");
     request_get(&url).await
 }

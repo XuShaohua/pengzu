@@ -25,7 +25,7 @@ pub async fn fetch_series_list(query: &GeneralQuery) -> Result<SeriesAndBookList
 /// # Errors
 /// Returns error if server fails.
 pub async fn fetch_series(series_id: i32) -> Result<Series, FetchError> {
-    let url = format!("/api/series/{}", series_id);
+    let url = format!("/api/series/{series_id}");
     request_get(&url).await
 }
 
@@ -38,7 +38,7 @@ pub async fn fetch_books_by_series(
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/series/books/{}?{}", series_id, query_str);
+    let url = format!("/api/series/books/{series_id}?{query_str}");
     request_get(&url).await
 }
 
@@ -49,6 +49,6 @@ pub async fn fetch_books_by_series(
 /// # Errors
 /// Returns error if server fails.
 pub async fn delete_series(series_id: i32) -> Result<(), FetchError> {
-    let url = format!("/api/series/{}", series_id);
+    let url = format!("/api/series/{series_id}");
     request_delete(&url).await
 }

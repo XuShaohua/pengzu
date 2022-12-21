@@ -12,12 +12,12 @@ pub const MEGA_BYTES: i32 = 1 << 20;
 pub fn to_readable_size(size: i32) -> String {
     if size > MEGA_BYTES {
         let mb_size: f32 = size as f32 / MEGA_BYTES as f32;
-        format!("{:.1} MB", mb_size)
+        format!("{mb_size:.1} MB",)
     } else if size > KILO_BYTES {
         let kb_size: f32 = size as f32 / KILO_BYTES as f32;
-        format!("{:.1} kB", kb_size)
+        format!("{kb_size:.1} kB",)
     } else {
-        format!("{} B", size)
+        format!("{size} B",)
     }
 }
 

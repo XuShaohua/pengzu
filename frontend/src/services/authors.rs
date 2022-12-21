@@ -25,7 +25,7 @@ pub async fn fetch_authors(query: &GeneralQuery) -> Result<AuthorAndBookList, Fe
 /// # Errors
 /// Returns error if server failed.
 pub async fn fetch_author(author_id: i32) -> Result<Author, FetchError> {
-    let url = format!("/api/author/{}", author_id);
+    let url = format!("/api/author/{author_id}");
     request_get(&url).await
 }
 
@@ -38,6 +38,6 @@ pub async fn fetch_books_by_author(
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/author/books/{}?{}", author_id, query_str);
+    let url = format!("/api/author/books/{author_id}?{query_str}");
     request_get(&url).await
 }

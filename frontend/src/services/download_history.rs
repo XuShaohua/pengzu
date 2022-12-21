@@ -16,6 +16,6 @@ pub async fn fetch_books_by_download_history(
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/download/books?{}", query_str);
+    let url = format!("/api/download/books?{query_str}");
     request_get(&url).await
 }

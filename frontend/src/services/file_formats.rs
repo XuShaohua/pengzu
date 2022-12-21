@@ -23,7 +23,7 @@ pub async fn fetch_file_formats() -> Result<FileFormatAndBookList, FetchError> {
 /// # Errors
 /// Returns error if server fails.
 pub async fn fetch_file_format(format_id: i32) -> Result<FileFormat, FetchError> {
-    let url = format!("/api/format/{}", format_id);
+    let url = format!("/api/format/{format_id}");
     request_get(&url).await
 }
 
@@ -36,6 +36,6 @@ pub async fn fetch_books_by_file_format(
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/format/books/{}?{}", format_id, query_str);
+    let url = format!("/api/format/books/{format_id}?{query_str}");
     request_get(&url).await
 }

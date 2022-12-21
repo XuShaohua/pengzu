@@ -25,7 +25,7 @@ pub async fn fetch_tags(query: &RecursiveQuery) -> Result<TagAndBookList, FetchE
 /// # Errors
 /// Returns error if server fails.
 pub async fn fetch_tag(tag_id: i32) -> Result<Tag, FetchError> {
-    let url = format!("/api/tag/{}", tag_id);
+    let url = format!("/api/tag/{tag_id}");
     request_get(&url).await
 }
 
@@ -38,7 +38,7 @@ pub async fn fetch_books_by_tag(
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/tag/books/{}?{}", tag_id, query_str);
+    let url = format!("/api/tag/books/{tag_id}?{query_str}");
     request_get(&url).await
 }
 
@@ -49,6 +49,6 @@ pub async fn fetch_books_by_tag(
 /// # Errors
 /// Returns error if server fails.
 pub async fn delete_tag(tag_id: i32) -> Result<(), FetchError> {
-    let url = format!("/api/tag/{}", tag_id);
+    let url = format!("/api/tag/{tag_id}");
     request_delete(&url).await
 }

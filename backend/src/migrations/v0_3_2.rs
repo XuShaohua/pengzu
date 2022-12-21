@@ -22,7 +22,7 @@ fn split_tag_names(conn: &mut PgConnection) -> Result<(), Error> {
     // See import_tags() in src/import/new_task.rs
     let patterns = ["&", ";", "；"];
     for pattern in patterns {
-        let name_pattern = format!("%{}%", pattern);
+        let name_pattern = format!("%{pattern}%");
         // Step 1: Query tag pattern.
         while let Ok(old_tag) = tags::get_tag_by_name_pattern(conn, &name_pattern) {
             log::info!("Migrate tag: {}, id: {}", old_tag.name, old_tag.id);
@@ -81,7 +81,7 @@ fn split_author_names(conn: &mut PgConnection) -> Result<(), Error> {
     // See import_authors() in src/import/new_task.rs
     let patterns = [";", "&", "；", "、"];
     for pattern in patterns {
-        let name_pattern = format!("%{}%", pattern);
+        let name_pattern = format!("%{pattern}%");
         // Step 1: Query author pattern.
         while let Ok(old_author) = authors::get_author_by_name_pattern(conn, &name_pattern) {
             log::info!("Migrate author: {}, id: {}", old_author.name, old_author.id);

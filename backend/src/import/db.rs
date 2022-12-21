@@ -23,7 +23,7 @@ pub fn get_calibre_db(calibre_path: &str) -> Result<CalibreDbPool, Error> {
         .map_err(|err| {
             Error::from_string(
                 ErrorKind::DbConnError,
-                format!("Failed to open calibre db: {:?}, err: {:?}", db_file, err),
+                format!("Failed to open calibre db: {db_file:?}, err: {err:?}"),
             )
         })
 }

@@ -36,7 +36,7 @@ impl Salt {
         } else {
             Err(Error::from_string(
                 ErrorKind::RingError,
-                format!("Invalid hash: {}", s),
+                format!("Invalid hash: {s}"),
             ))
         }
     }

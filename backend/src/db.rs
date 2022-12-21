@@ -23,7 +23,7 @@ pub fn get_connection_pool() -> Result<DbPool, Error> {
     let url = std::env::var("DATABASE_URL").map_err(|err| {
         Error::from_string(
             ErrorKind::ConfigError,
-            format!("DATABASE_URL is not set in environment, err: {:?}", err),
+            format!("DATABASE_URL is not set in environment, err: {err:?}"),
         )
     })?;
     let manager = ConnectionManager::<PgConnection>::new(&url);

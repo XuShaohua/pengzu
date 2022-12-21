@@ -152,7 +152,7 @@ pub fn get_claims_from_auth(req: &HttpRequest) -> Result<Claims, Error> {
     let header = req.headers().get("Authorization").unwrap();
     let invalid_token_error = Error::from_string(
         ErrorKind::InvalidToken,
-        format!("invalid token: {:?}", header),
+        format!("invalid token: {header:?}"),
     );
 
     if header.len() < 8 {

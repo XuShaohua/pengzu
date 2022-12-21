@@ -13,7 +13,7 @@ pub fn get_book_file_path(
     let p: String = [
         library_path,
         book_path,
-        &format!("{}.{}", file_name, format.to_ascii_lowercase()),
+        &format!("{file_name}.{}", format.to_ascii_lowercase()),
     ]
     .join("/");
     PathBuf::from(p)

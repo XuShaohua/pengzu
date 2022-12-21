@@ -51,7 +51,7 @@ fn convert_with_image_magic<P: AsRef<Path>>(
             format!("Failed to convert image from {:?} to webp", path.as_ref()),
         ));
     }
-    let scale = format!("{}x{}", small_width, small_height);
+    let scale = format!("{small_width}x{small_height}");
     let mut cmd2 = Command::new(IMAGE_MAGIC_PROGRAM)
         .arg(path.as_ref().as_os_str())
         .arg("-scale")
@@ -82,7 +82,7 @@ pub fn convert_cover<P: AsRef<Path>>(path: P) -> Result<(), Error> {
     if let Err(err) =
         convert_with_image_magic(path.as_ref(), &webp_path, &small_webp_path, width, height)
     {
-        log::warn!("ImageMagic failed: {:?}", err);
+        log::warn!("ImageMagic failed: {err:?}");
         convert(path.as_ref(), &webp_path, &small_webp_path, width, height)
     } else {
         Ok(())

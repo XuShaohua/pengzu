@@ -31,7 +31,7 @@ pub fn get_books_by_advanced_search(
     let mut book_ids = Vec::new();
     let mut book_id_nil = true;
     if let Some(author_name) = &query.author {
-        let author_pattern = format!("%{}%", author_name);
+        let author_pattern = format!("%{author_name}%");
         let author_ids = authors::table
             .filter(authors::name.ilike(author_pattern))
             .select(authors::id)
@@ -45,7 +45,7 @@ pub fn get_books_by_advanced_search(
     }
 
     if let Some(publisher_name) = &query.publisher {
-        let publisher_pattern = format!("%{}%", publisher_name);
+        let publisher_pattern = format!("%{publisher_name}%");
         let publisher_ids = publishers::table
             .filter(publishers::name.ilike(publisher_pattern))
             .select(publishers::id)
@@ -67,7 +67,7 @@ pub fn get_books_by_advanced_search(
     }
 
     if let Some(title) = &query.title {
-        let title_pattern = format!("%{}%", title);
+        let title_pattern = format!("%{title}%");
         if book_id_nil {
             book_id_nil = false;
             book_ids = books::table

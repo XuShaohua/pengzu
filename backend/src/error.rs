@@ -79,19 +79,19 @@ impl Error {
 
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Self {
-        Self::from_string(ErrorKind::IoError, format!("{}", err))
+        Self::from_string(ErrorKind::IoError, err.to_string())
     }
 }
 
 impl From<image::ImageError> for Error {
     fn from(err: image::ImageError) -> Self {
-        Self::from_string(ErrorKind::IoError, format!("{}", err))
+        Self::from_string(ErrorKind::IoError, err.to_string())
     }
 }
 
 impl From<r2d2::Error> for Error {
     fn from(err: r2d2::Error) -> Self {
-        Self::from_string(ErrorKind::DbConnError, format!("r2d2 {}", err))
+        Self::from_string(ErrorKind::DbConnError, format!("r2d2 err: {err}"))
     }
 }
 
@@ -100,17 +100,17 @@ impl From<diesel::result::Error> for Error {
         match &err {
             diesel::result::Error::DatabaseError(kind, _info) => match kind {
                 DatabaseErrorKind::UniqueViolation => {
-                    Self::from_string(ErrorKind::DbUniqueViolationError, format!("{}", err))
+                    Self::from_string(ErrorKind::DbUniqueViolationError, err.to_string())
                 }
                 DatabaseErrorKind::ForeignKeyViolation => {
-                    Self::from_string(ErrorKind::DbForeignKeyViolationError, format!("{}", err))
+                    Self::from_string(ErrorKind::DbForeignKeyViolationError, err.to_string())
                 }
-                _ => Self::from_string(ErrorKind::DbGeneralError, format!("{}", err)),
+                _ => Self::from_string(ErrorKind::DbGeneralError, err.to_string()),
             },
             diesel::result::Error::NotFound => {
-                Self::from_string(ErrorKind::DbNotFoundError, format!("{}", err))
+                Self::from_string(ErrorKind::DbNotFoundError, err.to_string())
             }
-            _ => Self::from_string(ErrorKind::DbGeneralError, format!("{}", err)),
+            _ => Self::from_string(ErrorKind::DbGeneralError, err.to_string()),
         }
     }
 }
@@ -119,14 +119,14 @@ impl From<actix_web::error::BlockingError> for Error {
     fn from(err: actix_web::error::BlockingError) -> Self {
         Self::from_string(
             ErrorKind::ActixBlockingError,
-            format!("Actix blocking error: {:?}", err),
+            format!("Actix blocking error: {err:?}"),
         )
     }
 }
 
 impl From<std::num::ParseIntError> for Error {
     fn from(err: std::num::ParseIntError) -> Self {
-        Self::from_string(ErrorKind::ConfigError, format!("{}", err))
+        Self::from_string(ErrorKind::ConfigError, err.to_string())
     }
 }
 
@@ -134,7 +134,7 @@ impl From<std::ffi::OsString> for Error {
     fn from(err: std::ffi::OsString) -> Self {
         Self::from_string(
             ErrorKind::ConfigError,
-            format!("OsString to String err: {:?}", err),
+            format!("OsString to String err: {err:?}"),
         )
     }
 }
@@ -143,54 +143,54 @@ impl From<calibre::error::Error> for Error {
     fn from(err: calibre::error::Error) -> Self {
         match err.kind() {
             calibre::error::ErrorKind::DbNotFoundError => {
-                Self::from_string(ErrorKind::DbNotFoundError, format!("err: {}", err))
+                Self::from_string(ErrorKind::DbNotFoundError, err.to_string())
             }
-            _ => Self::from_string(ErrorKind::CalibreError, format!("err: {}", err)),
+            _ => Self::from_string(ErrorKind::CalibreError, err.to_string()),
         }
     }
 }
 
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
-        Self::from_string(ErrorKind::JsonError, format!("{}", err))
+        Self::from_string(ErrorKind::JsonError, err.to_string())
     }
 }
 
 #[cfg(feature = "mongodb")]
 impl From<mongodb::error::Error> for Error {
     fn from(err: mongodb::error::Error) -> Self {
-        Self::from_string(ErrorKind::MongoDbError, format!("{:?}", err))
+        Self::from_string(ErrorKind::MongoDbError, err.to_string())
     }
 }
 
 #[cfg(feature = "mongodb")]
 impl From<mongodb::bson::document::ValueAccessError> for Error {
     fn from(err: mongodb::bson::document::ValueAccessError) -> Self {
-        Self::from_string(ErrorKind::MongoDbValueAccessError, format!("{:?}", err))
+        Self::from_string(ErrorKind::MongoDbValueAccessError, err.to_string())
     }
 }
 
 impl From<jsonwebtoken::errors::Error> for Error {
     fn from(err: jsonwebtoken::errors::Error) -> Self {
-        Self::from_string(ErrorKind::JwtError, format!("{:?}", err))
+        Self::from_string(ErrorKind::JwtError, err.to_string())
     }
 }
 
 impl From<HttpError> for Error {
     fn from(err: HttpError) -> Self {
-        Self::from_string(ErrorKind::HttpError, format!("{:?}", err))
+        Self::from_string(ErrorKind::HttpError, err.to_string())
     }
 }
 
 impl From<ring::error::Unspecified> for Error {
     fn from(err: ring::error::Unspecified) -> Self {
-        Self::from_string(ErrorKind::RingError, format!("{:?}", err))
+        Self::from_string(ErrorKind::RingError, err.to_string())
     }
 }
 
 impl From<data_encoding::DecodeError> for Error {
     fn from(err: data_encoding::DecodeError) -> Self {
-        Self::from_string(ErrorKind::RingError, format!("{:?}", err))
+        Self::from_string(ErrorKind::RingError, err.to_string())
     }
 }
 

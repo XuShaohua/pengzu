@@ -57,7 +57,7 @@ pub async fn get_file_by_path(
     if book_file_path != query.path {
         return Err(Error::from_string(
             ErrorKind::IoError,
-            format!("Invalid filepath: {:?}", query),
+            format!("Invalid filepath: {query:?}"),
         ));
     }
 
@@ -78,11 +78,11 @@ pub async fn get_file_by_path(
     // 4. return real file path
     let root_dir = settings::get_library_root_dir()?;
     let filepath = root_dir.join(&query.path);
-    log::info!("real path: {:?}", filepath);
+    log::info!("real path: {filepath:?}");
     if !filepath.starts_with(root_dir) {
         return Err(Error::from_string(
             ErrorKind::IoError,
-            format!("Invalid filepath: {:?}", query),
+            format!("Invalid filepath: {query:?}"),
         ));
     }
     let file = NamedFile::open(filepath)?;

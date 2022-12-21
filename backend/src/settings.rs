@@ -11,7 +11,7 @@ pub fn get_library_root_dir() -> Result<PathBuf, Error> {
     let path = env::var("LIBRARY_ROOT_DIR").map_err(|err| {
         Error::from_string(
             ErrorKind::ConfigError,
-            format!("LIBRARY_ROOT_DIR is not set in environment, err: {:?}", err),
+            format!("LIBRARY_ROOT_DIR is not set in environment, err: {err:?}"),
         )
     })?;
 
@@ -22,7 +22,7 @@ pub fn get_jwt_secret() -> Result<String, Error> {
     env::var("JWT_SECRET").map_err(|err| {
         Error::from_string(
             ErrorKind::ConfigError,
-            format!("JWT_SECRET is not set in environment, err: {:?}", err),
+            format!("JWT_SECRET is not set in environment, err: {err:?}"),
         )
     })
 }

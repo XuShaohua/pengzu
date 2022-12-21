@@ -49,16 +49,13 @@ impl Error {
 
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Self {
-        Self::from_string(ErrorKind::IoError, format!("{}", err))
+        Self::from_string(ErrorKind::IoError, err.to_string())
     }
 }
 
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
-        Self::from_string(
-            ErrorKind::DbGeneralError,
-            format!("parse json err: {}", err),
-        )
+        Self::from_string(ErrorKind::DbGeneralError, format!("parse json err: {err}"))
     }
 }
 
@@ -66,9 +63,9 @@ impl From<diesel::result::Error> for Error {
     fn from(err: diesel::result::Error) -> Self {
         match &err {
             diesel::result::Error::NotFound => {
-                Self::from_string(ErrorKind::DbNotFoundError, format!("{}", err))
+                Self::from_string(ErrorKind::DbNotFoundError, err.to_string())
             }
-            _ => Self::from_string(ErrorKind::DbGeneralError, format!("{}", err)),
+            _ => Self::from_string(ErrorKind::DbGeneralError, err.to_string()),
         }
     }
 }

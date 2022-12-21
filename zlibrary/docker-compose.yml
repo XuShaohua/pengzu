@@ -1,7 +1,7 @@
 version: "3.0"
 services:
   zlib2_backend_db:
-    image: mariadb:10.9
+    image: mysql:8.0
     restart: always
     ports:
       - 127.0.0.1:3808:3808
@@ -11,5 +11,9 @@ services:
       - MARIADB_USER=user
       - MARIADB_DATABASE=zlib2
       - MARIADB_ROOT_PASSWORD=root-password
+      - MYSQL_PASSWORD=password
+      - MYSQL_USER=user
+      - MYSQL_DATABASE=zlib2
+      - MYSQL_ROOT_PASSWORD=root-password
     volumes:
       - /docker/zlib2:/var/lib/mysql

@@ -22,6 +22,7 @@ use crate::views::util;
 use crate::views::util::to_readable_size;
 use edit_metadata::EditMetadataComponent;
 use navigation::NavigationComponent;
+use shared::categories::Category;
 use shared::publishers::Publisher;
 use shared::user_tags::UserTag;
 
@@ -125,6 +126,26 @@ fn generate_publisher_element(publisher: &Option<Publisher>) -> Html {
     )
 }
 
+fn generate_categories_element(categories: &[Category]) -> Html {
+    categories
+        .iter()
+        .enumerate()
+        .map(|(index, category)| {
+            let delimiter = if categories.len() - index > 1 {
+                html! { <span>{ " & " }</span> }
+            } else {
+                html! {}
+            };
+            html! {
+                <span key={ category.id }>
+                    <Link<Route> to={ Route::BooksOfCategory { category_id: category.id } }>{ format!("[{}] {}", category.serial_number, category.name) } </Link<Route>>
+                    { delimiter }
+                </span>
+            }
+        })
+        .collect::<Html>()
+}
+
 fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
     let book = &metadata.book;
 
@@ -133,6 +154,7 @@ fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
     let tags_element = generate_tags_element(&metadata.tags);
     let user_tags_element = generate_user_tags_element(&metadata.user_tags);
     let formats_element = generate_formats_element(&metadata.files);
+    let categories_element = generate_categories_element(&metadata.categories);
 
     let published_date = book.pubdate.as_ref().map_or_else(String::new, |pubdate| {
         pubdate.date().format("%Y-%m-%d").to_string()
@@ -169,6 +191,10 @@ fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
                 { user_tags_element }
             </div>
 
+            <div>
+                <span class="me-2 fw-bold">{ "Categories:" }</span>
+                { categories_element }
+            </div>
 
             <div>
                 <span class="me-2 fw-bold">{ "Publisher:" }</span>

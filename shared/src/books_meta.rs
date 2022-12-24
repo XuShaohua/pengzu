@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::authors::Author;
 use crate::books::BookWithCover;
+use crate::categories::Category;
 use crate::files::FileWithPath;
 use crate::languages::Language;
 use crate::publishers::Publisher;
@@ -26,6 +27,7 @@ pub struct BookMetadata {
     pub files: Vec<FileWithPath>,
     pub publisher: Option<Publisher>,
     pub series: Option<Series>,
+    pub categories: Vec<Category>,
     pub lang: Option<Language>,
     pub rating: Option<Rating>,
     pub previous_book: Option<i32>,

@@ -8,6 +8,7 @@ use shared::books_meta::BookMetadata;
 use crate::error::{Error, ErrorKind};
 use crate::models::books::{get_book_by_id, get_next_book, get_previous_book};
 use crate::models::books_authors::get_authors_by_book;
+use crate::models::books_categories::get_categories_by_book;
 use crate::models::books_languages::get_language_by_book;
 use crate::models::books_publishers::get_publisher_by_book;
 use crate::models::books_series::get_series_by_book;
@@ -29,6 +30,7 @@ pub fn get_book_metadata(
     let files = get_book_files_and_formats(conn, book_id)?;
     let publisher = get_publisher_by_book(conn, book_id)?;
     let series = get_series_by_book(conn, book_id)?;
+    let categories = get_categories_by_book(conn, book_id)?;
     let rating = match get_rating(conn, book_id) {
         Ok(rating) => Some(rating),
         Err(err) => match err.kind() {
@@ -48,6 +50,7 @@ pub fn get_book_metadata(
         files,
         publisher,
         series,
+        categories,
         lang,
         rating,
         previous_book,

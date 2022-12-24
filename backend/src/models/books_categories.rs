@@ -5,6 +5,7 @@
 use diesel::{ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl};
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
+use shared::categories::Category;
 use shared::page::BOOKS_EACH_PAGE;
 
 use crate::error::Error;
@@ -39,4 +40,23 @@ pub fn get_books_by_category(
         .load::<Book>(conn)?;
 
     book_list_to_book_authors(conn, book_list, query, total)
+}
+
+pub fn get_categories_by_book(
+    conn: &mut PgConnection,
+    book_id: i32,
+) -> Result<Vec<Category>, Error> {
+    use crate::schema::categories;
+
+    // Replace INNER JOIN with a subquery.
+    categories::table
+        .filter(
+            categories::id.eq_any(
+                books_categories_link::table
+                    .filter(books_categories_link::book.eq(book_id))
+                    .select(books_categories_link::category),
+            ),
+        )
+        .load::<Category>(conn)
+        .map_err(Into::into)
 }

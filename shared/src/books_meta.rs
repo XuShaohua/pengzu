@@ -14,6 +14,7 @@ use crate::publishers::Publisher;
 use crate::ratings::Rating;
 use crate::series::Series;
 use crate::tags::Tag;
+use crate::user_tags::UserTag;
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "diesel", derive(Queryable))]
@@ -21,6 +22,7 @@ pub struct BookMetadata {
     pub book: BookWithCover,
     pub authors: Vec<Author>,
     pub tags: Vec<Tag>,
+    pub user_tags: Vec<UserTag>,
     pub files: Vec<FileWithPath>,
     pub publisher: Option<Publisher>,
     pub series: Option<Series>,

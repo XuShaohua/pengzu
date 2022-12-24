@@ -6,6 +6,7 @@ use diesel::{ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl};
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::page::BOOKS_EACH_PAGE;
+use shared::user_tags::UserTag;
 
 use crate::error::Error;
 use crate::models::books::{book_list_to_book_authors, Book};
@@ -39,4 +40,25 @@ pub fn get_books_by_user_tag(
         .load::<Book>(conn)?;
 
     book_list_to_book_authors(conn, book_list, query, total)
+}
+
+pub fn get_user_tags_by_book(
+    conn: &mut PgConnection,
+    user_id: i32,
+    book_id: i32,
+) -> Result<Vec<UserTag>, Error> {
+    use crate::schema::user_tags;
+
+    // Replace INNER JOIN with a subquery.
+    user_tags::table
+        .filter(
+            user_tags::id.eq_any(
+                books_user_tags_link::table
+                    .filter(books_user_tags_link::book.eq(book_id))
+                    .filter(books_user_tags_link::user_id.eq(user_id))
+                    .select(books_user_tags_link::tag),
+            ),
+        )
+        .load::<UserTag>(conn)
+        .map_err(Into::into)
 }

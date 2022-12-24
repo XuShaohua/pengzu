@@ -12,14 +12,20 @@ use crate::models::books_languages::get_language_by_book;
 use crate::models::books_publishers::get_publisher_by_book;
 use crate::models::books_series::get_series_by_book;
 use crate::models::books_tags::get_tags_by_book;
+use crate::models::books_user_tags::get_user_tags_by_book;
 use crate::models::files::get_book_files_and_formats;
 use crate::models::ratings::get_rating;
 
 // TODO(Shaohua): Replace subquery with a meta table in postgres.
-pub fn get_book_metadata(conn: &mut PgConnection, book_id: i32) -> Result<BookMetadata, Error> {
+pub fn get_book_metadata(
+    conn: &mut PgConnection,
+    user_id: i32,
+    book_id: i32,
+) -> Result<BookMetadata, Error> {
     let book = get_book_by_id(conn, book_id)?;
     let authors = get_authors_by_book(conn, book_id)?;
     let tags = get_tags_by_book(conn, book_id)?;
+    let user_tags = get_user_tags_by_book(conn, user_id, book_id)?;
     let files = get_book_files_and_formats(conn, book_id)?;
     let publisher = get_publisher_by_book(conn, book_id)?;
     let series = get_series_by_book(conn, book_id)?;
@@ -38,6 +44,7 @@ pub fn get_book_metadata(conn: &mut PgConnection, book_id: i32) -> Result<BookMe
         book,
         authors,
         tags,
+        user_tags,
         files,
         publisher,
         series,

@@ -23,6 +23,7 @@ use crate::views::util::to_readable_size;
 use edit_metadata::EditMetadataComponent;
 use navigation::NavigationComponent;
 use shared::publishers::Publisher;
+use shared::user_tags::UserTag;
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -72,6 +73,26 @@ fn generate_tags_element(tags: &[Tag]) -> Html {
         .collect::<Html>()
 }
 
+fn generate_user_tags_element(tags: &[UserTag]) -> Html {
+    tags
+        .iter()
+        .enumerate()
+        .map(|(index, tag)| {
+            let delimiter = if tags.len() - index > 1 {
+                html! { <span>{ " & " }</span> }
+            } else {
+                html! {}
+            };
+            html! {
+                <span key={ tag.id }>
+                    <Link<Route> to={ Route::BooksOfUserTag { tag_id: tag.id } }>{ &tag.name } </Link<Route>>
+                    { delimiter }
+                </span>
+            }
+        })
+        .collect::<Html>()
+}
+
 fn generate_formats_element(files: &[FileWithPath]) -> Html {
     files
         .iter()
@@ -110,6 +131,7 @@ fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
     let authors_element = generate_author_element(&metadata.authors);
     let publisher_element = generate_publisher_element(&metadata.publisher);
     let tags_element = generate_tags_element(&metadata.tags);
+    let user_tags_element = generate_user_tags_element(&metadata.user_tags);
     let formats_element = generate_formats_element(&metadata.files);
 
     let published_date = book.pubdate.as_ref().map_or_else(String::new, |pubdate| {
@@ -141,6 +163,12 @@ fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
                 <span class="me-2 fw-bold">{ "Tags:" }</span>
                 { tags_element }
             </div>
+
+            <div>
+                <span class="me-2 fw-bold">{ "UserTags:" }</span>
+                { user_tags_element }
+            </div>
+
 
             <div>
                 <span class="me-2 fw-bold">{ "Publisher:" }</span>

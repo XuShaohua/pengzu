@@ -4,7 +4,7 @@
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::Deserialize;
-use shared::general_query::GeneralQuery;
+use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::{Page, PUBLISHERS_EACH_PAGE};
 use shared::publishers::{Publisher, PublisherAndBook, PublisherAndBookList};
 
@@ -33,21 +33,35 @@ pub fn get_publishers(
 
     let offset = query.backend_page_id() * PUBLISHERS_EACH_PAGE;
 
-    // TODO(Shaohua): Support query order.
-
-    let list = publishers::table
+    let count_query =
+        diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_publishers_link.id)");
+    let stmt = publishers::table
         .left_join(
             books_publishers_link::table.on(books_publishers_link::publisher.eq(publishers::id)),
         )
         .group_by(publishers::id)
-        .select((
-            publishers::id,
-            publishers::name,
-            diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_publishers_link.id)"),
-        ))
+        .select((publishers::id, publishers::name, count_query.clone()))
         .limit(PUBLISHERS_EACH_PAGE)
-        .offset(offset)
-        .load::<PublisherAndBook>(conn)?;
+        .offset(offset);
+
+    let list = match query.order {
+        GeneralOrder::IdDesc => stmt
+            .order(publishers::id.desc())
+            .load::<PublisherAndBook>(conn),
+        GeneralOrder::IdAsc => stmt
+            .order(publishers::id.asc())
+            .load::<PublisherAndBook>(conn),
+        GeneralOrder::TitleDesc => stmt
+            .order(publishers::name.desc())
+            .load::<PublisherAndBook>(conn),
+        GeneralOrder::TitleAsc => stmt
+            .order(publishers::name.asc())
+            .load::<PublisherAndBook>(conn),
+        GeneralOrder::NumberDesc => stmt
+            .order(count_query.desc())
+            .load::<PublisherAndBook>(conn),
+        GeneralOrder::NumberAsc => stmt.order(count_query.asc()).load::<PublisherAndBook>(conn),
+    }?;
 
     let total = publishers::dsl::publishers.count().first(conn)?;
 

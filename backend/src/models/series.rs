@@ -4,7 +4,7 @@
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::Deserialize;
-use shared::general_query::GeneralQuery;
+use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::{Page, SERIES_EACH_PAGE};
 use shared::series::{Series, SeriesAndBook, SeriesAndBookList};
 
@@ -33,19 +33,21 @@ pub fn get_series_list(
 
     let offset = query.backend_page_id() * SERIES_EACH_PAGE;
 
-    // TODO(Shaohua): Support query order
-
-    let list = series::table
+    let count_query = diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_series_link.id)");
+    let stmt = series::table
         .left_join(books_series_link::table.on(books_series_link::series.eq(series::id)))
         .group_by(series::id)
-        .select((
-            series::id,
-            series::name,
-            diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_series_link.id)"),
-        ))
+        .select((series::id, series::name, count_query.clone()))
         .limit(SERIES_EACH_PAGE)
-        .offset(offset)
-        .load::<SeriesAndBook>(conn)?;
+        .offset(offset);
+    let list = match query.order {
+        GeneralOrder::IdDesc => stmt.order(series::id.desc()).load::<SeriesAndBook>(conn),
+        GeneralOrder::IdAsc => stmt.order(series::id.asc()).load::<SeriesAndBook>(conn),
+        GeneralOrder::TitleDesc => stmt.order(series::name.desc()).load::<SeriesAndBook>(conn),
+        GeneralOrder::TitleAsc => stmt.order(series::name.asc()).load::<SeriesAndBook>(conn),
+        GeneralOrder::NumberDesc => stmt.order(count_query.desc()).load::<SeriesAndBook>(conn),
+        GeneralOrder::NumberAsc => stmt.order(count_query.asc()).load::<SeriesAndBook>(conn),
+    }?;
 
     let total = series::dsl::series.count().first(conn)?;
 

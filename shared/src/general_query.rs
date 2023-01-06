@@ -8,11 +8,15 @@ use crate::page::{default_page_id, PageId};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 pub enum GeneralOrder {
+    /// Order by record id, descending.
     IdDesc,
+    /// Order by record id, ascending.
     IdAsc,
     TitleDesc,
     TitleAsc,
+    /// Order by number of books, descending.
     NumberDesc,
+    /// Order by number of books, ascending.
     NumberAsc,
 }
 

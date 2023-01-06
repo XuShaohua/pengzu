@@ -9,7 +9,7 @@ use diesel::{
 use serde::Deserialize;
 use shared::authors::{Author, AuthorAndBook, AuthorAndBookList};
 use shared::books::AuthorAndBookId;
-use shared::general_query::GeneralQuery;
+use shared::general_query::{GeneralOrder, GeneralQuery};
 use shared::page::{Page, AUTHORS_EACH_PAGE};
 
 use crate::error::Error;
@@ -38,19 +38,26 @@ pub fn get_authors(
 
     let offset = query.backend_page_id() * AUTHORS_EACH_PAGE;
 
-    // TODO(Shaohua): Support order.
-    let list = authors::table
+    let count_query = diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_authors_link.id)");
+    let stmt = authors::table
         .left_join(books_authors_link::table.on(books_authors_link::author.eq(authors::id)))
         .group_by(authors::id)
         .select((
             authors::id,
             authors::name,
             authors::link,
-            diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_authors_link.id)"),
+            count_query.clone(),
         ))
         .limit(AUTHORS_EACH_PAGE)
-        .offset(offset)
-        .load::<AuthorAndBook>(conn)?;
+        .offset(offset);
+    let list = match query.order {
+        GeneralOrder::IdDesc => stmt.order(authors::id.desc()).load::<AuthorAndBook>(conn),
+        GeneralOrder::IdAsc => stmt.order(authors::id.asc()).load::<AuthorAndBook>(conn),
+        GeneralOrder::TitleDesc => stmt.order(authors::name.desc()).load::<AuthorAndBook>(conn),
+        GeneralOrder::TitleAsc => stmt.order(authors::name.asc()).load::<AuthorAndBook>(conn),
+        GeneralOrder::NumberDesc => stmt.order(count_query.desc()).load::<AuthorAndBook>(conn),
+        GeneralOrder::NumberAsc => stmt.order(count_query.asc()).load::<AuthorAndBook>(conn),
+    }?;
 
     let total = authors::table.count().first(conn)?;
 

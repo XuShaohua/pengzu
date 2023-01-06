@@ -7,7 +7,7 @@ use shared::page::PageId;
 use shared::simple_search::SimpleSearchQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::prelude::{use_location, Link};
+use yew_router::prelude::{use_location, use_navigator, Link};
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -20,6 +20,7 @@ use crate::views::util;
 pub fn books_of_simple_search() -> Html {
     util::set_document_title("Search");
 
+    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<SimpleSearchQuery>().unwrap_or_default();
     let keyword = query.query.clone();
@@ -40,10 +41,15 @@ pub fn books_of_simple_search() -> Html {
         );
     }
 
-    // TODO(Shaohua): Support order
     let on_book_filter_change = {
-        Callback::from(|order: GetBooksOrder| {
-            log::info!("new order: {:?}", order);
+        let query_clone = query.clone();
+        Callback::from(move |order: GetBooksOrder| {
+            let new_query = SimpleSearchQuery {
+                order,
+                ..query_clone.clone()
+            };
+            let ret = navigator.push_with_query(&Route::BooksOfSimpleSearch, &new_query);
+            debug_assert!(ret.is_ok());
         })
     };
 

@@ -27,7 +27,6 @@ pub async fn get_books(
     pool: web::Data<DbPool>,
     query: web::Query<GetBooksQuery>,
 ) -> Result<HttpResponse, Error> {
-    log::info!("query: {:?}", query);
     let resp = web::block(move || {
         let mut conn = pool.get()?;
         books::get_books(&mut conn, &query)

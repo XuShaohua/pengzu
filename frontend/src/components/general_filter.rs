@@ -35,15 +35,15 @@ pub fn general_filter(props: &Props) -> Html {
     html! {
         <div class="btn-group mt-2 mb-2" role="group">
 
-        <button type="button" class={ get_button_cls(GeneralOrder::IdAsc) }
-            title={ "Sort according to book date, newest first" }
-            onclick={ button_onclick(GeneralOrder::IdAsc) }>
-            <i class="bi bi-sort-numeric-down"></i>
-        </button>
         <button type="button" class={ get_button_cls(GeneralOrder::IdDesc) }
-            title={ "Sort according to book date, oldest first" }
+            title={ "Sort according to book date, newest first" }
             onclick={ button_onclick(GeneralOrder::IdDesc) }>
             <i class="bi bi-sort-numeric-down-alt"></i>
+        </button>
+        <button type="button" class={ get_button_cls(GeneralOrder::IdAsc) }
+            title={ "Sort according to book date, oldest first" }
+            onclick={ button_onclick(GeneralOrder::IdAsc) }>
+            <i class="bi bi-sort-numeric-down"></i>
         </button>
 
         <button type="button" class={ get_button_cls(GeneralOrder::TitleAsc) }
@@ -57,17 +57,17 @@ pub fn general_filter(props: &Props) -> Html {
             <i class="bi bi-sort-alpha-down-alt"></i>
         </button>
 
-        <button type="button" class={ get_button_cls(GeneralOrder::NumberAsc) }
-            title={ "Sort according to number of books, newest first" }
-            onclick={ button_onclick(GeneralOrder::NumberAsc) }>
-            <i class="bi bi-book"></i>
-            <i class="bi bi-sort-numeric-down"></i>
-        </button>
         <button type="button" class={ get_button_cls(GeneralOrder::NumberDesc) }
-            title={ "Sort according to number of books, oldest first" }
+            title={ "Sort according to number of books, most first" }
             onclick={ button_onclick(GeneralOrder::NumberDesc) }>
             <i class="bi bi-book"></i>
             <i class="bi bi-sort-numeric-down-alt"></i>
+        </button>
+        <button type="button" class={ get_button_cls(GeneralOrder::NumberAsc) }
+            title={ "Sort according to number of books, least first" }
+            onclick={ button_onclick(GeneralOrder::NumberAsc) }>
+            <i class="bi bi-book"></i>
+            <i class="bi bi-sort-numeric-down"></i>
         </button>
 
         </div>

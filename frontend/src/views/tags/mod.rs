@@ -10,7 +10,7 @@ use shared::page::PageId;
 use shared::recursive_query::RecursiveQuery;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::prelude::{use_location, Link};
+use yew_router::prelude::{use_location, use_navigator, Link};
 
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
@@ -26,6 +26,7 @@ pub fn tags_page() -> Html {
     util::set_document_title("Tags");
 
     let user_ctx = use_user_context();
+    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<RecursiveQuery>().unwrap_or_default();
     let tag_list = {
@@ -43,9 +44,15 @@ pub fn tags_page() -> Html {
         );
     }
 
-    let filter_onchange = {
-        Callback::from(|order: GeneralOrder| {
-            log::info!("new order: {:?}", order);
+    let on_filter_change = {
+        let query_clone = query.clone();
+        Callback::from(move |order: GeneralOrder| {
+            let new_query = RecursiveQuery {
+                order,
+                ..query_clone
+            };
+            let ret = navigator.push_with_query(&Route::Tag, &new_query);
+            debug_assert!(ret.is_ok());
         })
     };
 
@@ -73,7 +80,7 @@ pub fn tags_page() -> Html {
             html! {
                 <>
                 <h2>{ "Tags" }</h2>
-                <GeneralFilterComponent onchange={ filter_onchange } current_order={ query.order } />
+                <GeneralFilterComponent onchange={ on_filter_change } current_order={ query.order } />
 
                 {if user_ctx.is_admin() {
                     generate_edit_tag_list(&tag_list.list)

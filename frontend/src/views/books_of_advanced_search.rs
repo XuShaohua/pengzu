@@ -7,7 +7,7 @@ use shared::books_query::GetBooksOrder;
 use shared::page::PageId;
 use yew::prelude::*;
 use yew_hooks::use_async;
-use yew_router::prelude::{use_location, Link};
+use yew_router::prelude::{use_location, use_navigator, Link};
 
 use crate::components::book_filter::BookFilterComponent;
 use crate::components::book_list::BookListComponent;
@@ -18,6 +18,7 @@ use crate::views::util;
 
 #[function_component(BooksOfAdvancedSearchComponent)]
 pub fn books_of_advanced_search() -> Html {
+    let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<AdvancedSearchQuery>().unwrap_or_default();
     let query_desc = query.desc();
@@ -40,8 +41,14 @@ pub fn books_of_advanced_search() -> Html {
     }
 
     let book_filter_onchange = {
-        Callback::from(|order: GetBooksOrder| {
-            log::info!("new order: {:?}", order);
+        let query_clone = query.clone();
+        Callback::from(move |order: GetBooksOrder| {
+            let new_query = AdvancedSearchQuery {
+                order,
+                ..query_clone.clone()
+            };
+            let ret = navigator.push_with_query(&Route::BooksOfAdvancedSearch, &new_query);
+            debug_assert!(ret.is_ok());
         })
     };
 

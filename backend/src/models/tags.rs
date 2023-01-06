@@ -7,6 +7,7 @@ use diesel::{
     RunQueryDsl,
 };
 use serde::Deserialize;
+use shared::general_query::GeneralOrder;
 use shared::page::{Page, TAGS_EACH_PAGE};
 use shared::recursive_query::RecursiveQuery;
 use shared::tags::{Tag, TagAndBook, TagAndBookList};
@@ -52,9 +53,11 @@ pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<TagAn
     let offset = query.backend_page_id() * TAGS_EACH_PAGE;
 
     // TODO(Shaohua): Get children count.
+    let count_query = diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_tags_link.id)");
+    let child_count_query =
+        diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_tags_link.id)");
 
-    let list = tags::table
-        .filter(tags::parent.eq(query.parent))
+    let stmt = tags::table
         .left_join(books_tags_link::table.on(books_tags_link::tag.eq(tags::id)))
         .group_by(tags::id)
         .select((
@@ -62,12 +65,20 @@ pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<TagAn
             tags::order_index,
             tags::name,
             tags::parent,
-            diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_tags_link.id)"),
-            diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_tags_link.id)"),
+            count_query.clone(),
+            child_count_query,
         ))
         .limit(TAGS_EACH_PAGE)
-        .offset(offset)
-        .load::<TagAndBook>(conn)?;
+        .offset(offset);
+
+    let list = match query.order {
+        GeneralOrder::IdDesc => stmt.order(tags::id.desc()).load::<TagAndBook>(conn),
+        GeneralOrder::IdAsc => stmt.order(tags::id.asc()).load::<TagAndBook>(conn),
+        GeneralOrder::TitleDesc => stmt.order(tags::name.desc()).load::<TagAndBook>(conn),
+        GeneralOrder::TitleAsc => stmt.order(tags::name.asc()).load::<TagAndBook>(conn),
+        GeneralOrder::NumberDesc => stmt.order(count_query.desc()).load::<TagAndBook>(conn),
+        GeneralOrder::NumberAsc => stmt.order(count_query.asc()).load::<TagAndBook>(conn),
+    }?;
 
     let total = tags::table
         .filter(tags::parent.eq(query.parent))

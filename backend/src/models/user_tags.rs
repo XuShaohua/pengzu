@@ -4,6 +4,7 @@
 
 use diesel::{ExpressionMethods, Insertable, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl};
 use serde::Deserialize;
+use shared::general_query::GeneralOrder;
 use shared::page::{Page, USER_TAGS_EACH_PAGE};
 use shared::recursive_query::RecursiveQuery;
 use shared::user_tags::{UserTag, UserTagAndBook, UserTagAndBookList};
@@ -46,8 +47,10 @@ pub fn get_tags(
 
     let offset = query.backend_page_id() * USER_TAGS_EACH_PAGE;
 
-    let list = user_tags::table
-        .filter(user_tags::parent.eq(query.parent))
+    // TODO(Shaohua): Get child count.
+    let count_query =
+        diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_user_tags_link.id)");
+    let stmt = user_tags::table
         .left_join(books_user_tags_link::table.on(books_user_tags_link::tag.eq(user_tags::id)))
         .group_by(user_tags::id)
         .select((
@@ -55,11 +58,25 @@ pub fn get_tags(
             user_tags::order_index,
             user_tags::name,
             user_tags::parent,
-            diesel::dsl::sql::<diesel::sql_types::BigInt>("count(books_user_tags_link.id)"),
+            count_query.clone(),
         ))
         .limit(USER_TAGS_EACH_PAGE)
-        .offset(offset)
-        .load::<UserTagAndBook>(conn)?;
+        .offset(offset);
+
+    let list = match query.order {
+        GeneralOrder::IdDesc => stmt
+            .order(user_tags::id.desc())
+            .load::<UserTagAndBook>(conn),
+        GeneralOrder::IdAsc => stmt.order(user_tags::id.asc()).load::<UserTagAndBook>(conn),
+        GeneralOrder::TitleDesc => stmt
+            .order(user_tags::name.desc())
+            .load::<UserTagAndBook>(conn),
+        GeneralOrder::TitleAsc => stmt
+            .order(user_tags::name.asc())
+            .load::<UserTagAndBook>(conn),
+        GeneralOrder::NumberDesc => stmt.order(count_query.desc()).load::<UserTagAndBook>(conn),
+        GeneralOrder::NumberAsc => stmt.order(count_query.asc()).load::<UserTagAndBook>(conn),
+    }?;
 
     let total = user_tags::table
         .filter(user_tags::parent.eq(query.parent))

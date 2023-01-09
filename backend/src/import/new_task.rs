@@ -200,12 +200,11 @@ fn import_tags(
             }
 
             for tag_part in tag_parts {
-                let new_tag = NewTag {
-                    name: tag_part.trim().to_owned(),
-                };
-                if new_tag.name.is_empty() {
+                let tag_name = tag_part.trim().to_owned();
+                if tag_name.is_empty() {
                     continue;
                 }
+                let new_tag = NewTag::with_name(tag_name);
 
                 if let Err(err) = add_tag(pg_conn, &new_tag) {
                     match err.kind() {

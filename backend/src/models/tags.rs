@@ -15,10 +15,23 @@ use shared::tags::{Tag, TagAndBook, TagAndBookList};
 use crate::error::Error;
 use crate::schema::tags;
 
-#[derive(Debug, Deserialize, Insertable)]
+#[derive(Debug, Default, Deserialize, Insertable)]
 #[diesel(table_name = tags)]
 pub struct NewTag {
+    pub order_index: i32,
     pub name: String,
+    pub parent: i32,
+}
+
+impl NewTag {
+    #[must_use]
+    pub const fn with_name(name: String) -> Self {
+        Self {
+            order_index: 0,
+            name,
+            parent: 0,
+        }
+    }
 }
 
 pub fn add_tag(conn: &mut PgConnection, new_tag: &NewTag) -> Result<Tag, Error> {

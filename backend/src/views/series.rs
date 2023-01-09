@@ -59,6 +59,19 @@ pub async fn get_books_by_series(
     Ok(HttpResponse::Ok().json(resp))
 }
 
+pub async fn update_series(
+    pool: web::Data<DbPool>,
+    series_id: web::Path<i32>,
+    new_series: web::Json<series::NewSeries>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        series::update_series(&mut conn, series_id.into_inner(), &new_series)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}
+
 pub async fn delete_series(
     pool: web::Data<DbPool>,
     series_id: web::Path<i32>,

@@ -78,11 +78,11 @@ pub fn get_series_by_name(conn: &mut PgConnection, series_name: &str) -> Result<
 
 pub fn update_series(
     conn: &mut PgConnection,
-    pub_id: i32,
+    series_id: i32,
     new_series: &NewSeries,
 ) -> Result<(), Error> {
     use crate::schema::series::dsl::{name, series};
-    diesel::update(series.find(pub_id))
+    diesel::update(series.find(series_id))
         .set(name.eq(new_series.name.as_str()))
         .execute(conn)?;
     Ok(())

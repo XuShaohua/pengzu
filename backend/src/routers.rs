@@ -180,6 +180,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
             web::resource("/series/{series_id}")
                 .wrap(auth.clone())
                 .route(web::get().to(series::get_series))
+                .route(web::put().guard(admin_guard()).to(series::update_series))
                 .route(web::delete().guard(admin_guard()).to(series::delete_series)),
         )
         .service(

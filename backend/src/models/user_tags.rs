@@ -12,13 +12,13 @@ use shared::user_tags::{UserTag, UserTagAndBook, UserTagAndBookList};
 use crate::error::Error;
 use crate::schema::user_tags;
 
-#[derive(Debug, Deserialize, Insertable)]
+#[derive(Debug, Clone, Deserialize, Insertable)]
 #[diesel(table_name = user_tags)]
 pub struct NewUserTag {
+    pub user_id: i32,
     pub order_index: i32,
     pub name: String,
     pub parent: i32,
-    pub user_id: i32,
 }
 
 pub fn add_tag(conn: &mut PgConnection, new_tag: &NewUserTag) -> Result<(), Error> {

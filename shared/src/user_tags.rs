@@ -36,3 +36,12 @@ pub struct UserTagAndBookList {
     pub page: Page,
     pub list: Vec<UserTagAndBook>,
 }
+
+/// Only used in frontend.
+#[derive(Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct NewUserTag {
+    pub user_id: i32,
+    pub order_index: i32,
+    pub name: String,
+    pub parent: i32,
+}

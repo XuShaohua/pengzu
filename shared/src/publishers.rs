@@ -32,7 +32,7 @@ pub struct PublisherAndBookList {
     pub list: Vec<PublisherAndBook>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct NewPublisher {
     pub name: String,
 }

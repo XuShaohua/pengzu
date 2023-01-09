@@ -58,7 +58,10 @@ pub async fn add_publisher(new_publisher: &NewPublisher) -> Result<Publisher, Fe
 /// - Server error
 /// - Invalid publisher id
 /// - Invalid fields in `new_publisher`
-pub async fn update_tag(publisher_id: i32, new_publisher: &NewPublisher) -> Result<(), FetchError> {
+pub async fn update_publisher(
+    publisher_id: i32,
+    new_publisher: &NewPublisher,
+) -> Result<(), FetchError> {
     let url = format!("/api/publisher/{publisher_id}");
     request_put(&url, new_publisher).await
 }

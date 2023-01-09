@@ -29,11 +29,12 @@ pub struct AddTagReq {
     pub order_index: i32,
 }
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct EditTagReq {
     pub id: i32,
     pub parent: i32,
     pub order_index: i32,
+    pub name: String,
 }
 
 #[function_component(EditTagItemListComponent)]
@@ -91,7 +92,7 @@ pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
             tag_id.set(req.id);
             new_tag_clone.set(NewTag {
                 order_index: req.order_index,
-                name: new_tag_clone.name.clone(),
+                name: req.name.clone(),
                 parent: req.parent,
             });
         })
@@ -190,6 +191,7 @@ pub fn edit_tag_item(props: &ItemProps) -> Html {
                 id: old_tag.id,
                 parent: old_tag.parent,
                 order_index: old_tag.order_index,
+                name: old_tag.name.clone(),
             });
         })
     };

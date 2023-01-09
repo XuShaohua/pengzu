@@ -9,11 +9,14 @@ use yew_hooks::use_async;
 use yew_router::prelude::Link;
 
 use crate::router::Route;
-use crate::services::tags::{add_tag, delete_tag, fetch_tags};
+use crate::services::tags::{add_tag, delete_tag, fetch_tags, update_tag};
 use crate::views::tags::add_tag_form::AddTagFormComponent;
+use crate::views::tags::edit_tag_form::EditTagFormComponent;
 
 const ADD_TAG_MODAL: &str = "add-tag-modal";
 const ADD_TAG_MODAL_ID: &str = "#add-tag-modal";
+const EDIT_TAG_MODAL: &str = "edit-tag-modal";
+const EDIT_TAG_MODAL_ID: &str = "#edit-tag-modal";
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct ItemListProps {
@@ -21,7 +24,14 @@ pub struct ItemListProps {
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
-pub struct TagProp {
+pub struct AddTagReq {
+    pub parent: i32,
+    pub order_index: i32,
+}
+
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct EditTagReq {
+    pub id: i32,
     pub parent: i32,
     pub order_index: i32,
 }
@@ -30,17 +40,16 @@ pub struct TagProp {
 pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
     let tag_list = &props.tag_list;
     let new_tag = use_state(NewTag::default);
+    let tag_id = use_state(|| 0_i32);
 
     // TODO(Shaohua): Handles return value.
     let add_tag_task = {
         let new_tag_clone = new_tag.clone();
         use_async(async move { add_tag(&new_tag_clone).await })
     };
-
     let add_tag_cb = {
         let new_tag_clone = new_tag.clone();
         Callback::from(move |new_tag_name: String| {
-            log::info!("new tag: {new_tag_name:?}");
             new_tag_clone.set(NewTag {
                 order_index: new_tag_clone.order_index,
                 name: new_tag_name,
@@ -49,13 +58,41 @@ pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
             add_tag_task.run();
         })
     };
-
     let add_tag_req = {
-        Callback::from(move |new_tag_extra: TagProp| {
-            new_tag.set(NewTag {
-                order_index: new_tag_extra.order_index,
-                name: new_tag.name.clone(),
-                parent: new_tag_extra.parent,
+        let new_tag_clone = new_tag.clone();
+        Callback::from(move |req: AddTagReq| {
+            new_tag_clone.set(NewTag {
+                order_index: req.order_index,
+                name: new_tag_clone.name.clone(),
+                parent: req.parent,
+            });
+        })
+    };
+
+    let edit_tag_task = {
+        let tag_id_clone = tag_id.clone();
+        let new_tag_clone = new_tag.clone();
+        use_async(async move { update_tag(*tag_id_clone, &new_tag_clone).await })
+    };
+    let edit_tag_cb = {
+        let new_tag_clone = new_tag.clone();
+        Callback::from(move |new_tag_name: String| {
+            new_tag_clone.set(NewTag {
+                order_index: new_tag_clone.order_index,
+                name: new_tag_name,
+                parent: new_tag_clone.parent,
+            });
+            edit_tag_task.run();
+        })
+    };
+    let edit_tag_req = {
+        let new_tag_clone = new_tag.clone();
+        Callback::from(move |req: EditTagReq| {
+            tag_id.set(req.id);
+            new_tag_clone.set(NewTag {
+                order_index: req.order_index,
+                name: new_tag_clone.name.clone(),
+                parent: req.parent,
             });
         })
     };
@@ -66,10 +103,16 @@ pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
             <AddTagFormComponent ok_cb={ add_tag_cb } />
         </div>
 
+        <div class="modal fade" tabindex="-1" id={ EDIT_TAG_MODAL }>
+            <EditTagFormComponent name={ new_tag.name.clone() } ok_cb={ edit_tag_cb } />
+        </div>
+
         <ol class="">
         {for tag_list.iter().map(|tag| html!{
             <li class="mb-2" key={ tag.id }>
-                <EditTagItemComponent add_tag_req={ add_tag_req.clone() }
+                <EditTagItemComponent
+                    add_tag_req={ add_tag_req.clone() }
+                    edit_tag_req={ edit_tag_req.clone() }
                     tag={ tag.clone() } />
             </li>
         })}
@@ -81,7 +124,8 @@ pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct ItemProps {
     pub tag: TagAndBook,
-    pub add_tag_req: Callback<TagProp>,
+    pub add_tag_req: Callback<AddTagReq>,
+    pub edit_tag_req: Callback<EditTagReq>,
 }
 
 #[function_component(EditTagItemComponent)]
@@ -131,7 +175,7 @@ pub fn edit_tag_item(props: &ItemProps) -> Html {
         let order_index = 0;
         let add_tag_req_clone = props.add_tag_req.clone();
         Callback::from(move |_event: MouseEvent| {
-            add_tag_req_clone.emit(TagProp {
+            add_tag_req_clone.emit(AddTagReq {
                 parent,
                 order_index,
             });
@@ -140,14 +184,13 @@ pub fn edit_tag_item(props: &ItemProps) -> Html {
 
     let on_edit_button_click = {
         let old_tag = tag.clone();
-        Callback::from(move |event: MouseEvent| {
-            event.prevent_default();
-            let new_tag = NewTag {
-                order_index: old_tag.order_index,
-                name: String::new(),
+        let edit_tag_req_clone = props.edit_tag_req.clone();
+        Callback::from(move |_event: MouseEvent| {
+            edit_tag_req_clone.emit(EditTagReq {
+                id: old_tag.id,
                 parent: old_tag.parent,
-            };
-            log::info!("edit new tag: {new_tag:?}");
+                order_index: old_tag.order_index,
+            });
         })
     };
 
@@ -168,6 +211,7 @@ pub fn edit_tag_item(props: &ItemProps) -> Html {
                     <i class="bi bi-plus"></i>
                 </button>
                 <button type="button" class="btn btn-warning btn-sm" title="Edit tag"
+                    data-bs-toggle="modal" data-bs-target={ EDIT_TAG_MODAL_ID }
                     onclick={ on_edit_button_click }>
                     <i class="bi bi-pencil"></i>
                 </button>

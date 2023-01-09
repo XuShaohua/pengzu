@@ -2,21 +2,33 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use actix_web::{web, HttpResponse};
+use actix_web::{web, HttpRequest, HttpResponse};
 use shared::books_query::GetBooksQuery;
 use shared::recursive_query::RecursiveQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
+use crate::models::user_tags::NewUserTag;
 use crate::models::{books_user_tags, user_tags};
+use crate::views::auth::get_claims_from_auth;
 
 pub async fn add_tag(
     pool: web::Data<DbPool>,
-    new_tag: web::Json<user_tags::NewUserTag>,
+    new_tag: web::Json<NewUserTag>,
+    req: HttpRequest,
 ) -> Result<HttpResponse, Error> {
+    let claims = get_claims_from_auth(&req)?;
+    let user_id = claims.id();
+
     web::block(move || {
         let mut conn = pool.get()?;
-        user_tags::add_tag(&mut conn, &new_tag)
+        let new_tag_with_id = NewUserTag {
+            order_index: new_tag.order_index,
+            name: new_tag.name.clone(),
+            parent: new_tag.parent,
+            user_id,
+        };
+        user_tags::add_tag(&mut conn, &new_tag_with_id)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -49,11 +61,21 @@ pub async fn get_tag(
 pub async fn update_tag(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
-    new_tag: web::Json<user_tags::NewUserTag>,
+    new_tag: web::Json<NewUserTag>,
+    req: HttpRequest,
 ) -> Result<HttpResponse, Error> {
+    let claims = get_claims_from_auth(&req)?;
+    let user_id = claims.id();
+
     web::block(move || {
         let mut conn = pool.get()?;
-        user_tags::update_tag(&mut conn, tag_id.into_inner(), &new_tag)
+        let new_tag_with_id = NewUserTag {
+            order_index: new_tag.order_index,
+            name: new_tag.name.clone(),
+            parent: new_tag.parent,
+            user_id,
+        };
+        user_tags::update_tag(&mut conn, tag_id.into_inner(), &new_tag_with_id)
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
@@ -70,4 +92,20 @@ pub async fn get_books_by_user_tag(
     })
     .await??;
     Ok(HttpResponse::Ok().json(resp))
+}
+
+pub async fn delete_tag(
+    pool: web::Data<DbPool>,
+    tag_id: web::Path<i32>,
+    req: HttpRequest,
+) -> Result<HttpResponse, Error> {
+    let claims = get_claims_from_auth(&req)?;
+    let user_id = claims.id();
+
+    web::block(move || {
+        let mut conn = pool.get()?;
+        user_tags::delete_by_id(&mut conn, tag_id.into_inner(), user_id)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
 }

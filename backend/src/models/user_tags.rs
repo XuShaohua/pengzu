@@ -15,7 +15,10 @@ use crate::schema::user_tags;
 #[derive(Debug, Deserialize, Insertable)]
 #[diesel(table_name = user_tags)]
 pub struct NewUserTag {
+    pub order_index: i32,
     pub name: String,
+    pub parent: i32,
+    pub user_id: i32,
 }
 
 pub fn add_tag(conn: &mut PgConnection, new_tag: &NewUserTag) -> Result<(), Error> {
@@ -94,8 +97,19 @@ pub fn get_tags(
 }
 
 pub fn update_tag(conn: &mut PgConnection, tag_id: i32, new_tag: &NewUserTag) -> Result<(), Error> {
+    // TODO(Shaohua): Filter by user-id
     diesel::update(user_tags::table.find(tag_id))
         .set(user_tags::name.eq(new_tag.name.as_str()))
         .execute(conn)?;
+    Ok(())
+}
+
+pub fn delete_by_id(conn: &mut PgConnection, tag_id: i32, user_id: i32) -> Result<(), Error> {
+    diesel::delete(
+        user_tags::table
+            .filter(user_tags::id.eq(tag_id))
+            .filter(user_tags::user_id.eq(user_id)),
+    )
+    .execute(conn)?;
     Ok(())
 }

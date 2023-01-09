@@ -206,12 +206,14 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
             web::resource("/user-tag")
                 .wrap(auth.clone())
                 .route(web::get().to(user_tags::get_tags))
-                .route(web::post().guard(admin_guard()).to(user_tags::add_tag)),
+                .route(web::post().to(user_tags::add_tag)),
         )
         .service(
             web::resource("/user-tag/{tag_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(user_tags::get_tag)),
+                .route(web::get().to(user_tags::get_tag))
+                .route(web::put().to(user_tags::update_tag))
+                .route(web::delete().to(user_tags::delete_tag)),
         )
         .service(
             web::resource("/user-tag/books/{tag_id}")

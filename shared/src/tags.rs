@@ -38,7 +38,7 @@ pub struct TagAndBookList {
 }
 
 /// Only used in frontend.
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct NewTag {
     pub order_index: i32,
     pub name: String,

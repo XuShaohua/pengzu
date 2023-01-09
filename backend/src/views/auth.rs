@@ -143,7 +143,8 @@ impl Guard for UserRoleGuard {
 }
 
 /// Check whether user role in token is admin.
-pub fn admin_guard() -> impl Guard {
+#[inline]
+pub const fn admin_guard() -> impl Guard {
     UserRoleGuard(UserRole::Admin)
 }
 

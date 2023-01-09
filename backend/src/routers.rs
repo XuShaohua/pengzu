@@ -193,13 +193,13 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
             web::resource("/tag/{tag_id}")
                 .wrap(auth.clone())
                 .route(web::get().to(tags::get_tag))
+                .route(web::put().guard(admin_guard()).to(tags::update_tag))
                 .route(web::delete().guard(admin_guard()).to(tags::delete_tag)),
         )
         .service(
             web::resource("/tag/books/{tag_id}")
                 .wrap(auth.clone())
-                .route(web::get().to(tags::get_books_by_tag))
-                .route(web::put().guard(admin_guard()).to(tags::update_tag)),
+                .route(web::get().to(tags::get_books_by_tag)),
         )
         // For /api/user-tag
         .service(

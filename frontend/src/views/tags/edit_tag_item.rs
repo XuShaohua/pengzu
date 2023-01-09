@@ -19,7 +19,7 @@ const EDIT_TAG_MODAL: &str = "edit-tag-modal";
 const EDIT_TAG_MODAL_ID: &str = "#edit-tag-modal";
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
-pub struct ItemListProps {
+pub struct ItemsContainerProps {
     pub tag_list: Vec<TagAndBook>,
 }
 
@@ -37,8 +37,8 @@ pub struct EditTagReq {
     pub name: String,
 }
 
-#[function_component(EditTagItemListComponent)]
-pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
+#[function_component(EditTagsContainerComponent)]
+pub fn edit_tags_container(props: &ItemsContainerProps) -> Html {
     let tag_list = &props.tag_list;
     let new_tag = use_state(NewTag::default);
     let tag_id = use_state(|| 0_i32);
@@ -98,8 +98,25 @@ pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
         })
     };
 
+    let on_add_root_tag_button_click = {
+        let new_tag_clone = new_tag.clone();
+        Callback::from(move |_event: MouseEvent| {
+            new_tag_clone.set(NewTag::default());
+        })
+    };
+
     html! {
         <>
+        <div class="mb-3">
+        <button type="button" class="btn btn-primary btn-sm"
+            data-bs-toggle="modal" data-bs-target={ ADD_TAG_MODAL_ID }
+            onclick={ on_add_root_tag_button_click }
+            title="Add root tag">
+            { "Add Root Tag" }
+            <i class="bi bi-plus"></i>
+        </button>
+        </div>
+
         <div class="modal fade" tabindex="-1" id={ ADD_TAG_MODAL }>
             <AddTagFormComponent ok_cb={ add_tag_cb } />
         </div>
@@ -119,6 +136,31 @@ pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
         })}
         </ol>
         </>
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Properties)]
+pub struct ItemListProps {
+    pub tag_list: Vec<TagAndBook>,
+    pub add_tag_req: Callback<AddTagReq>,
+    pub edit_tag_req: Callback<EditTagReq>,
+}
+
+#[function_component(EditTagItemListComponent)]
+pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
+    let tag_list = &props.tag_list;
+
+    html! {
+       <ol class="">
+        {for tag_list.iter().map(|tag| html!{
+            <li class="mb-2" key={ tag.id }>
+                <EditTagItemComponent
+                    add_tag_req={ props.add_tag_req.clone() }
+                    edit_tag_req={ props.edit_tag_req.clone() }
+                    tag={ tag.clone() } />
+            </li>
+        })}
+        </ol>
     }
 }
 
@@ -148,7 +190,10 @@ pub fn edit_tag_item(props: &ItemProps) -> Html {
         || html! {},
         |tag_list| {
             html! {
-                <EditTagItemListComponent tag_list={ tag_list.list.clone() } />
+                <EditTagItemListComponent
+                    add_tag_req={ props.add_tag_req.clone() }
+                    edit_tag_req={ props.edit_tag_req.clone() }
+                    tag_list={ tag_list.list.clone() } />
             }
         },
     );

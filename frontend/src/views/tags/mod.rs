@@ -14,7 +14,7 @@ use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::{use_location, use_navigator, Link};
 
-use self::edit_tag_item::EditTagItemListComponent;
+use self::edit_tag_item::EditTagsContainerComponent;
 use self::tag_item::generate_tag_list;
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
@@ -86,7 +86,7 @@ pub fn tags_page() -> Html {
 
                 {if user_ctx.is_admin() {
                     html! {
-                        <EditTagItemListComponent tag_list={ tag_list.list.clone() } />
+                        <EditTagsContainerComponent tag_list={ tag_list.list.clone() } />
                     }
                 } else {
                     generate_tag_list(&tag_list.list)

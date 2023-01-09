@@ -24,6 +24,8 @@ pub fn add_tag_form(props: &Props) -> Html {
                 let name = input.value();
                 if !name.is_empty() {
                     ok_cb_clone.emit(name);
+                    // Clean input value.
+                    input.set_value("");
                 }
             }
         })

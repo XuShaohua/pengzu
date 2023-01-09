@@ -9,27 +9,83 @@ use yew_hooks::use_async;
 use yew_router::prelude::Link;
 
 use crate::router::Route;
-use crate::services::tags::{delete_tag, fetch_tags};
+use crate::services::tags::{add_tag, delete_tag, fetch_tags};
+use crate::views::tags::add_tag_form::AddTagFormComponent;
+
+const ADD_TAG_MODAL: &str = "add-tag-modal";
+const ADD_TAG_MODAL_ID: &str = "#add-tag-modal";
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
-pub struct Props {
-    pub tag: TagAndBook,
+pub struct ItemListProps {
+    pub tag_list: Vec<TagAndBook>,
 }
 
-pub fn generate_edit_tag_list(tag_list: &[TagAndBook]) -> Html {
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct TagProp {
+    pub parent: i32,
+    pub order_index: i32,
+}
+
+#[function_component(EditTagItemListComponent)]
+pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
+    let tag_list = &props.tag_list;
+    let new_tag = use_state(NewTag::default);
+
+    // TODO(Shaohua): Handles return value.
+    let add_tag_task = {
+        let new_tag_clone = new_tag.clone();
+        use_async(async move { add_tag(&new_tag_clone).await })
+    };
+
+    let add_tag_cb = {
+        let new_tag_clone = new_tag.clone();
+        Callback::from(move |new_tag_name: String| {
+            log::info!("new tag: {new_tag_name:?}");
+            new_tag_clone.set(NewTag {
+                order_index: new_tag_clone.order_index,
+                name: new_tag_name,
+                parent: new_tag_clone.parent,
+            });
+            add_tag_task.run();
+        })
+    };
+
+    let add_tag_req = {
+        Callback::from(move |new_tag_extra: TagProp| {
+            new_tag.set(NewTag {
+                order_index: new_tag_extra.order_index,
+                name: new_tag.name.clone(),
+                parent: new_tag_extra.parent,
+            });
+        })
+    };
+
     html! {
+        <>
+        <div class="modal fade" tabindex="-1" id={ ADD_TAG_MODAL }>
+            <AddTagFormComponent ok_cb={ add_tag_cb } />
+        </div>
+
         <ol class="">
         {for tag_list.iter().map(|tag| html!{
             <li class="mb-2" key={ tag.id }>
-                <EditTagItemComponent tag={ tag.clone() } />
+                <EditTagItemComponent add_tag_req={ add_tag_req.clone() }
+                    tag={ tag.clone() } />
             </li>
         })}
         </ol>
+        </>
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Properties)]
+pub struct ItemProps {
+    pub tag: TagAndBook,
+    pub add_tag_req: Callback<TagProp>,
+}
+
 #[function_component(EditTagItemComponent)]
-pub fn edit_tag_item(props: &Props) -> Html {
+pub fn edit_tag_item(props: &ItemProps) -> Html {
     let tag = &props.tag;
     let parent_id = tag.id;
 
@@ -45,7 +101,11 @@ pub fn edit_tag_item(props: &Props) -> Html {
     });
     let child_items = fetch_child_tags_task.data.as_ref().map_or_else(
         || html! {},
-        |tag_list| generate_edit_tag_list(&tag_list.list),
+        |tag_list| {
+            html! {
+                <EditTagItemListComponent tag_list={ tag_list.list.clone() } />
+            }
+        },
     );
     let on_tag_click = {
         Callback::from(move |event: MouseEvent| {
@@ -67,10 +127,14 @@ pub fn edit_tag_item(props: &Props) -> Html {
     };
 
     let on_add_button_click = {
-        let tag_id = tag.id;
-        Callback::from(move |event: MouseEvent| {
-            event.prevent_default();
-            log::info!("add tag: {}", tag_id);
+        let parent = tag.id;
+        let order_index = 0;
+        let add_tag_req_clone = props.add_tag_req.clone();
+        Callback::from(move |_event: MouseEvent| {
+            add_tag_req_clone.emit(TagProp {
+                parent,
+                order_index,
+            });
         })
     };
 
@@ -97,8 +161,10 @@ pub fn edit_tag_item(props: &Props) -> Html {
     html! {
         <>
             <div class="btn-group me-2" role="group">
-                <button type="button" class="btn btn-success btn-sm" title="Add child tag"
-                    onclick={ on_add_button_click }>
+                <button type="button" class="btn btn-success btn-sm"
+                    data-bs-toggle="modal" data-bs-target={ ADD_TAG_MODAL_ID }
+                    onclick={ on_add_button_click }
+                    title="Add child tag">
                     <i class="bi bi-plus"></i>
                 </button>
                 <button type="button" class="btn btn-warning btn-sm" title="Edit tag"
@@ -110,6 +176,7 @@ pub fn edit_tag_item(props: &Props) -> Html {
                     <i class="bi bi-trash3"></i>
                 </button>
             </div>
+
             <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ tag.count }</span>
             <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
                 { &tag.name }

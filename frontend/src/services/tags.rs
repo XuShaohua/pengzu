@@ -57,7 +57,7 @@ pub async fn delete_tag(tag_id: i32) -> Result<(), FetchError> {
 ///
 /// # Errors
 /// Returns error if server error or `new_tag` is invalid.
-pub async fn add_tag(new_tag: &NewTag) -> Result<(), FetchError> {
+pub async fn add_tag(new_tag: &NewTag) -> Result<Tag, FetchError> {
     let url = "/api/tag";
     request_post(url, new_tag).await
 }

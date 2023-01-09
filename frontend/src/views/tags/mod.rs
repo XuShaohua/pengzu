@@ -14,14 +14,14 @@ use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::{use_location, use_navigator, Link};
 
+use self::edit_tag_item::EditTagItemListComponent;
+use self::tag_item::generate_tag_list;
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::hooks::use_user_context;
 use crate::router::Route;
 use crate::services::tags::fetch_tags;
 use crate::views::util;
-use edit_tag_item::generate_edit_tag_list;
-use tag_item::generate_tag_list;
 
 #[function_component(TagsComponent)]
 pub fn tags_page() -> Html {
@@ -85,7 +85,9 @@ pub fn tags_page() -> Html {
                 <GeneralFilterComponent onchange={ on_filter_change } current_order={ query.order } />
 
                 {if user_ctx.is_admin() {
-                    generate_edit_tag_list(&tag_list.list)
+                    html! {
+                        <EditTagItemListComponent tag_list={ tag_list.list.clone() } />
+                    }
                 } else {
                     generate_tag_list(&tag_list.list)
                 }}

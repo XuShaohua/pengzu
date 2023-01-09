@@ -14,12 +14,12 @@ pub async fn add_tag(
     pool: web::Data<DbPool>,
     new_tag: web::Json<tags::NewTag>,
 ) -> Result<HttpResponse, Error> {
-    web::block(move || {
+    let tag_resp = web::block(move || {
         let mut conn = pool.get()?;
         tags::add_tag(&mut conn, &new_tag)
     })
     .await??;
-    Ok(HttpResponse::Ok().finish())
+    Ok(HttpResponse::Ok().json(tag_resp))
 }
 
 pub async fn get_tags(

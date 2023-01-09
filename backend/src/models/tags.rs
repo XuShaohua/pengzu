@@ -15,7 +15,7 @@ use shared::tags::{Tag, TagAndBook, TagAndBookList};
 use crate::error::Error;
 use crate::schema::tags;
 
-#[derive(Debug, Default, Deserialize, Insertable)]
+#[derive(Debug, Default, PartialEq, Eq, Deserialize, Insertable)]
 #[diesel(table_name = tags)]
 pub struct NewTag {
     pub order_index: i32,

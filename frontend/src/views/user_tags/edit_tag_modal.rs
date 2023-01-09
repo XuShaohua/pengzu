@@ -7,6 +7,7 @@ use yew::prelude::*;
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct Props {
+    /// Old tag name.
     pub name: String,
     pub ok_cb: Callback<String>,
 }
@@ -33,14 +34,14 @@ pub fn edit_tag_modal(props: &Props) -> Html {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">{ "Update tag" }</h1>
+                    <h1 class="modal-title fs-5">{ "Update user tag" }</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="edit-tag-name" class="form-label">{ "Name " }</label>
-                        <input class="form-control" type="text" id="edit-tag-name" name="name"
+                        <label for="edit-user-tag-name" class="form-label">{ "Name " }</label>
+                        <input class="form-control" type="text" id="edit-user-tag-name" name="name"
                             ref={ name_ref }
                             value={ props.name.clone() }/>
                     </div>

@@ -5,10 +5,10 @@
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::general_query::GeneralQuery;
-use shared::publishers::{Publisher, PublisherAndBookList};
+use shared::publishers::{NewPublisher, Publisher, PublisherAndBookList};
 
 use crate::error::FetchError;
-use crate::services::fetch::{request_delete, request_get};
+use crate::services::fetch::{request_delete, request_get, request_post, request_put};
 
 /// Get publisher list.
 ///
@@ -40,6 +40,27 @@ pub async fn fetch_books_by_publisher(
     let query_str = serde_urlencoded::to_string(query)?;
     let url = format!("/api/publisher/books/{publisher_id}?{query_str}");
     request_get(&url).await
+}
+
+/// Add a new publisher record.
+///
+/// # Errors
+/// Returns error if server error or `new_publisher` is invalid.
+pub async fn add_publisher(new_publisher: &NewPublisher) -> Result<Publisher, FetchError> {
+    let url = "/api/publisher";
+    request_post(url, new_publisher).await
+}
+
+/// Update fields of existing publisher.
+///
+/// # Errors
+/// Returns error if:
+/// - Server error
+/// - Invalid publisher id
+/// - Invalid fields in `new_publisher`
+pub async fn update_tag(publisher_id: i32, new_publisher: &NewPublisher) -> Result<(), FetchError> {
+    let url = format!("/api/publisher/{publisher_id}");
+    request_put(&url, new_publisher).await
 }
 
 /// Delete specific publisher.

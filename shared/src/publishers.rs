@@ -31,3 +31,8 @@ pub struct PublisherAndBookList {
     pub page: Page,
     pub list: Vec<PublisherAndBook>,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct NewPublisher {
+    pub name: String,
+}

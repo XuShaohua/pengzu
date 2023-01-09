@@ -10,6 +10,7 @@ use yew::prelude::*;
 pub struct Props {
     #[prop_or_default]
     pub order_index: i32,
+    pub name: String,
     #[prop_or_default]
     pub parent: i32,
 
@@ -17,8 +18,8 @@ pub struct Props {
     pub ok_cb: Callback<NewTag>,
 }
 
-#[function_component(AddTagFormComponent)]
-pub fn add_tag_form(props: &Props) -> Html {
+#[function_component(EditTagFormComponent)]
+pub fn edit_tag_form(props: &Props) -> Html {
     let name_ref = use_node_ref();
 
     let on_cancel_clicked = {
@@ -53,15 +54,16 @@ pub fn add_tag_form(props: &Props) -> Html {
 
     html! {
         <>
-        <h3>{ "Add new tag" }</h3>
+        <h3>{ "Edit tag" }</h3>
 
         <form onsubmit={ on_form_submit }>
             <div>
-                <label for="new-tag-name" class="form-label">{ "Name" }</label>
-                <input type="text" id="new-tag-name" name="name" ref={ name_ref } />
+                <label for="edit-tag-name" class="form-label">{ "Name" }</label>
+                <input type="text" id="edit-tag-name" name="name" ref={ name_ref }
+                    value={ props.name.clone() } />
             </div>
             <button type="button" onclick={ on_cancel_clicked }>{" Cancel" }</button>
-            <button type="submit">{ "Add" }</button>
+            <button type="submit">{ "Update" }</button>
         </form>
         </>
     }

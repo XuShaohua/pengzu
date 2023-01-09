@@ -42,17 +42,6 @@ pub async fn fetch_books_by_tag(
     request_get(&url).await
 }
 
-/// Delete specific tag.
-///
-/// Note that this api can be trigger by admin only.
-///
-/// # Errors
-/// Returns error if server fails.
-pub async fn delete_tag(tag_id: i32) -> Result<(), FetchError> {
-    let url = format!("/api/tag/{tag_id}");
-    request_delete(&url).await
-}
-
 /// Add a new tag record.
 ///
 /// # Errors
@@ -72,4 +61,15 @@ pub async fn add_tag(new_tag: &NewTag) -> Result<Tag, FetchError> {
 pub async fn update_tag(tag_id: i32, new_tag: &NewTag) -> Result<(), FetchError> {
     let url = format!("/api/tag/{tag_id}");
     request_put(&url, new_tag).await
+}
+
+/// Delete specific tag.
+///
+/// Note that this api can be trigger by admin only.
+///
+/// # Errors
+/// Returns error if server fails.
+pub async fn delete_tag(tag_id: i32) -> Result<(), FetchError> {
+    let url = format!("/api/tag/{tag_id}");
+    request_delete(&url).await
 }

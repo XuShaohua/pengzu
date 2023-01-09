@@ -103,6 +103,7 @@ pub async fn delete_tag(
     let user_id = claims.id();
 
     web::block(move || {
+        // TODO(Shaohua): Delete books-user-tags link first.
         let mut conn = pool.get()?;
         user_tags::delete_by_id(&mut conn, tag_id.into_inner(), user_id)
     })

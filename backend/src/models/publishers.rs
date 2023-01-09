@@ -95,11 +95,11 @@ pub fn get_publisher_by_name(
 
 pub fn update_publisher(
     conn: &mut PgConnection,
-    pub_id: i32,
+    publisher_id: i32,
     new_publisher: &NewPublisher,
 ) -> Result<(), Error> {
     use crate::schema::publishers::dsl::{name, publishers};
-    diesel::update(publishers.find(pub_id))
+    diesel::update(publishers.find(publisher_id))
         .set(name.eq(new_publisher.name.as_str()))
         .execute(conn)?;
     Ok(())

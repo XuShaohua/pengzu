@@ -59,6 +59,19 @@ pub async fn get_books_by_publisher(
     Ok(HttpResponse::Ok().json(resp))
 }
 
+pub async fn update_publisher(
+    pool: web::Data<DbPool>,
+    publisher_id: web::Path<i32>,
+    new_publisher: web::Json<publishers::NewPublisher>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        publishers::update_publisher(&mut conn, publisher_id.into_inner(), &new_publisher)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}
+
 pub async fn delete_publisher(
     pool: web::Data<DbPool>,
     publisher_id: web::Path<i32>,

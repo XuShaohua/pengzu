@@ -137,6 +137,11 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .wrap(auth.clone())
                 .route(web::get().to(publishers::get_publisher))
                 .route(
+                    web::put()
+                        .guard(admin_guard())
+                        .to(publishers::update_publisher),
+                )
+                .route(
                     web::delete()
                         .guard(admin_guard())
                         .to(publishers::delete_publisher),

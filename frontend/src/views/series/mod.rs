@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+mod add_series_modal;
 mod edit_series_item;
 mod series_item;
 

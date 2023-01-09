@@ -11,12 +11,12 @@ use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::{use_location, use_navigator, Link};
 
+use self::tag_item::TagsContainerComponent;
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::router::Route;
 use crate::services::user_tags::fetch_user_tags;
 use crate::views::util;
-use tag_item::generate_tag_list;
 
 #[function_component(UserTagsComponent)]
 pub fn user_tags_page() -> Html {
@@ -78,7 +78,7 @@ pub fn user_tags_page() -> Html {
                 <h2>{ "User Tags" }</h2>
                 <GeneralFilterComponent onchange={ on_filter_change } current_order={ query.order } />
 
-                { generate_tag_list(tag_list) }
+                <TagsContainerComponent tag_list={ tag_list.list.clone() } />
 
                 <PaginationComponent  current_page={ tag_list.page.page_num }
                     total_pages={ tag_list.page.total_pages() }

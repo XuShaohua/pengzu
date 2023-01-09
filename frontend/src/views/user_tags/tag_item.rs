@@ -2,8 +2,10 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+#![allow(clippy::module_name_repetitions)]
+
 use shared::recursive_query::RecursiveQuery;
-use shared::user_tags::{UserTagAndBook, UserTagAndBookList};
+use shared::user_tags::UserTagAndBook;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::Link;
@@ -12,14 +14,31 @@ use crate::router::Route;
 use crate::services::user_tags::fetch_user_tags;
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
-pub struct Props {
-    pub tag: UserTagAndBook,
+pub struct TagsContainerProps {
+    pub tag_list: Vec<UserTagAndBook>,
 }
 
-pub fn generate_tag_list(tag_list: &UserTagAndBookList) -> Html {
+#[function_component(TagsContainerComponent)]
+pub fn tags_container(props: &TagsContainerProps) -> Html {
+    html! {
+        <>
+        <TagItemListComponent tag_list={ props.tag_list.clone() } />
+        </>
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+pub struct TagItemListProps {
+    pub tag_list: Vec<UserTagAndBook>,
+}
+
+#[function_component(TagItemListComponent)]
+pub fn tag_item_list(props: &TagItemListProps) -> Html {
+    let tag_list = &props.tag_list;
+
     html! {
         <ul class="list-unstyled">
-        {for tag_list.list.iter().map(|tag| html!{
+        {for tag_list.iter().map(|tag| html!{
             <li class="mb-3" key={ tag.id }>
             <UserTagItemComponent tag={ tag.clone() } />
             </li>
@@ -28,8 +47,13 @@ pub fn generate_tag_list(tag_list: &UserTagAndBookList) -> Html {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+pub struct TagItemProps {
+    pub tag: UserTagAndBook,
+}
+
 #[function_component(UserTagItemComponent)]
-pub fn tag_item(props: &Props) -> Html {
+pub fn tag_item(props: &TagItemProps) -> Html {
     let tag = &props.tag;
     let parent_id = tag.id;
 
@@ -48,10 +72,14 @@ pub fn tag_item(props: &Props) -> Html {
         })
     };
 
-    let child_items = child_tags
-        .data
-        .as_ref()
-        .map_or_else(|| html! {}, generate_tag_list);
+    let child_items = child_tags.data.as_ref().map_or_else(
+        || html! {},
+        |tag_list| {
+            html! {
+                <TagItemListComponent tag_list={ tag_list.list.clone() } />
+            }
+        },
+    );
 
     html! {
         <>

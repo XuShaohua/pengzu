@@ -10,10 +10,32 @@ use yew_router::prelude::Link;
 use crate::router::Route;
 use crate::services::publishers::delete_publisher;
 
-pub fn generate_edit_publisher_list(publisher_list: &[PublisherAndBook]) -> Html {
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+pub struct ContainerProps {
+    pub publishers: Vec<PublisherAndBook>,
+}
+
+#[function_component(EditPublishersContainerComponent)]
+pub fn edit_publishers_container(props: &ContainerProps) -> Html {
+    html! {
+        <>
+
+        <EditPublisherItemListComponent
+            publishers={ props.publishers.clone() } />
+        </>
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+pub struct ItemListProps {
+    pub publishers: Vec<PublisherAndBook>,
+}
+
+#[function_component(EditPublisherItemListComponent)]
+pub fn edit_publisher_item_list(props: &ItemListProps) -> Html {
     html! {
         <ul class="col-xs-12 col-sm-6 list-unstyled">
-            {for publisher_list.iter().map(|publisher| html! {
+            {for props.publishers.iter().map(|publisher| html! {
                 <li class="mb-3" key={ publisher.id }>
                     <EditPublisherItemComponent publisher={ publisher.clone() } />
                 </li>
@@ -23,12 +45,12 @@ pub fn generate_edit_publisher_list(publisher_list: &[PublisherAndBook]) -> Html
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
-pub struct Props {
+pub struct ItemProps {
     pub publisher: PublisherAndBook,
 }
 
 #[function_component(EditPublisherItemComponent)]
-pub fn edit_publisher_item(props: &Props) -> Html {
+pub fn edit_publisher_item(props: &ItemProps) -> Html {
     let publisher = &props.publisher;
     let is_deleted = use_state(|| false);
 

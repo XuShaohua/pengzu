@@ -11,14 +11,14 @@ use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::{use_location, use_navigator, Link};
 
+use self::edit_publisher_item::EditPublishersContainerComponent;
+use self::publisher_item::generate_publisher_list;
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::hooks::use_user_context;
 use crate::router::Route;
 use crate::services::publishers::fetch_publishers;
 use crate::views::util;
-use edit_publisher_item::generate_edit_publisher_list;
-use publisher_item::generate_publisher_list;
 
 #[function_component(PublishersComponent)]
 pub fn publishers_page() -> Html {
@@ -79,7 +79,6 @@ pub fn publishers_page() -> Html {
     publisher_list.data.as_ref().map_or_else(
         || html! {},
         |publisher_list| {
-            let half_list = (publisher_list.list.len() + 1)/ 2;
             html! {
                 <>
                 <h2>{ "Publishers" }</h2>
@@ -87,15 +86,12 @@ pub fn publishers_page() -> Html {
 
                 <div class="container-fluid">
                     <div class="row">
-                        {if user_ctx.is_admin() {
-                            generate_edit_publisher_list(&publisher_list.list[..half_list])
-                        } else {
-                            generate_publisher_list(&publisher_list.list[..half_list])
-                        }}
                        {if user_ctx.is_admin() {
-                            generate_edit_publisher_list(&publisher_list.list[half_list..])
+                            html!{
+                                <EditPublishersContainerComponent publishers={ publisher_list.list.clone() } />
+                            }
                         } else {
-                            generate_publisher_list(&publisher_list.list[half_list..])
+                            generate_publisher_list(&publisher_list.list)
                         }}
                     </div>
                 </div>

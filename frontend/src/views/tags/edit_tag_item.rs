@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 use shared::recursive_query::RecursiveQuery;
-use shared::tags::TagAndBook;
+use shared::tags::{NewTag, TagAndBook};
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::Link;
@@ -65,28 +65,56 @@ pub fn edit_tag_item(props: &Props) -> Html {
             }
         })
     };
+
+    let on_add_button_click = {
+        let tag_id = tag.id;
+        Callback::from(move |event: MouseEvent| {
+            event.prevent_default();
+            log::info!("add tag: {}", tag_id);
+        })
+    };
+
+    let on_edit_button_click = {
+        let old_tag = tag.clone();
+        Callback::from(move |event: MouseEvent| {
+            event.prevent_default();
+            let new_tag = NewTag {
+                order_index: old_tag.order_index,
+                name: String::new(),
+                parent: old_tag.parent,
+            };
+            log::info!("edit new tag: {new_tag:?}");
+        })
+    };
+
     let on_delete_button_click = {
         Callback::from(move |event: MouseEvent| {
             event.prevent_default();
             delete_tag_task.run();
         })
     };
-    let on_edit_button_click = {
-        let tag_id = tag.id;
-        Callback::from(move |event: MouseEvent| {
-            event.prevent_default();
-            log::info!("edit tag: {}", tag_id);
-        })
-    };
 
     html! {
         <>
-            <button class="btn btn-secondary btn-sm me-2" onclick={ on_edit_button_click }>{ "Edit" }</button>
-            <button class="btn btn-danger btn-sm me-2" onclick={ on_delete_button_click }>{ "Delete" }</button>
+            <div class="btn-group me-2" role="group">
+                <button type="button" class="btn btn-success btn-sm" title="Add child tag"
+                    onclick={ on_add_button_click }>
+                    <i class="bi bi-plus"></i>
+                </button>
+                <button type="button" class="btn btn-warning btn-sm" title="Edit tag"
+                    onclick={ on_edit_button_click }>
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" title="Delete tag"
+                    onclick={ on_delete_button_click }>
+                    <i class="bi bi-trash3"></i>
+                </button>
+            </div>
             <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ tag.count }</span>
             <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
                 { &tag.name }
             </Link<Route>>
+
             {
                 if tag.children > 0 {
                     html! { <a href="#" onclick={on_tag_click}><i class="bi bi-caret-right"></i></a> }
@@ -94,6 +122,7 @@ pub fn edit_tag_item(props: &Props) -> Html {
                     html! {}
                 }
             }
+
             { child_items }
         </>
     }

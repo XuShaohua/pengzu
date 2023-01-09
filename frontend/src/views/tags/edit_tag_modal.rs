@@ -7,25 +7,23 @@ use yew::prelude::*;
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct Props {
+    pub name: String,
     pub ok_cb: Callback<String>,
 }
 
-#[function_component(AddTagFormComponent)]
-pub fn add_tag_form(props: &Props) -> Html {
+#[function_component(EditTagModal)]
+pub fn edit_tag_modal(props: &Props) -> Html {
     let name_ref = use_node_ref();
 
-    let on_add_button_clicked = {
+    let on_update_button_clicked = {
         let name_ref_clone = name_ref.clone();
         let ok_cb_clone = props.ok_cb.clone();
         Callback::from(move |event: MouseEvent| {
             event.prevent_default();
-
             if let Some(input) = name_ref_clone.cast::<HtmlInputElement>() {
                 let name = input.value();
                 if !name.is_empty() {
                     ok_cb_clone.emit(name);
-                    // Clean input value.
-                    input.set_value("");
                 }
             }
         })
@@ -35,14 +33,16 @@ pub fn add_tag_form(props: &Props) -> Html {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">{ "Add new tag" }</h1>
+                    <h1 class="modal-title fs-5">{ "Update tag" }</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="new-tag-name" class="form-label">{ "Name " }</label>
-                        <input class="form-control" type="text" id="new-tag-name" name="name" ref={ name_ref } />
+                        <input class="form-control" type="text" id="new-tag-name" name="name"
+                            ref={ name_ref }
+                            value={ props.name.clone() }/>
                     </div>
                 </div>
 
@@ -52,8 +52,8 @@ pub fn add_tag_form(props: &Props) -> Html {
                     </button>
                     <button type="button" class="btn btn-primary"
                         data-bs-dismiss="modal"
-                        onclick={ on_add_button_clicked }>
-                        { "Add" }
+                        onclick={ on_update_button_clicked }>
+                        { "Update" }
                     </button>
                 </div>
             </div>

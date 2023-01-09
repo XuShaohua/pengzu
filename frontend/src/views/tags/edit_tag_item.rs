@@ -10,8 +10,8 @@ use yew_router::prelude::Link;
 
 use crate::router::Route;
 use crate::services::tags::{add_tag, delete_tag, fetch_tags, update_tag};
-use crate::views::tags::add_tag_form::AddTagFormComponent;
-use crate::views::tags::edit_tag_form::EditTagFormComponent;
+use crate::views::tags::add_tag_modal::AddTagModal;
+use crate::views::tags::edit_tag_modal::EditTagModal;
 
 const ADD_TAG_MODAL: &str = "add-tag-modal";
 const ADD_TAG_MODAL_ID: &str = "#add-tag-modal";
@@ -118,11 +118,11 @@ pub fn edit_tags_container(props: &ItemsContainerProps) -> Html {
         </div>
 
         <div class="modal fade" tabindex="-1" id={ ADD_TAG_MODAL }>
-            <AddTagFormComponent ok_cb={ add_tag_cb } />
+            <AddTagModal ok_cb={ add_tag_cb } />
         </div>
 
         <div class="modal fade" tabindex="-1" id={ EDIT_TAG_MODAL }>
-            <EditTagFormComponent name={ new_tag.name.clone() } ok_cb={ edit_tag_cb } />
+            <EditTagModal name={ new_tag.name.clone() } ok_cb={ edit_tag_cb } />
         </div>
 
         <ol class="">

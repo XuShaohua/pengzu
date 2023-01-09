@@ -10,7 +10,7 @@ pub struct Props {
     pub ok_cb: Callback<String>,
 }
 
-#[function_component(AddTagModalComponent)]
+#[function_component(AddTagModal)]
 pub fn add_tag_modal(props: &Props) -> Html {
     let name_ref = use_node_ref();
 

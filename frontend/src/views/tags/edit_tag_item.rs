@@ -25,16 +25,16 @@ pub struct ItemsContainerProps {
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub struct AddTagReq {
-    pub parent: i32,
     pub order_index: i32,
+    pub parent: i32,
 }
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct EditTagReq {
     pub id: i32,
-    pub parent: i32,
     pub order_index: i32,
     pub name: String,
+    pub parent: i32,
 }
 
 #[function_component(EditTagsContainerComponent)]
@@ -108,13 +108,13 @@ pub fn edit_tags_container(props: &ItemsContainerProps) -> Html {
     html! {
         <>
         <div class="mb-3">
-        <button type="button" class="btn btn-primary btn-sm"
-            data-bs-toggle="modal" data-bs-target={ ADD_TAG_MODAL_ID }
-            onclick={ on_add_root_tag_button_click }
-            title="Add root tag">
-            { "Add Root Tag" }
-            <i class="bi bi-plus"></i>
-        </button>
+            <button type="button" class="btn btn-primary btn-sm"
+                data-bs-toggle="modal" data-bs-target={ ADD_TAG_MODAL_ID }
+                onclick={ on_add_root_tag_button_click }
+                title="Add root tag">
+                { "Add Root Tag" }
+                <i class="bi bi-plus"></i>
+            </button>
         </div>
 
         <div class="modal fade" tabindex="-1" id={ ADD_TAG_MODAL }>
@@ -125,16 +125,10 @@ pub fn edit_tags_container(props: &ItemsContainerProps) -> Html {
             <EditTagModal name={ new_tag.name.clone() } ok_cb={ edit_tag_cb } />
         </div>
 
-        <ol class="">
-        {for tag_list.iter().map(|tag| html!{
-            <li class="mb-2" key={ tag.id }>
-                <EditTagItemComponent
-                    add_tag_req={ add_tag_req.clone() }
-                    edit_tag_req={ edit_tag_req.clone() }
-                    tag={ tag.clone() } />
-            </li>
-        })}
-        </ol>
+        <EditTagItemListComponent
+            add_tag_req={ add_tag_req }
+            edit_tag_req={ edit_tag_req }
+            tag_list={ tag_list.clone() } />
         </>
     }
 }
@@ -152,7 +146,7 @@ pub fn edit_tag_item_list(props: &ItemListProps) -> Html {
 
     html! {
        <ol class="">
-        {for tag_list.iter().map(|tag| html!{
+       {for tag_list.iter().map(|tag| html!{
             <li class="mb-2" key={ tag.id }>
                 <EditTagItemComponent
                     add_tag_req={ props.add_tag_req.clone() }
@@ -222,8 +216,8 @@ pub fn edit_tag_item(props: &ItemProps) -> Html {
         let add_tag_req_clone = props.add_tag_req.clone();
         Callback::from(move |_event: MouseEvent| {
             add_tag_req_clone.emit(AddTagReq {
-                parent,
                 order_index,
+                parent,
             });
         })
     };

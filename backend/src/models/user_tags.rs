@@ -97,10 +97,13 @@ pub fn get_tags(
 }
 
 pub fn update_tag(conn: &mut PgConnection, tag_id: i32, new_tag: &NewUserTag) -> Result<(), Error> {
-    // TODO(Shaohua): Filter by user-id
-    diesel::update(user_tags::table.find(tag_id))
-        .set(user_tags::name.eq(new_tag.name.as_str()))
-        .execute(conn)?;
+    diesel::update(
+        user_tags::table
+            .filter(user_tags::id.eq(tag_id))
+            .filter(user_tags::user_id.eq(new_tag.user_id)),
+    )
+    .set(user_tags::name.eq(new_tag.name.as_str()))
+    .execute(conn)?;
     Ok(())
 }
 

@@ -8,6 +8,7 @@ mod navigation;
 use shared::authors::Author;
 use shared::books_meta::BookMetadata;
 use shared::files::FileWithPath;
+use shared::identifiers::IdentifierWithType;
 use shared::tags::Tag;
 use yew::prelude::*;
 use yew_hooks::use_async;
@@ -126,6 +127,28 @@ fn generate_publisher_element(publisher: &Option<Publisher>) -> Html {
     )
 }
 
+fn generate_identifiers_element(identifiers: &[IdentifierWithType]) -> Html {
+    identifiers
+        .iter()
+        .enumerate()
+        .map(|(index, identifier)| {
+            let delimiter = if identifiers.len() - index > 1 {
+                html! { <span>{ " & " }</span> }
+            } else {
+                html! {}
+            };
+            html! {
+                <span key={ identifier.id }>
+                    <span title={ identifier.name.clone() }>
+                        { &identifier.value }
+                    </span>
+                    { delimiter }
+                </span>
+            }
+        })
+        .collect::<Html>()
+}
+
 fn generate_categories_element(categories: &[Category]) -> Html {
     categories
         .iter()
@@ -155,6 +178,7 @@ fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
     let user_tags_element = generate_user_tags_element(&metadata.user_tags);
     let formats_element = generate_formats_element(&metadata.files);
     let categories_element = generate_categories_element(&metadata.categories);
+    let identifiers_element = generate_identifiers_element(&metadata.identifiers);
 
     let published_date = book.pubdate.as_ref().map_or_else(String::new, |pubdate| {
         pubdate.date().format("%Y-%m-%d").to_string()
@@ -194,6 +218,11 @@ fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
             <div>
                 <span class="me-2 fw-bold">{ "Categories:" }</span>
                 { categories_element }
+            </div>
+
+            <div>
+                <span class="me-2 fw-bold">{ "Identifiers:" }</span>
+                { identifiers_element }
             </div>
 
             <div>

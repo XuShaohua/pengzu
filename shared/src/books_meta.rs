@@ -10,6 +10,7 @@ use crate::authors::Author;
 use crate::books::BookWithCover;
 use crate::categories::Category;
 use crate::files::FileWithPath;
+use crate::identifiers::Identifier;
 use crate::languages::Language;
 use crate::publishers::Publisher;
 use crate::ratings::Rating;
@@ -28,6 +29,7 @@ pub struct BookMetadata {
     pub publisher: Option<Publisher>,
     pub series: Option<Series>,
     pub categories: Vec<Category>,
+    pub identifiers: Vec<Identifier>,
     pub lang: Option<Language>,
     pub rating: Option<Rating>,
     pub previous_book: Option<i32>,

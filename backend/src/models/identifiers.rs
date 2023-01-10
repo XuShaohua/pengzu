@@ -2,9 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
-use serde::{Deserialize, Serialize};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
+use serde::Deserialize;
+use shared::identifiers::Identifier;
 
 use crate::error::Error;
 use crate::schema::identifiers;
@@ -18,17 +18,6 @@ pub struct NewIdentifier {
     pub url: Option<String>,
 }
 
-#[derive(Debug, Serialize, Queryable)]
-pub struct Identifier {
-    pub id: i32,
-    pub book: i32,
-    pub scheme: i32,
-    pub value: String,
-    pub url: Option<String>,
-    pub created: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
-}
-
 pub fn add_identifier(
     conn: &mut PgConnection,
     new_identifier: &NewIdentifier,
@@ -40,7 +29,10 @@ pub fn add_identifier(
     Ok(())
 }
 
-pub fn get_identifiers(conn: &mut PgConnection, book_id: i32) -> Result<Vec<Identifier>, Error> {
+pub fn get_identifiers_by_book(
+    conn: &mut PgConnection,
+    book_id: i32,
+) -> Result<Vec<Identifier>, Error> {
     use crate::schema::identifiers::dsl::{book, identifiers};
     identifiers
         .filter(book.eq(book_id))

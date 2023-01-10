@@ -11,6 +11,7 @@ pub mod categories;
 pub mod file_formats;
 pub mod files;
 pub mod general_query;
+pub mod identifiers;
 pub mod images;
 pub mod languages;
 pub mod page;

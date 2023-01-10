@@ -30,7 +30,6 @@ pub struct EditSeriesReq {
 
 #[function_component(EditSeriesContainerComponent)]
 pub fn edit_series_container(props: &ContainerProps) -> Html {
-    let series_list = &props.series_list;
     let new_series = use_state(NewSeries::default);
     let series_id = use_state(|| 0_i32);
 
@@ -77,6 +76,8 @@ pub fn edit_series_container(props: &ContainerProps) -> Html {
         })
     };
 
+    let half_list = (props.series_list.len() + 1) / 2;
+
     html! {
         <>
         <div class="mb-3">
@@ -97,16 +98,36 @@ pub fn edit_series_container(props: &ContainerProps) -> Html {
             <EditSeriesModal name={ new_series.name.clone() } ok_cb={ edit_series_cb } />
         </div>
 
+        <EditSeriesItemListComponent
+            edit_series_req={ edit_series_req.clone() }
+            series_list={ props.series_list[..half_list].to_vec() } />
+
+        <EditSeriesItemListComponent
+            edit_series_req={ edit_series_req }
+            series_list={ props.series_list[half_list..].to_vec() } />
+        </>
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Properties)]
+pub struct ItemListProps {
+    pub series_list: Vec<SeriesAndBook>,
+    pub edit_series_req: Callback<EditSeriesReq>,
+}
+
+#[function_component(EditSeriesItemListComponent)]
+pub fn edit_series_item_list(props: &ItemListProps) -> Html {
+    let series_list = &props.series_list;
+    html! {
         <ul class="col-xs-12 col-sm-6 list-unstyled">
         {for series_list.iter().map(|series| html!{
             <li class="mb-2" key={ series.id }>
                 <EditSeriesItemComponent
-                    edit_series_req={ edit_series_req.clone() }
+                    edit_series_req={ props.edit_series_req.clone() }
                     series={ series.clone() } />
             </li>
         })}
         </ul>
-        </>
     }
 }
 

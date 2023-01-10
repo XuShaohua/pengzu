@@ -75,6 +75,7 @@ pub fn edit_publishers_container(props: &ContainerProps) -> Html {
             new_publisher_clone.set(NewPublisher::default());
         })
     };
+    let half_list = (props.publishers.len() + 1) / 2;
 
     html! {
         <>
@@ -97,8 +98,12 @@ pub fn edit_publishers_container(props: &ContainerProps) -> Html {
         </div>
 
         <EditPublisherItemListComponent
+            edit_publisher_req={ edit_publisher_req.clone() }
+            publishers={ props.publishers[..half_list].to_vec() } />
+        <EditPublisherItemListComponent
             edit_publisher_req={ edit_publisher_req }
-            publishers={ props.publishers.clone() } />
+            publishers={ props.publishers[half_list..].to_vec() } />
+
         </>
     }
 }

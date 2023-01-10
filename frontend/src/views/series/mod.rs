@@ -4,6 +4,7 @@
 
 mod add_series_modal;
 mod edit_series_item;
+mod edit_series_modal;
 mod series_item;
 
 use shared::general_query::{GeneralOrder, GeneralQuery};
@@ -12,14 +13,14 @@ use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::{use_location, use_navigator, Link};
 
+use self::edit_series_item::EditSeriesContainerComponent;
+use self::series_item::generate_series_list;
 use crate::components::general_filter::GeneralFilterComponent;
 use crate::components::pagination::PaginationComponent;
 use crate::hooks::use_user_context;
 use crate::router::Route;
 use crate::services::series::fetch_series_list;
 use crate::views::util;
-use edit_series_item::generate_edit_series_list;
-use series_item::generate_series_list;
 
 #[function_component(SeriesComponent)]
 pub fn series_page() -> Html {
@@ -80,7 +81,6 @@ pub fn series_page() -> Html {
     series_list.data.as_ref().map_or_else(
         || html! {},
         |series_list| {
-            let half_list = (series_list.list.len() + 1) / 2;
             html! {
                 <>
                 <h2>{ "Series" }</h2>
@@ -89,14 +89,11 @@ pub fn series_page() -> Html {
                 <div class="container-fluid">
                     <div class="row">
                         {if user_ctx.is_admin() {
-                            generate_edit_series_list(&series_list.list[..half_list])
+                            html! {
+                                <EditSeriesContainerComponent series_list={ series_list.list.clone() } />
+                            }
                         } else {
-                            generate_series_list(&series_list.list[..half_list])
-                        }}
-                       {if user_ctx.is_admin() {
-                            generate_edit_series_list(&series_list.list[half_list..])
-                        } else {
-                            generate_series_list(&series_list.list[half_list..])
+                            generate_series_list(&series_list.list)
                         }}
                     </div>
                 </div>

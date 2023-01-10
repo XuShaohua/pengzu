@@ -47,8 +47,6 @@ pub fn get_identifiers_with_type(
             identifiers::book,
             identifiers::scheme,
             identifiers::value,
-            identifiers::created,
-            identifiers::last_modified,
             identifier_types::name,
             identifier_types::url_template,
         ))

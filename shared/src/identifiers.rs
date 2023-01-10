@@ -26,8 +26,6 @@ pub struct IdentifierWithType {
     pub book: i32,
     pub scheme: i32,
     pub value: String,
-    pub created: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
     pub name: String,
     pub url_template: String,
 }

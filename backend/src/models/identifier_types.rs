@@ -2,9 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
-use serde::{Deserialize, Serialize};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
+use serde::Deserialize;
+use shared::identifier_type::IdentifierType;
 
 use crate::error::Error;
 use crate::schema::identifier_types;
@@ -13,16 +13,6 @@ use crate::schema::identifier_types;
 #[diesel(table_name = identifier_types)]
 pub struct NewIdentifierType {
     pub name: String,
-}
-
-#[derive(Debug, Serialize, Queryable)]
-pub struct IdentifierType {
-    pub id: i32,
-    pub name: String,
-    pub url_template: String,
-    pub description: Option<String>,
-    pub crated: NaiveDateTime,
-    pub last_modified: NaiveDateTime,
 }
 
 pub fn add_identifier_type(

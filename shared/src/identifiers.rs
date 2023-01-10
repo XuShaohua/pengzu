@@ -18,3 +18,16 @@ pub struct Identifier {
     pub created: NaiveDateTime,
     pub last_modified: NaiveDateTime,
 }
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "diesel", derive(Queryable))]
+pub struct IdentifierWithType {
+    pub id: i32,
+    pub book: i32,
+    pub scheme: i32,
+    pub value: String,
+    pub created: NaiveDateTime,
+    pub last_modified: NaiveDateTime,
+    pub name: String,
+    pub url_template: String,
+}

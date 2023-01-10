@@ -15,7 +15,7 @@ use crate::models::books_series::get_series_by_book;
 use crate::models::books_tags::get_tags_by_book;
 use crate::models::books_user_tags::get_user_tags_by_book;
 use crate::models::files::get_book_files_and_formats;
-use crate::models::identifiers::get_identifiers_by_book;
+use crate::models::identifiers::get_identifiers_with_type;
 use crate::models::ratings::get_rating;
 
 // TODO(Shaohua): Replace subquery with a meta table in postgres.
@@ -40,7 +40,7 @@ pub fn get_book_metadata(
         },
     };
     let lang = get_language_by_book(conn, book_id)?;
-    let identifiers = get_identifiers_by_book(conn, book_id)?;
+    let identifiers = get_identifiers_with_type(conn, book_id)?;
     let previous_book = get_previous_book(conn, book_id).ok();
     let next_book = get_next_book(conn, book_id).ok();
 

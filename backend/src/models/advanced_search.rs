@@ -2,7 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use diesel::{ExpressionMethods, PgConnection, PgTextExpressionMethods, QueryDsl, RunQueryDsl};
+use diesel::{
+    ExpressionMethods, JoinOnDsl, PgConnection, PgTextExpressionMethods, QueryDsl, RunQueryDsl,
+};
 use shared::advanced_search::AdvancedSearchQuery;
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
@@ -19,6 +21,8 @@ pub fn get_books_by_advanced_search(
     use crate::schema::books;
     use crate::schema::books_authors_link;
     use crate::schema::books_publishers_link;
+    use crate::schema::identifier_types;
+    use crate::schema::identifiers;
     use crate::schema::publishers;
 
     let books_query = GetBooksQuery {
@@ -81,6 +85,20 @@ pub fn get_books_by_advanced_search(
                 .select(books::id)
                 .load::<i32>(conn)?;
         }
+    }
+
+    // SELECT book_id FROM identifiers
+    // INNER JOIN identifier_types ON identifiers.scheme = identifier_types.id
+    // WHERE identifier_types.name == 'isbn' AND identifier.value = "USER-ISBN"
+    if let Some(isbn) = &query.isbn {
+        book_id_nil = false;
+        let isbn_name = "isbn";
+        book_ids = identifiers::table
+            .inner_join(identifier_types::table.on(identifiers::scheme.eq(identifier_types::id)))
+            .filter(identifier_types::name.eq(isbn_name))
+            .filter(identifiers::value.eq(isbn))
+            .select(identifiers::book)
+            .load::<i32>(conn)?;
     }
 
     get_books_by_ids(conn, &books_query, &book_ids)

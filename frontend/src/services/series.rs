@@ -5,10 +5,10 @@
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::general_query::GeneralQuery;
-use shared::series::{Series, SeriesAndBookList};
+use shared::series::{NewSeries, Series, SeriesAndBookList};
 
 use crate::error::FetchError;
-use crate::services::fetch::{request_delete, request_get};
+use crate::services::fetch::{request_delete, request_get, request_post, request_put};
 
 /// Get series list.
 ///
@@ -40,6 +40,27 @@ pub async fn fetch_books_by_series(
     let query_str = serde_urlencoded::to_string(query)?;
     let url = format!("/api/series/books/{series_id}?{query_str}");
     request_get(&url).await
+}
+
+/// Add a new series record.
+///
+/// # Errors
+/// Returns error if server error or `new_series` is invalid.
+pub async fn add_series(new_series: &NewSeries) -> Result<Series, FetchError> {
+    let url = "/api/series";
+    request_post(url, new_series).await
+}
+
+/// Update fields of existing series.
+///
+/// # Errors
+/// Returns error if:
+/// - Server error
+/// - Invalid series id
+/// - Invalid fields in `new_series`
+pub async fn update_series(series_id: i32, new_series: &NewSeries) -> Result<(), FetchError> {
+    let url = format!("/api/series/{series_id}");
+    request_put(&url, new_series).await
 }
 
 /// Delete specific series.

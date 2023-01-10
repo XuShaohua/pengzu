@@ -31,3 +31,8 @@ pub struct SeriesAndBookList {
     pub page: Page,
     pub list: Vec<SeriesAndBook>,
 }
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct NewSeries {
+    pub name: String,
+}

@@ -62,3 +62,13 @@ pub fn get_user_tags_by_book(
         .load::<UserTag>(conn)
         .map_err(Into::into)
 }
+
+pub fn delete_by_tag_id(conn: &mut PgConnection, tag_id: i32, user_id: i32) -> Result<(), Error> {
+    diesel::delete(
+        books_user_tags_link::table
+            .filter(books_user_tags_link::tag.eq(tag_id))
+            .filter(books_user_tags_link::user_id.eq(user_id)),
+    )
+    .execute(conn)?;
+    Ok(())
+}

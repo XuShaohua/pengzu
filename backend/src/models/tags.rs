@@ -81,6 +81,7 @@ pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<TagAn
             count_query.clone(),
             child_count_query,
         ))
+        .filter(tags::parent.eq(query.parent))
         .limit(TAGS_EACH_PAGE)
         .offset(offset);
 

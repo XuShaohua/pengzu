@@ -63,6 +63,7 @@ pub fn get_tags(
             user_tags::parent,
             count_query.clone(),
         ))
+        .filter(user_tags::parent.eq(query.parent))
         .limit(USER_TAGS_EACH_PAGE)
         .offset(offset);
 

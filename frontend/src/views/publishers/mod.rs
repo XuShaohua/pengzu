@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 mod add_publisher_modal;
+mod delete_publisher_modal;
 mod edit_publisher_item;
 mod edit_publisher_modal;
 mod publisher_item;

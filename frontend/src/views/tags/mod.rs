@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 mod add_tag_modal;
+mod delete_tag_modal;
 mod edit_tag_item;
 mod edit_tag_modal;
 mod tag_item;

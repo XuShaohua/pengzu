@@ -9,6 +9,7 @@ use yew_router::prelude::Link;
 
 use crate::services::series::{add_series, delete_series, update_series};
 use crate::views::series::add_series_modal::AddSeriesModal;
+use crate::views::series::delete_series_modal::DeleteSeriesModal;
 use crate::views::series::edit_series_modal::EditSeriesModal;
 use crate::views::series::Route;
 
@@ -16,6 +17,8 @@ const ADD_SERIES_MODAL: &str = "add-series-modal";
 const ADD_SERIES_MODAL_ID: &str = "#add-series-modal";
 const EDIT_SERIES_MODAL: &str = "edit-series-modal";
 const EDIT_SERIES_MODAL_ID: &str = "#edit-series-modal";
+const DELETE_SERIES_MODAL: &str = "delete-series-modal";
+const DELETE_SERIES_MODAL_ID: &str = "#delete-series-modal";
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct ContainerProps {
@@ -24,6 +27,12 @@ pub struct ContainerProps {
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct EditSeriesReq {
+    pub id: i32,
+    pub name: String,
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct DeleteSeriesReq {
     pub id: i32,
     pub name: String,
 }
@@ -62,8 +71,28 @@ pub fn edit_series_container(props: &ContainerProps) -> Html {
         })
     };
     let edit_series_req = {
+        let series_id_clone = series_id.clone();
         let new_series_clone = new_series.clone();
         Callback::from(move |req: EditSeriesReq| {
+            series_id_clone.set(req.id);
+            new_series_clone.set(NewSeries { name: req.name });
+        })
+    };
+
+    let delete_series_task = {
+        let series_id_clone = series_id.clone();
+        use_async(async move { delete_series(*series_id_clone).await })
+    };
+    let delete_series_cb = {
+        Callback::from(move |will_delete: bool| {
+            if will_delete {
+                delete_series_task.run();
+            }
+        })
+    };
+    let delete_series_req = {
+        let new_series_clone = new_series.clone();
+        Callback::from(move |req: DeleteSeriesReq| {
             series_id.set(req.id);
             new_series_clone.set(NewSeries { name: req.name });
         })
@@ -98,12 +127,18 @@ pub fn edit_series_container(props: &ContainerProps) -> Html {
             <EditSeriesModal name={ new_series.name.clone() } ok_cb={ edit_series_cb } />
         </div>
 
+        <div class="modal fade" tabindex="-1" id={ DELETE_SERIES_MODAL }>
+            <DeleteSeriesModal name={ new_series.name.clone() } ok_cb={ delete_series_cb } />
+        </div>
+
         <EditSeriesItemListComponent
             edit_series_req={ edit_series_req.clone() }
+            delete_series_req={ delete_series_req.clone() }
             series_list={ props.series_list[..half_list].to_vec() } />
 
         <EditSeriesItemListComponent
             edit_series_req={ edit_series_req }
+            delete_series_req={ delete_series_req }
             series_list={ props.series_list[half_list..].to_vec() } />
         </>
     }
@@ -113,6 +148,7 @@ pub fn edit_series_container(props: &ContainerProps) -> Html {
 pub struct ItemListProps {
     pub series_list: Vec<SeriesAndBook>,
     pub edit_series_req: Callback<EditSeriesReq>,
+    pub delete_series_req: Callback<DeleteSeriesReq>,
 }
 
 #[function_component(EditSeriesItemListComponent)]
@@ -124,6 +160,7 @@ pub fn edit_series_item_list(props: &ItemListProps) -> Html {
             <li class="mb-2" key={ series.id }>
                 <EditSeriesItemComponent
                     edit_series_req={ props.edit_series_req.clone() }
+                    delete_series_req={ props.delete_series_req.clone() }
                     series={ series.clone() } />
             </li>
         })}
@@ -135,24 +172,12 @@ pub fn edit_series_item_list(props: &ItemListProps) -> Html {
 pub struct ItemProps {
     pub series: SeriesAndBook,
     pub edit_series_req: Callback<EditSeriesReq>,
+    pub delete_series_req: Callback<DeleteSeriesReq>,
 }
 
 #[function_component(EditSeriesItemComponent)]
 pub fn edit_series_item(props: &ItemProps) -> Html {
     let series = &props.series;
-    let is_deleted = use_state(|| false);
-
-    let delete_series_task = {
-        let series_id = series.id;
-        use_async(async move {
-            if *is_deleted {
-                delete_series(series_id).await
-            } else {
-                is_deleted.set(true);
-                Ok(())
-            }
-        })
-    };
 
     let on_edit_button_click = {
         let series_clone = series.clone();
@@ -166,9 +191,13 @@ pub fn edit_series_item(props: &ItemProps) -> Html {
     };
 
     let on_delete_button_click = {
-        Callback::from(move |event: MouseEvent| {
-            event.prevent_default();
-            delete_series_task.run();
+        let series_clone = series.clone();
+        let delete_series_req_clone = props.delete_series_req.clone();
+        Callback::from(move |_event: MouseEvent| {
+            delete_series_req_clone.emit(DeleteSeriesReq {
+                id: series_clone.id,
+                name: series_clone.name.clone(),
+            });
         })
     };
 
@@ -181,6 +210,7 @@ pub fn edit_series_item(props: &ItemProps) -> Html {
                 <i class="bi bi-pencil"></i>
             </button>
             <button type="button" class="btn btn-danger btn-sm" title="Delete series"
+                data-bs-toggle="modal" data-bs-target={ DELETE_SERIES_MODAL_ID }
                 onclick={ on_delete_button_click }>
                 <i class="bi bi-trash3"></i>
             </button>

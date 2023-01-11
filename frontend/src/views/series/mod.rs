@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 mod add_series_modal;
+mod delete_series_modal;
 mod edit_series_item;
 mod edit_series_modal;
 mod series_item;

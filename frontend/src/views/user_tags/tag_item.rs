@@ -310,7 +310,7 @@ pub fn tag_item(props: &TagItemProps) -> Html {
             </div>
 
             <span class="badge rounded-pill d-inline me-2 text-bg-secondary">{ tag.count }</span>
-            <Link<Route> to={ Route::BooksOfTag { tag_id: tag.id }}>
+            <Link<Route> to={ Route::BooksOfUserTag { tag_id: tag.id }}>
                 { &tag.name }
             </Link<Route>>
             <a href="#" {onclick}><i class="bi bi-caret-right"></i></a>

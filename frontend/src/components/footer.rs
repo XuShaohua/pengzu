@@ -8,7 +8,7 @@ use yew::prelude::*;
 pub fn footer() -> Html {
     html! {
         <footer class="mt-3 fw-light text-center">
-            {"© 2022 Pengzu Library"}
+            {"© 2022-2023 Pengzu Library"}
         </footer>
     }
 }

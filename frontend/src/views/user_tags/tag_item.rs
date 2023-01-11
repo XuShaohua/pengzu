@@ -14,12 +14,15 @@ use yew_router::prelude::Link;
 use crate::router::Route;
 use crate::services::user_tags::{add_tag, delete_tag, fetch_user_tags, update_tag};
 use crate::views::user_tags::add_tag_modal::AddTagModal;
+use crate::views::user_tags::delete_tag_modal::DeleteTagModal;
 use crate::views::user_tags::edit_tag_modal::EditTagModal;
 
 const ADD_TAG_MODAL: &str = "add-tag-modal";
 const ADD_TAG_MODAL_ID: &str = "#add-tag-modal";
 const EDIT_TAG_MODAL: &str = "edit-tag-modal";
 const EDIT_TAG_MODAL_ID: &str = "#edit-tag-modal";
+const DELETE_TAG_MODAL: &str = "delete-tag-modal";
+const DELETE_TAG_MODAL_ID: &str = "#delete-tag-modal";
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct TagsContainerProps {
@@ -38,6 +41,12 @@ pub struct EditTagReq {
     pub order_index: i32,
     pub name: String,
     pub parent: i32,
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct DeleteTagReq {
+    pub id: i32,
+    pub name: String,
 }
 
 #[function_component(TagsContainerComponent)]
@@ -96,15 +105,41 @@ pub fn tags_container(props: &TagsContainerProps) -> Html {
         })
     };
     let edit_tag_req = {
+        let tag_id_clone = tag_id.clone();
         let new_tag_clone = new_tag.clone();
         let user_id = user_ctx.id;
         Callback::from(move |req: EditTagReq| {
-            tag_id.set(req.id);
+            tag_id_clone.set(req.id);
             new_tag_clone.set(NewUserTag {
                 user_id,
                 order_index: req.order_index,
                 name: req.name.clone(),
                 parent: req.parent,
+            });
+        })
+    };
+
+    let delete_tag_task = {
+        let tag_id_clone = tag_id.clone();
+        use_async(async move { delete_tag(*tag_id_clone).await })
+    };
+    let delete_tag_cb = {
+        Callback::from(move |will_delete: bool| {
+            if will_delete {
+                delete_tag_task.run();
+            }
+        })
+    };
+    let delete_tag_req = {
+        let new_tag_clone = new_tag.clone();
+        let user_id = user_ctx.id;
+        Callback::from(move |req: DeleteTagReq| {
+            tag_id.set(req.id);
+            new_tag_clone.set(NewUserTag {
+                user_id,
+                order_index: new_tag_clone.order_index,
+                name: req.name,
+                parent: new_tag_clone.parent,
             });
         })
     };
@@ -136,9 +171,14 @@ pub fn tags_container(props: &TagsContainerProps) -> Html {
             <EditTagModal name={ new_tag.name.clone() } ok_cb={ edit_tag_cb } />
         </div>
 
+        <div class="modal fade" tabindex="-1" id={ DELETE_TAG_MODAL }>
+            <DeleteTagModal name={ new_tag.name.clone() } ok_cb={ delete_tag_cb } />
+        </div>
+
         <TagItemListComponent
             add_tag_req={ add_tag_req }
             edit_tag_req={ edit_tag_req }
+            delete_tag_req={ delete_tag_req }
             tag_list={ props.tag_list.clone() } />
         </>
     }
@@ -149,6 +189,7 @@ pub struct TagItemListProps {
     pub tag_list: Vec<UserTagAndBook>,
     pub add_tag_req: Callback<AddTagReq>,
     pub edit_tag_req: Callback<EditTagReq>,
+    pub delete_tag_req: Callback<DeleteTagReq>,
 }
 
 #[function_component(TagItemListComponent)]
@@ -162,6 +203,7 @@ pub fn tag_item_list(props: &TagItemListProps) -> Html {
             <UserTagItemComponent
                 add_tag_req={ props.add_tag_req.clone() }
                 edit_tag_req={ props.edit_tag_req.clone() }
+                delete_tag_req={ props.delete_tag_req.clone() }
                 tag={ tag.clone() } />
             </li>
         })}
@@ -174,13 +216,13 @@ pub struct TagItemProps {
     pub tag: UserTagAndBook,
     pub add_tag_req: Callback<AddTagReq>,
     pub edit_tag_req: Callback<EditTagReq>,
+    pub delete_tag_req: Callback<DeleteTagReq>,
 }
 
 #[function_component(UserTagItemComponent)]
 pub fn tag_item(props: &TagItemProps) -> Html {
     let tag = &props.tag;
     let parent_id = tag.id;
-    let is_deleted = use_state(|| false);
 
     let child_tags = use_async(async move {
         let query = RecursiveQuery {
@@ -204,22 +246,11 @@ pub fn tag_item(props: &TagItemProps) -> Html {
                 <TagItemListComponent
                     add_tag_req={ props.add_tag_req.clone() }
                     edit_tag_req={ props.edit_tag_req.clone() }
+                    delete_tag_req={ props.delete_tag_req.clone() }
                     tag_list={ tag_list.list.clone() } />
             }
         },
     );
-
-    let delete_tag_task = {
-        let tag_id = tag.id;
-        use_async(async move {
-            if *is_deleted {
-                delete_tag(tag_id).await
-            } else {
-                is_deleted.set(true);
-                Ok(())
-            }
-        })
-    };
 
     let on_add_button_click = {
         let parent = tag.id;
@@ -247,9 +278,13 @@ pub fn tag_item(props: &TagItemProps) -> Html {
     };
 
     let on_delete_button_click = {
-        Callback::from(move |event: MouseEvent| {
-            event.prevent_default();
-            delete_tag_task.run();
+        let old_tag = tag.clone();
+        let delete_tag_req_clone = props.delete_tag_req.clone();
+        Callback::from(move |_event: MouseEvent| {
+            delete_tag_req_clone.emit(DeleteTagReq {
+                id: old_tag.id,
+                name: old_tag.name.clone(),
+            });
         })
     };
 
@@ -268,6 +303,7 @@ pub fn tag_item(props: &TagItemProps) -> Html {
                     <i class="bi bi-pencil"></i>
                 </button>
                 <button type="button" class="btn btn-danger btn-sm" title="Delete tag"
+                    data-bs-toggle="modal" data-bs-target={ DELETE_TAG_MODAL_ID }
                     onclick={ on_delete_button_click }>
                     <i class="bi bi-trash3"></i>
                 </button>

@@ -2,7 +2,8 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use diesel::{ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl};
+use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, RunQueryDsl};
+use serde::Deserialize;
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::page::BOOKS_EACH_PAGE;
@@ -69,6 +70,50 @@ pub fn delete_by_tag_id(conn: &mut PgConnection, tag_id: i32, user_id: i32) -> R
             .filter(books_user_tags_link::tag.eq(tag_id))
             .filter(books_user_tags_link::user_id.eq(user_id)),
     )
-    .execute(conn)?;
-    Ok(())
+    .execute(conn)
+    .map(drop)
+    .map_err(Into::into)
+}
+
+#[derive(Debug, Deserialize, Insertable)]
+#[diesel(table_name = books_user_tags_link)]
+pub struct NewLink {
+    pub tag: i32,
+    pub user_id: i32,
+    pub book: i32,
+}
+
+pub fn add_book(
+    conn: &mut PgConnection,
+    tag_id: i32,
+    user_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    let new_link = NewLink {
+        tag: tag_id,
+        user_id,
+        book: book_id,
+    };
+    diesel::insert_into(books_user_tags_link::table)
+        .values(new_link)
+        .execute(conn)
+        .map(drop)
+        .map_err(Into::into)
+}
+
+pub fn delete_book(
+    conn: &mut PgConnection,
+    tag_id: i32,
+    user_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    diesel::delete(
+        books_user_tags_link::table
+            .filter(books_user_tags_link::tag.eq(tag_id))
+            .filter(books_user_tags_link::user_id.eq(user_id))
+            .filter(books_user_tags_link::book.eq(book_id)),
+    )
+    .execute(conn)
+    .map(drop)
+    .map_err(Into::into)
 }

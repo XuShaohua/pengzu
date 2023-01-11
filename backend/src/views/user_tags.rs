@@ -111,3 +111,41 @@ pub async fn delete_tag(
     .await??;
     Ok(HttpResponse::Ok().finish())
 }
+
+pub async fn add_book(
+    pool: web::Data<DbPool>,
+    tag_id: web::Path<i32>,
+    book_id: web::Path<i32>,
+    req: HttpRequest,
+) -> Result<HttpResponse, Error> {
+    let claims = get_claims_from_auth(&req)?;
+    let user_id = claims.id();
+
+    web::block(move || {
+        let mut conn = pool.get()?;
+        let tag_id = tag_id.into_inner();
+        let book_id = book_id.into_inner();
+        books_user_tags::add_book(&mut conn, tag_id, user_id, book_id)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}
+
+pub async fn delete_book(
+    pool: web::Data<DbPool>,
+    tag_id: web::Path<i32>,
+    book_id: web::Path<i32>,
+    req: HttpRequest,
+) -> Result<HttpResponse, Error> {
+    let claims = get_claims_from_auth(&req)?;
+    let user_id = claims.id();
+
+    web::block(move || {
+        let mut conn = pool.get()?;
+        let tag_id = tag_id.into_inner();
+        let book_id = book_id.into_inner();
+        books_user_tags::delete_book(&mut conn, tag_id, user_id, book_id)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}

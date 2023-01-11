@@ -30,8 +30,8 @@ pub fn delete_publisher_modal(props: &Props) -> Html {
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        { "Please confirm to delete publisher" }
-                        <span class="f-bold">{ props.name.clone() }</span>
+                        { "Please confirm to delete publisher " }
+                        <span class="fw-bold ms-1">{ props.name.clone() }</span>
                     </div>
                 </div>
 
@@ -39,7 +39,7 @@ pub fn delete_publisher_modal(props: &Props) -> Html {
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         { "Cancel"}
                     </button>
-                    <button type="button" class="btn btn-primary"
+                    <button type="button" class="btn btn-danger"
                         data-bs-dismiss="modal"
                         onclick={ on_confirm_button_clicked }>
                         { "Confirm" }

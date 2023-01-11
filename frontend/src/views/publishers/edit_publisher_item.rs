@@ -10,12 +10,15 @@ use yew_router::prelude::Link;
 use crate::router::Route;
 use crate::services::publishers::{add_publisher, delete_publisher, update_publisher};
 use crate::views::publishers::add_publisher_modal::AddPublisherModal;
+use crate::views::publishers::delete_publisher_modal::DeletePublisherModal;
 use crate::views::publishers::edit_publisher_modal::EditPublisherModal;
 
 const ADD_PUBLISHER_MODAL: &str = "add-publisher-modal";
 const ADD_PUBLISHER_MODAL_ID: &str = "#add-publisher-modal";
 const EDIT_PUBLISHER_MODAL: &str = "edit-publisher-modal";
 const EDIT_PUBLISHER_MODAL_ID: &str = "#edit-publisher-modal";
+const DELETE_PUBLISHER_MODAL: &str = "delete-publisher-modal";
+const DELETE_PUBLISHER_MODAL_ID: &str = "#delete-publisher-modal";
 
 #[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct ContainerProps {
@@ -24,6 +27,12 @@ pub struct ContainerProps {
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct EditPublisherReq {
+    pub id: i32,
+    pub name: String,
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct DeletePublisherReq {
     pub id: i32,
     pub name: String,
 }
@@ -63,7 +72,28 @@ pub fn edit_publishers_container(props: &ContainerProps) -> Html {
     };
     let edit_publisher_req = {
         let new_publisher_clone = new_publisher.clone();
+        let publisher_id_clone = publisher_id.clone();
         Callback::from(move |req: EditPublisherReq| {
+            publisher_id_clone.set(req.id);
+            new_publisher_clone.set(NewPublisher { name: req.name });
+        })
+    };
+
+    let delete_publisher_task = {
+        let publisher_id_clone = publisher_id.clone();
+        use_async(async move { delete_publisher(*publisher_id_clone).await })
+    };
+    let delete_publisher_cb = {
+        Callback::from(move |will_delete: bool| {
+            if will_delete {
+                delete_publisher_task.run();
+            }
+        })
+    };
+
+    let delete_publisher_req = {
+        let new_publisher_clone = new_publisher.clone();
+        Callback::from(move |req: DeletePublisherReq| {
             publisher_id.set(req.id);
             new_publisher_clone.set(NewPublisher { name: req.name });
         })
@@ -97,11 +127,18 @@ pub fn edit_publishers_container(props: &ContainerProps) -> Html {
             <EditPublisherModal name={ new_publisher.name.clone() } ok_cb={ edit_publisher_cb } />
         </div>
 
+        <div class="modal fade" tabindex="-1" id={ DELETE_PUBLISHER_MODAL }>
+            <DeletePublisherModal name={ new_publisher.name.clone() } ok_cb={ delete_publisher_cb } />
+        </div>
+
         <EditPublisherItemListComponent
             edit_publisher_req={ edit_publisher_req.clone() }
+            delete_publisher_req={ delete_publisher_req.clone() }
             publishers={ props.publishers[..half_list].to_vec() } />
+
         <EditPublisherItemListComponent
             edit_publisher_req={ edit_publisher_req }
+            delete_publisher_req={ delete_publisher_req }
             publishers={ props.publishers[half_list..].to_vec() } />
 
         </>
@@ -112,6 +149,7 @@ pub fn edit_publishers_container(props: &ContainerProps) -> Html {
 pub struct ItemListProps {
     pub publishers: Vec<PublisherAndBook>,
     pub edit_publisher_req: Callback<EditPublisherReq>,
+    pub delete_publisher_req: Callback<DeletePublisherReq>,
 }
 
 #[function_component(EditPublisherItemListComponent)]
@@ -122,6 +160,7 @@ pub fn edit_publisher_item_list(props: &ItemListProps) -> Html {
                 <li class="mb-3" key={ publisher.id }>
                     <EditPublisherItemComponent
                         edit_publisher_req={ props.edit_publisher_req.clone() }
+                        delete_publisher_req={ props.delete_publisher_req.clone() }
                         publisher={ publisher.clone() } />
                 </li>
             })}
@@ -133,23 +172,16 @@ pub fn edit_publisher_item_list(props: &ItemListProps) -> Html {
 pub struct ItemProps {
     pub publisher: PublisherAndBook,
     pub edit_publisher_req: Callback<EditPublisherReq>,
+    pub delete_publisher_req: Callback<DeletePublisherReq>,
 }
 
 #[function_component(EditPublisherItemComponent)]
 pub fn edit_publisher_item(props: &ItemProps) -> Html {
     let publisher = &props.publisher;
-    let is_deleted = use_state(|| false);
 
-    let delete_publisher_task = {
+    let _delete_publisher_task = {
         let publisher_id = publisher.id;
-        use_async(async move {
-            if *is_deleted {
-                delete_publisher(publisher_id).await
-            } else {
-                is_deleted.set(true);
-                Ok(())
-            }
-        })
+        use_async(async move { delete_publisher(publisher_id).await })
     };
 
     let on_edit_button_click = {
@@ -164,9 +196,13 @@ pub fn edit_publisher_item(props: &ItemProps) -> Html {
     };
 
     let on_delete_button_click = {
-        Callback::from(move |event: MouseEvent| {
-            event.prevent_default();
-            delete_publisher_task.run();
+        let publisher_clone = publisher.clone();
+        let delete_publisher_req_clone = props.delete_publisher_req.clone();
+        Callback::from(move |_event: MouseEvent| {
+            delete_publisher_req_clone.emit(DeletePublisherReq {
+                id: publisher_clone.id,
+                name: publisher_clone.name.clone(),
+            });
         })
     };
 
@@ -179,6 +215,7 @@ pub fn edit_publisher_item(props: &ItemProps) -> Html {
                 <i class="bi bi-pencil"></i>
             </button>
             <button type="button" class="btn btn-danger btn-sm" title="Delete publisher"
+                data-bs-toggle="modal" data-bs-target={ DELETE_PUBLISHER_MODAL_ID }
                 onclick={ on_delete_button_click }>
                 <i class="bi bi-trash3"></i>
             </button>

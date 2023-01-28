@@ -34,10 +34,7 @@ pub fn get_connection_pool() -> Result<DbPool, Error> {
         .map_err(|err| {
             Error::from_string(
                 ErrorKind::DbConnError,
-                format!(
-                    "Failed to create connection pool, url: {}, err: {:?}",
-                    url, err
-                ),
+                format!("Failed to create connection pool, url: {url}, err: {err:?}"),
             )
         })
 }

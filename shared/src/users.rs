@@ -30,7 +30,7 @@ impl fmt::Debug for UserRole {
             Self::User => "Normal User",
             Self::Admin => "Administrator",
         };
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 

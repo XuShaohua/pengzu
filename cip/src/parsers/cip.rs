@@ -4,6 +4,7 @@
 
 use crate::error::Error;
 
+#[derive(Debug, Clone)]
 pub struct CipRecord {
     pub title: String,
     pub original_title: String,

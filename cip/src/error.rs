@@ -11,6 +11,8 @@ use std::io;
 pub enum ErrorKind {
     IoError,
 
+    UnsupportedFile,
+
     InvalidPdfFile,
     InvalidPdfPage,
 

@@ -56,7 +56,7 @@ fn filter_func(object_id: (u32, u16), object: &mut Object) -> Option<((u32, u16)
             return None;
         }
     }
-    Some((object_id, object.to_owned()))
+    Some((object_id, object.clone()))
 }
 
 impl PdfReader {

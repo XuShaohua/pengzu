@@ -8,6 +8,10 @@ use crate::error::{Error, ErrorKind};
 use crate::formats::epub_reader::EpubReader;
 use crate::parsers::cip::{is_plain_cip_page, parse_cip_from_html, CipRecord};
 
+/// Parse CIP record from epub file.
+///
+/// # Errors
+/// Returns error if failed to parse epub file.
 pub fn parse_cip_from_epub<P: AsRef<Path>>(path: P) -> Result<CipRecord, Error> {
     let mut reader = EpubReader::open(path)?;
     let pages = reader.pages();

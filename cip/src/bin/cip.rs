@@ -21,7 +21,7 @@ fn main() {
 
     match parse_ebook_file(path) {
         Ok(cip) => {
-            println!("cip: {:?}", cip);
+            println!("cip: {cip:?}");
         }
         Err(err) => {
             eprintln!("err: {err:?}");

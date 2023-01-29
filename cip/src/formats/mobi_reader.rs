@@ -42,11 +42,11 @@ impl MobiReader {
             let content = record.content;
             match encoding {
                 TextEncoding::UTF8 | TextEncoding::Unknown(_) => {
-                    Ok(String::from_utf8_lossy(content).to_owned().to_string())
+                    Ok(String::from_utf8_lossy(content).into_owned())
                 }
-                TextEncoding::CP1252 => {
-                    Ok(WINDOWS_1252.decode(content, DecoderTrap::Ignore).unwrap())
-                }
+                TextEncoding::CP1252 => Ok(WINDOWS_1252
+                    .decode(content, DecoderTrap::Ignore)
+                    .unwrap_or_default()),
             }
         } else {
             Err(Error::new(ErrorKind::InvalidMobiPage, "Invalid page index"))

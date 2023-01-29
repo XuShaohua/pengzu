@@ -8,6 +8,10 @@ use crate::error::{Error, ErrorKind};
 use crate::formats::pdf_reader::PdfReader;
 use crate::parsers::cip::{is_plain_cip_page, parse_cip_from_text, CipRecord};
 
+/// Parse CIP record from pdf file
+///
+/// # Errors
+/// Returns error if failed to parse pdf file.
 pub fn parse_cip_from_pdf<P: AsRef<Path>>(path: P) -> Result<CipRecord, Error> {
     let reader = PdfReader::open(path)?;
     let pages = reader.pages();

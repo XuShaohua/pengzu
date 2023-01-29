@@ -2,6 +2,8 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+#![allow(clippy::module_name_repetitions)]
+
 use crate::error::{Error, ErrorKind};
 use crate::parsers::html::html_to_text;
 
@@ -18,6 +20,7 @@ pub struct CipRecord {
     pub price: String,
 }
 
+#[must_use]
 pub fn is_plain_cip_page(text: &str) -> bool {
     text.contains("图书在版编目") && text.contains("中国版本图书馆")
 }
@@ -30,6 +33,10 @@ pub fn parse_cip_from_text(_text: &str) -> Result<CipRecord, Error> {
     Err(Error::new(ErrorKind::NoCipRecordFound, ""))
 }
 
+/// Parse CIP record from html text.
+///
+/// # Errors
+/// Returns error if failed to parse cip record.
 pub fn parse_cip_from_html(html: &str) -> Result<CipRecord, Error> {
     let text = html_to_text(html);
     println!("html: {html}, text: {text}");

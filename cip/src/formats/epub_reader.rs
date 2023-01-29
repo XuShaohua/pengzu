@@ -35,7 +35,7 @@ impl EpubReader {
     pub fn read_page(&mut self, page: usize) -> Result<String, Error> {
         if page < self.doc.spine.len() {
             let rid = self.doc.spine[page].clone();
-            let (content, _mime) = self.doc.get_resource_str(&rid).unwrap();
+            let (content, _mime) = self.doc.get_resource_str(&rid).unwrap_or_default();
             Ok(content)
         } else {
             Err(Error::from_string(

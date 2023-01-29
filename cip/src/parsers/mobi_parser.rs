@@ -8,6 +8,10 @@ use crate::error::{Error, ErrorKind};
 use crate::formats::mobi_reader::MobiReader;
 use crate::parsers::cip::{is_plain_cip_page, parse_cip_from_html, CipRecord};
 
+/// Parse CIP record from mobi file.
+///
+/// # Errors
+/// Returns error if failed to parse mobi file.
 pub fn parse_cip_from_mobi<P: AsRef<Path>>(path: P) -> Result<CipRecord, Error> {
     let reader = MobiReader::open(path)?;
     let pages = reader.pages();

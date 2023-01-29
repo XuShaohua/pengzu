@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
 
 #[derive(Debug, Clone)]
 pub struct CipRecord {
@@ -26,5 +26,5 @@ pub fn is_plain_cip_page(text: &str) -> bool {
 /// # Errors
 /// Returns error if failed to parse cip record.
 pub fn parse_cip_from_text(_text: &str) -> Result<CipRecord, Error> {
-    todo!()
+    Err(Error::new(ErrorKind::NoCipRecordFound, ""))
 }

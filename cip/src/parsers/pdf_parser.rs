@@ -13,9 +13,10 @@ pub fn parse_cip_from_pdf<P: AsRef<Path>>(path: P) -> Result<CipRecord, Error> {
     let pages = reader.pages();
 
     // First 10 pages.
-    let mut front_page = 0;
+    let mut front_page = 1;
     while front_page < 10 && front_page < pages {
         let text = reader.read_page(front_page)?;
+        println!("page: {front_page}, text: {text}");
         if is_plain_cip_page(&text) {
             return parse_cip_from_text(&text);
         }
@@ -27,6 +28,7 @@ pub fn parse_cip_from_pdf<P: AsRef<Path>>(path: P) -> Result<CipRecord, Error> {
     let mut rear_page = (pages - 5).max(front_page);
     while rear_page < pages {
         let text = reader.read_page(rear_page)?;
+        println!("rear_page: {rear_page}, text: {text}");
         if is_plain_cip_page(&text) {
             return parse_cip_from_text(&text);
         }

@@ -16,6 +16,9 @@ pub enum ErrorKind {
 
     InvalidEpubFile,
     InvalidEpubPage,
+
+    InvalidMobiFile,
+    InvalidMobiPage,
 }
 
 #[derive(Debug, Clone)]
@@ -72,5 +75,11 @@ impl From<lopdf::Error> for Error {
 impl From<epub::doc::DocError> for Error {
     fn from(err: epub::doc::DocError) -> Self {
         Self::from_string(ErrorKind::InvalidEpubFile, err.to_string())
+    }
+}
+
+impl From<mobi::MobiError> for Error {
+    fn from(err: mobi::MobiError) -> Self {
+        Self::from_string(ErrorKind::InvalidMobiFile, err.to_string())
     }
 }

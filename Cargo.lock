@@ -526,6 +526,7 @@ version = "0.1.0"
 dependencies = [
  "epub",
  "lopdf",
+ "mobi",
 ]
 
 [[package]]
@@ -1865,6 +1866,17 @@ dependencies = [
  "log",
  "wasi 0.11.0+wasi-snapshot-preview1",
  "windows-sys",
+]
+
+[[package]]
+name = "mobi"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f3f8e34216126be00a189105bda27462e1743d59cd4e15d6b99ff4af051b1b4"
+dependencies = [
+ "encoding",
+ "indexmap",
+ "thiserror",
 ]
 
 [[package]]

@@ -3,4 +3,5 @@
 // that can be found in the LICENSE file.
 
 pub mod epub_reader;
+pub mod mobi_reader;
 pub mod pdf_reader;

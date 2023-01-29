@@ -10,7 +10,12 @@ use std::io;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ErrorKind {
     IoError,
+
     InvalidPdfFile,
+    InvalidPdfPage,
+
+    InvalidEpubFile,
+    InvalidEpubPage,
 }
 
 #[derive(Debug, Clone)]
@@ -61,5 +66,11 @@ impl From<io::Error> for Error {
 impl From<lopdf::Error> for Error {
     fn from(err: lopdf::Error) -> Self {
         Self::from_string(ErrorKind::InvalidPdfFile, err.to_string())
+    }
+}
+
+impl From<epub::doc::DocError> for Error {
+    fn from(err: epub::doc::DocError) -> Self {
+        Self::from_string(ErrorKind::InvalidEpubFile, err.to_string())
     }
 }

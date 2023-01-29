@@ -32,9 +32,11 @@ impl EpubReader {
     ///
     /// # Errors
     /// Returns error if failed to read page text.
-    pub fn read_page(&self, page: usize) -> Result<String, Error> {
+    pub fn read_page(&mut self, page: usize) -> Result<String, Error> {
         if page < self.doc.spine.len() {
-            Ok(self.doc.spine[page].clone())
+            let rid = self.doc.spine[page].clone();
+            let (content, _mime) = self.doc.get_resource_str(&rid).unwrap();
+            Ok(content)
         } else {
             Err(Error::from_string(
                 ErrorKind::InvalidEpubPage,

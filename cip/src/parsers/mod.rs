@@ -4,6 +4,7 @@
 
 pub mod cip;
 pub mod epub_parser;
+pub mod html;
 pub mod mobi_parser;
 pub mod pdf_parser;
 

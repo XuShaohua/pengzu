@@ -7,6 +7,7 @@ use std::path::Path;
 use crate::error::{Error, ErrorKind};
 use crate::formats::epub_reader::EpubReader;
 use crate::parsers::cip::{is_plain_cip_page, parse_cip_from_text, CipRecord};
+use crate::parsers::html::html_to_text;
 
 pub fn parse_cip_from_epub<P: AsRef<Path>>(path: P) -> Result<CipRecord, Error> {
     let mut reader = EpubReader::open(path)?;
@@ -17,9 +18,9 @@ pub fn parse_cip_from_epub<P: AsRef<Path>>(path: P) -> Result<CipRecord, Error> 
     let mut front_page = 0;
     while front_page < 5 && front_page < pages {
         let text = reader.read_page(front_page)?;
-        println!("front page: {front_page}, text: {text}");
+        println!("front page: {front_page}");
         if is_plain_cip_page(&text) {
-            return parse_cip_from_text(&text);
+            return parse_cip_from_epub_html(&text);
         }
         front_page += 1;
     }
@@ -28,9 +29,9 @@ pub fn parse_cip_from_epub<P: AsRef<Path>>(path: P) -> Result<CipRecord, Error> 
     let mut rear_page = (pages - 5).max(front_page);
     while rear_page < pages {
         let text = reader.read_page(rear_page)?;
-        println!("rear_page: {rear_page}, text: {text}");
+        println!("rear_page: {rear_page}");
         if is_plain_cip_page(&text) {
-            return parse_cip_from_text(&text);
+            return parse_cip_from_epub_html(&text);
         }
 
         rear_page += 1;
@@ -40,4 +41,11 @@ pub fn parse_cip_from_epub<P: AsRef<Path>>(path: P) -> Result<CipRecord, Error> 
         ErrorKind::NoCipRecordFound,
         "No cip record found in epub file",
     ))
+}
+
+#[inline]
+fn parse_cip_from_epub_html(html: &str) -> Result<CipRecord, Error> {
+    let text = html_to_text(html);
+    println!("html: {html}, text: {text}");
+    parse_cip_from_text(&text)
 }

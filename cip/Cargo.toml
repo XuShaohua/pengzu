@@ -9,6 +9,7 @@ publish = false
 [dependencies]
 clap = "4.1.4"
 epub = "2.0.0"
+html2text = "0.4.5"
 # Support encryption
 lopdf = { git="https://github.com/J-F-Liu/lopdf", rev="3a192daba1" }
 mobi = "0.8.0"

@@ -3,7 +3,10 @@
 // that can be found in the LICENSE file.
 
 use chrono::NaiveDateTime;
-use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, RunQueryDsl};
+use diesel::{
+    sql_query, ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, QueryableByName,
+    RunQueryDsl,
+};
 use serde::{Deserialize, Serialize};
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
@@ -99,4 +102,29 @@ pub fn get_books_by_tag(
         .load::<Book>(conn)?;
 
     book_list_to_book_authors(conn, book_list, query, total)
+}
+
+#[derive(Debug, Clone, Copy, Queryable, QueryableByName)]
+#[diesel(table_name = tags)]
+struct CleanupItem {
+    pub tag: i32,
+}
+
+pub fn cleanup_unused(conn: &mut PgConnection) -> Result<(), Error> {
+    // get all unused tag id
+    let results = sql_query(
+        "
+SELECT tags.id
+FROM tags
+         LEFT JOIN books_tags_link btl ON tags.id = btl.tag
+GROUP BY tags.id
+HAVING COUNT(btl.id) < 2
+ORDER BY COUNT(btl.id);
+    ",
+    )
+    .load::<CleanupItem>(conn)?;
+
+    // remove from books_tags_link table
+    // remove from tags table
+    todo!()
 }

@@ -85,3 +85,12 @@ pub async fn get_books_by_tag(
     .await??;
     Ok(HttpResponse::Ok().json(resp))
 }
+
+pub async fn cleanup_unused(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        books_tags::cleanup_unused(&mut conn)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}

@@ -13,6 +13,8 @@ pub enum ErrorKind {
 
     UnsupportedFile,
 
+    NoCipRecordFound,
+
     InvalidPdfFile,
     InvalidPdfPage,
 

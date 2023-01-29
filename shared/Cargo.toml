@@ -1,6 +1,8 @@
 [package]
 name = "shared"
 version = "0.1.0"
+homepage = "https://github.com/xushaohua/pengzu"
+repository = "https://github.com/xushaohua/pengzu"
 edition = "2021"
 publish = false
 

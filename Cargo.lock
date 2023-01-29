@@ -525,6 +525,7 @@ name = "cip"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "encoding",
  "epub",
  "html2text",
  "lopdf",

@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 use crate::error::{Error, ErrorKind};
+use crate::parsers::html::html_to_text;
 
 #[derive(Debug, Clone)]
 pub struct CipRecord {
@@ -27,4 +28,10 @@ pub fn is_plain_cip_page(text: &str) -> bool {
 /// Returns error if failed to parse cip record.
 pub fn parse_cip_from_text(_text: &str) -> Result<CipRecord, Error> {
     Err(Error::new(ErrorKind::NoCipRecordFound, ""))
+}
+
+pub fn parse_cip_from_html(html: &str) -> Result<CipRecord, Error> {
+    let text = html_to_text(html);
+    println!("html: {html}, text: {text}");
+    parse_cip_from_text(&text)
 }

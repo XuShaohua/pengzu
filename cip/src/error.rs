@@ -2,12 +2,15 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+#![allow(clippy::module_name_repetitions)]
+
 use std::fmt::{Display, Formatter};
 use std::io;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ErrorKind {
     IoError,
+    InvalidPdfFile,
 }
 
 #[derive(Debug, Clone)]
@@ -52,5 +55,11 @@ impl Error {
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Self {
         Self::from_string(ErrorKind::IoError, err.to_string())
+    }
+}
+
+impl From<lopdf::Error> for Error {
+    fn from(err: lopdf::Error) -> Self {
+        Self::from_string(ErrorKind::InvalidPdfFile, err.to_string())
     }
 }

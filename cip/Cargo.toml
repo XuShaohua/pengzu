@@ -7,3 +7,5 @@ edition = "2021"
 publish = false
 
 [dependencies]
+# Support encryption
+lopdf = { git="https://github.com/J-F-Liu/lopdf", rev="3a192daba1" }

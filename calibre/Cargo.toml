@@ -8,7 +8,7 @@ publish = false
 
 [dependencies]
 chrono = { version = "0.4.23", default-features=false, features = ["serde", "std"] }
-diesel = { version = "2.0.2", features = ["chrono", "sqlite", "r2d2"] }
+diesel = { version = "2.0.3", features = ["chrono", "sqlite", "r2d2"] }
 dotenv = "0.15.0"
 log = "0.4.17"
 r2d2 = "0.8.10"

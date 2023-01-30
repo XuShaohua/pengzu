@@ -53,12 +53,15 @@ pub fn get_publishers(
             .load::<PublisherAndBook>(conn),
         GeneralOrder::TitleDesc => stmt
             .order(publishers::name.desc())
+            .then_order_by(publishers::id.desc())
             .load::<PublisherAndBook>(conn),
         GeneralOrder::TitleAsc => stmt
             .order(publishers::name.asc())
+            .then_order_by(publishers::id.desc())
             .load::<PublisherAndBook>(conn),
         GeneralOrder::NumberDesc => stmt
             .order(count_query.desc())
+            .then_order_by(publishers::id.desc())
             .load::<PublisherAndBook>(conn),
         GeneralOrder::NumberAsc => stmt.order(count_query.asc()).load::<PublisherAndBook>(conn),
     }?;

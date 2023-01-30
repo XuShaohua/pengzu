@@ -88,10 +88,22 @@ pub fn get_tags(conn: &mut PgConnection, query: &RecursiveQuery) -> Result<TagAn
     let list = match query.order {
         GeneralOrder::IdDesc => stmt.order(tags::id.desc()).load::<TagAndBook>(conn),
         GeneralOrder::IdAsc => stmt.order(tags::id.asc()).load::<TagAndBook>(conn),
-        GeneralOrder::TitleDesc => stmt.order(tags::name.desc()).load::<TagAndBook>(conn),
-        GeneralOrder::TitleAsc => stmt.order(tags::name.asc()).load::<TagAndBook>(conn),
-        GeneralOrder::NumberDesc => stmt.order(count_query.desc()).load::<TagAndBook>(conn),
-        GeneralOrder::NumberAsc => stmt.order(count_query.asc()).load::<TagAndBook>(conn),
+        GeneralOrder::TitleDesc => stmt
+            .order(tags::name.desc())
+            .then_order_by(tags::id.desc())
+            .load::<TagAndBook>(conn),
+        GeneralOrder::TitleAsc => stmt
+            .order(tags::name.asc())
+            .then_order_by(tags::id.desc())
+            .load::<TagAndBook>(conn),
+        GeneralOrder::NumberDesc => stmt
+            .order(count_query.desc())
+            .then_order_by(tags::id.desc())
+            .load::<TagAndBook>(conn),
+        GeneralOrder::NumberAsc => stmt
+            .order(count_query.asc())
+            .then_order_by(tags::id.desc())
+            .load::<TagAndBook>(conn),
     }?;
 
     let total = tags::table

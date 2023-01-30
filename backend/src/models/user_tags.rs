@@ -74,12 +74,20 @@ pub fn get_tags(
         GeneralOrder::IdAsc => stmt.order(user_tags::id.asc()).load::<UserTagAndBook>(conn),
         GeneralOrder::TitleDesc => stmt
             .order(user_tags::name.desc())
+            .then_order_by(user_tags::id.desc())
             .load::<UserTagAndBook>(conn),
         GeneralOrder::TitleAsc => stmt
             .order(user_tags::name.asc())
+            .then_order_by(user_tags::id.desc())
             .load::<UserTagAndBook>(conn),
-        GeneralOrder::NumberDesc => stmt.order(count_query.desc()).load::<UserTagAndBook>(conn),
-        GeneralOrder::NumberAsc => stmt.order(count_query.asc()).load::<UserTagAndBook>(conn),
+        GeneralOrder::NumberDesc => stmt
+            .order(count_query.desc())
+            .then_order_by(user_tags::id.desc())
+            .load::<UserTagAndBook>(conn),
+        GeneralOrder::NumberAsc => stmt
+            .order(count_query.asc())
+            .then_order_by(user_tags::id.desc())
+            .load::<UserTagAndBook>(conn),
     }?;
 
     let total = user_tags::table

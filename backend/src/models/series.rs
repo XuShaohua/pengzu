@@ -43,10 +43,22 @@ pub fn get_series_list(
     let list = match query.order {
         GeneralOrder::IdDesc => stmt.order(series::id.desc()).load::<SeriesAndBook>(conn),
         GeneralOrder::IdAsc => stmt.order(series::id.asc()).load::<SeriesAndBook>(conn),
-        GeneralOrder::TitleDesc => stmt.order(series::name.desc()).load::<SeriesAndBook>(conn),
-        GeneralOrder::TitleAsc => stmt.order(series::name.asc()).load::<SeriesAndBook>(conn),
-        GeneralOrder::NumberDesc => stmt.order(count_query.desc()).load::<SeriesAndBook>(conn),
-        GeneralOrder::NumberAsc => stmt.order(count_query.asc()).load::<SeriesAndBook>(conn),
+        GeneralOrder::TitleDesc => stmt
+            .order(series::name.desc())
+            .then_order_by(series::id.desc())
+            .load::<SeriesAndBook>(conn),
+        GeneralOrder::TitleAsc => stmt
+            .order(series::name.asc())
+            .then_order_by(series::id.desc())
+            .load::<SeriesAndBook>(conn),
+        GeneralOrder::NumberDesc => stmt
+            .order(count_query.desc())
+            .then_order_by(series::id.desc())
+            .load::<SeriesAndBook>(conn),
+        GeneralOrder::NumberAsc => stmt
+            .order(count_query.asc())
+            .then_order_by(series::id.desc())
+            .load::<SeriesAndBook>(conn),
     }?;
 
     let total = series::dsl::series.count().first(conn)?;

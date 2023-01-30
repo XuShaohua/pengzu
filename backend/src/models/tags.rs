@@ -10,7 +10,7 @@ use serde::Deserialize;
 use shared::general_query::GeneralOrder;
 use shared::page::{Page, TAGS_EACH_PAGE};
 use shared::recursive_query::RecursiveQuery;
-use shared::tags::{Tag, TagAndBook, TagAndBookList};
+use shared::tags::{SearchTagQuery, Tag, TagAndBook, TagAndBookList};
 
 use crate::error::Error;
 use crate::schema::tags;
@@ -57,6 +57,18 @@ pub fn get_tag_by_name_pattern(conn: &mut PgConnection, name_pattern: &str) -> R
     tags::table
         .filter(tags::name.ilike(name_pattern))
         .first(conn)
+        .map_err(Into::into)
+}
+
+pub fn get_tags_by_name_pattern(
+    conn: &mut PgConnection,
+    name_pattern: &str,
+) -> Result<Vec<Tag>, Error> {
+    tags::table
+        .filter(tags::name.ilike(name_pattern))
+        .order_by(tags::id.desc())
+        .limit(10)
+        .load(conn)
         .map_err(Into::into)
 }
 
@@ -132,4 +144,9 @@ pub fn update_tag(conn: &mut PgConnection, tag_id: i32, new_tag: &NewTag) -> Res
 pub fn delete_by_id(conn: &mut PgConnection, tag_id: i32) -> Result<(), Error> {
     diesel::delete(tags::table.find(tag_id)).execute(conn)?;
     Ok(())
+}
+
+pub fn search(conn: &mut PgConnection, query: &SearchTagQuery) -> Result<Vec<Tag>, Error> {
+    let name_pattern = format!("%{}%", query.keyword);
+    get_tags_by_name_pattern(conn, &name_pattern)
 }

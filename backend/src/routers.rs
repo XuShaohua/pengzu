@@ -201,6 +201,11 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::post().guard(admin_guard()).to(tags::cleanup_unused)),
         )
         .service(
+            web::resource("/tag/search")
+                .wrap(auth.clone())
+                .route(web::post().to(tags::search_tags)),
+        )
+        .service(
             web::resource("/tag/{tag_id}")
                 .wrap(auth.clone())
                 .route(web::get().to(tags::get_tag))

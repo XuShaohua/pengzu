@@ -5,6 +5,7 @@
 use actix_web::{web, HttpResponse};
 use shared::books_query::GetBooksQuery;
 use shared::recursive_query::RecursiveQuery;
+use shared::tags::SearchTagQuery;
 
 use crate::db::DbPool;
 use crate::error::Error;
@@ -93,4 +94,16 @@ pub async fn cleanup_unused(pool: web::Data<DbPool>) -> Result<HttpResponse, Err
     })
     .await??;
     Ok(HttpResponse::Ok().finish())
+}
+
+pub async fn search_tags(
+    pool: web::Data<DbPool>,
+    query: web::Json<SearchTagQuery>,
+) -> Result<HttpResponse, Error> {
+    let list = web::block(move || {
+        let mut conn = pool.get()?;
+        tags::search(&mut conn, &query)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().json(list))
 }

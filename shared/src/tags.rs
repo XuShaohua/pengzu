@@ -44,3 +44,8 @@ pub struct NewTag {
     pub name: String,
     pub parent: i32,
 }
+
+#[derive(Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SearchTagQuery {
+    pub keyword: String,
+}

@@ -4,16 +4,23 @@
 
 mod edit_metadata;
 mod navigation;
+mod search_tag;
 
 use shared::authors::Author;
 use shared::books_meta::BookMetadata;
+use shared::categories::Category;
 use shared::files::FileWithPath;
 use shared::identifiers::IdentifierWithType;
+use shared::publishers::Publisher;
 use shared::tags::Tag;
+use shared::user_tags::UserTag;
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::Link;
 
+use self::edit_metadata::EditMetadataComponent;
+use self::navigation::NavigationComponent;
+use self::search_tag::SearchTagComponent;
 use crate::hooks::use_user_context;
 use crate::router::Route;
 use crate::services::books_meta::fetch_book_metadata;
@@ -21,11 +28,6 @@ use crate::services::files::get_file_format_url;
 use crate::services::images::get_cover_image_url;
 use crate::views::util;
 use crate::views::util::to_readable_size;
-use edit_metadata::EditMetadataComponent;
-use navigation::NavigationComponent;
-use shared::categories::Category;
-use shared::publishers::Publisher;
-use shared::user_tags::UserTag;
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -208,6 +210,8 @@ fn generate_metadata_element(metadata: &BookMetadata, is_admin: bool) -> Html {
             <div>
                 <span class="me-2 fw-bold">{ "Tags:" }</span>
                 { tags_element }
+
+                { if is_admin { html! { <SearchTagComponent book={book.id} /> } } else { html!{} } }
             </div>
 
             <div>

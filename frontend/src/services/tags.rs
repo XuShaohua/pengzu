@@ -5,7 +5,7 @@
 use shared::books::BookAndAuthorsList;
 use shared::books_query::GetBooksQuery;
 use shared::recursive_query::RecursiveQuery;
-use shared::tags::{NewTag, Tag, TagAndBookList};
+use shared::tags::{NewTag, SearchTagQuery, Tag, TagAndBookList};
 
 use crate::error::FetchError;
 use crate::services::fetch::{request_delete, request_get, request_post, request_put};
@@ -72,4 +72,13 @@ pub async fn update_tag(tag_id: i32, new_tag: &NewTag) -> Result<(), FetchError>
 pub async fn delete_tag(tag_id: i32) -> Result<(), FetchError> {
     let url = format!("/api/tag/{tag_id}");
     request_delete(&url).await
+}
+
+/// Search tags by name.
+///
+/// # Errors
+/// Returns error if server error.
+pub async fn search_tags(query: &SearchTagQuery) -> Result<Vec<Tag>, FetchError> {
+    let url = "/api/tag/search";
+    request_post(url, query).await
 }

@@ -197,6 +197,7 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
         )
         .service(
             web::resource("/tag/cleanup-unused")
+                .wrap(auth.clone())
                 .route(web::post().guard(admin_guard()).to(tags::cleanup_unused)),
         )
         .service(

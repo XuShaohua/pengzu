@@ -16,7 +16,7 @@ use shared::tags::Tag;
 use crate::error::Error;
 use crate::models::books::{book_list_to_book_authors, Book};
 use crate::models::books_query::sort_books_by_column;
-use crate::schema::books_tags_link;
+use crate::schema::{books_tags_link, tags};
 
 #[derive(Debug, Deserialize, Insertable)]
 #[diesel(table_name = books_tags_link)]
@@ -34,15 +34,13 @@ pub struct BookTag {
 }
 
 pub fn add_book_tag(conn: &mut PgConnection, new_book_tag: &NewBookTag) -> Result<(), Error> {
-    use crate::schema::books_tags_link::dsl::books_tags_link;
-    diesel::insert_into(books_tags_link)
+    diesel::insert_into(books_tags_link::table)
         .values(new_book_tag)
         .execute(conn)?;
     Ok(())
 }
 
 pub fn get_tags_by_book(conn: &mut PgConnection, book_id: i32) -> Result<Vec<Tag>, Error> {
-    use crate::schema::tags;
     log::info!("book id: {}", book_id);
 
     // Replace INNER JOIN with a subquery.
@@ -107,24 +105,35 @@ pub fn get_books_by_tag(
 #[derive(Debug, Clone, Copy, Queryable, QueryableByName)]
 #[diesel(table_name = tags)]
 struct CleanupItem {
-    pub tag: i32,
+    pub id: i32,
 }
 
 pub fn cleanup_unused(conn: &mut PgConnection) -> Result<(), Error> {
-    // get all unused tag id
+    // Get all unused tag id
     let results = sql_query(
-        "
+        r###"
 SELECT tags.id
 FROM tags
-         LEFT JOIN books_tags_link btl ON tags.id = btl.tag
+     LEFT JOIN books_tags_link btl ON tags.id = btl.tag
 GROUP BY tags.id
 HAVING COUNT(btl.id) < 2
 ORDER BY COUNT(btl.id);
-    ",
+    "###,
     )
     .load::<CleanupItem>(conn)?;
+    log::info!("Number of unused tags: {:?}", results.len());
+    let tag_list: Vec<i32> = results.iter().map(|item| item.id).collect();
 
-    // remove from books_tags_link table
-    // remove from tags table
-    todo!()
+    // Remove from books_tags_link table
+    diesel::delete(books_tags_link::table)
+        .filter(books_tags_link::tag.eq_any(&tag_list))
+        .execute(conn)?;
+
+    // Remove from tags table
+    diesel::delete(tags::table)
+        .filter(tags::id.eq_any(&tag_list))
+        .execute(conn)?;
+
+    log::info!("All unused tags have been cleaned!");
+    Ok(())
 }

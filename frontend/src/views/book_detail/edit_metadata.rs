@@ -7,6 +7,7 @@ use yew::prelude::*;
 
 use super::book_formats::BookFormatsComponent;
 use super::edit_authors::EditAuthorsComponent;
+use super::edit_identifiers::EditIdentifiersComponent;
 use super::edit_publisher::EditPublisherComponent;
 use super::edit_tags::EditTagsComponent;
 use super::edit_title::EditTitleComponent;
@@ -50,7 +51,7 @@ pub fn edit_metadata_page(props: &Props) -> Html {
 
             <div class="mb-2">
                 <h3>{ "Identifiers" }</h3>
-                <BookIdentifiersComponent identifiers={ metadta.identifiers.clone() } />
+                <EditIdentifiersComponent identifiers={ metadata.identifiers.clone() } />
             </div>
 
             <div class="mb-2">

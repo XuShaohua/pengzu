@@ -5,7 +5,6 @@
 use shared::authors::Author;
 use shared::books_meta::BookMetadata;
 use shared::categories::Category;
-use shared::identifiers::IdentifierWithType;
 use shared::publishers::Publisher;
 use shared::tags::Tag;
 use shared::user_tags::UserTag;

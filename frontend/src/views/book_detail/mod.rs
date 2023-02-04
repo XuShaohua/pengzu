@@ -5,6 +5,7 @@
 mod book_formats;
 mod book_identifiers;
 mod edit_authors;
+mod edit_identifiers;
 mod edit_metadata;
 mod edit_publisher;
 mod edit_tags;

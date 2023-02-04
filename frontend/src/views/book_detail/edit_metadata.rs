@@ -2,73 +2,38 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::services::books::update_book;
-use shared::books::BookUpdateReq;
-use web_sys::HtmlInputElement;
+use shared::books_meta::BookMetadata;
 use yew::prelude::*;
-use yew_hooks::use_async;
+
+use super::edit_title::EditTitleComponent;
+use super::navigation::NavigationComponent;
+use crate::services::images::get_cover_image_url;
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
-    pub book_id: i32,
-    pub title: String,
+    pub metadata: BookMetadata,
 }
 
 #[function_component(EditMetadataComponent)]
-pub fn edit_metadata(props: &Props) -> Html {
-    let edit_title_ref = use_node_ref();
+pub fn edit_metadata_page(props: &Props) -> Html {
+    let metadata = &props.metadata;
+    let book = &metadata.book;
 
-    let query = use_state(|| BookUpdateReq {
-        id: props.book_id,
-        title: props.title.clone(),
-    });
-    let update_book_wrapper = {
-        let query_clone = query.clone();
-        // TODO(Shaohua): Show response status.
-        use_async(async move { update_book(&query_clone).await })
-    };
-
-    let on_form_submit = {
-        let edit_title_ref_clone = edit_title_ref.clone();
-        Callback::from(move |event: SubmitEvent| {
-            event.prevent_default();
-            let mut query_form = (*query).clone();
-
-            let mut metadata_changed = false;
-
-            if let Some(input) = edit_title_ref_clone.cast::<HtmlInputElement>() {
-                let value = input.value();
-                if !value.is_empty() && value != query_form.title {
-                    query_form.title = value;
-                    metadata_changed = true;
-                }
-            }
-
-            if metadata_changed {
-                query.set(query_form);
-                update_book_wrapper.run();
-            }
-        })
-    };
-
-    let on_input_focus = {
-        let edit_title_ref_clone = edit_title_ref.clone();
-        Callback::from(move |_event: FocusEvent| {
-            if let Some(input) = edit_title_ref_clone.cast::<HtmlInputElement>() {
-                input.select();
-            }
-        })
-    };
+    let cover_url = get_cover_image_url(&book.small_cover);
 
     html! {
-        <form onsubmit={ on_form_submit }>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control"
-                    onfocus={ on_input_focus }
-                    ref={ edit_title_ref }
-                    name="title" value={ props.title.clone() } />
-                <button type="submit" class="btn btn-primary">{ "Update" }</button>
+        <div class="container">
+            <h2>{ &metadata.book.title }</h2>
+            <div class="mt-2 mb-2">
+                <img class="" src={ cover_url } alt={ book.title.clone() } />
             </div>
-        </form>
+
+            <div class="mt-2 mb-2">
+                <h3>{ "Title "}</h3>
+                <EditTitleComponent book_id={ book.id } title={ book.title.clone() } />
+            </div>
+
+            <NavigationComponent previous_book={ metadata.previous_book } next_book={ metadata.next_book } />
+        </div>
     }
 }

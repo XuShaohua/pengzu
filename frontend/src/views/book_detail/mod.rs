@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 mod edit_metadata;
+mod edit_title;
 mod metadata;
 mod navigation;
 mod search_tag;
@@ -10,6 +11,7 @@ mod search_tag;
 use yew::prelude::*;
 use yew_hooks::use_async;
 
+use self::edit_metadata::EditMetadataComponent;
 use self::metadata::MetadataComponent;
 use crate::hooks::use_user_context;
 use crate::router::Route;
@@ -49,7 +51,9 @@ pub fn book_detail(props: &Props) -> Html {
             util::set_document_title(&format!("Book: {}", book_metadata.book.title));
 
             if is_admin {
-                html! {}
+                html! {
+                    <EditMetadataComponent metadata={ book_metadata.clone() } />
+                }
             } else {
                 html! {
                     <MetadataComponent metadata={ book_metadata.clone() } />

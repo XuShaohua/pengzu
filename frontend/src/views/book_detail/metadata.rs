@@ -19,11 +19,6 @@ use crate::services::files::get_file_format_url;
 use crate::services::images::get_cover_image_url;
 use crate::views::util::to_readable_size;
 
-#[derive(Debug, PartialEq, Eq, Properties)]
-pub struct Props {
-    pub metadata: BookMetadata,
-}
-
 fn generate_author_element(authors: &[Author]) -> Html {
     authors
         .iter()
@@ -159,6 +154,11 @@ fn generate_categories_element(categories: &[Category]) -> Html {
             }
         })
         .collect::<Html>()
+}
+
+#[derive(Debug, PartialEq, Eq, Properties)]
+pub struct Props {
+    pub metadata: BookMetadata,
 }
 
 #[function_component(MetadataComponent)]

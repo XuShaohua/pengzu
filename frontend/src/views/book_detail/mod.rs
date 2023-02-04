@@ -4,6 +4,7 @@
 
 mod edit_authors;
 mod edit_metadata;
+mod edit_publisher;
 mod edit_title;
 mod metadata;
 mod navigation;

@@ -7,6 +7,7 @@ use yew::prelude::*;
 
 use super::edit_authors::EditAuthorsComponent;
 use super::edit_publisher::EditPublisherComponent;
+use super::edit_tags::EditTagsComponent;
 use super::edit_title::EditTitleComponent;
 use super::navigation::NavigationComponent;
 use crate::services::images::get_cover_image_url;
@@ -43,6 +44,11 @@ pub fn edit_metadata_page(props: &Props) -> Html {
             <div class="mb-2">
                 <h3>{ "Publisher" }</h3>
                 <EditPublisherComponent book_id={ book.id } publisher={ metadata.publisher.clone() } />
+            </div>
+
+            <div class="mb-2">
+                <h3>{ "Tags" }</h3>
+                <EditTagsComponent book_id={ book.id } tags={ metadata.tags.clone() } />
             </div>
 
             <NavigationComponent previous_book={ metadata.previous_book } next_book={ metadata.next_book } />

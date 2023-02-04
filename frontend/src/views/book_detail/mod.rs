@@ -10,6 +10,7 @@ mod edit_title;
 mod metadata;
 mod navigation;
 mod search_tag;
+mod edit_user_tags;
 
 use yew::prelude::*;
 use yew_hooks::use_async;

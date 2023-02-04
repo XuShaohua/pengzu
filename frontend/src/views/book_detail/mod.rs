@@ -2,15 +2,16 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+mod book_formats;
 mod edit_authors;
 mod edit_metadata;
 mod edit_publisher;
 mod edit_tags;
 mod edit_title;
+mod edit_user_tags;
 mod metadata;
 mod navigation;
 mod search_tag;
-mod edit_user_tags;
 
 use yew::prelude::*;
 use yew_hooks::use_async;

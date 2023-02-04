@@ -5,6 +5,7 @@
 use shared::books_meta::BookMetadata;
 use yew::prelude::*;
 
+use super::book_formats::BookFormatsComponent;
 use super::edit_authors::EditAuthorsComponent;
 use super::edit_publisher::EditPublisherComponent;
 use super::edit_tags::EditTagsComponent;
@@ -55,6 +56,11 @@ pub fn edit_metadata_page(props: &Props) -> Html {
             <div class="mb-2">
                 <h3>{ "User Tags" }</h3>
                 <EditUserTagsComponent book_id={ book.id } tags={ metadata.user_tags.clone() } />
+            </div>
+
+            <div class="mb-2">
+                <h3>{ "File Formats" }</h3>
+                <BookFormatsComponent files={ metadata.files.clone() } />
             </div>
 
             <NavigationComponent previous_book={ metadata.previous_book } next_book={ metadata.next_book } />

@@ -5,7 +5,6 @@
 use shared::authors::Author;
 use shared::books_meta::BookMetadata;
 use shared::categories::Category;
-use shared::files::FileWithPath;
 use shared::identifiers::IdentifierWithType;
 use shared::publishers::Publisher;
 use shared::tags::Tag;
@@ -13,11 +12,10 @@ use shared::user_tags::UserTag;
 use yew::prelude::*;
 use yew_router::prelude::Link;
 
+use super::book_formats::BookFormatsComponent;
 use super::navigation::NavigationComponent;
 use crate::router::Route;
-use crate::services::files::get_file_format_url;
 use crate::services::images::get_cover_image_url;
-use crate::views::util::to_readable_size;
 
 fn generate_author_element(authors: &[Author]) -> Html {
     authors
@@ -77,24 +75,6 @@ fn generate_user_tags_element(tags: &[UserTag]) -> Html {
                     <Link<Route> to={ Route::BooksOfUserTag { tag_id: tag.id } }>{ &tag.name } </Link<Route>>
                     { delimiter }
                 </span>
-            }
-        })
-        .collect::<Html>()
-}
-
-fn generate_formats_element(files: &[FileWithPath]) -> Html {
-    files
-        .iter()
-        .map(|file| {
-            let url = get_file_format_url(file);
-            let readable_size = to_readable_size(file.size);
-            html! {
-                <li>
-                    <a class="book-format" target="_blank" href={ url }>
-                        { format!("{} ({readable_size})", file.format_name) }
-                        <i class="bi bi-download ms-1"></i>
-                    </a>
-                </li>
             }
         })
         .collect::<Html>()
@@ -170,7 +150,6 @@ pub fn metadata_page(props: &Props) -> Html {
     let publisher_element = generate_publisher_element(&metadata.publisher);
     let tags_element = generate_tags_element(&metadata.tags);
     let user_tags_element = generate_user_tags_element(&metadata.user_tags);
-    let formats_element = generate_formats_element(&metadata.files);
     let categories_element = generate_categories_element(&metadata.categories);
     let identifiers_element = generate_identifiers_element(&metadata.identifiers);
 
@@ -236,9 +215,7 @@ pub fn metadata_page(props: &Props) -> Html {
 
             <div class="mt-2">
                 <span class="d-block me-2 fw-bold">{ "File Formats" }</span>
-                <ol class="book-formats ms-3">
-                    { formats_element }
-                </ol>
+                <BookFormatsComponent files={ metadata.files.clone() } />
             </div>
 
             <NavigationComponent previous_book={ metadata.previous_book } next_book={ metadata.next_book } />

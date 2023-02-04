@@ -5,6 +5,7 @@
 use shared::books_meta::BookMetadata;
 use yew::prelude::*;
 
+use super::edit_authors::EditAuthorsComponent;
 use super::edit_title::EditTitleComponent;
 use super::navigation::NavigationComponent;
 use crate::services::images::get_cover_image_url;
@@ -28,9 +29,14 @@ pub fn edit_metadata_page(props: &Props) -> Html {
                 <img class="" src={ cover_url } alt={ book.title.clone() } />
             </div>
 
-            <div class="mt-2 mb-2">
+            <div class="mb-2">
                 <h3>{ "Title "}</h3>
                 <EditTitleComponent book_id={ book.id } title={ book.title.clone() } />
+            </div>
+
+            <div class="mb-2">
+                <h3>{ "Authors" }</h3>
+                <EditAuthorsComponent book_id={ book.id } authors={ metadata.authors.clone() } />
             </div>
 
             <NavigationComponent previous_book={ metadata.previous_book } next_book={ metadata.next_book } />

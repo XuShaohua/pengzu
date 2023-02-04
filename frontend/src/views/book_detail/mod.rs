@@ -3,6 +3,7 @@
 // that can be found in the LICENSE file.
 
 mod book_formats;
+mod book_identifiers;
 mod edit_authors;
 mod edit_metadata;
 mod edit_publisher;

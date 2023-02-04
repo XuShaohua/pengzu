@@ -13,6 +13,7 @@ use yew::prelude::*;
 use yew_router::prelude::Link;
 
 use super::book_formats::BookFormatsComponent;
+use super::book_identifiers::BookIdentifiersComponent;
 use super::navigation::NavigationComponent;
 use crate::router::Route;
 use crate::services::images::get_cover_image_url;
@@ -94,28 +95,6 @@ fn generate_publisher_element(publisher: &Option<Publisher>) -> Html {
     )
 }
 
-fn generate_identifiers_element(identifiers: &[IdentifierWithType]) -> Html {
-    identifiers
-        .iter()
-        .enumerate()
-        .map(|(index, identifier)| {
-            let delimiter = if identifiers.len() - index > 1 {
-                html! { <span>{ " & " }</span> }
-            } else {
-                html! {}
-            };
-            html! {
-                <span key={ identifier.id }>
-                    <span title={ identifier.name.clone() }>
-                        { &identifier.value }
-                    </span>
-                    { delimiter }
-                </span>
-            }
-        })
-        .collect::<Html>()
-}
-
 fn generate_categories_element(categories: &[Category]) -> Html {
     categories
         .iter()
@@ -151,7 +130,6 @@ pub fn metadata_page(props: &Props) -> Html {
     let tags_element = generate_tags_element(&metadata.tags);
     let user_tags_element = generate_user_tags_element(&metadata.user_tags);
     let categories_element = generate_categories_element(&metadata.categories);
-    let identifiers_element = generate_identifiers_element(&metadata.identifiers);
 
     let published_date = book.pubdate.as_ref().map_or_else(String::new, |pubdate| {
         pubdate.date().format("%Y-%m-%d").to_string()
@@ -195,7 +173,7 @@ pub fn metadata_page(props: &Props) -> Html {
 
             <div>
                 <span class="me-2 fw-bold">{ "Identifiers:" }</span>
-                { identifiers_element }
+                <BookIdentifiersComponent identifiers={ metadata.identifiers.clone() } />
             </div>
 
             <div>

@@ -49,6 +49,11 @@ pub fn edit_metadata_page(props: &Props) -> Html {
             </div>
 
             <div class="mb-2">
+                <h3>{ "Identifiers" }</h3>
+                <BookIdentifiersComponent identifiers={ metadta.identifiers.clone() } />
+            </div>
+
+            <div class="mb-2">
                 <h3>{ "Tags" }</h3>
                 <EditTagsComponent book_id={ book.id } tags={ metadata.tags.clone() } />
             </div>

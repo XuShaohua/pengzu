@@ -9,6 +9,7 @@ use super::book_formats::BookFormatsComponent;
 use super::edit_authors::EditAuthorsComponent;
 use super::edit_identifiers::EditIdentifiersComponent;
 use super::edit_publisher::EditPublisherComponent;
+use super::edit_series::EditSeriesComponent;
 use super::edit_tags::EditTagsComponent;
 use super::edit_title::EditTitleComponent;
 use super::edit_user_tags::EditUserTagsComponent;
@@ -47,6 +48,11 @@ pub fn edit_metadata_page(props: &Props) -> Html {
             <div class="mb-2">
                 <h3>{ "Publisher" }</h3>
                 <EditPublisherComponent book_id={ book.id } publisher={ metadata.publisher.clone() } />
+            </div>
+
+            <div class="mb-2">
+                <h3>{ "Series" }</h3>
+                <EditSeriesComponent book_id={ book.id } series={ metadata.series.clone() } />
             </div>
 
             <div class="mb-2">

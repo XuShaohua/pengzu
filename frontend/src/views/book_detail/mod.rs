@@ -8,6 +8,7 @@ mod edit_authors;
 mod edit_identifiers;
 mod edit_metadata;
 mod edit_publisher;
+mod edit_series;
 mod edit_tags;
 mod edit_title;
 mod edit_user_tags;

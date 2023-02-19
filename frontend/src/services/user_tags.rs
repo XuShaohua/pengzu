@@ -38,7 +38,7 @@ pub async fn fetch_books_by_user_tag(
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/user-tag/books/{tag_id}?{query_str}");
+    let url = format!("/api/user-tag/{tag_id}/book?{query_str}");
     request_get(&url).await
 }
 

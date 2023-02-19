@@ -47,10 +47,15 @@ pub fn get_book_series(conn: &mut PgConnection, book_id: i32) -> Result<BookSeri
         .map_err(Into::into)
 }
 
-pub fn delete_book_series(conn: &mut PgConnection, book_id: i32) -> Result<(), Error> {
+pub fn delete_book_series(
+    conn: &mut PgConnection,
+    series_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
     let _link = get_book_series(conn, book_id)?;
     diesel::delete(books_series_link::table)
         .filter(books_series_link::book.eq(book_id))
+        .filter(books_series_link::series.eq(series_id))
         .execute(conn)?;
     Ok(())
 }

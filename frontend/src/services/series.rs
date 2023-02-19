@@ -38,7 +38,7 @@ pub async fn fetch_books_by_series(
     query: &GetBooksQuery,
 ) -> Result<BookAndAuthorsList, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
-    let url = format!("/api/series/books/{series_id}?{query_str}");
+    let url = format!("/api/series/{series_id}/book?{query_str}");
     request_get(&url).await
 }
 

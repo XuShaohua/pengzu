@@ -184,9 +184,15 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::delete().guard(admin_guard()).to(series::delete_series)),
         )
         .service(
-            web::resource("/series/books/{series_id}")
+            web::resource("/series/{series_id}/book")
                 .wrap(auth.clone())
-                .route(web::get().to(series::get_books_by_series)),
+                .route(web::get().to(series::get_books_by_series))
+                .route(web::post().guard(admin_guard()).to(series::add_book)),
+        )
+        .service(
+            web::resource("/series/{series_id}/book/{book_id}")
+                .wrap(auth.clone())
+                .route(web::delete().guard(admin_guard()).to(series::delete_book)),
         )
         // For /api/tag
         .service(

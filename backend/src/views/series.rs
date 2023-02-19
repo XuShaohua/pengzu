@@ -85,3 +85,33 @@ pub async fn delete_series(
     .await??;
     Ok(HttpResponse::Ok().finish())
 }
+
+pub async fn add_book(
+    pool: web::Data<DbPool>,
+    series_id: web::Path<i32>,
+    book_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        let new_book_series = books_series::NewBookSeries {
+            book: book_id.into_inner(),
+            series: series_id.into_inner(),
+        };
+        books_series::add_book_series(&mut conn, &new_book_series)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}
+
+pub async fn delete_book(
+    pool: web::Data<DbPool>,
+    series_id: web::Path<i32>,
+    book_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        books_series::delete_book_series(&mut conn, series_id.into_inner(), book_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}

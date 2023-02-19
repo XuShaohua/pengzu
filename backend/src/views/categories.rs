@@ -46,3 +46,29 @@ pub async fn get_books_by_category(
     .await??;
     Ok(HttpResponse::Ok().json(resp))
 }
+
+pub async fn add_book(
+    pool: web::Data<DbPool>,
+    category_id: web::Path<i32>,
+    book_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        books_categories::add_book(&mut conn, category_id.into_inner(), book_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}
+
+pub async fn delete_book(
+    pool: web::Data<DbPool>,
+    category_id: web::Path<i32>,
+    book_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        books_categories::delete_book(&mut conn, category_id.into_inner(), book_id.into_inner())
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}

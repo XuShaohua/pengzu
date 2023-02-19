@@ -60,3 +60,19 @@ pub fn get_categories_by_book(
         .load::<Category>(conn)
         .map_err(Into::into)
 }
+
+pub fn add_book(conn: &mut PgConnection, category_id: i32, book_id: i32) -> Result<(), Error> {
+    diesel::delete(books_categories_link::table)
+        .filter(books_categories_link::category.eq(category_id))
+        .filter(books_categories_link::book.eq(book_id))
+        .execute(conn)?;
+    Ok(())
+}
+
+pub fn delete_book(conn: &mut PgConnection, category_id: i32, book_id: i32) -> Result<(), Error> {
+    diesel::delete(books_categories_link::table)
+        .filter(books_categories_link::category.eq(category_id))
+        .filter(books_categories_link::book.eq(book_id))
+        .execute(conn)?;
+    Ok(())
+}

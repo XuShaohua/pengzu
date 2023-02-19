@@ -64,9 +64,19 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(categories::get_category)),
         )
         .service(
-            web::resource("/category/books/{category_id}")
+            web::resource("/category/{category_id}/book")
                 .wrap(auth.clone())
-                .route(web::get().to(categories::get_books_by_category)),
+                .route(web::get().to(categories::get_books_by_category))
+                .route(web::post().guard(admin_guard()).to(categories::add_book)),
+        )
+        .service(
+            web::resource("/category/{category_id}/book/{book_id}")
+                .wrap(auth.clone())
+                .route(
+                    web::delete()
+                        .guard(admin_guard())
+                        .to(categories::delete_book),
+                ),
         )
         // For /api/comment
         .service(

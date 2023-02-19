@@ -85,3 +85,37 @@ pub async fn delete_publisher(
     .await??;
     Ok(HttpResponse::Ok().finish())
 }
+
+pub async fn add_book(
+    pool: web::Data<DbPool>,
+    publisher_id: web::Path<i32>,
+    book_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        let new_book_publisher = books_publishers::NewBookPublisher {
+            book: book_id.into_inner(),
+            publisher: publisher_id.into_inner(),
+        };
+        books_publishers::add_book_publisher(&mut conn, &new_book_publisher)
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}
+
+pub async fn delete_book(
+    pool: web::Data<DbPool>,
+    publisher_id: web::Path<i32>,
+    book_id: web::Path<i32>,
+) -> Result<HttpResponse, Error> {
+    web::block(move || {
+        let mut conn = pool.get()?;
+        books_publishers::delete_book_publisher(
+            &mut conn,
+            publisher_id.into_inner(),
+            book_id.into_inner(),
+        )
+    })
+    .await??;
+    Ok(HttpResponse::Ok().finish())
+}

@@ -54,8 +54,8 @@ pub fn delete_book_series(
 ) -> Result<(), Error> {
     let _link = get_book_series(conn, book_id)?;
     diesel::delete(books_series_link::table)
-        .filter(books_series_link::book.eq(book_id))
         .filter(books_series_link::series.eq(series_id))
+        .filter(books_series_link::book.eq(book_id))
         .execute(conn)?;
     Ok(())
 }

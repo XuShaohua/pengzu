@@ -36,8 +36,9 @@ pub fn add_book_publisher(
 ) -> Result<(), Error> {
     diesel::insert_into(books_publishers_link::table)
         .values(new_book_publisher)
-        .execute(conn)?;
-    Ok(())
+        .execute(conn)
+        .map(drop)
+        .map_err(Into::into)
 }
 
 pub fn get_book_publisher(conn: &mut PgConnection, book_id: i32) -> Result<BookPublisher, Error> {
@@ -47,9 +48,14 @@ pub fn get_book_publisher(conn: &mut PgConnection, book_id: i32) -> Result<BookP
         .map_err(Into::into)
 }
 
-pub fn delete_book_publisher(conn: &mut PgConnection, book_id: i32) -> Result<(), Error> {
+pub fn delete_book_publisher(
+    conn: &mut PgConnection,
+    publisher_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
     let _link = get_book_publisher(conn, book_id)?;
     diesel::delete(books_publishers_link::table)
+        .filter(books_publishers_link::publisher.eq(publisher_id))
         .filter(books_publishers_link::book.eq(book_id))
         .execute(conn)?;
     Ok(())

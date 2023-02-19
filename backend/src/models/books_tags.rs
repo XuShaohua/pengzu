@@ -33,10 +33,24 @@ pub struct BookTag {
     pub created: NaiveDateTime,
 }
 
-pub fn add_book_tag(conn: &mut PgConnection, new_book_tag: &NewBookTag) -> Result<(), Error> {
+pub fn add_book_tag(conn: &mut PgConnection, new_book_tag: &NewBookTag) -> Result<BookTag, Error> {
     diesel::insert_into(books_tags_link::table)
         .values(new_book_tag)
-        .execute(conn)?;
+        .get_result::<BookTag>(conn)
+        .map_err(Into::into)
+}
+
+pub fn delete_book_from_tag(
+    conn: &mut PgConnection,
+    tag_id: i32,
+    book_id: i32,
+) -> Result<(), Error> {
+    diesel::delete(
+        books_tags_link::table
+            .filter(books_tags_link::tag.eq(tag_id))
+            .filter(books_tags_link::book.eq(book_id)),
+    )
+    .execute(conn)?;
     Ok(())
 }
 

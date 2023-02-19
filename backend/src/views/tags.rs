@@ -87,12 +87,12 @@ pub async fn get_books_by_tag(
     Ok(HttpResponse::Ok().json(resp))
 }
 
-pub async fn add_book_into_tag(
+pub async fn add_book(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
     book_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
-    let resp = web::block(move || {
+    web::block(move || {
         let mut conn = pool.get()?;
         let book_tag = books_tags::NewBookTag {
             book: book_id.into_inner(),
@@ -101,17 +101,17 @@ pub async fn add_book_into_tag(
         books_tags::add_book_tag(&mut conn, &book_tag)
     })
     .await??;
-    Ok(HttpResponse::Ok().json(resp))
+    Ok(HttpResponse::Ok().finish())
 }
 
-pub async fn delete_book_from_tag(
+pub async fn delete_book(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
     book_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     web::block(move || {
         let mut conn = pool.get()?;
-        books_tags::delete_book_from_tag(&mut conn, tag_id.into_inner(), book_id.into_inner())
+        books_tags::delete_book(&mut conn, tag_id.into_inner(), book_id.into_inner())
     })
     .await??;
     Ok(HttpResponse::Ok().finish())

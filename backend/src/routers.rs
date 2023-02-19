@@ -216,16 +216,12 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
             web::resource("/tag/{tag_id}/book")
                 .wrap(auth.clone())
                 .route(web::get().to(tags::get_books_by_tag))
-                .route(web::post().guard(admin_guard()).to(tags::add_book_into_tag)),
+                .route(web::post().guard(admin_guard()).to(tags::add_book)),
         )
         .service(
             web::resource("/tag/{tag_id}/book/{book_id}")
                 .wrap(auth.clone())
-                .route(
-                    web::delete()
-                        .guard(admin_guard())
-                        .to(tags::delete_book_from_tag),
-                ),
+                .route(web::delete().guard(admin_guard()).to(tags::delete_book)),
         )
         // For /api/user-tag
         .service(
@@ -235,12 +231,6 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::post().to(user_tags::add_tag)),
         )
         .service(
-            web::resource("/user-tag/{tag_id}/book/{book_id}")
-                .wrap(auth.clone())
-                .route(web::post().to(user_tags::add_book))
-                .route(web::delete().to(user_tags::delete_book)),
-        )
-        .service(
             web::resource("/user-tag/{tag_id}")
                 .wrap(auth.clone())
                 .route(web::get().to(user_tags::get_tag))
@@ -248,9 +238,15 @@ fn scoped_config(cfg: &mut web::ServiceConfig) {
                 .route(web::delete().to(user_tags::delete_tag)),
         )
         .service(
-            web::resource("/user-tag/books/{tag_id}")
+            web::resource("/user-tag/{tag_id}/book")
                 .wrap(auth.clone())
-                .route(web::get().to(user_tags::get_books_by_user_tag)),
+                .route(web::get().to(user_tags::get_books))
+                .route(web::post().to(user_tags::add_book)),
+        )
+        .service(
+            web::resource("/user-tag/{tag_id}/book/{book_id}")
+                .wrap(auth.clone())
+                .route(web::delete().to(user_tags::delete_book)),
         )
         // For /api/search
         .service(

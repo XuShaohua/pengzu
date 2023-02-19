@@ -81,7 +81,7 @@ pub async fn update_tag(
     Ok(HttpResponse::Ok().finish())
 }
 
-pub async fn get_books_by_user_tag(
+pub async fn get_books(
     pool: web::Data<DbPool>,
     tag_id: web::Path<i32>,
     query: web::Query<GetBooksQuery>,

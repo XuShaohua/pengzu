@@ -7,10 +7,10 @@ edition = "2021"
 publish = false
 
 [dependencies]
-clap = "4.1.8"
+clap = "4.2.7"
 encoding = "0.2.33"
 epub = "2.0.0"
-html2text = "0.4.5"
+html2text = "0.5.1"
 # Support encryption
 lopdf = { git="https://github.com/J-F-Liu/lopdf", rev="3a192daba1" }
 mobi = "0.8.0"

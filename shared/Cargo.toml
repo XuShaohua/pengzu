@@ -10,6 +10,6 @@ publish = false
 default = []
 
 [dependencies]
-chrono = { version = "0.4.23", default-features = false, features = ["serde", "std"] }
-diesel = { version = "2.0.3", optional = true, default-features = false, features = ["chrono"] }
-serde = { version = "1.0.152", features = ["serde_derive"] }
+chrono = { version = "0.4.24", default-features = false, features = ["serde", "std"] }
+diesel = { version = "2.0.4", optional = true, default-features = false, features = ["chrono"] }
+serde = { version = "1.0.161", features = ["serde_derive"] }

@@ -17,7 +17,7 @@ pub fn run() -> Result<(), Error> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
     let mut cmd = Command::new("backend")
-        .version(env!("VERGEN_GIT_SEMVER"))
+        .version(env!("VERGEN_GIT_DESCRIBE"))
         .author("Xu Shaohua <shaohua@biofan.org>")
         .about("Pengzu backend app")
         .subcommand(run_server::new_cmd())

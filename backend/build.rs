@@ -2,6 +2,10 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-fn main() {
-    vergen::vergen(vergen::Config::default()).unwrap();
+use std::error::Error;
+use vergen::EmitBuilder;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    EmitBuilder::builder().all_git().emit()?;
+    Ok(())
 }

@@ -2,8 +2,6 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-#![allow(clippy::let_unit_value)]
-
 use yew::prelude::*;
 use yew_router::BrowserRouter;
 

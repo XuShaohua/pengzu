@@ -11,6 +11,8 @@
 )]
 // wasi v0.10 and v0.11
 #![allow(clippy::multiple_crate_versions)]
+// For <Link> and <BrowerRouter>
+#![allow(clippy::let_underscore_untyped)]
 
 pub mod app;
 pub mod components;

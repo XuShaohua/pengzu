@@ -10,7 +10,11 @@
     clippy::pedantic
 )]
 // TODO(Shaohua): Remove this attribute.
-#![allow(dead_code, clippy::module_name_repetitions, clippy::missing_errors_doc)]
+#![allow(
+    clippy::module_name_repetitions,
+    clippy::missing_errors_doc,
+    clippy::multiple_crate_versions
+)]
 
 #[macro_use]
 extern crate diesel;

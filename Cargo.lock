@@ -1173,6 +1173,7 @@ dependencies = [
  "yew",
  "yew-hooks",
  "yew-router",
+ "zu-util",
 ]
 
 [[package]]
@@ -4495,3 +4496,9 @@ dependencies = [
  "libc",
  "pkg-config",
 ]
+
+[[package]]
+name = "zu-util"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2c15bb568e83473b0a6f0e713567bbf9e9b5e58446c1f26be8d20c0faf4df2b9"

@@ -13,6 +13,8 @@ pub const CMD_IMPORT_LIBRARY: &str = "import-library";
 
 const CALIBRE_LIBRARY: &str = "calibre-library";
 const OPT_MOVE_FILES: &str = "move-files";
+const OPT_UID: &str = "uid";
+const OPT_GID: &str = "gid";
 const OPT_CALIBRE_PATH: &str = "calibre_path";
 
 #[must_use]
@@ -24,6 +26,18 @@ pub fn new_cmd() -> Command {
                 .long(OPT_MOVE_FILES)
                 .action(ArgAction::SetTrue)
                 .help("Move files to new path, instead of copy"),
+        )
+        .arg(
+            Arg::new(OPT_UID)
+                .long(OPT_UID)
+                .action(ArgAction::Set)
+                .help("Specify user id book new book"),
+        )
+        .arg(
+            Arg::new(OPT_GID)
+                .long(OPT_GID)
+                .action(ArgAction::Set)
+                .help("Specify gid id book new book"),
         )
         .arg(
             Arg::new(CALIBRE_LIBRARY)

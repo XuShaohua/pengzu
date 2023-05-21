@@ -98,7 +98,7 @@ pub enum Route {
 #[allow(clippy::let_unit_value)]
 pub fn switch_route(routes: Route) -> Html {
     match &routes {
-        Route::Home => html! { <Redirect<Route> to={ Route::Book } /> },
+        Route::Home => html! { <Redirect<Route> to={ Route::BooksOfDiscover } /> },
         Route::BookDetail { book_id } => html! { <BookDetailComponent book_id={ *book_id } /> },
         Route::Book => html! { <BooksComponent /> },
         Route::BooksOfAuthor { author_id } => {

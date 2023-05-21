@@ -11,12 +11,21 @@ Features:
 - Manage millions of books without latency
 
 ## How to deploy
-The easy way is to deploy with docker-compose.
+The simple way is to deploy with docker-compose.
 A template yaml file is located [here](docker/docker-compose.yml).
 Modify it based on your environment.
 
-Currently only PostgreSQL is supported, and there is no plan to migrate to other DBRMS
-like Mariadb or MySQL.
+Currently only PostgreSQL is supported.
+
+## Import calibre library
+To import calibre library, run `backend --bin import-library /path/to/calibre/library`. 
+
+If it is deployed in docker, switch to docker app with `docker exec pengzu_pengzu_app_1 /bin/bash`
+and run this command.
+Remember to mount calibre library in volume.
+
+## Screenshot
+![screenshot](./tools/screenshot.png)
 
 ## License
 This project is released in [General Public License](LICENSE).

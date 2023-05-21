@@ -22,6 +22,7 @@ services:
       - JWT_SECRET=OaoQu9yoo7eehaht
     volumes:
       - /local/path/to/PengzuLibrary:/opt/PengzuLibrary
+    user: "${UID}:${GID}"
 
   pengzu_nginx:
     image: xushaohua/pengzu-frontend:latest

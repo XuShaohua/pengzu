@@ -41,7 +41,7 @@ fn copy_book_file(
             format!("Failed to get parent dir: {:?}", &dest_path),
         )
     })?;
-    fs::create_dir_all(parent_dir)?;
+    file_util::create_dir_all_and_chown(parent_dir, options.uid, options.gid)?;
     if move_files {
         fs::rename(&src_path, &dest_path)?;
     } else {
@@ -73,7 +73,7 @@ fn copy_book_metadata_opf(
             format!("Failed to get parent dir: {:?}", &dest_path),
         )
     })?;
-    fs::create_dir_all(parent_dir)?;
+    file_util::create_dir_all_and_chown(parent_dir, options.uid, options.gid)?;
     if move_files {
         fs::rename(&src_path, &dest_path)?;
     } else {
@@ -106,7 +106,7 @@ fn copy_book_cover(
             format!("Failed to get parent dir: {:?}", &dest_path),
         )
     })?;
-    fs::create_dir_all(parent_dir)?;
+    file_util::create_dir_all_and_chown(parent_dir, options.uid, options.gid)?;
     if move_files {
         fs::rename(&src_path, &dest_path).map(drop)?;
     } else {

@@ -2,6 +2,9 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+#![allow(clippy::similar_names)]
+
+use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::error::{Error, ErrorKind};
@@ -37,7 +40,6 @@ pub fn chown<P: AsRef<Path>>(
 }
 
 #[cfg(target_family = "unix")]
-#[allow(clippy::similar_names)]
 pub fn chown<P: AsRef<Path>>(path: P, uid: Option<u32>, gid: Option<u32>) -> Result<(), Error> {
     let (uid, gid) = match (uid, gid) {
         (Some(uid), Some(gid)) => (uid, gid),
@@ -65,4 +67,45 @@ pub fn chown<P: AsRef<Path>>(path: P, uid: Option<u32>, gid: Option<u32>) -> Res
             ),
         )
     })
+}
+
+pub fn create_dir_all_and_chown<P: AsRef<Path>>(
+    path: P,
+    uid: Option<u32>,
+    gid: Option<u32>,
+) -> Result<(), Error> {
+    let path_ref = path.as_ref();
+    if path_ref.exists() {
+        return match path_ref.metadata() {
+            Ok(metadata) => {
+                if metadata.is_dir() {
+                    chown(path, uid, gid)
+                } else {
+                    Err(Error::from_string(
+                        ErrorKind::IoError,
+                        format!("Invalid file type, expected directory, {path_ref:?}"),
+                    ))
+                }
+            }
+            Err(err) => Err(Error::from_string(
+                ErrorKind::IoError,
+                format!("Failed to read metadata of path: {path_ref:?}, err: {err:?}"),
+            )),
+        };
+    }
+
+    let mut dirs = vec![];
+    let mut path_buf = path_ref.to_path_buf();
+    while !path_buf.exists() {
+        dirs.push(path_buf.clone());
+        assert!(path_buf.pop());
+    }
+
+    dirs.reverse();
+    for dir in dirs {
+        fs::create_dir(&dir)?;
+        chown(&dir, uid, gid)?;
+    }
+
+    Ok(())
 }

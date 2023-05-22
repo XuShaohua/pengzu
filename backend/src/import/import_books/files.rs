@@ -9,6 +9,7 @@ use std::fs;
 
 use crate::error::{Error, ErrorKind};
 use crate::import::convert::convert_cover;
+use crate::import::file_util;
 use crate::import::file_util::{get_book_file_path, get_book_metadata_path};
 use crate::import::options::{ImportBookFileAction, ImportBookOptions};
 use crate::models::books::Book;
@@ -42,10 +43,11 @@ fn copy_book_file(
     })?;
     fs::create_dir_all(parent_dir)?;
     if move_files {
-        fs::rename(src_path, dest_path).map_err(Into::into)
+        fs::rename(&src_path, &dest_path)?;
     } else {
-        fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
+        fs::copy(&src_path, &dest_path).map(drop)?;
     }
+    file_util::chown(&dest_path, options.uid, options.gid)
 }
 
 fn copy_book_metadata_opf(
@@ -73,12 +75,11 @@ fn copy_book_metadata_opf(
     })?;
     fs::create_dir_all(parent_dir)?;
     if move_files {
-        fs::rename(src_path, dest_path)
-            .map(drop)
-            .map_err(Into::into)
+        fs::rename(&src_path, &dest_path)?;
     } else {
-        fs::copy(src_path, dest_path).map(drop).map_err(Into::into)
+        fs::copy(&src_path, &dest_path).map(drop)?;
     }
+    file_util::chown(&dest_path, options.uid, options.gid)
 }
 
 fn copy_book_cover(
@@ -111,8 +112,10 @@ fn copy_book_cover(
     } else {
         fs::copy(&src_path, &dest_path).map(drop)?;
     }
+    file_util::chown(&dest_path, options.uid, options.gid)?;
 
-    convert_cover(&dest_path)
+    let webp_path = convert_cover(&dest_path)?;
+    file_util::chown(webp_path, options.uid, options.gid)
 }
 
 pub fn copy_book_files(

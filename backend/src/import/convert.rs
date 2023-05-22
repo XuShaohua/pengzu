@@ -4,7 +4,7 @@
 
 use image::imageops::FilterType;
 use image::io::Reader as ImageReader;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use crate::error::{Error, ErrorKind};
@@ -71,7 +71,7 @@ fn convert_with_image_magic<P: AsRef<Path>>(
     Ok(())
 }
 
-pub fn convert_cover<P: AsRef<Path>>(path: P) -> Result<(), Error> {
+pub fn convert_cover<P: AsRef<Path>>(path: P) -> Result<PathBuf, Error> {
     let webp_path = path.as_ref().with_extension("webp");
     let small_webp_path = path
         .as_ref()
@@ -83,8 +83,7 @@ pub fn convert_cover<P: AsRef<Path>>(path: P) -> Result<(), Error> {
         convert_with_image_magic(path.as_ref(), &webp_path, &small_webp_path, width, height)
     {
         log::warn!("ImageMagic failed: {err:?}");
-        convert(path.as_ref(), &webp_path, &small_webp_path, width, height)
-    } else {
-        Ok(())
+        convert(path.as_ref(), &webp_path, &small_webp_path, width, height)?;
     }
+    Ok(webp_path)
 }

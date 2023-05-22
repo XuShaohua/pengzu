@@ -418,6 +418,7 @@ dependencies = [
  "jsonwebtoken",
  "log",
  "mongodb",
+ "nc",
  "r2d2",
  "ring",
  "serde",
@@ -2679,6 +2680,15 @@ dependencies = [
  "typed-builder",
  "uuid",
  "webpki-roots",
+]
+
+[[package]]
+name = "nc"
+version = "0.8.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed3928ba591ab32dd941b8e8be18346afa923dbfec68a93b760fba98ca5b67ec"
+dependencies = [
+ "cc",
 ]
 
 [[package]]

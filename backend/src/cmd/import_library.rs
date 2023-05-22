@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use clap::{Arg, ArgAction, ArgMatches, Command, ValueHint};
+use clap::{value_parser, Arg, ArgAction, ArgMatches, Command, ValueHint};
 
 use crate::error::Error;
 use crate::import::new_task::new_task;
@@ -17,6 +17,7 @@ const OPT_UID: &str = "uid";
 const OPT_GID: &str = "gid";
 const OPT_CALIBRE_PATH: &str = "calibre_path";
 
+// TODO(Shaohua): Replace with clap_derive.
 #[must_use]
 pub fn new_cmd() -> Command {
     Command::new(CMD_IMPORT_LIBRARY)
@@ -31,12 +32,14 @@ pub fn new_cmd() -> Command {
             Arg::new(OPT_UID)
                 .long(OPT_UID)
                 .action(ArgAction::Set)
+                .value_parser(value_parser!(u32))
                 .help("Specify user id book new book"),
         )
         .arg(
             Arg::new(OPT_GID)
                 .long(OPT_GID)
                 .action(ArgAction::Set)
+                .value_parser(value_parser!(u32))
                 .help("Specify gid id book new book"),
         )
         .arg(

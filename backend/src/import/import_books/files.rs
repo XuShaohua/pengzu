@@ -114,8 +114,9 @@ fn copy_book_cover(
     }
     file_util::chown(&dest_path, options.uid, options.gid)?;
 
-    let webp_path = convert_cover(&dest_path)?;
-    file_util::chown(webp_path, options.uid, options.gid)
+    let (webp_path, small_webp_path) = convert_cover(&dest_path)?;
+    file_util::chown(webp_path, options.uid, options.gid)?;
+    file_util::chown(small_webp_path, options.uid, options.gid)
 }
 
 pub fn copy_book_files(

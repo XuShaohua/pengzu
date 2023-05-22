@@ -60,21 +60,17 @@ fn do_import_book(
     book: &Book,
     options: &ImportBookOptions,
 ) -> Result<(), Error> {
-    let calibre_book_id = calibre_book.id;
-    let book_id = book.id;
     copy_book_files(
         calibre_library_path,
         library_path,
         sqlite_conn,
         pg_conn,
-        calibre_book_id,
-        &calibre_book.path,
-        book_id,
-        &book.path,
+        calibre_book,
+        book,
         options,
     )?;
 
-    import_book_detail(sqlite_conn, pg_conn, calibre_book_id, book_id)
+    import_book_detail(sqlite_conn, pg_conn, calibre_book.id, book.id)
 }
 
 pub fn import_books(

@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use calibre::models::books::CalibreBook;
 use calibre::models::data::get_book_data;
 use diesel::{PgConnection, SqliteConnection};
 use std::fs;
@@ -10,6 +11,7 @@ use crate::error::{Error, ErrorKind};
 use crate::import::convert::convert_cover;
 use crate::import::file_util::{get_book_file_path, get_book_metadata_path};
 use crate::import::options::{ImportBookFileAction, ImportBookOptions};
+use crate::models::books::Book;
 use crate::models::file_formats::get_file_format_by_name;
 use crate::models::files::{add_file, NewFile};
 
@@ -113,18 +115,21 @@ fn copy_book_cover(
     convert_cover(&dest_path)
 }
 
-#[allow(clippy::too_many_arguments)]
 pub fn copy_book_files(
     calibre_library_path: &str,
     library_path: &str,
     sqlite_conn: &mut SqliteConnection,
     pg_conn: &mut PgConnection,
-    calibre_book_id: i32,
-    calibre_book_path: &str,
-    book_id: i32,
-    book_path: &str,
+
+    calibre_book: &CalibreBook,
+    book: &Book,
     options: &ImportBookOptions,
 ) -> Result<(), Error> {
+    let calibre_book_id: i32 = calibre_book.id;
+    let calibre_book_path: &str = &calibre_book.path;
+    let book_id: i32 = book.id;
+    let book_path: &str = &book.path;
+
     log::info!("copy_book_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
     log::info!("calibre_files len: {}", calibre_files.len());

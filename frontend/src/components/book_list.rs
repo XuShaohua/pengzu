@@ -45,7 +45,7 @@ fn generate_book_element(book_resp: &BookAndAuthors) -> Html {
     html! {
         <div class="col-lg-2 col-sm-4 col-xs-6" key={ book.id }>
             <a href={ detail_url.clone() } class="d-block p-2 mb-3" target="_blank">
-                <BookCover url={book.small_cover.clone()} title={ book.title.clone() } />
+                <BookCover url={book.small_cover.clone().unwrap_or_default()} title={ book.title.clone() } />
             </a>
 
             <div class="ms-1">

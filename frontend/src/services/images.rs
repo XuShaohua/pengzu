@@ -11,9 +11,9 @@ pub const DEFAULT_COVER_IMG: &str = "/assets/images/book_cover.webp";
 
 /// Get cover image url
 ///
-/// # Error
+/// # Errors
 /// Returns error if path is invalid.
-fn get_cover_url(path: &str) -> Result<String, FetchError> {
+pub fn get_cover_url(path: &str) -> Result<String, FetchError> {
     let query = ImageQuery {
         path: PathBuf::from(path),
     };

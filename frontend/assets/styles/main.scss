@@ -27,3 +27,18 @@ a:focus, a:hover {
   border: 1px solid #fff;
   box-shadow: 0 5px 8px -6px #777;
 }
+
+.book-cover-img,
+.book-cover-img__default {
+  display: inline-block;
+  width: 135px;
+  height: 200px;
+}
+
+.book-cover-img__default {
+  box-sizing: border-box;
+  margin: 0;
+
+  border-width: 1px;
+  border-style: solid;
+}

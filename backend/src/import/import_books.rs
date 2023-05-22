@@ -13,7 +13,6 @@ use calibre::models::comments::get_comment;
 use calibre::models::data::get_book_data;
 use calibre::models::identifiers::get_identifiers;
 use diesel::{PgConnection, SqliteConnection};
-use serde::Serialize;
 use std::fs;
 
 use crate::error::{Error, ErrorKind};
@@ -21,6 +20,7 @@ use crate::import::convert::convert_cover;
 use crate::import::file_util::{get_book_file_path, get_book_metadata_path};
 use crate::import::models::books::{add_import_book, NewImportBook};
 use crate::import::models::libraries::{update_import_library, ImportLibrary};
+use crate::import::options::{ImportBookFileAction, ImportBookOptions};
 use crate::models::authors::get_author_by_name;
 use crate::models::books::{add_book, Book, NewBook};
 use crate::models::books_authors::{add_book_author, NewBookAuthor};
@@ -38,28 +38,6 @@ use crate::models::publishers::get_publisher_by_name;
 use crate::models::ratings::{add_rating, NewRating};
 use crate::models::series::get_series_by_name;
 use crate::models::tags::get_tag_by_name;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
-pub enum ImportBookFileAction {
-    Copy = 1,
-    Move = 2,
-    DoNothing = 3,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct ImportBookOptions {
-    pub file_action: ImportBookFileAction,
-    pub allow_duplication: bool,
-}
-
-impl Default for ImportBookOptions {
-    fn default() -> Self {
-        Self {
-            file_action: ImportBookFileAction::Copy,
-            allow_duplication: false,
-        }
-    }
-}
 
 fn import_authors(
     sqlite_conn: &mut SqliteConnection,
@@ -257,11 +235,11 @@ fn copy_book_file(
     book_path: &str,
     file_name: &str,
     format: &str,
-    file_action: ImportBookFileAction,
+    options: &ImportBookOptions,
 ) -> Result<(), Error> {
     log::info!("copy_book_file({}/{}.{})", book_path, file_name, format);
 
-    let move_files = match file_action {
+    let move_files = match options.file_action {
         ImportBookFileAction::Copy => false,
         ImportBookFileAction::Move => true,
         ImportBookFileAction::DoNothing => return Ok(()),
@@ -288,11 +266,11 @@ fn copy_book_metadata_opf(
     library_path: &str,
     calibre_book_path: &str,
     book_path: &str,
-    file_action: ImportBookFileAction,
+    options: &ImportBookOptions,
 ) -> Result<(), Error> {
     let file_name = "metadata.opf";
     log::info!("copy_book_metadata_opf({}/{})", book_path, file_name);
-    let move_files = match file_action {
+    let move_files = match options.file_action {
         ImportBookFileAction::Copy => false,
         ImportBookFileAction::Move => true,
         ImportBookFileAction::DoNothing => return Ok(()),
@@ -321,12 +299,12 @@ fn copy_book_cover(
     library_path: &str,
     calibre_book_path: &str,
     book_path: &str,
-    file_action: ImportBookFileAction,
+    options: &ImportBookOptions,
 ) -> Result<(), Error> {
     log::info!("copy_book_cover({})", book_path);
 
     let file_name = "cover.jpg";
-    let move_files = match file_action {
+    let move_files = match options.file_action {
         ImportBookFileAction::Copy => false,
         ImportBookFileAction::Move => true,
         ImportBookFileAction::DoNothing => return Ok(()),
@@ -360,7 +338,7 @@ fn copy_book_files(
     calibre_book_path: &str,
     book_id: i32,
     book_path: &str,
-    file_action: ImportBookFileAction,
+    options: &ImportBookOptions,
 ) -> Result<(), Error> {
     log::info!("copy_book_files({}, {})", calibre_book_id, book_id);
     let calibre_files = get_book_data(sqlite_conn, calibre_book_id)?;
@@ -371,7 +349,7 @@ fn copy_book_files(
         library_path,
         calibre_book_path,
         book_path,
-        file_action,
+        options,
     ) {
         log::warn!("Failed to copy book cover: {:?}", err);
     }
@@ -381,7 +359,7 @@ fn copy_book_files(
         library_path,
         calibre_book_path,
         book_path,
-        file_action,
+        options,
     ) {
         log::warn!("Failed to copy book metadata.opf: {:?}", err);
     }
@@ -396,7 +374,7 @@ fn copy_book_files(
             book_path,
             &calibre_file.name,
             &calibre_file.format,
-            file_action,
+            options,
         )?;
 
         let new_file = NewFile {
@@ -421,7 +399,7 @@ fn import_book_detail(
     pg_conn: &mut PgConnection,
     calibre_book: &CalibreBook,
     book: &Book,
-    option: &ImportBookOptions,
+    options: &ImportBookOptions,
 ) -> Result<(), Error> {
     let calibre_book_id = calibre_book.id;
     let book_id = book.id;
@@ -435,7 +413,7 @@ fn import_book_detail(
         &calibre_book.path,
         book_id,
         &book.path,
-        option.file_action,
+        options,
     )?;
     import_authors(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
     import_comment(sqlite_conn, pg_conn, calibre_book_id, book_id)?;
@@ -487,7 +465,7 @@ pub fn import_books(
     sqlite_conn: &mut SqliteConnection,
     pg_conn: &mut PgConnection,
     import_library: &ImportLibrary,
-    option: &ImportBookOptions,
+    options: &ImportBookOptions,
     mut last_book_id: i32,
 ) -> Result<(), Error> {
     log::info!("import_books({:?})", &import_library);
@@ -510,7 +488,7 @@ pub fn import_books(
                     pg_conn,
                     &calibre_book,
                     &book,
-                    option,
+                    options,
                 ) {
                     log::warn!("Failed to import book: {:?}, err: {:?}", &calibre_book, err);
                     false

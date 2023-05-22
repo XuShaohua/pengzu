@@ -5,8 +5,8 @@
 use clap::{Arg, ArgAction, ArgMatches, Command, ValueHint};
 
 use crate::error::Error;
-use crate::import::import_books::ImportBookFileAction;
 use crate::import::new_task::new_task;
+use crate::import::options::ImportBookFileAction;
 use crate::settings::get_library_root_dir;
 
 pub const CMD_IMPORT_LIBRARY: &str = "import-library";
@@ -47,6 +47,7 @@ pub fn new_cmd() -> Command {
         )
 }
 
+#[allow(clippy::similar_names)]
 pub fn run_daemon(matches: &ArgMatches) -> Result<(), Error> {
     let file_action = matches.get_one::<bool>(OPT_MOVE_FILES).map_or(
         ImportBookFileAction::DoNothing,
@@ -59,11 +60,14 @@ pub fn run_daemon(matches: &ArgMatches) -> Result<(), Error> {
         },
     );
 
+    let uid = matches.get_one::<u32>(OPT_UID).copied();
+    let gid = matches.get_one::<u32>(OPT_GID).copied();
+
     let library_path = get_library_root_dir()?;
     let library_path = library_path.into_os_string().into_string()?;
 
     if let Some(calibre_path) = matches.get_one::<String>(CALIBRE_LIBRARY) {
-        return new_task(calibre_path, &library_path, file_action);
+        return new_task(calibre_path, &library_path, file_action, uid, gid);
     }
 
     new_cmd().print_help().map_err(Into::into)

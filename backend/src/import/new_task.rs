@@ -15,8 +15,9 @@ use diesel::{PgConnection, SqliteConnection};
 use crate::db::get_connection_pool;
 use crate::error::{Error, ErrorKind};
 use crate::import::db::get_calibre_db;
-use crate::import::import_books::{import_books, ImportBookFileAction, ImportBookOptions};
+use crate::import::import_books::import_books;
 use crate::import::models::libraries::{add_import_library, NewImportLibrary};
+use crate::import::options::{ImportBookFileAction, ImportBookOptions};
 use crate::models::authors::{add_author, NewAuthor};
 use crate::models::file_formats::{add_file_format, NewFileFormat};
 use crate::models::identifier_types::{add_identifier_type, NewIdentifierType};
@@ -266,10 +267,13 @@ fn import_identifier_types(
     Ok(())
 }
 
+#[allow(clippy::similar_names)]
 pub fn new_task(
     calibre_library_path: &str,
     library_path: &str,
     file_action: ImportBookFileAction,
+    uid: Option<u32>,
+    gid: Option<u32>,
 ) -> Result<(), Error> {
     let calibre_pool = get_calibre_db(calibre_library_path)?;
     let pg_pool = get_connection_pool()?;
@@ -286,6 +290,8 @@ pub fn new_task(
     let options = ImportBookOptions {
         file_action,
         allow_duplication: true,
+        uid,
+        gid,
     };
     let options_str = serde_json::to_string(&options)?;
 

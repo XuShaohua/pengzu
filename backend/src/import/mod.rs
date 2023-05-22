@@ -8,3 +8,4 @@ mod file_util;
 pub mod import_books;
 mod models;
 pub mod new_task;
+pub mod options;

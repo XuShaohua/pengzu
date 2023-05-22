@@ -14,7 +14,7 @@ use super::edit_tags::EditTagsComponent;
 use super::edit_title::EditTitleComponent;
 use super::edit_user_tags::EditUserTagsComponent;
 use super::navigation::NavigationComponent;
-use crate::services::images::get_cover_image_url;
+use crate::components::book_cover::BookCover;
 
 #[derive(Debug, PartialEq, Eq, Properties)]
 pub struct Props {
@@ -26,13 +26,11 @@ pub fn edit_metadata_page(props: &Props) -> Html {
     let metadata = &props.metadata;
     let book = &metadata.book;
 
-    let cover_url = get_cover_image_url(&book.small_cover);
-
     html! {
         <div class="container">
             <h2>{ &metadata.book.title }</h2>
             <div class="mt-2 mb-2">
-                <img class="" src={ cover_url } alt={ book.title.clone() } />
+                <BookCover url={book.small_cover.clone().unwrap_or_default()} title={ book.title.clone() } />
             </div>
 
             <div class="mb-2">

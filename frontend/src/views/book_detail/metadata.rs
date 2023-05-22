@@ -14,8 +14,8 @@ use yew_router::prelude::Link;
 use super::book_formats::BookFormatsComponent;
 use super::book_identifiers::BookIdentifiersComponent;
 use super::navigation::NavigationComponent;
+use crate::components::book_cover::BookCover;
 use crate::router::Route;
-use crate::services::images::get_cover_image_url;
 
 fn generate_author_element(authors: &[Author]) -> Html {
     authors
@@ -140,14 +140,12 @@ pub fn metadata_page(props: &Props) -> Html {
             <Link<Route> to={ Route::BooksOfSeries { series_id: series.id } }>{ &series.name }</Link<Route>>
         });
 
-    let cover_url = get_cover_image_url(&book.small_cover);
-
     html! {
         <div class="container">
 
             <h2>{ &metadata.book.title }</h2>
             <div class="mt-2 mb-2">
-                <img class="" src={ cover_url } alt={ book.title.clone() } />
+                <BookCover url={book.small_cover.clone().unwrap_or_default()} title={ book.title.clone() } />
             </div>
 
             <div>

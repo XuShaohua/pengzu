@@ -7,8 +7,6 @@ use std::path::PathBuf;
 
 use crate::error::FetchError;
 
-pub const DEFAULT_COVER_IMG: &str = "/assets/images/book_cover.webp";
-
 /// Get cover image url
 ///
 /// # Errors
@@ -20,17 +18,4 @@ pub fn get_cover_url(path: &str) -> Result<String, FetchError> {
     let query_str = serde_urlencoded::to_string(query)?;
     let url = ["/api/image", &query_str].join("?");
     Ok(url)
-}
-
-#[must_use]
-pub fn get_cover_image_url(cover: &Option<String>) -> String {
-    if let Some(cover) = &cover {
-        if !cover.is_empty() {
-            if let Ok(url) = get_cover_url(cover) {
-                return url;
-            }
-        }
-    }
-
-    DEFAULT_COVER_IMG.to_string()
 }

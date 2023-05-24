@@ -10,7 +10,15 @@ members = [
 
 resolver = "2"
 
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = "z"
+
 [profile.release]
+codegen-units = 1
 lto = true
-#opt-level = 's'
 opt-level = 'z'
+panic = "abort"
+strip = "symbols"

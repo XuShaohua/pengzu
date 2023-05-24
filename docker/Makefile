@@ -5,6 +5,7 @@ all: build-backend-docker push-backend-docker build-frontend-docker push-fronten
 build-backend-docker:
 	sudo docker build -t xushaohua/pengzu-backend:latest -f Dockerfile.backend ..
 	sudo docker tag xushaohua/pengzu-backend:latest xushaohua/pengzu-backend:$(CURRENT_TAG)
+	sudo docker tag xushaohua/pengzu-backend:latest docker.biofan.org/pengzu-backend:$(CURRENT_TAG)
 
 push-backend-docker:
 	sudo docker push xushaohua/pengzu-backend:latest
@@ -13,6 +14,7 @@ push-backend-docker:
 build-frontend-docker:
 	sudo docker build -t xushaohua/pengzu-frontend:latest -f Dockerfile.frontend ..
 	sudo docker tag xushaohua/pengzu-frontend:latest xushaohua/pengzu-frontend:$(CURRENT_TAG)
+	sudo docker tag xushaohua/pengzu-frontend:latest docker.biofan.org/pengzu-frontend:$(CURRENT_TAG)
 
 push-frontend-docker:
 	sudo docker push xushaohua/pengzu-frontend:latest

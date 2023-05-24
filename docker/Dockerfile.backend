@@ -10,7 +10,7 @@ RUN apt update && \
     imagemagick
 RUN apt clean
 
-FROM rust:bullseye as builder-cacher
+FROM rust:1.69-bullseye as builder-cacher
 RUN cargo install --locked cargo-watch
 
 FROM builder-cacher as builder
@@ -21,6 +21,7 @@ RUN cargo build --release --bin backend
 FROM cacher
 RUN mkdir /opt/pengzu/
 COPY --from=builder /build/target/release/backend /opt/pengzu/
+RUN rm -rf /usr/share/doc /usr/share/man
 
 EXPOSE 3000
 WORKDIR /opt/pengzu

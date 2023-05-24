@@ -1,5 +1,5 @@
 
-FROM rust:bullseye as cacher
+FROM rust:1.69-bullseye as cacher
 RUN cargo install --locked trunk
 RUN cargo install --locked wasm-bindgen-cli
 RUN rustup target add wasm32-unknown-unknown

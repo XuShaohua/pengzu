@@ -16,7 +16,7 @@ use super::edit_user_tags::EditUserTagsComponent;
 use super::navigation::NavigationComponent;
 use crate::components::book_cover::BookCover;
 
-#[derive(Debug, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub metadata: BookMetadata,
 }

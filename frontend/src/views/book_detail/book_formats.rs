@@ -7,7 +7,7 @@ use crate::views::util::to_readable_size;
 use shared::files::FileWithPath;
 use yew::prelude::*;
 
-#[derive(Debug, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub files: Vec<FileWithPath>,
 }

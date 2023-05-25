@@ -26,7 +26,7 @@ use crate::router::Route;
 use crate::services::books_meta::fetch_book_metadata;
 use crate::views::util;
 
-#[derive(Debug, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Properties)]
 pub struct Props {
     pub book_id: i32,
 }

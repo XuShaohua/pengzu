@@ -15,7 +15,7 @@ use crate::router::Route;
 use crate::services::file_formats::{fetch_books_by_file_format, fetch_file_format};
 use crate::views::util;
 
-#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Properties)]
 pub struct Props {
     pub format_id: i32,
 }

@@ -15,7 +15,7 @@ use crate::router::Route;
 use crate::services::authors::{fetch_author, fetch_books_by_author};
 use crate::views::util;
 
-#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Properties)]
 pub struct Props {
     pub author_id: i32,
 }

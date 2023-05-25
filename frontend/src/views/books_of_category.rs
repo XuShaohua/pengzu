@@ -15,7 +15,7 @@ use crate::router::Route;
 use crate::services::categories::{fetch_books_by_category, fetch_category};
 use crate::views::util;
 
-#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Properties)]
 pub struct Props {
     pub category_id: i32,
 }

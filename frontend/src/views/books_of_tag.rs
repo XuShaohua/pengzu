@@ -15,7 +15,7 @@ use crate::router::Route;
 use crate::services::tags::{fetch_books_by_tag, fetch_tag};
 use crate::views::util;
 
-#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Properties)]
 pub struct Props {
     pub tag_id: i32,
 }

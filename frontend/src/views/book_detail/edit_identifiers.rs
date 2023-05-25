@@ -5,7 +5,7 @@
 use shared::identifiers::IdentifierWithType;
 use yew::prelude::*;
 
-#[derive(Debug, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub identifiers: Vec<IdentifierWithType>,
 }

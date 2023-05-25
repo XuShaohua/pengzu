@@ -15,7 +15,7 @@ use crate::router::Route;
 use crate::services::publishers::{fetch_books_by_publisher, fetch_publisher};
 use crate::views::util;
 
-#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Properties)]
 pub struct Props {
     pub publisher_id: i32,
 }

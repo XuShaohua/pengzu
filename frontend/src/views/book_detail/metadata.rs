@@ -114,7 +114,7 @@ fn generate_categories_element(categories: &[Category]) -> Html {
         .collect::<Html>()
 }
 
-#[derive(Debug, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub metadata: BookMetadata,
 }

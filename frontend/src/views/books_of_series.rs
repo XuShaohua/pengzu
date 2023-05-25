@@ -15,7 +15,7 @@ use crate::router::Route;
 use crate::services::series::{fetch_books_by_series, fetch_series};
 use crate::views::util;
 
-#[derive(Debug, Clone, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Properties)]
 pub struct Props {
     pub series_id: i32,
 }

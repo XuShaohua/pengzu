@@ -12,6 +12,7 @@ use crate::services::users::get_user_info;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
+    #[prop_or_default]
     pub children: Children,
 }
 

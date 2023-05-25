@@ -23,7 +23,7 @@ pub fn header() -> Html {
                     class="d-inline-block align-text-top" />
                 { "Pengzu Library" }
             </Link<Route>>
-            // <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            // <button class="navbar-toggle" type="button" data-bs-toggle="collapse"
             //     data-bs-target="#header-search-area"
             //     aria-controls="header-search-area"
             //     aria-expanded="false" aria-label="Toggle navigation">

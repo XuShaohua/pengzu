@@ -5,7 +5,7 @@
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
-#[derive(Debug, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Properties)]
 pub struct Props {
     pub book: i32,
 }

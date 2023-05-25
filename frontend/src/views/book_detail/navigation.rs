@@ -7,7 +7,7 @@ use yew_router::prelude::Link;
 
 use crate::views::book_detail::Route;
 
-#[derive(Debug, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub previous_book: Option<i32>,
     pub next_book: Option<i32>,

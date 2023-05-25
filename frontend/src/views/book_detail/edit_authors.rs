@@ -8,7 +8,7 @@ use yew_router::prelude::Link;
 
 use crate::router::Route;
 
-#[derive(Debug, PartialEq, Eq, Properties)]
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub book_id: i32,
     pub authors: Vec<Author>,

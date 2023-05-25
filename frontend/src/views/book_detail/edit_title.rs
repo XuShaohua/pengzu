@@ -2,13 +2,14 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use crate::services::books::update_book;
 use shared::books::BookUpdateReq;
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_hooks::use_async;
 
-#[derive(Debug, PartialEq, Eq, Properties)]
+use crate::services::books::update_book;
+
+#[derive(Debug, Clone, PartialEq, Eq, Properties)]
 pub struct Props {
     pub book_id: i32,
     pub title: String,

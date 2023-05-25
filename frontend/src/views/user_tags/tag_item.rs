@@ -4,13 +4,13 @@
 
 #![allow(clippy::module_name_repetitions)]
 
-use crate::hooks::use_user_context;
 use shared::recursive_query::RecursiveQuery;
 use shared::user_tags::{NewUserTag, UserTagAndBook};
 use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::Link;
 
+use crate::hooks::use_user_context;
 use crate::router::Route;
 use crate::services::user_tags::{add_tag, delete_tag, fetch_user_tags, update_tag};
 use crate::views::user_tags::add_tag_modal::AddTagModal;

@@ -22,7 +22,7 @@ yew = { version = "0.20.0", features = ["csr"] }
 yew-hooks = "0.2.0"
 yew-router = "0.17.0"
 serde_urlencoded = "0.7.1"
-zu-util = "0.1.0"
+zu-util = "0.2.1"
 
 [dependencies.web-sys]
 version = "0.3.63"

@@ -1,19 +1,20 @@
 
-FROM rust:1.69-bullseye as cacher
+FROM rust:1.69-bullseye as pf-build-1
 RUN cargo install --locked trunk
 RUN cargo install --locked wasm-bindgen-cli
 RUN rustup target add wasm32-unknown-unknown
 
-FROM cacher as builder
+FROM pf-build-1 as pf-build-2
 COPY . /build
 WORKDIR /build
+COPY docker/config.toml /build/.cargo/
 RUN cd frontend && trunk build --release
 #RUN wget -qO- https://github.com/thedodd/trunk/releases/download/v0.16.0/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 #RUN cd frontend && ../trunk build --release
 
 FROM nginx:1.23
 
-COPY --from=builder /build/frontend/dist /usr/share/nginx/html
+COPY --from=pf-build-2 /build/frontend/dist /usr/share/nginx/html
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

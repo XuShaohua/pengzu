@@ -1,5 +1,5 @@
 
-FROM debian:bullseye as cacher
+FROM debian:bullseye as pb-run-1
 RUN rm -f /etc/apt/sources.list.d/*
 RUN echo 'deb http://mirrors.ustc.edu.cn/debian sid main' > /etc/apt/sources.list
 RUN apt update && \
@@ -10,17 +10,18 @@ RUN apt update && \
     imagemagick
 RUN apt clean
 
-FROM rust:1.69-bullseye as builder-cacher
+FROM rust:1.69-bullseye as pb-build-1
 RUN cargo install --locked cargo-watch
 
-FROM builder-cacher as builder
+FROM pb-build-1 as pb-build-2
 COPY . /build
 WORKDIR /build
+COPY docker/config.toml /build/.cargo/
 RUN cargo build --release --bin backend
 
-FROM cacher
+FROM pb-run-1
 RUN mkdir /opt/pengzu/
-COPY --from=builder /build/target/release/backend /opt/pengzu/
+COPY --from=pb-build-2 /build/target/release/backend /opt/pengzu/
 RUN rm -rf /usr/share/doc /usr/share/man
 
 EXPOSE 3000

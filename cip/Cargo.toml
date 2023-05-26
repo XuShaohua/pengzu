@@ -10,7 +10,6 @@ publish = false
 clap = "4.3.0"
 encoding = "0.2.33"
 epub = "2.0.0"
-html2text = "0.5.1"
-# Support encryption
-lopdf = { git="https://github.com/J-F-Liu/lopdf", rev="3a192daba1" }
+html2text = "0.6.0"
+lopdf = "0.31.0"
 mobi = "0.8.0"

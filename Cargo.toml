@@ -7,6 +7,12 @@ members = [
   "frontend",
   "shared",
 ]
+exclude = [
+  "cip_cpp",
+  "docker",
+  "tools",
+  "zlibrary",
+]
 
 resolver = "2"
 
@@ -18,7 +24,10 @@ opt-level = "z"
 
 [profile.release]
 codegen-units = 1
+# Enable link time optimization
 lto = true
-opt-level = 'z'
+opt-level = 3
+# Disable panic unwinding, to reduce binary size
 panic = "abort"
+# Strip debug symbols
 strip = "symbols"

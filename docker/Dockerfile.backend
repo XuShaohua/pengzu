@@ -23,7 +23,6 @@ FROM pb-run-1
 RUN mkdir /opt/pengzu/
 COPY --from=pb-build-2 /build/target/release/backend /opt/pengzu/
 RUN rm -rf /usr/share/doc /usr/share/man
-
 EXPOSE 3000
 WORKDIR /opt/pengzu
 CMD ["/opt/pengzu/backend", "run"]

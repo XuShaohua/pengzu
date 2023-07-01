@@ -1,5 +1,5 @@
 
-FROM rust:1.69-bullseye as pf-build-1
+FROM rust:1.70-bookworm as pf-build-1
 RUN cargo install --locked trunk
 RUN cargo install --locked wasm-bindgen-cli
 RUN rustup target add wasm32-unknown-unknown

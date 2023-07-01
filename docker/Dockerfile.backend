@@ -1,16 +1,13 @@
 
-FROM debian:bullseye as pb-run-1
-RUN rm -f /etc/apt/sources.list.d/*
-RUN echo 'deb http://mirrors.ustc.edu.cn/debian sid main' > /etc/apt/sources.list
+FROM debian:bookworm as pb-run-1
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive apt install -y \
     libsqlite3-0 \
-    libssl3 \
     libpq5 \
     imagemagick
 RUN apt clean
 
-FROM rust:1.69-bullseye as pb-build-1
+FROM rust:1.70-bookworm as pb-build-1
 RUN cargo install --locked cargo-watch
 
 FROM pb-build-1 as pb-build-2

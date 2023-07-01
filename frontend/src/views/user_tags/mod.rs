@@ -44,24 +44,19 @@ pub fn user_tags_page() -> Html {
     }
 
     let on_filter_change = {
-        let query_clone = query.clone();
         Callback::from(move |order: GeneralOrder| {
-            let new_query = RecursiveQuery {
-                order,
-                ..query_clone
-            };
+            let new_query = RecursiveQuery { order, ..query };
             let ret = navigator.push_with_query(&Route::UserTag, &new_query);
             debug_assert!(ret.is_ok());
         })
     };
 
     let pagination_link = {
-        let query_clone = query.clone();
         Callback::from(
             move |(page_id, classes, title): (PageId, &'static str, String)| -> Html {
                 let new_query = RecursiveQuery {
                     page: page_id,
-                    ..query_clone
+                    ..query
                 };
                 html! {
                     <Link<Route, RecursiveQuery> to={ Route::UserTag }

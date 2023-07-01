@@ -63,15 +63,11 @@ pub fn books_of_user_tag(props: &Props) -> Html {
     );
 
     let on_book_filter_change = {
-        let query_clone = query.clone();
         let tag_id = props.tag_id;
         Callback::from(move |order: GetBooksOrder| {
             util::scroll_to_top();
 
-            let new_query = GetBooksQuery {
-                order,
-                ..query_clone
-            };
+            let new_query = GetBooksQuery { order, ..query };
             let ret = navigator.push_with_query(&Route::BooksOfUserTag { tag_id }, &new_query);
             debug_assert!(ret.is_ok());
         })
@@ -79,12 +75,11 @@ pub fn books_of_user_tag(props: &Props) -> Html {
 
     let pagination_link = {
         let tag_id = props.tag_id;
-        let query_clone = query.clone();
         Callback::from(
             move |(page_id, classes, title): (PageId, &'static str, String)| -> Html {
                 let new_query = GetBooksQuery {
                     page: page_id,
-                    ..query_clone
+                    ..query
                 };
                 html! {
                     <Link<Route, GetBooksQuery> to={ Route::BooksOfUserTag { tag_id } }

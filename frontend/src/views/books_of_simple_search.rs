@@ -23,7 +23,6 @@ pub fn books_of_simple_search() -> Html {
     let navigator = use_navigator().unwrap();
     let location = use_location().unwrap();
     let query = location.query::<SimpleSearchQuery>().unwrap_or_default();
-    let keyword = query.query.clone();
 
     let book_list = {
         let query_clone = query.clone();
@@ -71,6 +70,7 @@ pub fn books_of_simple_search() -> Html {
         )
     };
 
+    let keyword = &query.query;
     book_list.data.as_ref().map_or_else(
         || {
             html! {

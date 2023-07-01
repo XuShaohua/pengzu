@@ -65,12 +65,8 @@ pub fn books_of_author(props: &Props) -> Html {
     );
 
     let on_book_filter_change = {
-        let query_clone = query.clone();
         Callback::from(move |order: GetBooksOrder| {
-            let new_query = GetBooksQuery {
-                order,
-                ..query_clone
-            };
+            let new_query = GetBooksQuery { order, ..query };
             let ret = navigator.push_with_query(&Route::BooksOfAuthor { author_id }, &new_query);
             debug_assert!(ret.is_ok());
         })

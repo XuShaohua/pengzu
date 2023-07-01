@@ -50,24 +50,19 @@ pub fn publishers_page() -> Html {
     }
 
     let on_filter_change = {
-        let query_clone = query.clone();
         Callback::from(move |order: GeneralOrder| {
-            let new_query = GeneralQuery {
-                order,
-                ..query_clone
-            };
+            let new_query = GeneralQuery { order, ..query };
             let ret = navigator.push_with_query(&Route::Publisher, &new_query);
             debug_assert!(ret.is_ok());
         })
     };
 
     let pagination_link = {
-        let query_clone = query.clone();
         Callback::from(
             move |(page_id, classes, title): (PageId, &'static str, String)| -> Html {
                 let new_query = GeneralQuery {
                     page: page_id,
-                    ..query_clone
+                    ..query
                 };
                 html! {
                     <Link<Route, GeneralQuery> to={ Route::Publisher }

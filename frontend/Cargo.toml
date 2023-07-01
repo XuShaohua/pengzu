@@ -1,6 +1,6 @@
 [package]
 name = "frontend"
-version = "0.6.4"
+version = "0.6.5"
 homepage = "https://github.com/xushaohua/pengzu"
 repository = "https://github.com/xushaohua/pengzu"
 edition = "2021"

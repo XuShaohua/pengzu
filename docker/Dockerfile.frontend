@@ -7,7 +7,6 @@ RUN rustup target add wasm32-unknown-unknown
 FROM pf-build-1 as pf-build-2
 COPY . /build
 WORKDIR /build
-COPY docker/config.toml /build/.cargo/
 RUN cd frontend && trunk build --release
 
 FROM nginx:1.23

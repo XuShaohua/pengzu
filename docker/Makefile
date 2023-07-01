@@ -2,9 +2,6 @@ CURRENT_TAG = $(shell git describe --abbrev=0 --tags | sed 's/v//')
 
 all: build-backend-docker push-backend-docker build-frontend-docker push-frontend-docker
 
-vendor:
-	cd .. && cargo vendor
-
 build-backend-docker:
 	sudo docker build -t xushaohua/pengzu-backend:latest -f Dockerfile.backend ..
 	sudo docker tag xushaohua/pengzu-backend:latest xushaohua/pengzu-backend:$(CURRENT_TAG)

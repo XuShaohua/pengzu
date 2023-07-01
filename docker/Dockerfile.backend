@@ -13,7 +13,6 @@ RUN cargo install --locked cargo-watch
 FROM pb-build-1 as pb-build-2
 COPY . /build
 WORKDIR /build
-COPY docker/config.toml /build/.cargo/
 RUN cargo build --release --bin backend
 
 FROM pb-run-1

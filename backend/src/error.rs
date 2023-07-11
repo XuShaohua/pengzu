@@ -2,6 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
+use crate::models::auth::AuthError;
 use actix_http::error::HttpError;
 use actix_web::http::StatusCode;
 use diesel::result::DatabaseErrorKind;
@@ -92,6 +93,12 @@ impl From<image::ImageError> for Error {
 impl From<r2d2::Error> for Error {
     fn from(err: r2d2::Error) -> Self {
         Self::from_string(ErrorKind::DbConnError, format!("r2d2 err: {err}"))
+    }
+}
+
+impl From<AuthError> for Error {
+    fn from(err: AuthError) -> Self {
+        Self::from_string(ErrorKind::AuthFailed, format!("auth err: {err:?}"))
     }
 }
 

@@ -439,6 +439,7 @@ dependencies = [
  "serde",
  "serde_json",
  "shared",
+ "thiserror",
  "tokio",
  "uuid",
  "vergen",

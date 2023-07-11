@@ -17,7 +17,7 @@ pub async fn login(
 ) -> Result<HttpResponse, Error> {
     let mut user_info: UserInfo = web::block(move || {
         let mut conn = pool.get()?;
-        users::login(&mut conn, &form)
+        users::login(&mut conn, &form).map_err(Into::<Error>::into)
     })
     .await??;
 

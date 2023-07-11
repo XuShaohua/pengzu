@@ -7,8 +7,8 @@ use diesel::{ExpressionMethods, Insertable, PgConnection, QueryDsl, Queryable, R
 use serde::{Deserialize, Serialize};
 use shared::users::{LoginForm, NewUserReq, UserInfo};
 
-use crate::error::{Error, ErrorKind};
-use crate::models::auth;
+use crate::error::Error;
+use crate::models::auth::{self, AuthError};
 use crate::schema::users;
 
 #[derive(Debug, Clone, Serialize, Queryable)]
@@ -70,23 +70,26 @@ pub fn get_users(conn: &mut PgConnection) -> Result<Vec<UserInfo>, Error> {
     Ok(user_list.into_iter().map(user_to_user_info).collect())
 }
 
-pub fn login(conn: &mut PgConnection, form: &LoginForm) -> Result<UserInfo, Error> {
+pub fn login(conn: &mut PgConnection, form: &LoginForm) -> Result<UserInfo, AuthError> {
     log::info!("login() {:?}", form);
+    if form.username.is_empty() {
+        return Err(AuthError::UsernameIsEmpty);
+    }
+    if form.password.is_empty() {
+        return Err(AuthError::PasswordIsEmpty);
+    }
     let user = users::table
         .filter(users::name.eq(&form.username))
         .first::<User>(conn)
         .map_err(|err| {
-            log::warn!("login failed: {}", err);
-            Error::new(ErrorKind::AuthFailed, "Invalid username or password")
+            log::warn!("login failed: {err:?}");
+            AuthError::InvalidPair
         })?;
 
     let hash = auth::PasswordHash::from_string(&user.hash)?;
     let salt = auth::Salt::from_string(&user.salt)?;
     if auth::verify(&form.password, &hash, &salt).is_err() {
-        return Err(Error::new(
-            ErrorKind::AuthFailed,
-            "Invalid username or password",
-        ));
+        return Err(AuthError::InvalidPair);
     }
 
     Ok(user_to_user_info(user))

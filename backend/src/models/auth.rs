@@ -7,9 +7,16 @@ use ring::rand::SecureRandom;
 use ring::{digest, pbkdf2, rand};
 use std::num::NonZeroU32;
 
-use crate::error::{Error, ErrorKind};
-
 pub const CREDENTIAL_LEN: usize = digest::SHA512_OUTPUT_LEN;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AuthError {
+    UsernameIsEmpty,
+    PasswordIsEmpty,
+    InvalidHash,
+    InvalidSalt,
+    InvalidPair,
+}
 
 pub struct Salt([u8; CREDENTIAL_LEN]);
 
@@ -25,8 +32,8 @@ impl Salt {
         Self([0u8; CREDENTIAL_LEN])
     }
 
-    pub fn from_string(s: &str) -> Result<Self, Error> {
-        let bytes = HEXUPPER.decode(s.as_bytes())?;
+    pub fn from_string(s: &str) -> Result<Self, AuthError> {
+        let bytes = HEXUPPER.decode(s.as_bytes()).unwrap_or_default();
         if bytes.len() == CREDENTIAL_LEN {
             let mut salt = Self::new();
             for (index, byte) in bytes.iter().enumerate() {
@@ -34,10 +41,7 @@ impl Salt {
             }
             Ok(salt)
         } else {
-            Err(Error::from_string(
-                ErrorKind::RingError,
-                format!("Invalid hash: {s}"),
-            ))
+            Err(AuthError::InvalidHash)
         }
     }
 
@@ -49,10 +53,11 @@ impl Salt {
 
 pub type PasswordHash = Salt;
 
-pub fn new_salt() -> Result<Salt, Error> {
+pub fn new_salt() -> Result<Salt, AuthError> {
     let rng = rand::SystemRandom::new();
     let mut salt = Salt::new();
-    rng.fill(&mut salt.0)?;
+    rng.fill(&mut salt.0)
+        .map_err(|_err| AuthError::InvalidSalt)?;
     Ok(salt)
 }
 
@@ -78,7 +83,7 @@ pub fn encrypt(password: &str, salt: &Salt) -> PasswordHash {
 ///
 /// # Panics
 /// Raise panic if failed to allocate memory.
-pub fn verify(password: &str, hash: &PasswordHash, salt: &Salt) -> Result<(), Error> {
+pub fn verify(password: &str, hash: &PasswordHash, salt: &Salt) -> Result<(), AuthError> {
     let n_iter = NonZeroU32::new(100_000).unwrap();
 
     pbkdf2::verify(
@@ -88,5 +93,5 @@ pub fn verify(password: &str, hash: &PasswordHash, salt: &Salt) -> Result<(), Er
         password.as_bytes(),
         &hash.0,
     )
-    .map_err(Into::into)
+    .map_err(|_| AuthError::InvalidPair)
 }

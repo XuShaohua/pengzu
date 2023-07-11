@@ -7,7 +7,7 @@ use actix_web::http::StatusCode;
 use diesel::result::DatabaseErrorKind;
 use serde::Serialize;
 use std::fmt::{Display, Formatter};
-use std::io;
+use std::io::{self, stderr, Write};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum ErrorKind {
@@ -215,5 +215,14 @@ impl actix_web::error::ResponseError for Error {
             ErrorKind::DbNotFoundError => StatusCode::NOT_FOUND,
             ErrorKind::JwtError | ErrorKind::AuthFailed => StatusCode::UNAUTHORIZED,
         }
+    }
+}
+
+/// Dump an `err` and its source to stderr.
+pub fn print_error(mut err: &dyn std::error::Error) {
+    let _ = writeln!(stderr(), "error: {err:?}");
+    while let Some(source) = err.source() {
+        let _ = writeln!(stderr(), "error: {err:?}");
+        err = source;
     }
 }

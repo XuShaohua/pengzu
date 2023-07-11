@@ -7,7 +7,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-clap = "4.3.10"
+clap = "4.3.11"
 encoding = "0.2.33"
 epub = "2.1.1"
 html2text = "0.6.0"

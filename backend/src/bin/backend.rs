@@ -3,8 +3,10 @@
 // that can be found in the LICENSE file.
 
 use backend::cmd;
-use backend::error::Error;
+use backend::error::print_error;
 
-fn main() -> Result<(), Error> {
-    cmd::run()
+fn main() {
+    if let Err(err) = cmd::run() {
+        print_error(&err);
+    }
 }

@@ -29,7 +29,7 @@ mongodb = { version = "2.6.0", optional = true }
 nc = "0.8.17"
 r2d2 = "0.8.10"
 ring = { version = "0.16.20", features = ["std"] }
-serde = { version = "1.0.167", features = ["serde_derive"] }
+serde = { version = "1.0.171", features = ["serde_derive"] }
 serde_json = "1.0.100"
 shared = { path = "../shared", features = ["diesel"] }
 tokio = { version = "1.29.1", features = [ "full", ] }

@@ -11,30 +11,30 @@ actix-files = "0.6.2"
 actix-http = "3.3.1"
 actix-rt = "2.8.0"
 actix-web = "4.3.1"
-actix-web-grants = "3.0.1"
+actix-web-grants = "3.0.2"
 actix-web-httpauth = "0.8.0"
 calibre = { path = "../calibre" }
 chrono = { version = "0.4.26", default-features = false, features = ["serde", "std"] }
-clap = "4.3.11"
+clap = "4.3.21"
 data-encoding = "2.4.0"
 diesel = { version = "2.1.0", default-features = false, features = ["chrono", "postgres", "r2d2"] }
 dotenv = "0.15.0"
 env_logger = "0.10.0"
 futures = "0.3.28"
 hmac = "0.12.1"
-image = { version = "0.24.6", default-features = false, features = ["jpeg", "png", "webp", "webp-encoder"] }
+image = { version = "0.24.7", default-features = false, features = ["jpeg", "png", "webp", "webp-encoder"] }
 jsonwebtoken = "8.3.0"
-log = "0.4.19"
+log = "0.4.20"
 mongodb = { version = "2.6.0", optional = true }
 nc = "0.8.17"
 r2d2 = "0.8.10"
 ring = { version = "0.16.20", features = ["std"] }
-serde = { version = "1.0.171", features = ["serde_derive"] }
-serde_json = "1.0.100"
+serde = { version = "1.0.183", features = ["serde_derive"] }
+serde_json = "1.0.104"
 shared = { path = "../shared", features = ["diesel"] }
-thiserror = "1.0.43"
-tokio = { version = "1.29.1", features = [ "full", ] }
-uuid = { version = "1.4.0", features = ["serde", "v4"] }
+thiserror = "1.0.44"
+tokio = { version = "1.31.0", features = [ "full", ] }
+uuid = { version = "1.4.1", features = ["serde", "v4"] }
 
 [build-dependencies]
 vergen = { version = "8.2.4", features = ["build", "git", "gitoxide"] }

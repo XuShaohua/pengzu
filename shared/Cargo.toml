@@ -5,6 +5,7 @@ homepage = "https://github.com/xushaohua/pengzu"
 repository = "https://github.com/xushaohua/pengzu"
 edition = "2021"
 publish = false
+rust-version = "1.61"
 
 [features]
 default = []

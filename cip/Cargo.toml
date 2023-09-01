@@ -8,7 +8,7 @@ publish = false
 rust-version = "1.61"
 
 [dependencies]
-clap = "4.3.21"
+clap = "4.0.32"
 encoding = "0.2.33"
 epub = "2.1.1"
 html2text = "0.6.0"

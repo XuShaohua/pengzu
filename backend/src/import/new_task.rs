@@ -2,6 +2,8 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
+#![allow(clippy::cast_possible_wrap)]
+
 use calibre::models::authors::get_authors;
 use calibre::models::books::get_total_books;
 use calibre::models::file_formats::get_file_formats;

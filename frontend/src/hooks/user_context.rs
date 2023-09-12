@@ -60,6 +60,7 @@ impl fmt::Debug for UseUserContextHandle {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         f.debug_struct("UseUserContextHandle")
             .field("value", &format!("{:#?}", *self.inner))
+            .field("navigator", &self.navigator)
             .finish()
     }
 }

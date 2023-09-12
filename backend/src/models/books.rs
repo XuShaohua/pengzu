@@ -125,6 +125,7 @@ pub fn get_books(
     })
 }
 
+#[allow(clippy::cast_possible_wrap)]
 pub fn get_books_by_ids(
     conn: &mut PgConnection,
     query: &GetBooksQuery,

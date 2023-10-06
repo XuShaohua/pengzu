@@ -162,7 +162,7 @@ pub fn get_claims_from_auth(req: &HttpRequest) -> Result<Claims, Error> {
     let token = header.to_str().map_err(|_| invalid_token_error.clone())?;
     let mut parts = token.splitn(2, ' ');
     match parts.next() {
-        Some(scheme) if scheme == "Bearer" => {}
+        Some("Bearer") => {}
         _ => return Err(invalid_token_error),
     }
     let token = parts.next().ok_or(invalid_token_error)?;

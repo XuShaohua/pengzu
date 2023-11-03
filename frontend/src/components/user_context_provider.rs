@@ -33,22 +33,19 @@ pub fn user_context_provider(props: &Props) -> Html {
 
     {
         let user_ctx = user_ctx.clone();
-        use_effect_with_deps(
-            move |current_user| {
-                if let Some(user_info) = &current_user.data {
-                    save_user_info(user_info);
-                    user_ctx.set(user_info.clone());
+        use_effect_with(current_user, move |current_user| {
+            if let Some(user_info) = &current_user.data {
+                save_user_info(user_info);
+                user_ctx.set(user_info.clone());
+            }
+            if let Some(error) = &current_user.error {
+                match error.kind() {
+                    ErrorKind::Unauthorized | ErrorKind::Forbidden => set_token(None),
+                    _ => (),
                 }
-                if let Some(error) = &current_user.error {
-                    match error.kind() {
-                        ErrorKind::Unauthorized | ErrorKind::Forbidden => set_token(None),
-                        _ => (),
-                    }
-                }
-                || ()
-            },
-            current_user,
-        );
+            }
+            || ()
+        });
     }
 
     html! {

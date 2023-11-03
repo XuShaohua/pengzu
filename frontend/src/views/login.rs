@@ -22,15 +22,12 @@ pub fn login_page() -> Html {
         use_async(async move { login(&login_form).await })
     };
 
-    use_effect_with_deps(
-        move |user_login| {
-            if let Some(user_info) = &user_login.data {
-                user_ctx.login(user_info.clone());
-            }
-            || ()
-        },
-        user_login.clone(),
-    );
+    use_effect_with(user_login.clone(), move |user_login| {
+        if let Some(user_info) = &user_login.data {
+            user_ctx.login(user_info.clone());
+        }
+        || ()
+    });
 
     let on_form_submit = {
         Callback::from(move |e: SubmitEvent| {

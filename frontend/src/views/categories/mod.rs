@@ -25,13 +25,10 @@ pub fn categories() -> Html {
     };
     {
         let category_list_clone = category_list.clone();
-        use_effect_with_deps(
-            move |_query_clone| {
-                category_list_clone.run();
-                || ()
-            },
-            query,
-        );
+        use_effect_with(query, move |_query_clone| {
+            category_list_clone.run();
+            || ()
+        });
     }
 
     category_list.data.as_ref().map_or_else(

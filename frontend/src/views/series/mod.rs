@@ -40,13 +40,10 @@ pub fn series_page() -> Html {
     };
     {
         let series_list_clone = series_list.clone();
-        use_effect_with_deps(
-            move |_query_clone| {
-                series_list_clone.run();
-                || ()
-            },
-            query.clone(),
-        );
+        use_effect_with(query.clone(), move |_query_clone| {
+            series_list_clone.run();
+            || ()
+        });
     }
 
     let on_filter_change = {

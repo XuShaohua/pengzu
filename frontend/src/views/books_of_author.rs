@@ -38,13 +38,10 @@ pub fn books_of_author(props: &Props) -> Html {
 
     {
         let book_list_clone = book_list.clone();
-        use_effect_with_deps(
-            move |_query_clone| {
-                book_list_clone.run();
-                || ()
-            },
-            query.clone(),
-        );
+        use_effect_with(query.clone(), move |_query_clone| {
+            book_list_clone.run();
+            || ()
+        });
     }
 
     let author_id = props.author_id;

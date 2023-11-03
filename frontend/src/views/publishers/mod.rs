@@ -40,13 +40,10 @@ pub fn publishers_page() -> Html {
     };
     {
         let publisher_list_clone = publisher_list.clone();
-        use_effect_with_deps(
-            move |_query_clone| {
-                publisher_list_clone.run();
-                || ()
-            },
-            query.clone(),
-        );
+        use_effect_with(query.clone(), move |_query_clone| {
+            publisher_list_clone.run();
+            || ()
+        });
     }
 
     let on_filter_change = {

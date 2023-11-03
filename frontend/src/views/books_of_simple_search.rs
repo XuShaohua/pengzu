@@ -31,13 +31,10 @@ pub fn books_of_simple_search() -> Html {
 
     {
         let book_list_clone = book_list.clone();
-        use_effect_with_deps(
-            move |_query_clone| {
-                book_list_clone.run();
-                || ()
-            },
-            query.clone(),
-        );
+        use_effect_with(query.clone(), move |_query_clone| {
+            book_list_clone.run();
+            || ()
+        });
     }
 
     let on_book_filter_change = {

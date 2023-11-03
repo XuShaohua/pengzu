@@ -16,21 +16,18 @@ pub fn header_search() -> Html {
     let navigator = use_navigator().expect("Navigator object is invalid");
     let query_state = use_state(String::new);
 
-    use_effect_with_deps(
-        move |query_state| {
-            let query = query_state.deref().clone();
-            if !query.is_empty() {
-                let query_obj = SimpleSearchQuery {
-                    query,
-                    ..Default::default()
-                };
-                let ret = navigator.push_with_query(&Route::BooksOfSimpleSearch, &query_obj);
-                debug_assert!(ret.is_ok());
-            }
-            || ()
-        },
-        query_state.clone(),
-    );
+    use_effect_with(query_state.clone(), move |query_state| {
+        let query = query_state.deref().clone();
+        if !query.is_empty() {
+            let query_obj = SimpleSearchQuery {
+                query,
+                ..Default::default()
+            };
+            let ret = navigator.push_with_query(&Route::BooksOfSimpleSearch, &query_obj);
+            debug_assert!(ret.is_ok());
+        }
+        || ()
+    });
 
     let search_onsubmit = {
         let input_ref_clone = input_ref.clone();

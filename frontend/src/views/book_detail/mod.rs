@@ -44,13 +44,10 @@ pub fn book_detail(props: &Props) -> Html {
     };
     {
         let book_metadata_clone = book_metadata.clone();
-        use_effect_with_deps(
-            move |_book_id| {
-                book_metadata_clone.run();
-                || ()
-            },
-            props.book_id,
-        );
+        use_effect_with(props.book_id, move |_book_id| {
+            book_metadata_clone.run();
+            || ()
+        });
     }
 
     book_metadata.data.as_ref().map_or_else(

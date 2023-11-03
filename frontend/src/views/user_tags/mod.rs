@@ -34,13 +34,10 @@ pub fn user_tags_page() -> Html {
     };
     {
         let tag_list_clone = tag_list.clone();
-        use_effect_with_deps(
-            move |_query_clone| {
-                tag_list_clone.run();
-                || ()
-            },
-            query.clone(),
-        );
+        use_effect_with(query.clone(), move |_query_clone| {
+            tag_list_clone.run();
+            || ()
+        });
     }
 
     let on_filter_change = {

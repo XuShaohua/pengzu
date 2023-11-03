@@ -37,7 +37,7 @@ pub fn user_info() -> Html {
                 </div>
                 <div>
                     <span class="fw-bold text-end me-2">{ "Role:" }</span>
-                    <span>{ user_info.role }</span>
+                    <span>{ user_info.role.to_string() }</span>
                 </div>
                 </>
             }

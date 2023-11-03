@@ -11,6 +11,6 @@ rust-version = "1.61"
 default = []
 
 [dependencies]
-chrono = { version = "0.4.28", default-features = false, features = ["serde", "std"] }
+chrono = { version = "0.4.31", default-features = false, features = ["serde", "std"] }
 diesel = { version = "2.0.4", optional = true, default-features = false, features = ["chrono"] }
-serde = { version = "1.0.188", features = ["serde_derive"] }
+serde = { version = "1.0.190", features = ["serde_derive"] }

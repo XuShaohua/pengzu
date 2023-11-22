@@ -121,14 +121,14 @@ struct CleanupItem {
 pub fn cleanup_unused(conn: &mut PgConnection) -> Result<(), Error> {
     // Get all unused tag id
     let results = sql_query(
-        r###"
+        r"
 SELECT tags.id
 FROM tags
      LEFT JOIN books_tags_link btl ON tags.id = btl.tag
 GROUP BY tags.id
 HAVING COUNT(btl.id) < 2
 ORDER BY COUNT(btl.id);
-    "###,
+    ",
     )
     .load::<CleanupItem>(conn)?;
     log::info!("Number of unused tags: {:?}", results.len());

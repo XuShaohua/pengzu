@@ -2,8 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use encoding::all::WINDOWS_1252;
-use encoding::{DecoderTrap, Encoding};
+use encoding_rs::WINDOWS_1252;
 use mobi::headers::TextEncoding;
 use mobi::Mobi;
 use std::path::Path;
@@ -44,9 +43,10 @@ impl MobiReader {
                 TextEncoding::UTF8 | TextEncoding::Unknown(_) => {
                     Ok(String::from_utf8_lossy(content).into_owned())
                 }
-                TextEncoding::CP1252 => Ok(WINDOWS_1252
-                    .decode(content, DecoderTrap::Ignore)
-                    .unwrap_or_default()),
+                TextEncoding::CP1252 => match WINDOWS_1252.decode_with_bom_removal(content) {
+                    (dest, true) => Ok(dest.to_string()),
+                    (_, false) => Err(Error::new(ErrorKind::InvalidMobiPage, "Encode error")),
+                },
             }
         } else {
             Err(Error::new(ErrorKind::InvalidMobiPage, "Invalid page index"))

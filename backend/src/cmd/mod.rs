@@ -13,7 +13,7 @@ mod migrate;
 mod run_server;
 
 pub fn run() -> Result<(), Error> {
-    dotenv::dotenv().ok();
+    dotenvy::dotenv()?;
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
     let mut cmd = Command::new("backend")

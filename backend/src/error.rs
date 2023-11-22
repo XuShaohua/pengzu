@@ -146,6 +146,12 @@ impl From<std::ffi::OsString> for Error {
     }
 }
 
+impl From<dotenvy::Error> for Error {
+    fn from(err: dotenvy::Error) -> Self {
+        Self::from_string(ErrorKind::ConfigError, format!("dotenv err: {err:?}"))
+    }
+}
+
 impl From<calibre::error::Error> for Error {
     fn from(err: calibre::error::Error) -> Self {
         match err.kind() {

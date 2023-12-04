@@ -6,7 +6,7 @@ use actix_web::cookie::time::OffsetDateTime;
 use actix_web::dev::ServiceRequest;
 use actix_web::guard::{Guard, GuardContext};
 use actix_web::HttpRequest;
-use actix_web_grants::permissions::{AttachPermissions, AuthDetails};
+use actix_web_grants::authorities::{AttachAuthorities, AuthDetails};
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
@@ -19,7 +19,7 @@ use crate::settings::get_jwt_secret;
 pub const TOKEN_NAME: &str = "Token";
 const JWT_EXPIRATION_HOURS: i64 = 24 * 3;
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
 pub struct UserPermissions {
     pub id: i32,
     pub name: String,
@@ -135,7 +135,7 @@ impl Guard for UserRoleGuard {
             .get::<AuthDetails<UserPermissions>>()
             .map_or(false, |user_perm| {
                 user_perm
-                    .permissions
+                    .authorities
                     .iter()
                     .any(|perm| perm.role == UserRole::Admin)
             })

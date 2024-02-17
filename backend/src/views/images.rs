@@ -11,7 +11,7 @@ use crate::error::{Error, ErrorKind};
 use crate::settings;
 
 pub async fn get_image_by_path(
-    _pool: web::Data<DbPool>,
+    _: web::Data<DbPool>,
     query: web::Query<ImageQuery>,
 ) -> Result<NamedFile, Error> {
     let path = query.path.as_path();

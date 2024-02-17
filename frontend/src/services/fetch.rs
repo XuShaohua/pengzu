@@ -11,7 +11,7 @@ use web_sys::{Headers, Request, RequestInit, RequestMode, Response};
 use crate::error::{ErrorKind, FetchError};
 use crate::services::auth::get_token;
 
-/// Wrap fetch() api in browser.
+/// Wrap `fetch()` api in browser.
 ///
 /// Response body is returned as string.
 ///
@@ -27,7 +27,7 @@ where
     request("GET", url, ()).await
 }
 
-/// Wrap fetch() api in browser, for POST requests.
+/// Wrap `fetch()` api in browser, for POST requests.
 ///
 /// Response body is returned as string.
 ///
@@ -47,7 +47,7 @@ where
     request("POST", url, body).await
 }
 
-/// Wrap fetch() api in browser, for PUT requests.
+/// Wrap `fetch()` api in browser, for PUT requests.
 ///
 /// Response body is returned as string.
 ///
@@ -67,7 +67,7 @@ where
     request("PUT", url, body).await
 }
 
-/// Wrap fetch() api in browser, for DEELETE requests.
+/// Wrap `fetch()` api in browser, for DEELETE requests.
 ///
 /// Response body is returned as string.
 ///

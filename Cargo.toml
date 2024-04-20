@@ -4,12 +4,12 @@ members = [
   "backend",
   "calibre",
   "cip",
-  "frontend",
   "shared",
 ]
 exclude = [
   "cip_cpp",
   "docker",
+  "frontend",
   "tools",
   "zlibrary",
 ]

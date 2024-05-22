@@ -10,7 +10,7 @@ rust-version = "1.61"
 [dependencies]
 clap = "4.0.32"
 encoding_rs = "0.8.34"
-epub = "2.1.1"
+epub = "2.1.2"
 html2text = "0.10.3"
 lopdf = "0.32.0"
 mobi = "0.8.0"

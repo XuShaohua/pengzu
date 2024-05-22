@@ -31,7 +31,7 @@ pub async fn login(
     let mut cookie = Cookie::new(TOKEN_NAME, &token);
     cookie.set_path("/");
     cookie.set_expires(claims.exp_offset());
-    user_info.token = token.clone();
+    user_info.token.clone_from(&token);
     let mut resp = HttpResponse::Ok().json(user_info);
     resp.add_cookie(&cookie)?;
     Ok(resp)

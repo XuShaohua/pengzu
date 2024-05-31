@@ -14,9 +14,6 @@ use crate::views::{
     users,
 };
 
-const CONTENT_TYPE: &str = "content-type";
-const APPLICATION_JSON: &str = "application/json";
-
 #[allow(clippy::too_many_lines)]
 fn scoped_config(cfg: &mut web::ServiceConfig) {
     let auth = HttpAuthentication::bearer(auth_validator);

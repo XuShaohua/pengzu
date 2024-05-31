@@ -50,16 +50,6 @@ impl Claims {
     }
 
     #[must_use]
-    pub fn name(&self) -> &str {
-        &self.name
-    }
-
-    #[must_use]
-    pub const fn role(&self) -> UserRole {
-        self.role
-    }
-
-    #[must_use]
     pub fn exp_offset(&self) -> OffsetDateTime {
         OffsetDateTime::from_unix_timestamp(self.exp).unwrap()
     }
@@ -70,14 +60,6 @@ impl Claims {
             id: self.id,
             name: self.name.clone(),
             role: self.role,
-        }
-    }
-
-    pub fn roles(&self) -> Vec<UserRole> {
-        match self.role {
-            UserRole::Nil => vec![],
-            UserRole::User => vec![UserRole::User],
-            UserRole::Admin => vec![UserRole::Admin, UserRole::User],
         }
     }
 
@@ -134,10 +116,7 @@ impl Guard for UserRoleGuard {
         ctx.req_data()
             .get::<AuthDetails<UserPermissions>>()
             .map_or(false, |user_perm| {
-                user_perm
-                    .authorities
-                    .iter()
-                    .any(|perm| perm.role == UserRole::Admin)
+                user_perm.authorities.iter().any(|perm| perm.role == self.0)
             })
     }
 }

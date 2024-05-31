@@ -11,7 +11,6 @@
 )]
 // TODO(Shaohua): Remove allow-list.
 #![allow(
-    dead_code,
     clippy::module_name_repetitions,
     clippy::missing_errors_doc,
     clippy::use_self,

@@ -2,7 +2,7 @@
 // Use of this source is governed by GNU General Public License
 // that can be found in the LICENSE file.
 
-use diesel::{sql_function, PgConnection, QueryDsl, RunQueryDsl};
+use diesel::{define_sql_function, PgConnection, QueryDsl, RunQueryDsl};
 use shared::books::BookAndAuthorsList;
 use shared::page::{default_page_id, Page, BOOKS_EACH_PAGE};
 
@@ -14,7 +14,7 @@ use crate::models::books::{merge_books_and_authors, Book};
 pub fn get_books(conn: &mut PgConnection) -> Result<BookAndAuthorsList, Error> {
     use crate::schema::books;
 
-    sql_function!(
+    define_sql_function!(
         /// Represents the SQL RANDOM() function
         fn random() -> Integer;
     );

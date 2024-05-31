@@ -26,7 +26,6 @@ hmac = "0.12.1"
 image = { version = "0.24.8", default-features = false, features = ["jpeg", "png", "webp", "webp-encoder"] }
 jsonwebtoken = "8.3.0"
 log = "0.4.21"
-mongodb = { version = "2.8.2", optional = true }
 nc = "0.8.20"
 r2d2 = "0.8.10"
 ring = { version = "0.17.8", features = ["std"] }

@@ -32,6 +32,3 @@ mod routers;
 mod schema;
 mod settings;
 mod views;
-
-#[cfg(feature = "mongodb")]
-pub mod categories;

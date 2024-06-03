@@ -29,8 +29,6 @@ pub enum ErrorKind {
     RingError,
     AuthFailed,
     ActixBlockingError,
-    MongoDbError,
-    MongoDbValueAccessError,
     HttpError,
 
     // Invalid form request.
@@ -169,20 +167,6 @@ impl From<serde_json::Error> for Error {
     }
 }
 
-#[cfg(feature = "mongodb")]
-impl From<mongodb::error::Error> for Error {
-    fn from(err: mongodb::error::Error) -> Self {
-        Self::from_string(ErrorKind::MongoDbError, err.to_string())
-    }
-}
-
-#[cfg(feature = "mongodb")]
-impl From<mongodb::bson::document::ValueAccessError> for Error {
-    fn from(err: mongodb::bson::document::ValueAccessError) -> Self {
-        Self::from_string(ErrorKind::MongoDbValueAccessError, err.to_string())
-    }
-}
-
 impl From<jsonwebtoken::errors::Error> for Error {
     fn from(err: jsonwebtoken::errors::Error) -> Self {
         Self::from_string(ErrorKind::JwtError, err.to_string())
@@ -217,8 +201,6 @@ impl actix_web::error::ResponseError for Error {
             | ErrorKind::JsonError
             | ErrorKind::ActixBlockingError
             | ErrorKind::HttpError
-            | ErrorKind::MongoDbError
-            | ErrorKind::MongoDbValueAccessError
             | ErrorKind::RingError => StatusCode::INTERNAL_SERVER_ERROR,
             ErrorKind::DbForeignKeyViolationError
             | ErrorKind::DbUniqueViolationError

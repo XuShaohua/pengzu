@@ -19,6 +19,7 @@ pub struct NewImportLibrary {
     pub options: String,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Queryable)]
 pub struct ImportLibrary {
     pub id: i32,

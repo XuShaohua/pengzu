@@ -18,6 +18,7 @@ pub struct NewImportBook {
     pub book: Option<i32>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Queryable)]
 pub struct ImportBook {
     pub id: i32,

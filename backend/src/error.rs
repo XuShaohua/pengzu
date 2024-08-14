@@ -7,7 +7,7 @@ use actix_http::error::HttpError;
 use actix_web::http::StatusCode;
 use diesel::result::DatabaseErrorKind;
 use serde::Serialize;
-use std::fmt::{Display, Formatter};
+use std::fmt;
 use std::io::{self, stderr, Write};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -43,8 +43,8 @@ pub struct Error {
     message: String,
 }
 
-impl Display for Error {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}: {}", self.kind, self.message)
     }
 }
